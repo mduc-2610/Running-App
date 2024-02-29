@@ -1,0 +1,31 @@
+import datetime
+from datetime import timedelta
+
+from django.db import models
+from django.db.models import Sum
+
+class UserParticipation(models.Model):
+    user = models.ForeignKey(
+        "account.User", on_delete=models.CASCADE, null=True)
+    is_admin = models.BooleanField(default=False)
+    participated_at = models.DateTimeField(auto_now_add=True)
+
+    def week_stats(self, col):
+        return self.user.performance.week_stats(col)
+    
+    def month_stats(self, col):
+        return self.user.performance.month_stats(col)
+
+    def year_stats(self, col):
+        return self.user.performance.year_stats(col)
+    
+    class Meta:
+        abstract = True
+
+class UserParticipationClub(UserParticipation):
+    club = models.ForeignKey(
+        "activity.Club", on_delete=models.CASCADE)
+    
+class UserParticipationEvent(UserParticipation):
+    event = models.ForeignKey(
+        "activity.Event", on_delete=models.CASCADE)
