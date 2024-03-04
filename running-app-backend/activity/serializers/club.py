@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from activity.models import Club
-from account.serializers import UserSerializer
+from account.serializers import DetailUserSerializer
 
 class ClubSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,7 +21,7 @@ class ClubSerializer(serializers.ModelSerializer):
 class DetailClubSerializer(serializers.ModelSerializer):
     week_activites = serializers.SerializerMethodField()
     number_of_participants = serializers.SerializerMethodField()
-    users = UserSerializer(many=True)
+    participants = serializers.SerializerMethodField()
 
     def get_week_activites(self, instance):
         return instance.week_activities()
@@ -29,6 +29,11 @@ class DetailClubSerializer(serializers.ModelSerializer):
     def get_number_of_participants(self, instance):
         return instance.number_of_participants()
     
+    def get_participants(self, instance):
+        request = self.context.get('request', None)
+        users = [instance.user for instance in instance.clubs.all()]
+        return DetailUserSerializer(users, many=True, context={'request': request}).data
+
     class Meta:
         model = Club
         fields = "__all__"

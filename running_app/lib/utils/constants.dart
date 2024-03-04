@@ -10,13 +10,14 @@ class APIEndpoints {
 }
 
 class TColor {
-  static Color get PRIMARY => const Color(0xff6353c8);
+  static Color get PRIMARY => const Color(0xff7b61ff);
   static Color get PRIMARY_TEXT => const Color(0xffffffff);
   static Color get SECONDARY_TEXT => const Color(0xff7b61ff);
   static Color get DESCRIPTION => const Color(0xffcdcdcd);
   static Color get PRIMARY_BACKGROUND => const Color(0xff28333f);
   static Color get SECONDARY_BACKGROUND => const Color(0xff2f3c50);
   static Color get BUTTON => const Color(0xff7b61ff);
+  static Color get BORDER_COLOR => const Color(0xff444b5e);
 }
 
 class FontSize {

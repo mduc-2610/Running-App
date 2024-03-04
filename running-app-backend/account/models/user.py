@@ -24,7 +24,7 @@ class User(AbstractUser):
     )
     is_verified_phone = models.BooleanField(default=False, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return self.username
     

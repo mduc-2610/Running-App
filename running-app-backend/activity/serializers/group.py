@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from activity.models import Group, \
                             UserGroup
+
 from account.serializers import UserSerializer
 from activity.serializers.event import EventSerializer
 

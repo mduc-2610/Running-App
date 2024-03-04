@@ -1,31 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:running_app/utils/common_widgets/icon_button.dart';
 
-class CustomBackButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-  final Color color;
-  final double iconSize;
+class CustomBackButton extends CustomIconButton {
   final BuildContext context;
 
-  const CustomBackButton({
+  CustomBackButton({
     Key? key,
+    VoidCallback? onPressed,
+    Color? color,
+    double? iconSize,
+    double? paddingLeft,
+    double? paddingTop,
+    double? paddingRight,
+    double? paddingBottom,
     required this.context,
-    this.onPressed,
-    this.color = Colors.white,
-    this.iconSize = 25,
-  }) : super(key: key);
+  }) : super(
+    key: key,
+    icon: const Icon(Icons.arrow_back_ios_rounded),
+    onPressed: onPressed ?? () => _defaultOnPressed(context),
+    color: color ?? Colors.white,
+    iconSize: iconSize ?? 22,
+    paddingLeft: paddingLeft,
+    paddingTop: paddingTop,
+    paddingRight: paddingRight,
+    paddingBottom: paddingBottom
+  );
 
-  // Default onPressed function
   static void _defaultOnPressed(BuildContext context) {
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.arrow_back),
-      onPressed: onPressed ?? () => _defaultOnPressed(context),
-      color: color,
-      iconSize: iconSize,
-    );
+    return super.build(context);
   }
 }

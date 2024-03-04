@@ -6,7 +6,7 @@ from django.db.models import Sum
 
 class UserParticipation(models.Model):
     user = models.ForeignKey(
-        "account.User", on_delete=models.CASCADE, null=True)
+        "account.Activity", on_delete=models.CASCADE, null=True)
     is_admin = models.BooleanField(default=False)
     participated_at = models.DateTimeField(auto_now_add=True)
 

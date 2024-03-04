@@ -24,11 +24,11 @@ class Event(models.Model):
     sport_type = models.CharField(max_length=15, choices=SPORT_CHOICES, default="RUNNING")
     is_group = models.BooleanField(default=False)
     
-    def days_remaining(self):
-        return self.ended_at.date() - self.started_at.date() 
+    def days_remain(self):
+        return (self.ended_at.date() - self.started_at.date()).days
     
     def number_of_participants(self):
-        return 0
+        return self.events.count()
     
     def __str__(self):
         return self.name

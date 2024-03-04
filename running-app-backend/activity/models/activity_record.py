@@ -10,6 +10,7 @@ class ActivityRecord(models.Model):
     completed_at = models.DateTimeField(auto_now_add=True)
     SPORT_CHOICES = (
         ("RUNNING", "Running"),
+        ("JOGGING", "Jogging"),
         ("CYCLING", "Cycling"),
         ("SWIMMING", "Swimming"),
     )

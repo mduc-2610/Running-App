@@ -9,19 +9,23 @@ class CustomTextFormField extends TextFormField {
     bool obscureText = false,
     FormFieldValidator<String>? validator, // Allow validator to be nullable
     FormFieldSetter<String>? onSaved, // Allow onSaved to be nullable
-    TextStyle? textStyle = const TextStyle(
+    TextStyle inputTextStyle = const TextStyle(
       color: Color(0xffcdcdcd),
       fontSize: FontSize.NORMAL,
     ),
+    Color cursorColor = const Color(0xffcdcdcd),
     TextEditingController? controller,
+    int? maxLength,
   }) : super(
     key: key,
-    style: textStyle,
+    style: inputTextStyle,
     decoration: decoration,
     obscureText: obscureText,
     keyboardType: keyboardType,
     validator: validator,
     onSaved: onSaved,
     controller: controller,
+    cursorColor: cursorColor,
+    maxLength: maxLength,
   );
 }

@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
+import 'package:running_app/utils/common_widgets/stack.dart';
 import 'package:running_app/utils/constants.dart';
 
 class ActivityView extends StatelessWidget {
@@ -31,18 +32,12 @@ class ActivityView extends StatelessWidget {
       }
     ];
     return Scaffold(
-      body: Stack(
+      body: CustomStack(
         children: [
-          Image.asset(
-            "assets/img/home/background_1.png",
-            width: media.width,
-            height: media.height,
-            fit: BoxFit.contain,
-          ),
           MainWrapper(
             child: Column(
               children: [
-                const Header(title: "Activity"),
+                Header(title: "Activity"),
                 SizedBox(height: media.height * 0.02,),
                 Container(
                   padding: EdgeInsets.symmetric(

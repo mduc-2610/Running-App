@@ -54,7 +54,7 @@ class _SignInViewState extends State<SignInView> {
         ),
         MainWrapper(
           child: Container(
-            margin: EdgeInsets.fromLTRB(media.width * 0.015, media.height * 0.35, media.width * 0.015, 0),
+            margin: EdgeInsets.fromLTRB(media.width * 0.015, media.height * 0.32, media.width * 0.015, 0),
             child: Column(
               children: [
                 // ---SignIn section---
@@ -69,7 +69,7 @@ class _SignInViewState extends State<SignInView> {
                         fontWeight: FontWeight.w700
                       ),
                     ),
-                    SizedBox(height: media.height * 0.01,),
+                    SizedBox(height: media.height * 0.02,),
                     CustomTextFormField(
                       decoration: CustomInputDecoration(
                         hintText: "Enter a Username",

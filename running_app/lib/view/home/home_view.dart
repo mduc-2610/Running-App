@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
+import 'package:running_app/utils/common_widgets/stack.dart';
+import 'package:running_app/utils/common_widgets/text_button.dart';
 
 import '../../models/account/user.dart';
 import '../../services/api_service.dart';
@@ -35,19 +37,13 @@ class _HomeViewState extends State<HomeView> {
     var media = MediaQuery.sizeOf(context);
     print(user);
     return Scaffold(
-      body: Stack(
+      body: CustomStack(
         children: [
-          Image.asset(
-            "assets/img/home/background_1.png",
-            width: media.width,
-            height: media.height,
-            fit: BoxFit.contain,
-          ),
           Image.asset(
             "assets/img/home/background_2.png",
             width: media.width,
-            height: media.height * 0.52,
-            fit: BoxFit.contain,
+            height: media.height * 0.535,
+            fit: BoxFit.cover,
           ),
           MainWrapper(
             child: Column(
@@ -266,16 +262,16 @@ class _HomeViewState extends State<HomeView> {
                   ],
                 ),
 
-                SizedBox(height: media.height * 0.03,),
+                SizedBox(height: media.height * 0.04,),
 
                 // Event
-                TextButton(
+                CustomTextButton(
                   onPressed: () {
 
                   },
                   child: SvgPicture.asset(
                     'assets/img/home/event_banner.svg',
-                    width: media.width * 0.93,
+                    width: media.width * 0.95,
                     fit: BoxFit.contain,
                   ), // Replace 'my_image.png' with your image asset path
                 ),
@@ -294,7 +290,7 @@ class _HomeViewState extends State<HomeView> {
                             fontWeight: FontWeight.w600,
                           )
                         ),
-                        TextButton(
+                        CustomTextButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/activity');
                           },

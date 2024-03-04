@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from activity.models import Event
-from account.serializers import UserSerializer
+from account.serializers import DetailUserSerializer
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,22 +11,27 @@ class EventSerializer(serializers.ModelSerializer):
             "name",
             "number_of_participants",
             "banner",
-            "days_remaining"
+            "days_remain"
         )
         extra_kwargs = {
             "id": {"read_only": True}
         }
     
 class DetailEventSerializer(serializers.ModelSerializer):
-    days_remaining = serializers.SerializerMethodField()
-    number_of_participants = serializers.SerializerMethodField
-    users = UserSerializer(many=True)
+    days_remain = serializers.SerializerMethodField()
+    number_of_participants = serializers.SerializerMethodField()
+    participants = serializers.SerializerMethodField()
 
-    def get_days_remaining(self, instance):
-        return instance.days_remaining()
+    def get_days_remain(self, instance):
+        return instance.days_remain()
     
     def get_number_of_participants(self, instance):
-        return self.users.count()
+        return instance.number_of_participants()
+    
+    def get_participants(self, instance):
+        request = self.context.get('request', None)
+        users = [instance.user for instance in instance.events.all()]
+        return DetailUserSerializer(users, many=True, context={'request': request}).data
 
     class Meta:
         model = Event

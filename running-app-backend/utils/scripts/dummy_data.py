@@ -7,7 +7,8 @@ from django.contrib.auth.hashers import make_password
 from account.models import User, \
                         Performance, \
                         Privacy, \
-                        Profile
+                        Profile, \
+                        Activity
 
 from activity.models import ActivityRecord, \
                             Club, \
@@ -20,7 +21,8 @@ from activity.models import ActivityRecord, \
 from product.models import Brand, \
                             Category, \
                             Product, \
-                            ProductImage
+                            ProductImage, \
+                            UserProduct
 
 
 def generate_phone_number():
@@ -39,10 +41,10 @@ def generate_phone_number():
 fake = Faker()
 def run():
     model_list = [
-        User, Performance, Privacy, Profile,
+        User, Performance, Privacy, Profile, Activity,
         ActivityRecord, Club, Group, UserGroup, 
         Event, UserParticipationClub, UserParticipationEvent,
-        Brand, Category, Product, ProductImage
+        Brand, Category, Product, ProductImage, UserProduct
     ]
 
     for model in model_list:
@@ -56,6 +58,8 @@ def run():
     MAX_NUMBER_USER_EVENT_GROUPS = 30
     MAX_NUMBER_USER_PARTICIPATION_CLUBS = 100
     MAX_NUMBER_USER_PARTICIPATION_EVENTS = 100
+    MAX_NUMBER_USER_PRODUCTS = 50
+    MAX_NUMBER_PRODUCT_IMAGES = 30
     # MAX_NUMBER_CATEGORIES = 20
     # MAX_NUMBER_BRANDS = 20
     # MAX_NUMBER_PRODUCTS = 50
@@ -64,6 +68,7 @@ def run():
     print("________________________________________________________________")
     print("USER:")
     user_list = []
+    user_activity_list = []
     for _ in range(MAX_NUMBER_USERS):
         data = {
             "email": "".join([fake.email().split("@")[0] for x in range(2)]) + "@gmail.com",
@@ -72,7 +77,9 @@ def run():
             "password": make_password("Duckkucd.123")
         }
         user = User.objects.create(**data)
+        user_activity = Activity.objects.create(user=user)
         user_list.append(user)
+        user_activity_list.append(user_activity)
         print(f"\tSuccesfully created User: {user}")
     
     print("________________________________________________________________")
@@ -128,7 +135,7 @@ def run():
             "distance": random.uniform(0, 10),
             "duration": timedelta(hours=random.randint(0, 3), minutes=random.randint(0, 59), seconds=random.randint(0, 59)),
             "completed_at": fake.date_time_this_year(),
-            "sport_type": random.choice(["RUNNING", "CYCLING", "SWIMMING"]),
+            "sport_type": random.choice(["RUNNING", "CYCLING", "SWIMMING", "JOGGING"]),
             "description": fake.text(max_nb_chars=250),
             "user": random.choice(user_list),
         }
@@ -214,7 +221,7 @@ def run():
     user_participation_club_list = []
     for i in range(MAX_NUMBER_USER_PARTICIPATION_CLUBS):
         data = {
-            "user": random.choice(user_list),
+            "user": random.choice(user_activity_list),
             "club": random.choice(club_list),
             "is_admin": random.choice([True, False]),
             "participated_at": fake.date_time_this_year(),
@@ -229,7 +236,7 @@ def run():
     for i in range(MAX_NUMBER_USER_PARTICIPATION_EVENTS):
         random_event = random.choice(event_list)
         data = {
-            "user": random.choice(user_list),
+            "user": random.choice(user_activity_list),
             "participated_at": fake.date_time_this_year(),
             "event": random_event
         }
@@ -301,7 +308,7 @@ def run():
     print("________________________________________________________________")
     print("PRODUCT IMAGE:")
     product_image_list = []
-    for i in range(MAX_NUMBER_USERS):
+    for i in range(MAX_NUMBER_PRODUCT_IMAGES):
         data = {
             "product": random.choice(product_list),  
             "image": "",
@@ -309,4 +316,16 @@ def run():
         product_image = ProductImage.objects.create(**data)
         product_image_list.append(product_image)
         print(f"\tSuccesfully created Product Image: {product_image}")
+    
+    print("________________________________________________________________")
+    print("USER:")
+    user_product_list = []
+    for i in range(MAX_NUMBER_USER_PRODUCTS):
+        data = {
+            "user": random.choice(user_activity_list),
+            "product": random.choice(product_list),
+        }
+        user_product = UserProduct.objects.get_or_create(**data)
+        user_product_list.append(user_product)
+        print(f"\tSuccesfully created User Product: {user_product}")
         

@@ -12,3 +12,5 @@ from .profile import ProfileSerializer, \
                     DetailProfileSerializer, \
                     CreateProfileSerializer, \
                     UpdateProfileSerializer 
+
+from .activity import ActivitySerializer

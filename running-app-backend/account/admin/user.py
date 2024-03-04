@@ -17,7 +17,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ("email", "username")
     list_filter = ("email", "is_verified_email", "username")
     inlines = [
-        UserParticipationClubInline, 
-        UserParticipationEventInline
+        # UserParticipationClubInline, 
+        # UserParticipationEventInline
     ]
     search_fields = ("email", "username")

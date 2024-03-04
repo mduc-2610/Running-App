@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:running_app/utils/constants.dart';
 
 class CustomMainButton extends StatelessWidget {
   final double horizontalPadding;
@@ -8,6 +9,9 @@ class CustomMainButton extends StatelessWidget {
   final Widget child;
   final Icon? icon;
   final Color? background;
+  final double? borderWidth;
+  final Color? borderWidthColor;
+  final ButtonStyle? style;
 
   const CustomMainButton({
     Key? key,
@@ -18,13 +22,16 @@ class CustomMainButton extends StatelessWidget {
     required this.child,
     this.icon,
     this.background,
+    this.borderWidth,
+    this.borderWidthColor,
+    this.style
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return TextButton(
       onPressed: onPressed,
-      style: ButtonStyle(
+      style: style ?? ButtonStyle(
         padding: MaterialStateProperty.all<EdgeInsets>(
           EdgeInsets.symmetric(
               horizontal: horizontalPadding,
@@ -34,9 +41,11 @@ class CustomMainButton extends StatelessWidget {
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
+            side: borderWidth != null && borderWidthColor != null ?
+            BorderSide(color: borderWidthColor!, width: borderWidth!) : BorderSide.none,
           ),
         ),
-        backgroundColor: MaterialStateProperty.all<Color?>(background),
+        backgroundColor: MaterialStateProperty.all<Color?>(background ?? TColor.PRIMARY),
       ),
       child: icon == null
           ? child

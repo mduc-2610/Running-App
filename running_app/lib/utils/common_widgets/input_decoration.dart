@@ -15,8 +15,11 @@ class CustomInputDecoration extends InputDecoration {
     Color focusedBorderColor = const Color(0xff42447c),
     Color errorBorderColor = Colors.red,
     TextStyle? errorStyle,
-
+    Icon? prefixIcon,
+    Icon? suffixIcon,
+    EdgeInsets? contentPadding,
   }) : super(
+
     hintText: hintText,
     hintStyle: hintStyle,
     alignLabelWithHint: alignLabelWithHint,
@@ -37,9 +40,11 @@ class CustomInputDecoration extends InputDecoration {
     ),
     floatingLabelBehavior: FloatingLabelBehavior.never,
     errorStyle: errorStyle,
-    contentPadding: const EdgeInsets.symmetric(
+    contentPadding: contentPadding ?? const EdgeInsets.symmetric(
       vertical: 20.0,
       horizontal: 20.0
     ),
+    prefixIcon: prefixIcon,
+    suffixIcon: suffixIcon,
   );
 }

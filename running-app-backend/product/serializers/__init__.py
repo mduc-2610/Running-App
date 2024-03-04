@@ -4,3 +4,4 @@ from .product import ProductSerializer, \
                     DetailProductSerializer, \
                     CreateUpdateProductSerialzier, \
                     ProductImageSerializer
+from .user_product import UserProductSerializer

@@ -8,11 +8,26 @@ class Menu extends StatelessWidget {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     List menuIcons = [
-      Icons.home_rounded,
-      Icons.people_alt_rounded,
-      Icons.run_circle_rounded,
-      Icons.emoji_events_rounded,
-      Icons.shopping_bag_rounded,
+      {
+        "icon": Icons.home_rounded,
+        "url": "/home"
+      },
+      {
+        "icon": Icons.people_alt_rounded,
+        "url": "/community"
+      },
+      {
+        "icon": Icons.run_circle_rounded,
+        "url": "/running"
+      },
+      {
+        "icon": Icons.emoji_events_rounded,
+        "url": "/rank"
+      },
+      {
+        "icon": Icons.shopping_bag_rounded,
+        "url": "/store"
+      },
     ];
     return
       Column(
@@ -38,8 +53,10 @@ class Menu extends StatelessWidget {
                   children: [
                     for(var icon in menuIcons)
                       IconButton(
-                        onPressed: () {},
-                        icon: Icon(icon),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, icon["url"]);
+                        },
+                        icon: Icon(icon["icon"]),
                         color: TColor.DESCRIPTION,
                         iconSize: 35,
                       )

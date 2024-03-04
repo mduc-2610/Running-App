@@ -33,7 +33,7 @@ class Club(models.Model):
         return 0
 
     def number_of_participants(self):
-        return 0
+        return self.clubs.count()
     
     def __str__(self):
         return self.name

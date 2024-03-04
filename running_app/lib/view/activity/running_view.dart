@@ -1,21 +1,20 @@
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class RunningView extends StatefulWidget {
+  const RunningView({Key? key}) : super(key: key);
   @override
-  _HomePageState createState() => _HomePageState();
+  _RunningViewState createState() => _RunningViewState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _RunningViewState extends State<RunningView> {
 
-  // in the below line, we are initializing our controller for google maps.  
-  final Completer<GoogleMapController> _controller = Completer();
+// in the below line, we are initializing our controller for google maps. 
+  Completer<GoogleMapController> _controller = Completer();
 
-  // in the below line, we are specifying our camera position 
-  static const CameraPosition _kGoogle = CameraPosition(
+// in the below line, we are specifying our camera position 
+  static final CameraPosition _kGoogle = const CameraPosition(
     target: LatLng(37.42796133580664, -122.885749655962),
     zoom: 14.4746,
   );
@@ -23,12 +22,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // in the below line, we are specifying our app bar. 
+      // in the below line, we are specifying our app bar.
         appBar: AppBar(
           // setting background color for app bar
-          backgroundColor: const Color(0xFF0F9D58),
+          backgroundColor: Color(0xFF0F9D58),
           // setting title for app bar.
-          title: const Text("Google Maps"),
+          title: Text("Google Maps"),
         ),
         body: Container(
           // in the below line, creating google maps.
