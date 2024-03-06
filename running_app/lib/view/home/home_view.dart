@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
@@ -39,12 +40,7 @@ class _HomeViewState extends State<HomeView> {
     return Scaffold(
       body: CustomStack(
         children: [
-          Image.asset(
-            "assets/img/home/background_2.png",
-            width: media.width,
-            height: media.height * 0.535,
-            fit: BoxFit.cover,
-          ),
+          BackgroundContainer(height: media.height * 0.52,),
           MainWrapper(
             child: Column(
               children: [

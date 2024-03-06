@@ -63,7 +63,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         for(int i = 0; i < 4; i++)...[
-                          Container(
+                          SizedBox(
                             width: media.width * 0.16,
                             height: media.height * 0.1,
                             child: CustomTextFormField(

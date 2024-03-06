@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -24,12 +25,7 @@ class _RankViewState extends State<RankView> {
     return Scaffold(
       body: CustomStack(
         children: [
-          Image.asset(
-            "assets/img/home/background_2.png",
-            width: media.width,
-            height: media.height * 0.6,
-            fit: BoxFit.cover,
-          ),
+          BackgroundContainer(),
           MainWrapper(
             child: Column(
               children: [
@@ -73,7 +69,7 @@ class _RankViewState extends State<RankView> {
                               ),
                               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)
+                                  borderRadius: BorderRadius.circular(10)
                                 )
                               )
                             ),
@@ -84,12 +80,14 @@ class _RankViewState extends State<RankView> {
                     SizedBox(height: media.height * 0.005,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           padding: EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 12
+                            vertical: 0,
+                            horizontal: 8
                           ),
+                          height: media.height * 0.051,
                           width: media.width * 0.78,
                           decoration: BoxDecoration(
                             color: TColor.SECONDARY_BACKGROUND,
@@ -123,14 +121,20 @@ class _RankViewState extends State<RankView> {
                           onPressed: () {},
                           child: Icon(Icons.filter_list_rounded, color: TColor.PRIMARY_TEXT,),
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color?>(
-                              TColor.SECONDARY_BACKGROUND
-                            ),
-                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
+                              padding: MaterialStateProperty.all<EdgeInsets>(
+                                  EdgeInsets.symmetric(
+                                      vertical: 11,
+                                      horizontal: 0
+                                  )
+                              ),
+                              backgroundColor: MaterialStateProperty.all<Color?>(
+                                TColor.SECONDARY_BACKGROUND
+                              ),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)
+                                )
                               )
-                            )
                           ),
                         )
                       ],

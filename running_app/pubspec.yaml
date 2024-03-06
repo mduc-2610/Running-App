@@ -71,6 +71,7 @@ flutter:
     - assets/img/util/
     - assets/img/address/
     - assets/img/wallet/
+    - assets/img/community/
 #     - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

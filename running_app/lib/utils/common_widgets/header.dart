@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/back_button.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
+import 'package:running_app/utils/common_widgets/text_button.dart';
 
 import '../constants.dart';
 
@@ -73,14 +74,19 @@ class Header extends StatelessWidget {
         ] else ...[
           Row(
             children: [
-              CustomIconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.menu),
-                color: TColor.PRIMARY_TEXT,
-              ),
-              if (username != null) SizedBox(width: media.width * 0.03),
-              Image.asset(
-                "assets/img/home/avatar.png",
+              // CustomIconButton(
+              //   onPressed: () {},
+              //   icon: const Icon(Icons.menu),
+              //   color: TColor.PRIMARY_TEXT,
+              // ),
+              // if (username != null) SizedBox(width: media.width * 0.03),
+              CustomTextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/user');
+                },
+                child: Image.asset(
+                  "assets/img/home/avatar.png",
+                ),
               ),
               SizedBox(width: media.width * 0.02),
               Column(
@@ -114,7 +120,7 @@ class Header extends StatelessWidget {
                 Row(
                   children: [
                     CustomIconButton(
-                      onPressed: () {},
+                      onPressed: button["onPressed"] ?? () {},
                       icon: Icon(button["icon"]),
                       color: button["color"] ?? TColor.PRIMARY_TEXT,
                       style: ButtonStyle(

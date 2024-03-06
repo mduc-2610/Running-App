@@ -37,19 +37,23 @@ class Menu extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.fromLTRB(0, 0, 0, media.height * 0.02),
-                width: media.width * 0.75,
+                // margin: EdgeInsets.fromLTRB(0, 0, 0, media.height * 0.02),
+                // width: media.width * 0.75,
+                width: media.width,
                 height: media.height * 0.08,
                 decoration: BoxDecoration(
                     color: const Color(0xff313d54),
-                    borderRadius: BorderRadius.circular(18.0),
-                    border: Border.all(
-                        color: const Color(0xff746cb3),
-                        width: 2
-                    )
+                    // borderRadius: BorderRadius.circular(18.0),
+                    // border: Border.all(
+                    //     color: const Color(0xff746cb3),
+                    //     width: 2
+                    // )
+                  border: Border(
+                    top: BorderSide(width: 1, color: Color(0xff746cb3))
+                  )
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     for(var icon in menuIcons)
                       IconButton(

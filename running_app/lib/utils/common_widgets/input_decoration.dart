@@ -18,6 +18,7 @@ class CustomInputDecoration extends InputDecoration {
     Icon? prefixIcon,
     Icon? suffixIcon,
     EdgeInsets? contentPadding,
+    double borderSide = 2.0,
   }) : super(
 
     hintText: hintText,
@@ -27,15 +28,15 @@ class CustomInputDecoration extends InputDecoration {
     filled: true,
     fillColor: fillColor,
     enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: enabledBorderColor, width: 2.0),
+      borderSide: BorderSide(color: enabledBorderColor, width: borderSide),
       borderRadius: borderRadius,
     ),
     focusedBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: focusedBorderColor, width: 2.0),
+      borderSide: BorderSide(color: focusedBorderColor, width: borderSide),
       borderRadius: borderRadius,
     ),
     errorBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: errorBorderColor, width: 2.0),
+      borderSide: BorderSide(color: errorBorderColor, width: borderSide),
       borderRadius: borderRadius,
     ),
     floatingLabelBehavior: FloatingLabelBehavior.never,
