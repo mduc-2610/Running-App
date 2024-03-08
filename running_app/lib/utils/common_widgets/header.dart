@@ -67,7 +67,7 @@ class Header extends StatelessWidget {
             "$title",
             style: TextStyle(
               color: TColor.PRIMARY_TEXT,
-              fontSize: fontSize ?? FontSize.LARGE,
+              fontSize: fontSize ?? 22,
               fontWeight: FontWeight.w900,
             ),
           )],
@@ -123,6 +123,7 @@ class Header extends StatelessWidget {
                       onPressed: button["onPressed"] ?? () {},
                       icon: Icon(button["icon"]),
                       color: button["color"] ?? TColor.PRIMARY_TEXT,
+                      iconSize: 30,
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all<EdgeInsets>(
                           EdgeInsets.all(0),

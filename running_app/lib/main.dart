@@ -5,6 +5,7 @@ import 'package:running_app/utils/common_widgets/verify_code_form.dart';
 import 'package:running_app/view/activity/activity_view.dart';
 import 'package:running_app/view/activity/running_view.dart';
 import 'package:running_app/view/address/address_view.dart';
+import 'package:running_app/view/community/club_detail_view.dart';
 import 'package:running_app/view/community/club_list_view.dart';
 import 'package:running_app/view/community/community_view.dart';
 import 'package:running_app/view/home/home_view.dart';
@@ -37,7 +38,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/user',
+      initialRoute: '/running',
       routes: {
         '/': (context) => GetStartedView(),
         '/on_board': (context) => const OnBoardingView(),
@@ -54,10 +55,11 @@ class MyApp extends StatelessWidget {
         '/email_verification': (context) => const EmailVerification(),
         '/community': (context) => const CommunityView(),
         '/club_list': (context) => const ClubListView(),
+        '/club_detail': (context) => const ClubDetailView(),
         '/user': (context) => const UserView(),
         '/setting': (context) => const SettingView(),
         // '/verify': (context) => VerifyCodeForm(),
-        // '/running': (context) => const RunningView(),
+        '/running': (context) => const RunningView(),
       },
     );
   }

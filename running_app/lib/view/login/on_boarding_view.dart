@@ -134,11 +134,13 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                         onPressed: () {
                           Navigator.pushNamed(context, '/sign_in');
                         },
-                        child: const Text(
+                        child: Text(
                           'Sign in',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
+                            style: TextStyle(
+                              color: TColor.PRIMARY,
+                              fontSize: FontSize.NORMAL,
+                              fontWeight: FontWeight.w500,
+                            )
                         )
                       )
                     ],

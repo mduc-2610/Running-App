@@ -47,6 +47,15 @@ class _ClubViewState extends State<ClubView> {
               Row(
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.asset(
+                      "assets/img/community/running_club.jpg",
+                      width: 50,
+                      height: 50,
+                    ),
+                  ),
+                  SizedBox(width: media.width * 0.02,),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -163,7 +172,9 @@ class _ClubViewState extends State<ClubView> {
               Column(
                 children: [
                   CustomTextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/club_detail');
+                    },
                     child: Stack(
                       children: [
                         Container(

@@ -4,9 +4,11 @@ import 'package:running_app/utils/constants.dart';
 class BackgroundContainer extends StatelessWidget {
   final double? height;
   final double? width;
+  final double? borderRadius;
   const BackgroundContainer({
     this.height,
     this.width,
+    this.borderRadius,
     super.key
   });
 
@@ -20,8 +22,8 @@ class BackgroundContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: TColor.PRIMARY.withOpacity(0.6),
         borderRadius: BorderRadius.only(
-            bottomRight: Radius.circular(26),
-            bottomLeft: Radius.circular(26)
+            bottomRight: Radius.circular(borderRadius ?? 26),
+            bottomLeft: Radius.circular(borderRadius ?? 26)
         ),
         boxShadow: [
           BoxShadow(

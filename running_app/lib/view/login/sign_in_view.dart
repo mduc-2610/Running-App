@@ -117,11 +117,13 @@ class _SignInViewState extends State<SignInView> {
                         ),
                         TextButton(
                             onPressed: () {},
-                            child: const Text(
+                            child: Text(
                                 "Forgot password ?",
                                 style: TextStyle(
+                                  color: TColor.PRIMARY,
                                   fontSize: FontSize.NORMAL,
-                                ),
+                                  fontWeight: FontWeight.w500,
+                                )
                             )
                         )
                       ]
@@ -216,11 +218,13 @@ class _SignInViewState extends State<SignInView> {
                         onPressed: () {
                           Navigator.pushNamed(context, '/sign_up');
                         },
-                        child: const Text(
+                        child: Text(
                           'Sign Up',
-                          style: TextStyle(
-                            fontSize: FontSize.NORMAL,
-                          ),
+                            style: TextStyle(
+                              color: TColor.PRIMARY,
+                              fontSize: FontSize.NORMAL,
+                              fontWeight: FontWeight.w500,
+                            )
                         )
                     )
                   ],

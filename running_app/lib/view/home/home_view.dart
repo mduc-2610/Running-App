@@ -212,12 +212,26 @@ class _HomeViewState extends State<HomeView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    for(int i = 0; i < 2; i++)
+                    for(var x in [
+                      {
+                        "amount": "53.524",
+                        "iconSvg": "assets/img/home/step_icon.svg",
+                        "text": "Steps",
+                      },
+                      {
+                        "amount": "1000",
+                        "iconSvg": "assets/img/home/coin_icon.svg",
+                        "text": "Points",
+                      }
+                    ])
                       Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: media.height * 0.047,
-                          horizontal: media.width * 0.075,
-                        ),
+                        width: media.width * 0.46,
+                        height: media.height * 0.18,
+                        // padding: EdgeInsets.symmetric(
+                        //   vertical: media.height * 0.047,
+                        //   horizontal: media.width * 0.075,
+                        // ),
+
                         decoration: BoxDecoration(
                             color: const Color(0xff6b60bd),
                             borderRadius: BorderRadius.circular(18.0),
@@ -227,9 +241,11 @@ class _HomeViewState extends State<HomeView> {
                             )
                         ),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "53,524",
+                              x["amount"] as String,
                               style: TextStyle(
                                 color: TColor.PRIMARY_TEXT,
                                 fontWeight: FontWeight.w900,
@@ -237,16 +253,19 @@ class _HomeViewState extends State<HomeView> {
                               ),
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SvgPicture.asset(
-                                  "assets/img/home/step_icon_2.svg"
+                                    x["iconSvg"] as String,
+                                    width: 18,
+                                    height: 18,
                                 ),
                                 SizedBox(width: media.width * 0.01,),
                                 Text(
-                                  "Steps",
+                                  x["text"] as String,
                                   style: TextStyle(
                                     color: TColor.DESCRIPTION,
-                                    fontSize: FontSize.NORMAL,
+                                    fontSize: FontSize.LARGE,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 )

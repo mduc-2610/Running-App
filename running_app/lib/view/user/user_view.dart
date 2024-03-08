@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_svg/flutter_svg.dart/';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
+import 'package:running_app/utils/common_widgets/icon_box.dart';
+import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/stack.dart';
+import 'package:running_app/utils/common_widgets/stats_box.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
+import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
 class UserView extends StatefulWidget {
-  const UserView({super.key});
+  const UserView({Key? key}) : super(key: key);
 
   @override
   State<UserView> createState() => _UserViewState();
 }
 
 class _UserViewState extends State<UserView> {
+  bool _showTotalStatsLayout = true;
+
   @override
   Widget build(BuildContext context) {
-    var media = MediaQuery.sizeOf(context);
+    var media = MediaQuery.of(context).size;
     return Scaffold(
       body: CustomStack(
         children: [
@@ -38,7 +44,9 @@ class _UserViewState extends State<UserView> {
                     }
                   ],
                 ),
-                SizedBox(height: media.height * 0.02,),
+                SizedBox(
+                  height: media.height * 0.02,
+                ),
                 Row(
                   children: [
                     ClipRRect(
@@ -50,42 +58,64 @@ class _UserViewState extends State<UserView> {
                         fit: BoxFit.contain,
                       ),
                     ),
-                    SizedBox(width: media.width * 0.02,),
+                    SizedBox(
+                      width: media.width * 0.02,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Đặng Minh Đức",
                           style: TextStyle(
-                            color: TColor.PRIMARY_TEXT,
-                            fontSize: FontSize.LARGE,
-                            fontWeight: FontWeight.w900
-                          ),
+                              color: TColor.PRIMARY_TEXT,
+                              fontSize: FontSize.LARGE,
+                              fontWeight: FontWeight.w900),
                         ),
-                        SizedBox(height: media.height * 0.005,),
-                        Text(
-                          "Starter 7",
-                          style: TextStyle(
-                              color: TColor.DESCRIPTION,
-                              fontSize: FontSize.SMALL,
-                              fontWeight: FontWeight.w500
-                          ),
+                        SizedBox(
+                          height: media.height * 0.005,
                         ),
+                        Row(
+                          children: [
+                            Row(
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/img/home/coin_icon.svg",
+                                  width: 15,
+                                  height: 15,
+                                ),
+                                Text(
+                                  "1200 points",
+                                  style: TextStyle(
+                                      color: TColor.PRIMARY_TEXT,
+                                      fontSize: FontSize.NORMAL,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              " - Starter 7",
+                              style: TextStyle(
+                                  color: TColor.DESCRIPTION,
+                                  fontSize: FontSize.SMALL,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        )
                       ],
                     )
                   ],
                 ),
-                SizedBox(height: media.height * 0.01,),
+                SizedBox(
+                  height: media.height * 0.01,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: media.width * 0.7,
+                      width: media.width * 0.71,
                       height: media.height * 0.17,
-                      padding: EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 15
-                      ),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 12, horizontal: 15),
                       decoration: BoxDecoration(
                         color: TColor.SECONDARY_BACKGROUND,
                         borderRadius: BorderRadius.circular(12),
@@ -99,8 +129,7 @@ class _UserViewState extends State<UserView> {
                             style: TextStyle(
                                 color: TColor.PRIMARY_TEXT,
                                 fontSize: FontSize.LARGE,
-                                fontWeight: FontWeight.w900
-                            ),
+                                fontWeight: FontWeight.w900),
                           ),
                           Row(
                             children: [
@@ -109,10 +138,8 @@ class _UserViewState extends State<UserView> {
                                 style: TextStyle(
                                     color: TColor.DESCRIPTION,
                                     fontSize: FontSize.SMALL,
-                                    fontWeight: FontWeight.w500
-                                ),
+                                    fontWeight: FontWeight.w500),
                               ),
-
                             ],
                           ),
                           Row(
@@ -122,8 +149,7 @@ class _UserViewState extends State<UserView> {
                                 style: TextStyle(
                                     color: TColor.DESCRIPTION,
                                     fontSize: FontSize.SMALL,
-                                    fontWeight: FontWeight.w500
-                                ),
+                                    fontWeight: FontWeight.w500),
                               ),
                             ],
                           )
@@ -131,34 +157,37 @@ class _UserViewState extends State<UserView> {
                       ),
                     ),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        for(var x in [
+                        for (var x in [
                           {
                             "icon": Icons.local_activity_outlined,
                             "color": Color(0xff2c50f0),
-                            "text": "Activities"
+                            "text": "Activities",
+                            "url": "/activity",
                           },
                           {
                             "icon": Icons.people_outline,
                             "color": Color(0xfff3b242),
-                            "text": "Followers"
+                            "text": "Followers",
+                            "url": "/followers",
                           }
-                        ])...[
+                        ]) ...[
                           CustomTextButton(
                             style: ButtonStyle(
-                              padding: MaterialStateProperty.all<EdgeInsets>(
-                                EdgeInsets.all(8)
-                              ),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                TColor.SECONDARY_BACKGROUND
-                              ),
-                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)
-                                )
-                              )
-                            ),
-                            onPressed: () {},
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                    EdgeInsets.all(8)),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        TColor.SECONDARY_BACKGROUND),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12)))),
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(context, x["url"] as String);
+                            },
                             child: Column(
                               children: [
                                 IconBox(
@@ -167,153 +196,74 @@ class _UserViewState extends State<UserView> {
                                   iconBackgroundColor: x["color"] as Color,
                                 ),
                                 Text(
-                                  "Activities",
+                                  x["text"] as String,
                                   style: TextStyle(
                                       color: TColor.DESCRIPTION,
-                                      fontSize: FontSize.NORMAL,
-                                      fontWeight: FontWeight.w500
-                                  ),
+                                      fontSize: FontSize.SMALL,
+                                      fontWeight: FontWeight.w500),
                                 )
                               ],
                             ),
                           ),
-                          if(x["text"] == "Activities") SizedBox(height: media.height * 0.01,)
+                          if (x["text"] == "Activities")
+                            SizedBox(
+                              height: media.height * 0.01,
+                            )
                         ],
                       ],
                     )
                   ],
                 ),
-                SizedBox(height: media.height * 0.05,),
-                // Best performance
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        for(var x in ["Total stats", "Achievements"])
-                          SizedBox(
-                            width: media.width * 0.46,
-                            child: CustomTextButton(
-                              onPressed: () {},
-                              child: Text(
-                                  x,
-                                  style: TextStyle(
-                                    color: TColor.PRIMARY_TEXT,
-                                    fontSize: FontSize.NORMAL,
-                                    fontWeight: FontWeight.w600,
-                                  )
-                              ),
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all<EdgeInsets>(
-                                      EdgeInsets.symmetric(
-                                          vertical: 5,
-                                          horizontal: media.width * 0.07
-                                      )
-                                  ),
-                                  backgroundColor: MaterialStateProperty.all<Color?>(
-                                      x == "Total stats" ? TColor.PRIMARY : null
-                                  ),
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10)
-                                      )
-                                  )
-                              ),
-                            ),
-                          )
-                      ],
-                    ),
-                    SizedBox(height: media.height * 0.015,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          children: [
-                            CustomBoxLayout(
-                              icon: Icons.social_distance,
-                              iconColor: Color(0xff000000),
-                              iconBackgroundColor: Color(0xffffffff),
-                              backgroundColor: Color(0xff232b35),
-                              firstText: "0",
-                              secondText: "Total Distance",
-                              thirdText: " (km)",
-                              firstTextColor: Color(0xffffffff),
-                              secondTextColor: Color(0xffcdcdcd),
-                              layout: 1,
-                            ),
-                            SizedBox(height: media.height * 0.01,),
-                            CustomBoxLayout(
-                              icon: Icons.speed_rounded,
-                              iconColor: Color(0xffffffff),
-                              iconBackgroundColor: Color(0xff6c6cf2),
-                              backgroundColor: Color(0xffe1e3fd),
-                              firstText: "0",
-                              secondText: "Avg. Pace",
-                              thirdText: " (min/km)",
-                              firstTextColor: Color(0xff000000),
-                              secondTextColor: Color(0xff344152),
-                              layout: 2,
-                            ),
-                            SizedBox(height: media.height * 0.01,),
-                            CustomBoxLayout(
-                              icon: Icons.monitor_heart_outlined,
-                              iconColor: Color(0xffffffff),
-                              iconBackgroundColor: Color(0xfff3af9b),
-                              backgroundColor: Color(0xfffcefeb),
-                              firstText: "0",
-                              secondText: "Avg. Heartbeat",
-                              thirdText: " (bpm)",
-                              firstTextColor: Color(0xff000000),
-                              secondTextColor: Color(0xff344152),
-                              layout: 2,
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            CustomBoxLayout(
-                              icon: Icons.calendar_today_rounded,
-                              iconColor: Color(0xffffffff),
-                              iconBackgroundColor: Color(0xfff5c343),
-                              backgroundColor: Color(0xfffdf3d3),
-                              firstText: "00",
-                              secondText: "Active Days",
-                              firstTextColor: Color(0xff000000),
-                              secondTextColor: Color(0xff344152),
-                              layout: 2,
-                            ),
-                            SizedBox(height: media.height * 0.01,),
-                            CustomBoxLayout(
-                              icon: Icons.access_time_rounded,
-                              iconColor: Color(0xffffffff),
-                              iconBackgroundColor: Color(0xff232b35),
-                              backgroundColor: Color(0xfff4f6f8),
-                              firstText: "0",
-                              secondText: "Total Time",
-                              firstTextColor: Color(0xff000000),
-                              secondTextColor: Color(0xff344152),
-                              layout: 1,
-                            ),
-                            SizedBox(height: media.height * 0.01,),
-                            CustomBoxLayout(
-                              icon: Icons.directions_run_rounded,
-                              iconColor: Color(0xffffffff),
-                              iconBackgroundColor: Color(0xff316ff6),
-                              backgroundColor: Color(0xff6098f8),
-                              firstText: "0",
-                              secondText: "Avg. Cadence",
-                              thirdText: " (spm)",
-                              firstTextColor: Color(0xffffffff),
-                              secondTextColor: Color(0xffffffff),
-                              layout: 2,
-                            ),
-                          ],
+                SizedBox(
+                  height: media.height * 0.05,
+                ),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      for (var x in ["Total stats", "Backpack"])
+                        SizedBox(
+                          width: media.width * 0.46,
+                          child: CustomTextButton(
+                            onPressed: () {
+                              setState(() {
+                                _showTotalStatsLayout = x == "Total stats";
+                              });
+                            },
+                            child: Text(x,
+                                style: TextStyle(
+                                  color: TColor.PRIMARY_TEXT,
+                                  fontSize: FontSize.NORMAL,
+                                  fontWeight: FontWeight.w600,
+                                )),
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                    EdgeInsets.symmetric(
+                                        vertical: 5,
+                                        horizontal: media.width * 0.07)),
+                                backgroundColor: MaterialStateProperty.all<
+                                        Color?>(
+                                    // x == "Total stats" ? TColor.PRIMARY : null
+
+                                    x == "Backpack" && _showTotalStatsLayout == false
+                                    || x == "Total stats" && _showTotalStatsLayout == true
+                                    ? TColor.PRIMARY : null),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)))),
+                          ),
                         )
-                      ],
-                    ),
-                  ],
-                )
+                    ],
+                  ),
+
+                  SizedBox(
+                    height: media.height * 0.01,
+                  ),
+                  // Best performance
+                  _showTotalStatsLayout ? StatsLayout() : BackpackLayout(),
+                ])
               ],
             ),
           ),
@@ -323,150 +273,266 @@ class _UserViewState extends State<UserView> {
   }
 }
 
-class IconBox extends StatelessWidget {
-  final Color iconColor;
-  final Color iconBackgroundColor;
-  final IconData icon;
-  final double? borderRadius;
-
-  const IconBox({
-    required this.iconColor,
-    required this.iconBackgroundColor,
-    required this.icon,
-    this.borderRadius,
-    super.key
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: 5,
-        horizontal: 5,
-      ),
-      decoration: BoxDecoration(
-        color: iconBackgroundColor,
-        borderRadius: BorderRadius.circular(borderRadius ?? 10),
-      ),
-      child: Icon(
-        icon,
-        color: iconColor,
-      ),
-    );
-  }
-}
-
-
-class CustomBoxLayout extends IconBox {
-  final int layout;
-  final String firstText;
-  final String secondText;
-  final String? thirdText;
-  final Color firstTextColor;
-  final Color secondTextColor;
-  final Color backgroundColor;
-
-  const CustomBoxLayout({
-    required Color iconColor,
-    required Color iconBackgroundColor,
-    required IconData icon,
-    double? borderRadius,
-    required this.layout,
-    required this.firstText,
-    required this.secondText,
-    required this.firstTextColor,
-    this.thirdText,
-    required this.secondTextColor,
-    required this.backgroundColor,
-    super.key
-  }) : super(
-    iconColor: iconColor,
-    icon: icon,
-    iconBackgroundColor: iconBackgroundColor,
-    borderRadius: borderRadius
-  );
+class StatsLayout extends StatelessWidget {
+  const StatsLayout({super.key});
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    return Container(
-        padding: EdgeInsets.symmetric(
-//         // vertical: 20,
-        horizontal: 10,
-      ),
-      height: media.height * (layout == 1 ? 0.20 : 0.12),
-      width: media.width * 0.46,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if(layout == 1)...[
-            IconBox(
-              iconColor: iconColor,
-              iconBackgroundColor: iconBackgroundColor,
-              icon: icon,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          children: [
+            StatsBoxLayout(
+              icon: Icons.social_distance,
+              iconColor: Color(0xff000000),
+              iconBackgroundColor: Color(0xffffffff),
+              backgroundColor: Color(0xff232b35),
+              firstText: "0",
+              secondText: "Total Distance",
+              thirdText: " (km)",
+              firstTextColor: Color(0xffffffff),
+              secondTextColor: Color(0xffcdcdcd),
+              layout: 1,
             ),
-            SizedBox(height: media.height * 0.01,),
-            Text(
-                firstText,
-                style: TextStyle(
-                    color: firstTextColor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800
-                )
+            SizedBox(
+              height: media.height * 0.01,
             ),
-            SizedBox(height: media.height * 0.01,),
-          ]
-          else...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                    firstText,
-                    style: TextStyle(
-                        color: firstTextColor,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w800
-                    )
-                ),
-                IconBox(
-                  iconColor: iconColor,
-                  iconBackgroundColor: iconBackgroundColor,
-                  icon: icon,
-                ),
-              ],
+            StatsBoxLayout(
+              icon: Icons.speed_rounded,
+              iconColor: Color(0xffffffff),
+              iconBackgroundColor: Color(0xff6c6cf2),
+              backgroundColor: Color(0xffe1e3fd),
+              firstText: "0",
+              secondText: "Avg. Pace",
+              thirdText: " (min/km)",
+              firstTextColor: Color(0xff000000),
+              secondTextColor: Color(0xff344152),
+              layout: 2,
             ),
-            SizedBox(height: media.height * 0.01,),
+            SizedBox(
+              height: media.height * 0.01,
+            ),
+            StatsBoxLayout(
+              icon: Icons.monitor_heart_outlined,
+              iconColor: Color(0xffffffff),
+              iconBackgroundColor: Color(0xfff3af9b),
+              backgroundColor: Color(0xfffcefeb),
+              firstText: "0",
+              secondText: "Avg. Heartbeat",
+              thirdText: " (bpm)",
+              firstTextColor: Color(0xff000000),
+              secondTextColor: Color(0xff344152),
+              layout: 2,
+            ),
           ],
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                secondText,
-                style: TextStyle(
-                    color: secondTextColor,
-                    fontSize: FontSize.SMALL,
-                    fontWeight: FontWeight.w500
-                ),
-              ),
-              Text(
-                thirdText ?? "",
-                style: TextStyle(
-                    color: secondTextColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500
-                ),
-              ),
-            ],
-          )
-        ],
-      )
+        ),
+        Column(
+          children: [
+            StatsBoxLayout(
+              icon: Icons.calendar_today_rounded,
+              iconColor: Color(0xffffffff),
+              iconBackgroundColor: Color(0xfff5c343),
+              backgroundColor: Color(0xfffdf3d3),
+              firstText: "00",
+              secondText: "Active Days",
+              firstTextColor: Color(0xff000000),
+              secondTextColor: Color(0xff344152),
+              layout: 2,
+            ),
+            SizedBox(
+              height: media.height * 0.01,
+            ),
+            StatsBoxLayout(
+              icon: Icons.access_time_rounded,
+              iconColor: Color(0xffffffff),
+              iconBackgroundColor: Color(0xff232b35),
+              backgroundColor: Color(0xfff4f6f8),
+              firstText: "0",
+              secondText: "Total Time",
+              firstTextColor: Color(0xff000000),
+              secondTextColor: Color(0xff344152),
+              layout: 1,
+            ),
+            SizedBox(
+              height: media.height * 0.01,
+            ),
+            StatsBoxLayout(
+              icon: Icons.directions_run_rounded,
+              iconColor: Color(0xffffffff),
+              iconBackgroundColor: Color(0xff316ff6),
+              backgroundColor: Color(0xff6098f8),
+              firstText: "0",
+              secondText: "Avg. Cadence",
+              thirdText: " (spm)",
+              firstTextColor: Color(0xffffffff),
+              secondTextColor: Color(0xffffffff),
+              layout: 2,
+            ),
+          ],
+        )
+      ],
     );
   }
 }
 
+class BackpackLayout extends StatelessWidget {
+  const BackpackLayout({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    var media = MediaQuery.sizeOf(context);
+    return Column(
+      children: [
+        // Search bar
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              width: media.width * 0.78,
+              height: media.height * 0.05,
+              decoration: BoxDecoration(
+                  color: TColor.SECONDARY_BACKGROUND,
+                  borderRadius: BorderRadius.circular(10)),
+              child: CustomTextFormField(
+                decoration: CustomInputDecoration(
+                    hintText: "Search items",
+                    prefixIcon: Icon(Icons.search, color: TColor.DESCRIPTION),
+                    borderSide: 0),
+                keyboardType: TextInputType.text,
+              ),
+            ),
+            CustomTextButton(
+              onPressed: () {},
+              child: Icon(
+                Icons.filter_list_rounded,
+                color: TColor.PRIMARY_TEXT,
+              ),
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsets>(
+                    EdgeInsets.symmetric(vertical: 11, horizontal: 0)),
+                backgroundColor: MaterialStateProperty.all<Color?>(
+                    TColor.SECONDARY_BACKGROUND),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10))),
+                side: MaterialStateProperty.all(BorderSide(
+                  color: TColor.BORDER_COLOR, // Set border color here
+                  width: 1.0, // Set border width here
+                )),
+              ),
+            )
+          ],
+        ),
+        SizedBox(
+          height: media.height * 0.01,
+        ),
+
+        // Product
+        Container(
+          height: media.height * 0.25, // Set a specific height
+          child: GridView.count(
+              padding: EdgeInsets.all(0),
+              crossAxisCount: 2,
+              crossAxisSpacing: media.width * 0.03,
+              mainAxisSpacing: media.height * 0.025,
+              children: [
+                for (int i = 0; i < 2; i++)
+                  CustomTextButton(
+                    onPressed: () {},
+                    child: Container(
+                      padding: EdgeInsets.all(media.width * 0.025),
+                      // width: media.width * 0.45,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.0),
+                        color: TColor.SECONDARY_BACKGROUND,
+                        border: Border.all(
+                          color: Color(0xff495466),
+                          width: 2.0,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Stack(
+                            children: [
+                              Container(
+                                child: Image.asset(
+                                  "assets/img/store/product/air_force_1.png",
+                                  fit: BoxFit.cover,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(
+                                            media.width * 0.18, 5, 0, 0),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 5),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(15.0),
+                                          color: TColor.SECONDARY_BACKGROUND
+                                              .withOpacity(0.7),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            SvgPicture.asset(
+                                              "assets/img/home/coin_icon.svg",
+                                              width: 16,
+                                              height: 16,
+                                              fit: BoxFit.contain,
+                                            ),
+                                            Text(
+                                              "1200",
+                                              style: TextStyle(
+                                                color: TColor.PRIMARY_TEXT,
+                                                fontSize: FontSize.NORMAL,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          SizedBox(height: media.height * 0.01),
+                          Text(
+                            "Nike",
+                            style: TextStyle(
+                              color: TColor.DESCRIPTION,
+                              fontSize: FontSize.SMALL,
+                            ),
+                          ),
+                          // SizedBox(height: media.height * 0.005),
+                          Text(
+                            "Air Force 1 Low '07",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: TColor.PRIMARY_TEXT,
+                              fontSize: FontSize.SMALL,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+              ]),
+        ),
+      ],
+    );
+  }
+}

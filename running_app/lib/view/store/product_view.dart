@@ -27,6 +27,7 @@ class _ProductViewState extends State<ProductView> {
           MainWrapper(
             child: Column(
               children: [
+                // Header
                 Header(
                   title: "Product",
                   iconButtons: [
@@ -36,6 +37,8 @@ class _ProductViewState extends State<ProductView> {
                   ],
                 ),
                 SizedBox(height: media.height * 0.03,),
+
+                // Search bar
                 CustomTextFormField(
                   decoration: CustomInputDecoration(
                     hintText: "Search products",

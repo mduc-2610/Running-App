@@ -37,7 +37,14 @@ class ActivityView extends StatelessWidget {
           MainWrapper(
             child: Column(
               children: [
-                Header(title: "Activity"),
+                Header(
+                  title: "Activity",
+                  iconButtons: [
+                    {
+                      "icon": Icons.query_stats_rounded
+                    }
+                  ],
+                ),
                 SizedBox(height: media.height * 0.02,),
                 Container(
                   padding: EdgeInsets.symmetric(
