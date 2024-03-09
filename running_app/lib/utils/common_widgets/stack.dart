@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 
 class CustomStack extends StatelessWidget {
   final List<Widget>? children;
+  final double? backgroundHeight;
 
-  CustomStack({this.children});
+  const CustomStack({super.key, this.children, this.backgroundHeight});
 
   @override
   Widget build(BuildContext context) {
-    // Assuming you have media defined somewhere
-    final media = MediaQuery.of(context).size;
+    final media = MediaQuery.sizeOf(context);
 
     return Stack(
       children: [
         Image.asset(
           "assets/img/home/background_1.png",
           width: media.width,
-          height: media.height,
+          height: backgroundHeight ?? media.height,
           fit: BoxFit.cover,
         ),
         ...?children,

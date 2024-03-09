@@ -115,7 +115,7 @@ class _UserViewState extends State<UserView> {
                       width: media.width * 0.71,
                       height: media.height * 0.17,
                       padding:
-                          EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                          const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
                       decoration: BoxDecoration(
                         color: TColor.SECONDARY_BACKGROUND,
                         borderRadius: BorderRadius.circular(12),
@@ -162,13 +162,13 @@ class _UserViewState extends State<UserView> {
                         for (var x in [
                           {
                             "icon": Icons.local_activity_outlined,
-                            "color": Color(0xff2c50f0),
+                            "color": const Color(0xff2c50f0),
                             "text": "Activities",
                             "url": "/activity",
                           },
                           {
                             "icon": Icons.people_outline,
-                            "color": Color(0xfff3b242),
+                            "color": const Color(0xfff3b242),
                             "text": "Followers",
                             "url": "/followers",
                           }
@@ -176,7 +176,7 @@ class _UserViewState extends State<UserView> {
                           CustomTextButton(
                             style: ButtonStyle(
                                 padding: MaterialStateProperty.all<EdgeInsets>(
-                                    EdgeInsets.all(8)),
+                                    const EdgeInsets.all(8)),
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(
                                         TColor.SECONDARY_BACKGROUND),
@@ -230,12 +230,6 @@ class _UserViewState extends State<UserView> {
                                 _showTotalStatsLayout = x == "Total stats";
                               });
                             },
-                            child: Text(x,
-                                style: TextStyle(
-                                  color: TColor.PRIMARY_TEXT,
-                                  fontSize: FontSize.NORMAL,
-                                  fontWeight: FontWeight.w600,
-                                )),
                             style: ButtonStyle(
                                 padding: MaterialStateProperty.all<EdgeInsets>(
                                     EdgeInsets.symmetric(
@@ -253,6 +247,12 @@ class _UserViewState extends State<UserView> {
                                     RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10)))),
+                            child: Text(x,
+                                style: TextStyle(
+                                  color: TColor.PRIMARY_TEXT,
+                                  fontSize: FontSize.NORMAL,
+                                  fontWeight: FontWeight.w600,
+                                )),
                           ),
                         )
                     ],
@@ -262,7 +262,7 @@ class _UserViewState extends State<UserView> {
                     height: media.height * 0.01,
                   ),
                   // Best performance
-                  _showTotalStatsLayout ? StatsLayout() : BackpackLayout(),
+                  _showTotalStatsLayout ? const StatsLayout() : const BackpackLayout(),
                 ])
               ],
             ),
@@ -284,7 +284,7 @@ class StatsLayout extends StatelessWidget {
       children: [
         Column(
           children: [
-            StatsBoxLayout(
+            const StatsBoxLayout(
               icon: Icons.social_distance,
               iconColor: Color(0xff000000),
               iconBackgroundColor: Color(0xffffffff),
@@ -299,7 +299,7 @@ class StatsLayout extends StatelessWidget {
             SizedBox(
               height: media.height * 0.01,
             ),
-            StatsBoxLayout(
+            const StatsBoxLayout(
               icon: Icons.speed_rounded,
               iconColor: Color(0xffffffff),
               iconBackgroundColor: Color(0xff6c6cf2),
@@ -314,7 +314,7 @@ class StatsLayout extends StatelessWidget {
             SizedBox(
               height: media.height * 0.01,
             ),
-            StatsBoxLayout(
+            const StatsBoxLayout(
               icon: Icons.monitor_heart_outlined,
               iconColor: Color(0xffffffff),
               iconBackgroundColor: Color(0xfff3af9b),
@@ -330,7 +330,7 @@ class StatsLayout extends StatelessWidget {
         ),
         Column(
           children: [
-            StatsBoxLayout(
+            const StatsBoxLayout(
               icon: Icons.calendar_today_rounded,
               iconColor: Color(0xffffffff),
               iconBackgroundColor: Color(0xfff5c343),
@@ -344,7 +344,7 @@ class StatsLayout extends StatelessWidget {
             SizedBox(
               height: media.height * 0.01,
             ),
-            StatsBoxLayout(
+            const StatsBoxLayout(
               icon: Icons.access_time_rounded,
               iconColor: Color(0xffffffff),
               iconBackgroundColor: Color(0xff232b35),
@@ -358,7 +358,7 @@ class StatsLayout extends StatelessWidget {
             SizedBox(
               height: media.height * 0.01,
             ),
-            StatsBoxLayout(
+            const StatsBoxLayout(
               icon: Icons.directions_run_rounded,
               iconColor: Color(0xffffffff),
               iconBackgroundColor: Color(0xff316ff6),
@@ -405,13 +405,9 @@ class BackpackLayout extends StatelessWidget {
             ),
             CustomTextButton(
               onPressed: () {},
-              child: Icon(
-                Icons.filter_list_rounded,
-                color: TColor.PRIMARY_TEXT,
-              ),
               style: ButtonStyle(
                 padding: MaterialStateProperty.all<EdgeInsets>(
-                    EdgeInsets.symmetric(vertical: 11, horizontal: 0)),
+                    const EdgeInsets.symmetric(vertical: 11, horizontal: 0)),
                 backgroundColor: MaterialStateProperty.all<Color?>(
                     TColor.SECONDARY_BACKGROUND),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -422,6 +418,10 @@ class BackpackLayout extends StatelessWidget {
                   width: 1.0, // Set border width here
                 )),
               ),
+              child: Icon(
+                Icons.filter_list_rounded,
+                color: TColor.PRIMARY_TEXT,
+              ),
             )
           ],
         ),
@@ -430,10 +430,10 @@ class BackpackLayout extends StatelessWidget {
         ),
 
         // Product
-        Container(
+        SizedBox(
           height: media.height * 0.25, // Set a specific height
           child: GridView.count(
-              padding: EdgeInsets.all(0),
+              padding: const EdgeInsets.all(0),
               crossAxisCount: 2,
               crossAxisSpacing: media.width * 0.03,
               mainAxisSpacing: media.height * 0.025,
@@ -448,7 +448,7 @@ class BackpackLayout extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12.0),
                         color: TColor.SECONDARY_BACKGROUND,
                         border: Border.all(
-                          color: Color(0xff495466),
+                          color: const Color(0xff495466),
                           width: 2.0,
                         ),
                       ),
@@ -458,12 +458,12 @@ class BackpackLayout extends StatelessWidget {
                           Stack(
                             children: [
                               Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
                                 child: Image.asset(
                                   "assets/img/store/product/air_force_1.png",
                                   fit: BoxFit.cover,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12.0),
                                 ),
                               ),
                               Row(
@@ -475,7 +475,7 @@ class BackpackLayout extends StatelessWidget {
                                       Container(
                                         margin: EdgeInsets.fromLTRB(
                                             media.width * 0.18, 5, 0, 0),
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                             horizontal: 10, vertical: 5),
                                         decoration: BoxDecoration(
                                           borderRadius:

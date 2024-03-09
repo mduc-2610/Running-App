@@ -41,8 +41,8 @@ class Menu extends StatelessWidget {
                 // width: media.width * 0.75,
                 width: media.width,
                 height: media.height * 0.08,
-                decoration: BoxDecoration(
-                    color: const Color(0xff313d54),
+                decoration: const BoxDecoration(
+                    color: Color(0xff313d54),
                     // borderRadius: BorderRadius.circular(18.0),
                     // border: Border.all(
                     //     color: const Color(0xff746cb3),

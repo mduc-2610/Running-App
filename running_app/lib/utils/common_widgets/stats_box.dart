@@ -36,7 +36,7 @@ class StatsBoxLayout extends IconBox {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Container(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
 //         // vertical: 20,
           horizontal: 10,
         ),

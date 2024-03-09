@@ -37,7 +37,7 @@ class ActivityView extends StatelessWidget {
           MainWrapper(
             child: Column(
               children: [
-                Header(
+                const Header(
                   title: "Activity",
                   iconButtons: [
                     {

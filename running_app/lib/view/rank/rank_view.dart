@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,7 +9,6 @@ import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/stack.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/constants.dart';
 
 class RankView extends StatefulWidget {
@@ -24,20 +22,20 @@ class _RankViewState extends State<RankView> {
   List timeList = ["Day", "Week", "Year"];
   List topList = [
     {
-      "borderColor": Color(0xffc0c0c0),
-      "textColor": Color(0xff000000),
+      "borderColor": const Color(0xffc0c0c0),
+      "textColor": const Color(0xff000000),
       "top": "2",
       "trophy": "assets/img/rank/silver_trophy.svg",
     },
     {
-      "borderColor": Color(0xfff7cf65),
-      "textColor": Color(0xff000000),
+      "borderColor": const Color(0xfff7cf65),
+      "textColor": const Color(0xff000000),
       "top": "1",
       "trophy": "assets/img/rank/gold_trophy.svg",
     },
     {
-      "borderColor": Color(0xffb38853),
-      "textColor": Color(0xff000000),
+      "borderColor": const Color(0xffb38853),
+      "textColor": const Color(0xff000000),
       "top": "3",
       "trophy": "assets/img/rank/bronze_trophy.svg",
     }
@@ -48,11 +46,11 @@ class _RankViewState extends State<RankView> {
     return Scaffold(
         body: CustomStack(
       children: [
-        BackgroundContainer(borderRadius: 0,),
+        const BackgroundContainer(borderRadius: 0,),
         MainWrapper(
             child: Column(
           children: [
-            Header(title: "Rank", backButton: false, noIcon: true),
+            const Header(title: "Rank", backButton: false, noIcon: true),
             SizedBox(
               height: media.height * 0.02,
             ),
@@ -60,7 +58,7 @@ class _RankViewState extends State<RankView> {
             Column(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 3, horizontal: 8),
+                  padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: TColor.SECONDARY_BACKGROUND,
@@ -71,12 +69,6 @@ class _RankViewState extends State<RankView> {
                       for (var time in timeList)
                         CustomTextButton(
                           onPressed: () {},
-                          child: Text(time,
-                              style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.NORMAL,
-                                fontWeight: FontWeight.w600,
-                              )),
                           style: ButtonStyle(
                               padding: MaterialStateProperty.all<EdgeInsets>(
                                   EdgeInsets.symmetric(
@@ -90,6 +82,12 @@ class _RankViewState extends State<RankView> {
                                   RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(10)))),
+                          child: Text(time,
+                              style: TextStyle(
+                                color: TColor.PRIMARY_TEXT,
+                                fontSize: FontSize.NORMAL,
+                                fontWeight: FontWeight.w600,
+                              )),
                         )
                     ],
                   ),
@@ -103,7 +101,7 @@ class _RankViewState extends State<RankView> {
                   children: [
                     Container(
                         padding:
-                            EdgeInsets.symmetric(vertical: 0, horizontal: 8),
+                            const EdgeInsets.symmetric(vertical: 0, horizontal: 8),
                         height: media.height * 0.051,
                         width: media.width * 0.78,
                         decoration: BoxDecoration(
@@ -114,7 +112,7 @@ class _RankViewState extends State<RankView> {
                           children: [
                             CustomIconButton(
                               onPressed: () {},
-                              icon: Icon(Icons.arrow_back_ios_rounded),
+                              icon: const Icon(Icons.arrow_back_ios_rounded),
                               color: TColor.PRIMARY_TEXT,
                             ),
                             Text(
@@ -126,20 +124,16 @@ class _RankViewState extends State<RankView> {
                             ),
                             CustomIconButton(
                               onPressed: () {},
-                              icon: Icon(Icons.arrow_forward_ios_rounded),
+                              icon: const Icon(Icons.arrow_forward_ios_rounded),
                               color: TColor.PRIMARY_TEXT,
                             )
                           ],
                         )),
                     CustomTextButton(
                       onPressed: () {},
-                      child: Icon(
-                        Icons.filter_list_rounded,
-                        color: TColor.PRIMARY_TEXT,
-                      ),
                       style: ButtonStyle(
                           padding: MaterialStateProperty.all<EdgeInsets>(
-                              EdgeInsets.symmetric(
+                              const EdgeInsets.symmetric(
                                   vertical: 11, horizontal: 0)),
                           backgroundColor: MaterialStateProperty.all<Color?>(
                               TColor.SECONDARY_BACKGROUND),
@@ -148,6 +142,10 @@ class _RankViewState extends State<RankView> {
                                   RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(10)))),
+                      child: Icon(
+                        Icons.filter_list_rounded,
+                        color: TColor.PRIMARY_TEXT,
+                      ),
                     )
                   ],
                 )
@@ -162,7 +160,7 @@ class _RankViewState extends State<RankView> {
                 children: [
                   for(int i = 0; i < 3; i++)...[
                     Container(
-                      margin: (i == 0 || i == 2) ? EdgeInsets.only(top: 20) : EdgeInsets.all(0),
+                      margin: (i == 0 || i == 2) ? const EdgeInsets.only(top: 20) : const EdgeInsets.all(0),
                       width: media.width * 0.25,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -171,7 +169,7 @@ class _RankViewState extends State<RankView> {
                             alignment: Alignment.center,
                             children: [
                               Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   vertical: 8,
                                   horizontal: 8
                                 ),
@@ -202,7 +200,7 @@ class _RankViewState extends State<RankView> {
                                 child: (i == 4) ? Container(
                                   width: 30,
                                   height: 30,
-                                  padding: EdgeInsets.all(5),
+                                  padding: const EdgeInsets.all(5),
                                   decoration: BoxDecoration(
                                     color: topList[i]["borderColor"],
                                     borderRadius: BorderRadius.circular(50),
@@ -241,7 +239,7 @@ class _RankViewState extends State<RankView> {
                               )
                             ],
                           ),
-                          SizedBox(height: 5,),
+                          const SizedBox(height: 5,),
                           Text(
                             "Minh Duc",
                             style: TextStyle(
@@ -262,9 +260,9 @@ class _RankViewState extends State<RankView> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          SizedBox(height: 5,),
+                          const SizedBox(height: 5,),
                           Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
                               color: TColor.SECONDARY_BACKGROUND,
@@ -288,7 +286,7 @@ class _RankViewState extends State<RankView> {
             )
           ],
         )),
-        Menu(),
+        const Menu(),
         MainWrapper(
           leftMargin: 0,
           rightMargin: 0,

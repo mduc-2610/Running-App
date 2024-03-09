@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/email_verification.dart';
 import 'package:running_app/utils/common_widgets/notification_box.dart';
-import 'package:running_app/utils/common_widgets/verify_code_form.dart';
 import 'package:running_app/view/activity/activity_view.dart';
 import 'package:running_app/view/activity/running_view.dart';
 import 'package:running_app/view/address/address_view.dart';
 import 'package:running_app/view/community/club_detail_view.dart';
 import 'package:running_app/view/community/club_list_view.dart';
 import 'package:running_app/view/community/community_view.dart';
+import 'package:running_app/view/community/event_detail_view.dart';
 import 'package:running_app/view/home/home_view.dart';
 import 'package:running_app/view/login/get_started_view.dart';
 import 'package:running_app/view/login/on_boarding_view.dart';
@@ -16,6 +16,7 @@ import 'package:running_app/view/login/sign_up_view.dart';
 import 'package:running_app/view/rank/rank_view.dart';
 import 'package:running_app/view/store/product_view.dart';
 import 'package:running_app/view/store/store_view.dart';
+import 'package:running_app/view/user/account_information_view.dart';
 import 'package:running_app/view/user/setting_view.dart';
 import 'package:running_app/view/user/user_view.dart';
 import 'package:running_app/view/wallet/wallet.dart';
@@ -38,9 +39,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/running',
+      initialRoute: '/account_information',
       routes: {
-        '/': (context) => GetStartedView(),
+        '/': (context) => const GetStartedView(),
         '/on_board': (context) => const OnBoardingView(),
         '/sign_in': (context) => const SignInView(),
         '/sign_up': (context) => const SignUpView(),
@@ -58,8 +59,10 @@ class MyApp extends StatelessWidget {
         '/club_detail': (context) => const ClubDetailView(),
         '/user': (context) => const UserView(),
         '/setting': (context) => const SettingView(),
+        '/event_detail': (context) => const EventDetailView(),
+        '/account_information': (context) => const AccountInformationView(),
         // '/verify': (context) => VerifyCodeForm(),
-        '/running': (context) => const RunningView(),
+        // '/running': (context) => const RunningView(),
       },
     );
   }

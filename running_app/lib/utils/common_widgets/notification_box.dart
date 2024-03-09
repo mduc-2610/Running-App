@@ -44,7 +44,7 @@ class _NotificationBoxState extends State<NotificationBox> {
               vertical: 0,
               horizontal: media.width * 0.05,
             ),
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               vertical: 33,
               horizontal: 15,
             ),

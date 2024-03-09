@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/seperate_bar.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
@@ -41,6 +40,22 @@ class _ClubViewState extends State<ClubView> {
           onPressed: () {
             Navigator.pushNamed(context, '/club_list');
           },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color?>(
+              TColor.SECONDARY_BACKGROUND
+            ),
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.symmetric(
+                vertical: 20,
+                horizontal: 20
+              )
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)
+              )
+            )
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -86,22 +101,6 @@ class _ClubViewState extends State<ClubView> {
               ),
             ],
           ),
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color?>(
-              TColor.SECONDARY_BACKGROUND
-            ),
-            padding: MaterialStateProperty.all<EdgeInsets>(
-              EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: 20
-              )
-            ),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12)
-              )
-            )
-          ),
         ),
         SizedBox(height: media.height * 0.01),
 
@@ -127,10 +126,9 @@ class _ClubViewState extends State<ClubView> {
             ),
             CustomTextButton(
               onPressed: () {},
-              child: Icon(Icons.filter_list_rounded, color: TColor.PRIMARY_TEXT,),
               style: ButtonStyle(
                 padding: MaterialStateProperty.all<EdgeInsets>(
-                    EdgeInsets.symmetric(
+                    const EdgeInsets.symmetric(
                         vertical: 11,
                         horizontal: 0
                     )
@@ -148,6 +146,7 @@ class _ClubViewState extends State<ClubView> {
                   width: 1.0, // Set border width here
                 )),
               ),
+              child: Icon(Icons.filter_list_rounded, color: TColor.PRIMARY_TEXT,),
             )
           ],
         ),
@@ -178,7 +177,7 @@ class _ClubViewState extends State<ClubView> {
                     child: Stack(
                       children: [
                         Container(
-                          margin: EdgeInsets.all(0),
+                          margin: const EdgeInsets.all(0),
                           width: media.width,
                           height: media.height * 0.15,
                           decoration: BoxDecoration(
@@ -187,13 +186,13 @@ class _ClubViewState extends State<ClubView> {
                           ),
                         ),
                         Container(
-                          margin: EdgeInsets.all(0),
-                          padding: EdgeInsets.symmetric(
+                          margin: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 15),
                           height: media.height * 0.15,
                           decoration: BoxDecoration(
                               color: TColor.SECONDARY_BACKGROUND,
-                              borderRadius: BorderRadius.only(
+                              borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(12),
                                 topRight: Radius.circular(90),
                                 bottomRight: Radius.circular(12),

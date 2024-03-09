@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
@@ -18,15 +17,15 @@ class WalletView extends StatelessWidget {
       {
         "category": "Bank Account",
         "asset": "assets/img/wallet/bank.svg",
-        "color": Color(0xff7b61ff),
-        "borderColor": Color(0xff5953a7),
+        "color": const Color(0xff7b61ff),
+        "borderColor": const Color(0xff5953a7),
         "description": "Unfortunately we don't know where to send your money"
       },
       {
         "category": "Card",
         "asset": "assets/img/wallet/card.svg",
-        "color": Color(0xfff14985),
-        "borderColor": Color(0xfff36497),
+        "color": const Color(0xfff14985),
+        "borderColor": const Color(0xfff36497),
         "description": "Unfortunately we don't know where to send your money"
       }
     ];
@@ -34,16 +33,16 @@ class WalletView extends StatelessWidget {
     return Scaffold(
       body: CustomStack(
         children: [
-          MainWrapper(
+          const MainWrapper(
             child: Header(title: "New Wallet"),
           ),
           Center(
             child: IntrinsicHeight(
               child: Column(
                 children: [
-                  Container(
+                  SizedBox(
                     width: media.width * 0.6,
-                    child: Container(
+                    child: SizedBox(
                       height: 65,
                       child: Text(
                         "Select the withdrawal type",
@@ -62,7 +61,7 @@ class WalletView extends StatelessWidget {
                   SizedBox(height: media.height * 0.02,),
                   for(var category in purchaseCategory)...[
                     Container(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                           vertical: 24,
                           horizontal: 16
                       ),
@@ -83,7 +82,7 @@ class WalletView extends StatelessWidget {
                           Row(
                             children: [
                               Container(
-                                padding: EdgeInsets.all(15),
+                                padding: const EdgeInsets.all(15),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
@@ -97,7 +96,7 @@ class WalletView extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: media.width * 0.025,),
-                              Container(
+                              SizedBox(
                                 width: media.width * 0.55,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

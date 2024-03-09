@@ -6,14 +6,14 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
-class EventView extends StatefulWidget {
-  const EventView({super.key});
+class Event extends StatefulWidget {
+  const Event({super.key});
 
   @override
-  State<EventView> createState() => _EventViewState();
+  State<Event> createState() => _EventState();
 }
 
-class _EventViewState extends State<EventView> {
+class _EventState extends State<Event> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -43,10 +43,9 @@ class _EventViewState extends State<EventView> {
             ),
             CustomTextButton(
               onPressed: () {},
-              child: Icon(Icons.filter_list_rounded, color: TColor.PRIMARY_TEXT,),
               style: ButtonStyle(
                 padding: MaterialStateProperty.all<EdgeInsets>(
-                    EdgeInsets.symmetric(
+                    const EdgeInsets.symmetric(
                         vertical: 11,
                         horizontal: 0
                     )
@@ -60,13 +59,14 @@ class _EventViewState extends State<EventView> {
                     )
                 ),
               ),
+              child: Icon(Icons.filter_list_rounded, color: TColor.PRIMARY_TEXT,),
             )
           ],
         ),
         SizedBox(height: media.height * 0.01,),
         // Your event section
         Container(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             vertical: 10,
             horizontal: 15,
           ),
@@ -110,7 +110,7 @@ class _EventViewState extends State<EventView> {
                     children: [
                       for(var x in text)...[
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 3,
                             horizontal: 15,
                           ),

@@ -4,6 +4,8 @@ import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
+import 'package:running_app/utils/common_widgets/progress_bar.dart';
+import 'package:running_app/utils/common_widgets/seperate_bar.dart';
 import 'package:running_app/utils/common_widgets/stack.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 
@@ -69,7 +71,7 @@ class _HomeViewState extends State<HomeView> {
                                     fontWeight: FontWeight.w300,
                                   ),
                                   children: [
-                                    const TextSpan(
+                                    TextSpan(
                                       text: "14000 / ",
                                     ),
                                     TextSpan(
@@ -80,7 +82,7 @@ class _HomeViewState extends State<HomeView> {
                                         fontWeight: FontWeight.w800,
                                       ),
                                     ),
-                                    const TextSpan(
+                                    TextSpan(
                                       text: "steps",
                                     ),
                                   ],
@@ -401,55 +403,6 @@ class _HomeViewState extends State<HomeView> {
           const Menu(),
         ],
       )
-    );
-  }
-}
-
-class ProgressBar extends StatelessWidget {
-  final int totalSteps;
-  final int currentStep;
-
-  const ProgressBar({super.key, required this.totalSteps, required this.currentStep});
-
-  @override
-  Widget build(BuildContext context) {
-    var media = MediaQuery.sizeOf(context);
-    double progress = currentStep / totalSteps;
-    return Container(
-      width: media.width * 0.78, // Adjust as needed
-      height: 12, // Adjust as needed
-      decoration: BoxDecoration(
-        color: Colors.grey[300], // Background color of the progress bar
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10.0),
-        child: LinearProgressIndicator(
-          backgroundColor: Colors.transparent,
-          valueColor: const AlwaysStoppedAnimation<Color>(
-            Colors.green, // Color of the progress bar
-          ),
-          value: progress,
-        ),
-      ),
-    );
-  }
-}
-
-class SeparateBar extends StatelessWidget {
-  final double width;
-  final double height;
-  const SeparateBar({super.key, required this.width, required this.height});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: width, // Width of the bar
-      height: height, // Height of the bar
-      decoration: BoxDecoration(
-        color: TColor.DESCRIPTION, // Color of the bar
-        borderRadius: BorderRadius.circular(10), // Rounded corners
-      ),
     );
   }
 }

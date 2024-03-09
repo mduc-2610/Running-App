@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(VerifyCodeForm());
+  runApp(const VerifyCodeForm());
 }
 
 class VerifyCodeForm extends StatelessWidget {
+  const VerifyCodeForm({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Verify Code Form',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Verify Code Form'),
+          title: const Text('Verify Code Form'),
         ),
-        body: VerifyCodeWidget(),
+        body: const VerifyCodeWidget(),
       ),
     );
   }
 }
 
 class VerifyCodeWidget extends StatefulWidget {
+  const VerifyCodeWidget({super.key});
+
   @override
   _VerifyCodeWidgetState createState() => _VerifyCodeWidgetState();
 }
 
 class _VerifyCodeWidgetState extends State<VerifyCodeWidget> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +46,13 @@ class _VerifyCodeWidgetState extends State<VerifyCodeWidget> {
               buildCodeDigitField(3),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           TextButton(
             onPressed: () {
               // Verify the code here
               // You can access the entered code using _controller.text
             },
-            child: Text('Verify'),
+            child: const Text('Verify'),
           ),
         ],
       ),
@@ -69,7 +73,7 @@ class _VerifyCodeWidgetState extends State<VerifyCodeWidget> {
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
         maxLength: 1,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           counterText: '',
           border: InputBorder.none,
         ),

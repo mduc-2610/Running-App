@@ -30,8 +30,4 @@ class CustomBackButton extends CustomIconButton {
     Navigator.pop(context);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return super.build(context);
-  }
 }

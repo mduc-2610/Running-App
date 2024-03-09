@@ -5,9 +5,6 @@ import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/stack.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 
 class StoreView extends StatelessWidget {
@@ -61,7 +58,7 @@ class StoreView extends StatelessWidget {
             child: Column(
               children: [
                 // Header
-                Header(title: "Store", backButton: false,),
+                const Header(title: "Store", backButton: false,),
                 SizedBox(height: media.height * 0.02,),
                 // Banner
                 CustomTextButton(
@@ -84,22 +81,6 @@ class StoreView extends StatelessWidget {
                           for(var brand in row)
                             CustomTextButton(
                               onPressed: () {},
-                              child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
-                                SvgPicture.asset(
-                                  brand["logo"],
-                                  width: media.width * 0.03,
-                                  height: media.height * 0.03,
-                                  fit: BoxFit.contain,
-                                ),
-                                Text(
-                                  brand["name"],
-                                  style: TextStyle(
-                                    color: TColor.DESCRIPTION,
-                                    fontSize: FontSize.SMALL,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                )
-                              ]),
                                 style: ButtonStyle(
                                   minimumSize: MaterialStateProperty.all<Size>(
                                     Size(media.width * 0.22, media.height * 0.1),
@@ -119,7 +100,23 @@ class StoreView extends StatelessWidget {
                                   side: MaterialStateProperty.all<BorderSide>(
                                     const BorderSide(color: Color(0xff495466), width: 2.0),
                                   ),
+                                ),
+                              child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween,children: [
+                                SvgPicture.asset(
+                                  brand["logo"],
+                                  width: media.width * 0.03,
+                                  height: media.height * 0.03,
+                                  fit: BoxFit.contain,
+                                ),
+                                Text(
+                                  brand["name"],
+                                  style: TextStyle(
+                                    color: TColor.DESCRIPTION,
+                                    fontSize: FontSize.SMALL,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 )
+                              ])
                             )
                         ]),
                         SizedBox(height: media.height * 0.01),
@@ -156,10 +153,10 @@ class StoreView extends StatelessWidget {
                           )
                         ]
                     ),
-                    Container(
+                    SizedBox(
                       height: media.height, // Set a specific height
                       child: GridView.count(
-                          padding: EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
                           crossAxisCount: 2,
                           crossAxisSpacing: media.width * 0.05,
                           mainAxisSpacing: media.height * 0.025,
@@ -174,7 +171,7 @@ class StoreView extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(12.0),
                                     color: TColor.SECONDARY_BACKGROUND,
                                     border: Border.all(
-                                      color: Color(0xff495466),
+                                      color: const Color(0xff495466),
                                       width: 2.0,
                                     ),
                                   ),
@@ -184,12 +181,12 @@ class StoreView extends StatelessWidget {
                                       Stack(
                                         children: [
                                           Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12.0),
+                                            ),
                                             child: Image.asset(
                                               "assets/img/store/product/air_force_1.png",
                                               fit: BoxFit.cover,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(12.0),
                                             ),
                                           ),
                                           Row(
@@ -200,7 +197,7 @@ class StoreView extends StatelessWidget {
                                                 children: [
                                                   Container(
                                                     margin: EdgeInsets.fromLTRB(media.width * 0.18, 5, 0, 0),
-                                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                                     decoration: BoxDecoration(
                                                       borderRadius: BorderRadius.circular(15.0),
                                                       color: TColor.SECONDARY_BACKGROUND.withOpacity(0.7),
@@ -260,7 +257,7 @@ class StoreView extends StatelessWidget {
               ],
             )
           ),
-          Menu()
+          const Menu()
         ],
       ),
     );

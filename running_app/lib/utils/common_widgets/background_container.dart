@@ -30,7 +30,7 @@ class BackgroundContainer extends StatelessWidget {
             color: Colors.black.withOpacity(0.3), // specify shadow color
             spreadRadius: 2,  // extend the shadow
             blurRadius: 5, // soften the shadow
-            offset: Offset(0, 3), // Offset in the y direction for the shadow
+            offset: const Offset(0, 3), // Offset in the y direction for the shadow
           ),
         ],
       ),

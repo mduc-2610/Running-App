@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/stack.dart';
@@ -18,22 +17,27 @@ class _SettingViewState extends State<SettingView> {
     {
       "icon": Icons.person_outline_rounded,
       "text": "Account Information",
+      "url": "/account_information",
     },
     {
       "icon": Icons.shield_outlined,
       "text": "Login and Security",
+      "url": "/login_&_security",
     },
     {
       "icon": Icons.privacy_tip_outlined,
       "text": "Privacy",
+      "url": "/privacy",
     },
     {
       "icon": Icons.notifications_none_rounded,
       "text": "Notification",
+      "url": "/notification",
     },
     {
       "icon": Icons.policy_outlined,
       "text": "Policies",
+      "url": "/policies",
     },
   ];
   @override
@@ -42,7 +46,7 @@ class _SettingViewState extends State<SettingView> {
     return Scaffold(
       body: CustomStack(
         children: [
-          MainWrapper(child: Header(title: "Setting", noIcon: true,),),
+          const MainWrapper(child: Header(title: "Setting", noIcon: true,),),
           MainWrapper(
             leftMargin: 0,
             rightMargin: 0,
@@ -64,13 +68,15 @@ class _SettingViewState extends State<SettingView> {
                         child: CustomTextButton(
                           style: ButtonStyle(
                             padding: MaterialStateProperty.all<EdgeInsets>(
-                              EdgeInsets.symmetric(
+                              const EdgeInsets.symmetric(
                                 vertical: 22,
                                 horizontal: 12
                               )
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, setting["url"]);
+                          },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -108,14 +114,14 @@ class _SettingViewState extends State<SettingView> {
                   child: CustomTextButton(
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all<EdgeInsets>(
-                        EdgeInsets.symmetric(
+                        const EdgeInsets.symmetric(
                           vertical: 10,
                           horizontal: 0
                         )
                       )
                     ),
                     onPressed: () {},
-                    child: Text(
+                    child: const Text(
                       "Sign Out",
                       style: TextStyle(
                         color: Colors.red,

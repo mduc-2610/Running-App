@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
@@ -27,7 +26,7 @@ class _ClubListViewState extends State<ClubListView> {
             child: Column(
               children: [
                 // Header
-                Header(title: "Club", noIcon: true,),
+                const Header(title: "Club", noIcon: true,),
                 SizedBox(height: media.height * 0.01,),
                 // Search clubs
                 Row(
@@ -51,10 +50,9 @@ class _ClubListViewState extends State<ClubListView> {
                     ),
                     CustomTextButton(
                       onPressed: () {},
-                      child: Icon(Icons.filter_list_rounded, color: TColor.PRIMARY_TEXT,),
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all<EdgeInsets>(
-                            EdgeInsets.symmetric(
+                            const EdgeInsets.symmetric(
                                 vertical: 11,
                                 horizontal: 0
                             )
@@ -72,15 +70,16 @@ class _ClubListViewState extends State<ClubListView> {
                           width: 2.0, // Set border width here
                         )),
                       ),
+                      child: Icon(Icons.filter_list_rounded, color: TColor.PRIMARY_TEXT,),
                     )
                   ],
                 ),
                 SizedBox(height: media.height * 0.01,),
                 // All clubs
-                Container(
+                SizedBox(
                   height: media.height - media.height * 0.1,
                   child: GridView.count(
-                      padding: EdgeInsets.all(0),
+                      padding: const EdgeInsets.all(0),
                       crossAxisCount: 2,
                       childAspectRatio: 0.85,
 
@@ -94,12 +93,12 @@ class _ClubListViewState extends State<ClubListView> {
                               child: Column(
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.all(12),
+                                    padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(12.0),
                                       color: TColor.SECONDARY_BACKGROUND,
                                       border: Border.all(
-                                        color: Color(0xff495466),
+                                        color: const Color(0xff495466),
                                         width: 2.0,
                                       ),
                                     ),

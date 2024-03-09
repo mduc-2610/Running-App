@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:running_app/utils/common_widgets/back_button.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/stack.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
-import 'package:running_app/utils/common_widgets/verify_code_form.dart';
 import 'package:running_app/utils/constants.dart';
 
 class EmailVerification extends StatefulWidget {
@@ -28,7 +26,7 @@ class _EmailVerificationState extends State<EmailVerification> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Header(title: "", noIcon: true,),
+                const Header(title: "", noIcon: true,),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -46,7 +44,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                       ),
                     ),
                     SizedBox(height: media.height * 0.015,),
-                    Container(
+                    SizedBox(
                       width: media.width * 0.85,
                       child: Text(
                         "Enter the email associated with your account we’ll send email with password to verify",
@@ -69,7 +67,7 @@ class _EmailVerificationState extends State<EmailVerification> {
                             child: CustomTextFormField(
                               decoration: CustomInputDecoration(
                                 fillColor: TColor.SECONDARY_BACKGROUND,
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 26,
                                   vertical: 20
                                 )
@@ -107,6 +105,10 @@ class _EmailVerificationState extends State<EmailVerification> {
                     CustomMainButton(
                       horizontalPadding: media.width * 0.29,
                       onPressed: () {},
+                      background: Colors.transparent,
+                      borderWidth: 2,
+                      borderWidthColor: TColor.PRIMARY,
+                      borderRadius: 16,
                       child: Text(
                         "Open mail app",
                         style: TextStyle(
@@ -115,10 +117,6 @@ class _EmailVerificationState extends State<EmailVerification> {
                             fontWeight: FontWeight.w600
                         ),
                       ),
-                      background: Colors.transparent,
-                      borderWidth: 2,
-                      borderWidthColor: TColor.PRIMARY,
-                      borderRadius: 16,
                     )
                   ],
                 )

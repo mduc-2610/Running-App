@@ -126,7 +126,7 @@ class Header extends StatelessWidget {
                       iconSize: 30,
                       style: ButtonStyle(
                         padding: MaterialStateProperty.all<EdgeInsets>(
-                          EdgeInsets.all(0),
+                          const EdgeInsets.all(0),
                         ),
                       ),
                     ),
@@ -135,7 +135,7 @@ class Header extends StatelessWidget {
                   ],
                 ),
             ] else...[
-              if(!(noIcon == true && backButton == false)) Icon(Icons.abc_outlined, color: Colors.transparent,)
+              if(!(noIcon == true && backButton == false)) const Icon(Icons.abc_outlined, color: Colors.transparent,)
             ]
           ],
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -25,7 +24,7 @@ class ClubDetailView extends StatelessWidget {
           MainWrapper(
             child: Column(
               children: [
-                Header(title: "", iconButtons: [
+                const Header(title: "", iconButtons: [
                   {
                     "icon": Icons.more_vert_rounded,
                   }
@@ -182,110 +181,121 @@ class ClubDetailView extends StatelessWidget {
                             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
-                                child: Stack(
-                                  children: [
-                                    Transform(
-                                      transform: Matrix4.skewX(0.4),
-                                      child: Container(
-                                          width: media.width * 0.4,
-                                          height: media.height * 0.1,
-                                        decoration: BoxDecoration(
-                                          color: TColor.PRIMARY,
-                                          borderRadius: BorderRadius.circular(10)
-                                        )
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.only(left: 25),
-                                        width: media.width * 0.4,
-                                        height: media.height * 0.1,
-                                        decoration: BoxDecoration(
+                                child: CustomTextButton(
+                                  onPressed: () {
+                                    print("ok1");
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Transform(
+                                        transform: Matrix4.skewX(0.4),
+                                        child: Container(
+                                            width: media.width * 0.4,
+                                            height: media.height * 0.1,
+                                          decoration: BoxDecoration(
                                             color: TColor.PRIMARY,
                                             borderRadius: BorderRadius.circular(10)
+                                          )
                                         ),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "3061",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: TColor.PRIMARY_TEXT,
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                          ),
-                                          Text(
-                                            "Activities per week",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: TColor.PRIMARY_TEXT,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                          ),
-                                        ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: media.width * 0.043,),
-                              SizedBox(
-                                child: Stack(
-                                  children: [
-                                    Transform(
-                                      transform: Matrix4.skewX(0.4),
-                                      child: Container(
+                                      Container(
+                                        padding: const EdgeInsets.only(left: 25),
                                           width: media.width * 0.4,
                                           height: media.height * 0.1,
                                           decoration: BoxDecoration(
                                               color: TColor.PRIMARY,
                                               borderRadius: BorderRadius.circular(10)
-                                          )
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.only(right: 25),
-                                      margin: EdgeInsets.only(left: 40),
-                                        width: media.width * 0.4,
-                                        height: media.height * 0.1,
-                                        decoration: BoxDecoration(
-                                            color: TColor.PRIMARY,
-                                            borderRadius: BorderRadius.circular(10)
+                                          ),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "3061",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: TColor.PRIMARY_TEXT,
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                            Text(
+                                              "Activities per week",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: TColor.PRIMARY_TEXT,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            "Posts per week",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: TColor.PRIMARY_TEXT,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                          ),
-                                          Text(
-                                            "0",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: TColor.PRIMARY_TEXT,
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                          ),
-                                        ],
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: media.width * 0.043,),
+                              SizedBox(
+                                child: CustomTextButton(
+                                  onPressed: () {
+                                    print("ok2");
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Transform(
+                                        transform: Matrix4.skewX(0.4),
+                                        child: Container(
+                                            width: media.width * 0.4,
+                                            height: media.height * 0.1,
+                                            decoration: BoxDecoration(
+                                                color: TColor.PRIMARY,
+                                                borderRadius: BorderRadius.circular(10)
+                                            )
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.only(right: 25),
+                                        margin: const EdgeInsets.only(left: 40),
+                                          width: media.width * 0.4,
+                                          height: media.height * 0.1,
+                                          decoration: BoxDecoration(
+                                              color: TColor.PRIMARY,
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              "Posts per week",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: TColor.PRIMARY_TEXT,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                            Text(
+                                              "0",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: TColor.PRIMARY_TEXT,
+                                                fontSize: 22,
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               )
                             ],
                           ),
                           SizedBox(height: media.height * 0.015,),
+
                           // Table section
                           Column(
                             children: [
@@ -330,29 +340,6 @@ class ClubDetailView extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class BorderSlashPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 2.0
-      ..style = PaintingStyle.stroke;
-
-    Path path = Path();
-    path.moveTo(0, size.height); // Start from bottom left corner
-    path.lineTo(size.width * 0.25, 0); // Move to top left corner
-    path.lineTo(size.width * 0.75, 0); // Move to top right corner
-    path.lineTo(size.width, size.height); // Move to bottom right corner
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
   }
 }
 

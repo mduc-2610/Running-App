@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/constants.dart';
 
 
@@ -26,6 +25,8 @@ class CustomText extends StatelessWidget {
 
 class AthleteTable extends StatelessWidget {
   final Random random = Random();
+  final double? topMargin;
+  AthleteTable({this.topMargin, super.key});
 
   // Generate random data for demonstration
   String generateRandomName() {
@@ -42,24 +43,24 @@ class AthleteTable extends StatelessWidget {
 
   String generateRandomDistance() {
     return (random.nextDouble() * 100)
-        .toStringAsFixed(2); // Random distance between 0 and 100 km
+        .toStringAsFixed(2);
   }
 
   String generateRandomTime() {
-    int hours = random.nextInt(24); // Random hours between 0 and 23
-    int minutes = random.nextInt(60); // Random minutes between 0 and 59
-    return '$hours:$minutes'; // Format: HH:MM
+    int hours = random.nextInt(24);
+    int minutes = random.nextInt(60);
+    return '$hours:$minutes';
   }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Container(
-      width: media.width,
-      margin: EdgeInsets.all(0),
-      padding: EdgeInsets.all(0),
+      // width: media.width,
+      margin: EdgeInsets.only(top: topMargin ?? 0),
+      padding: const EdgeInsets.all(0),
       // margin: EdgeInsets.only(right: 10),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           border: Border(
               // top: BorderSide(width: 1, color: Color(0xff746cb3)),
               bottom: BorderSide(width: 2, color: Color(0xff746cb3))
@@ -67,36 +68,35 @@ class AthleteTable extends StatelessWidget {
       ),
       child: Center(
         child: DataTable(
-            border: TableBorder(
+            border: const TableBorder(
                 horizontalInside: BorderSide(width: 2, color: Color(0xff746cb3))
             ),
             columnSpacing: 12, horizontalMargin: 0, columns: [
           DataColumn(
             label: Container(
               alignment: Alignment.centerLeft,
-              child: CustomText(text: 'Rank    '),
+              child: const CustomText(text: 'Rank    '),
             ),
             numeric: true,
             tooltip: 'Athlete Rank',
             onSort: (columnIndex, ascending) {
-              // Implement sorting logic here if needed
             },
           ),
-          DataColumn(
+          const DataColumn(
             label: Center(
               child: CustomText(text: 'Athlete Name'),
             ),
             numeric: false,
             tooltip: 'Athlete Name',
           ),
-          DataColumn(
+          const DataColumn(
             label: Center(
               child: CustomText(text: 'Total (km)'),
             ),
             numeric: true,
             tooltip: 'Total Distance',
           ),
-          DataColumn(
+          const DataColumn(
             label: Center(
               child: CustomText(text: 'Time       '),
             ),

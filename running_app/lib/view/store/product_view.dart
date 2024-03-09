@@ -28,7 +28,7 @@ class _ProductViewState extends State<ProductView> {
             child: Column(
               children: [
                 // Header
-                Header(
+                const Header(
                   title: "Product",
                   iconButtons: [
                     {
@@ -49,10 +49,10 @@ class _ProductViewState extends State<ProductView> {
                 SizedBox(height: media.height * 0.03,),
 
                 // Product
-                Container(
+                SizedBox(
                   height: media.height, // Set a specific height
                   child: GridView.count(
-                    padding: EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
                     crossAxisCount: 2,
                     crossAxisSpacing: media.width * 0.05,
                     mainAxisSpacing: media.height * 0.025,
@@ -67,7 +67,7 @@ class _ProductViewState extends State<ProductView> {
                                 borderRadius: BorderRadius.circular(12.0),
                                 color: TColor.SECONDARY_BACKGROUND,
                                 border: Border.all(
-                                  color: Color(0xff495466),
+                                  color: const Color(0xff495466),
                                   width: 2.0,
                                 ),
                               ),
@@ -77,12 +77,12 @@ class _ProductViewState extends State<ProductView> {
                                   Stack(
                                     children: [
                                       Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12.0),
+                                        ),
                                         child: Image.asset(
                                           "assets/img/store/product/air_force_1.png",
                                           fit: BoxFit.cover,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12.0),
                                         ),
                                       ),
                                       Row(
@@ -93,7 +93,7 @@ class _ProductViewState extends State<ProductView> {
                                             children: [
                                               Container(
                                                 margin: EdgeInsets.fromLTRB(media.width * 0.18, 5, 0, 0),
-                                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                                 decoration: BoxDecoration(
                                                   borderRadius: BorderRadius.circular(15.0),
                                                   color: TColor.SECONDARY_BACKGROUND.withOpacity(0.7),
@@ -151,7 +151,7 @@ class _ProductViewState extends State<ProductView> {
               ],
             ),
           ),
-          Menu()
+          const Menu()
         ],
       ),
     );

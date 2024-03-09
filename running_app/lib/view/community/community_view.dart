@@ -1,27 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/icon_button.dart';
-import 'package:running_app/utils/common_widgets/icon_button.dart';
-import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/stack.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/text_form_field.dart';
-import 'package:running_app/utils/constants.dart';
-import 'package:running_app/utils/constants.dart';
-import 'package:running_app/utils/constants.dart';
-import 'package:running_app/utils/constants.dart';
-import 'package:running_app/utils/constants.dart';
-import 'package:running_app/utils/constants.dart';
-import 'package:running_app/utils/constants.dart';
-import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/view/community/club_view.dart';
-import 'package:running_app/view/community/event_view.dart';
 
 class CommunityView extends StatefulWidget {
   const CommunityView({super.key});
@@ -46,11 +31,11 @@ class _CommunityViewState extends State<CommunityView> {
           MainWrapper(
             child: Column(
               children: [
-                Header(title: "Community", backButton: false, noIcon: true),
+                const Header(title: "Community", backButton: false, noIcon: true),
                 SizedBox(height: media.height * 0.02,),
                 // Redirect and search section
                 Container(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                       vertical: 3,
                       horizontal: 10
                   ),
@@ -64,14 +49,6 @@ class _CommunityViewState extends State<CommunityView> {
                       for(var x in redirect)
                         CustomTextButton(
                           onPressed: () {},
-                          child: Text(
-                              x,
-                              style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.NORMAL,
-                                fontWeight: FontWeight.w600,
-                              )
-                          ),
                           style: ButtonStyle(
                               padding: MaterialStateProperty.all<EdgeInsets>(
                                   EdgeInsets.symmetric(
@@ -88,6 +65,14 @@ class _CommunityViewState extends State<CommunityView> {
                                   )
                               )
                           ),
+                          child: Text(
+                              x,
+                              style: TextStyle(
+                                color: TColor.PRIMARY_TEXT,
+                                fontSize: FontSize.NORMAL,
+                                fontWeight: FontWeight.w600,
+                              )
+                          ),
                         )
                     ],
                   ),
@@ -96,11 +81,11 @@ class _CommunityViewState extends State<CommunityView> {
 
 
                 // EventView(),
-                ClubView(),
+                const ClubView(),
               ],
             )
           ),
-          Menu(),
+          const Menu(),
         ],
       ),
     );

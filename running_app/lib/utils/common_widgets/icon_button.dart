@@ -39,7 +39,7 @@ class CustomIconButton extends StatelessWidget {
           paddingBottom ?? 0
       ),
 
-      constraints: BoxConstraints(),
+      constraints: const BoxConstraints(),
     );
   }
 }

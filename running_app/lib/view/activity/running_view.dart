@@ -11,10 +11,10 @@ class RunningView extends StatefulWidget {
 class _RunningViewState extends State<RunningView> {
 
 // in the below line, we are initializing our controller for google maps. 
-  Completer<GoogleMapController> _controller = Completer();
+  final Completer<GoogleMapController> _controller = Completer();
 
 // in the below line, we are specifying our camera position 
-  static final CameraPosition _kGoogle = const CameraPosition(
+  static const CameraPosition _kGoogle = CameraPosition(
     target: LatLng(37.42796133580664, -122.885749655962),
     zoom: 14.4746,
   );
@@ -25,9 +25,9 @@ class _RunningViewState extends State<RunningView> {
       // in the below line, we are specifying our app bar.
         appBar: AppBar(
           // setting background color for app bar
-          backgroundColor: Color(0xFF0F9D58),
+          backgroundColor: const Color(0xFF0F9D58),
           // setting title for app bar.
-          title: Text("Google Maps"),
+          title: const Text("Google Maps"),
         ),
         body: Container(
           // in the below line, creating google maps.

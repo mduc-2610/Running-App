@@ -25,7 +25,7 @@ class _AddressViewState extends State<AddressView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Header(title:"Address"),
+                const Header(title:"Address"),
                 Container(
                   margin: EdgeInsets.symmetric(
                     vertical: 0,
@@ -61,6 +61,10 @@ class _AddressViewState extends State<AddressView> {
                 CustomMainButton(
                   horizontalPadding: media.width * 0.32,
                   onPressed: () {},
+                  background: Colors.transparent,
+                  borderWidth: 2,
+                  borderWidthColor: TColor.PRIMARY,
+                  borderRadius: 16,
                   child: Text(
                     "Add address",
                     style: TextStyle(
@@ -69,10 +73,6 @@ class _AddressViewState extends State<AddressView> {
                       fontWeight: FontWeight.w600
                     ),
                   ),
-                  background: Colors.transparent,
-                  borderWidth: 2,
-                  borderWidthColor: TColor.PRIMARY,
-                  borderRadius: 16,
                 )
               ],
             ),
