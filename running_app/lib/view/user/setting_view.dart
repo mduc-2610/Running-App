@@ -17,28 +17,28 @@ class _SettingViewState extends State<SettingView> {
     {
       "icon": Icons.person_outline_rounded,
       "text": "Account Information",
-      "url": "/account_information",
+      "url": "/account_information_setting",
     },
-    {
-      "icon": Icons.shield_outlined,
-      "text": "Login and Security",
-      "url": "/login_&_security",
-    },
+    // {
+    //   "icon": Icons.shield_outlined,
+    //   "text": "Login and Security",
+    //   "url": "/login_&_security",
+    // },
     {
       "icon": Icons.privacy_tip_outlined,
       "text": "Privacy",
-      "url": "/privacy",
+      "url": "/privacy_seting",
     },
     {
       "icon": Icons.notifications_none_rounded,
       "text": "Notification",
-      "url": "/notification",
+      "url": "/notification_seting",
     },
-    {
-      "icon": Icons.policy_outlined,
-      "text": "Policies",
-      "url": "/policies",
-    },
+    // {
+    //   "icon": Icons.policy_outlined,
+    //   "text": "Policies",
+    //   "url": "/policies",
+    // },
   ];
   @override
   Widget build(BuildContext context) {

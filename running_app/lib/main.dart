@@ -9,6 +9,7 @@ import 'package:running_app/view/community/club_list_view.dart';
 import 'package:running_app/view/community/community_view.dart';
 import 'package:running_app/view/community/event_detail_view.dart';
 import 'package:running_app/view/home/home_view.dart';
+import 'package:running_app/view/home/notification_view.dart';
 import 'package:running_app/view/login/get_started_view.dart';
 import 'package:running_app/view/login/on_boarding_view.dart';
 import 'package:running_app/view/login/sign_in_view.dart';
@@ -16,7 +17,11 @@ import 'package:running_app/view/login/sign_up_view.dart';
 import 'package:running_app/view/rank/rank_view.dart';
 import 'package:running_app/view/store/product_view.dart';
 import 'package:running_app/view/store/store_view.dart';
-import 'package:running_app/view/user/account_information_view.dart';
+import 'package:running_app/view/user/account_information_setting_view.dart';
+import 'package:running_app/view/user/athlete_discovery_view.dart';
+import 'package:running_app/view/user/follower_view.dart';
+import 'package:running_app/view/user/notification_setting_view.dart';
+import 'package:running_app/view/user/privacy_setting_view.dart';
 import 'package:running_app/view/user/setting_view.dart';
 import 'package:running_app/view/user/user_view.dart';
 import 'package:running_app/view/wallet/wallet.dart';
@@ -39,7 +44,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/account_information',
+      initialRoute: '/',
       routes: {
         '/': (context) => const GetStartedView(),
         '/on_board': (context) => const OnBoardingView(),
@@ -60,7 +65,12 @@ class MyApp extends StatelessWidget {
         '/user': (context) => const UserView(),
         '/setting': (context) => const SettingView(),
         '/event_detail': (context) => const EventDetailView(),
-        '/account_information': (context) => const AccountInformationView(),
+        '/privacy_setting': (context) => const PrivacySettingView(),
+        '/account_information_setting': (context) => const AccountInformationSettingView(),
+        '/notification_setting': (context) => const NotificationSettingView(),
+        '/athlete_discovery': (context) => const AthleteDiscoveryView(),
+        '/follower': (context) => const FollowerView(),
+        '/notification': (context) => const NotificationView(),
         // '/verify': (context) => VerifyCodeForm(),
         // '/running': (context) => const RunningView(),
       },

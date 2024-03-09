@@ -26,12 +26,14 @@ class Header extends StatelessWidget {
   List defaultIconButtons() {
     return [
       {
-        "icon": Icons.archive_outlined,
+        "icon": Icons.people_outline,
         "color": TColor.PRIMARY_TEXT,
+        "url": '/athlete_discovery',
       },
       {
         "icon": Icons.notifications_none,
         "color": TColor.PRIMARY_TEXT,
+        "url": '/notification'
       }
     ];
   }
@@ -120,7 +122,9 @@ class Header extends StatelessWidget {
                 Row(
                   children: [
                     CustomIconButton(
-                      onPressed: button["onPressed"] ?? () {},
+                      onPressed: button["onPressed"] ?? () {
+                        Navigator.pushNamed(context, button["url"]);
+                      },
                       icon: Icon(button["icon"]),
                       color: button["color"] ?? TColor.PRIMARY_TEXT,
                       iconSize: 30,

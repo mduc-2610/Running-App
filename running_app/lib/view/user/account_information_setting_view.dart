@@ -9,14 +9,14 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
-class AccountInformationView extends StatefulWidget {
-  const AccountInformationView({super.key});
+class AccountInformationSettingView extends StatefulWidget {
+  const AccountInformationSettingView({super.key});
 
   @override
-  State<AccountInformationView> createState() => _AccountInformationViewState();
+  State<AccountInformationSettingView> createState() => _AccountInformationSettingViewState();
 }
 
-class _AccountInformationViewState extends State<AccountInformationView> {
+class _AccountInformationSettingViewState extends State<AccountInformationSettingView> {
   String? gender = "";
   List fields = [
     {

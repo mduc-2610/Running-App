@@ -170,7 +170,7 @@ class _UserViewState extends State<UserView> {
                             "icon": Icons.people_outline,
                             "color": const Color(0xfff3b242),
                             "text": "Followers",
-                            "url": "/followers",
+                            "url": "/follower",
                           }
                         ]) ...[
                           CustomTextButton(
