@@ -100,93 +100,109 @@ class SignUpView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: TColor.PRIMARY_BACKGROUND,
-        body: Stack(children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, media.height * 0.17, 0, 0),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SvgPicture.asset(
-                    'assets/img/login/logo.svg',
-                    width: media.width * 0.3,
-                    fit: BoxFit.contain,
-                  )
-                ]
-            ),
-          ),
-          MainWrapper(
-              child: CustomBackButton(context: context)
-          ),
-          MainWrapper(
-              child: Container(
-                margin: EdgeInsets.fromLTRB(media.width * 0.015, media.height * 0.35, media.width * 0.015, 0),
-                child: Column(
-                  children: [
-                    Text(
-                      'Sign Up',
-                      style: TextStyle(
-                          color: TColor.PRIMARY_TEXT,
-                          fontSize: FontSize.TITLE,
-                          fontWeight: FontWeight.w700
-                      ),
-                    ),
-                    SizedBox(height: media.width * 0.02,),
-
-                    for (var field in signUpFields)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: CustomTextFormField(
-                          decoration: CustomInputDecoration(
-                            // labelText: field['fieldType'],
-                            hintText: field['hintText'],
-                          ),
-                          keyboardType: field['keyboardType'],
-                          obscureText: field['obscureText'] ?? false,
-                          controller: field['controller'],
-                          // validator: field['validator'],
-                        ),
-                      ),
-                    SizedBox(height: media.width * 0.03),
-                    CustomMainButton(
-                        horizontalPadding: media.width * 0.35,
-                        onPressed: () async {
-                          bool isValid = true;
-
-                          // Validate all form fields
-                          for (var field in signUpFields) {
-                            if (field['validator'] != null) {
-                              FormFieldValidator<String>? validator = field['validator'];
-                              String? error = validator!(field['controller'].text);
-                              print(error);
-                              if (error != null) {
-                                isValid = false;
-                                break;
-                              }
-                            }
-                          }
-                          if(isValid) {
-                            final username = signUpFields[0]['controller'].text;
-                            final email = signUpFields[1]['controller'].text;
-                            final password = signUpFields[2]['controller'].text;
-                            final confirmPassword = signUpFields[3]['controller'].text;
-
-                            _createUser(username, email, password, confirmPassword);
-                          }
-                        },
-                        child: Text(
+        body: SingleChildScrollView(
+          child: Container(
+            height: media.height,
+            child: Stack(children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, media.height * 0.17, 0, 0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/img/login/logo.svg',
+                        width: media.width * 0.3,
+                        fit: BoxFit.contain,
+                      )
+                    ]
+                ),
+              ),
+              MainWrapper(
+                  child: CustomBackButton(context: context)
+              ),
+              MainWrapper(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(media.width * 0.015, media.height * 0.35, media.width * 0.015, 0),
+                    child: Column(
+                      children: [
+                        Text(
                           'Sign Up',
                           style: TextStyle(
-                            color: TColor.PRIMARY_TEXT,
-                            fontSize: FontSize.BUTTON,
-                            fontWeight: FontWeight.w600,
+                              color: TColor.PRIMARY_TEXT,
+                              fontSize: FontSize.TITLE,
+                              fontWeight: FontWeight.w700
                           ),
-                        )
+                        ),
+                        SizedBox(height: media.width * 0.02,),
+
+                        for (var field in signUpFields)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: CustomTextFormField(
+                              decoration: CustomInputDecoration(
+                                // labelText: field['fieldType'],
+                                // hintText: field['hintText'],
+                                label: Text(
+                                  field["hintText"],
+                                  style: TextStyle(
+                                    color: TColor.DESCRIPTION,
+                                    fontSize: FontSize.NORMAL,
+                                  ),
+                                ),
+                                floatingLabelBehavior: FloatingLabelBehavior.auto,
+                              ),
+                              keyboardType: field['keyboardType'],
+                              obscureText: field['obscureText'] ?? false,
+                              controller: field['controller'],
+
+                              // validator: field['validator'],
+                            ),
+                          ),
+                        SizedBox(height: media.width * 0.03),
+                        CustomMainButton(
+                            horizontalPadding: media.width * 0.35,
+                            onPressed: () async {
+                              bool isValid = true;
+
+                              // Validate all form fields
+                              for (var field in signUpFields) {
+                                if (field['validator'] != null) {
+                                  FormFieldValidator<String>? validator = field['validator'];
+                                  String? error = validator!(field['controller'].text);
+                                  print(error);
+                                  if (error != null) {
+                                    isValid = false;
+                                    break;
+                                  }
+                                }
+                              }
+                              if(isValid) {
+                                final username = signUpFields[0]['controller'].text;
+                                final email = signUpFields[1]['controller'].text;
+                                final password = signUpFields[2]['controller'].text;
+                                final confirmPassword = signUpFields[3]['controller'].text;
+
+                                _createUser(username, email, password, confirmPassword);
+                              }
+                              Navigator.pushReplacementNamed(context, '/profile_create');
+                            },
+                            child: Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                color: TColor.PRIMARY_TEXT,
+                                fontSize: FontSize.BUTTON,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            )
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  )
               )
-          )
-        ])
+            ]),
+          ),
+        )
     );
   }
 }
+

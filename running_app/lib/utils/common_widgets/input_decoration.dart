@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:running_app/utils/constants.dart';
 
 
 class CustomInputDecoration extends InputDecoration {
@@ -6,7 +7,7 @@ class CustomInputDecoration extends InputDecoration {
     String? hintText,
     TextStyle? hintStyle = const TextStyle(
         color: Color(0xffcdcdcd),
-        fontSize: 15
+        fontSize: FontSize.NORMAL,
     ),
     bool alignLabelWithHint = false,
     BorderRadius borderRadius = const BorderRadius.all(Radius.circular(12.0)),
@@ -19,8 +20,9 @@ class CustomInputDecoration extends InputDecoration {
     Icon? suffixIcon,
     EdgeInsets? contentPadding,
     double borderSide = 2.0,
+    FloatingLabelBehavior floatingLabelBehavior = FloatingLabelBehavior.never,
+    Text? label,
   }) : super(
-
     hintText: hintText,
     hintStyle: hintStyle,
     alignLabelWithHint: alignLabelWithHint,
@@ -39,7 +41,7 @@ class CustomInputDecoration extends InputDecoration {
       borderSide: BorderSide(color: errorBorderColor, width: borderSide),
       borderRadius: borderRadius,
     ),
-    floatingLabelBehavior: FloatingLabelBehavior.never,
+    floatingLabelBehavior: floatingLabelBehavior,
     errorStyle: errorStyle,
     contentPadding: contentPadding ?? const EdgeInsets.symmetric(
       vertical: 20.0,
@@ -47,5 +49,6 @@ class CustomInputDecoration extends InputDecoration {
     ),
     prefixIcon: prefixIcon,
     suffixIcon: suffixIcon,
+    label: label,
   );
 }

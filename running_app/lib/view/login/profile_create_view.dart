@@ -9,14 +9,14 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
-class AccountInformationSettingView extends StatefulWidget {
-  const AccountInformationSettingView({super.key});
+class ProfileCreateView extends StatefulWidget {
+  const ProfileCreateView({super.key});
 
   @override
-  State<AccountInformationSettingView> createState() => _AccountInformationSettingViewState();
+  State<ProfileCreateView> createState() => _ProfileCreateViewState();
 }
 
-class _AccountInformationSettingViewState extends State<AccountInformationSettingView> {
+class _ProfileCreateViewState extends State<ProfileCreateView> {
   String? gender = "male";
   String selectedValue = "";
 
@@ -86,7 +86,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                   children: [
                     Header(title: "Account Information", noIcon: true,),
                     SizedBox(height: media.height * 0.015,),
-          
+
                     CustomTextButton(
                       onPressed: () {},
                       child: Stack(
@@ -123,7 +123,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                       ),
                     ),
                     SizedBox(height: media.height * 0.015,),
-          
+
                     // Information
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,9 +131,9 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                         Text(
                           "Information",
                           style: TextStyle(
-                            color: TColor.PRIMARY_TEXT,
-                            fontSize: FontSize.LARGE,
-                            fontWeight: FontWeight.w800
+                              color: TColor.PRIMARY_TEXT,
+                              fontSize: FontSize.LARGE,
+                              fontWeight: FontWeight.w800
                           ),
                         ),
                         SizedBox(height: media.height * 0.02),
@@ -141,7 +141,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                           children: [
                             for(int i = 0; i < 2; i++)...[
                               CustomTextFormField(
-                                initialValue: fields[i]["initialValue"],
+                                // initialValue: fields[i]["initialValue"],
                                 decoration: CustomInputDecoration(
                                   // hintText: fields[i]["hintText"],
                                   label: Text(
@@ -157,45 +157,45 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                               ),
                               SizedBox(height: media.height * 0.015,)
                             ],
-                          for(int i = 2; i < 4; i++)...[
-                            SizedBox(
-                              height: 60,
-                              child: DropdownButtonFormField<String>(
-                                isExpanded: true,
-                                // value: selectedValue,
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    // selectedValue = newValue;
-                                  });
-                                },
-                                items: [
-                                  for(int i = 0; i < 5; i++)
-                                  DropdownMenuItem(
-                                    value: "Option $i",
-                                    child: Text(
-                                        "Option $i",
-                                      style: TextStyle(
-                                        color: TColor.PRIMARY_TEXT,
-                                        fontSize: FontSize.SMALL,
+                            for(int i = 2; i < 4; i++)...[
+                              SizedBox(
+                                height: 60,
+                                child: DropdownButtonFormField<String>(
+                                  isExpanded: true,
+                                  // value: selectedValue,
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      // selectedValue = newValue;
+                                    });
+                                  },
+                                  items: [
+                                    for(int i = 0; i < 5; i++)
+                                      DropdownMenuItem(
+                                        value: "Option $i",
+                                        child: Text(
+                                          "Option $i",
+                                          style: TextStyle(
+                                            color: TColor.PRIMARY_TEXT,
+                                            fontSize: FontSize.SMALL,
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                  ],
+                                  decoration: CustomInputDecoration(
+                                      hintText: fields[i]["hintText"]
                                   ),
-                                ],
-                                decoration: CustomInputDecoration(
-                                  hintText: fields[i]["hintText"]
+                                  dropdownColor: Colors.black,
+
                                 ),
-                                dropdownColor: Colors.black,
-          
                               ),
-                            ),
-                            SizedBox(height: media.height * 0.015,),
-                          ]
-                        ],
+                              SizedBox(height: media.height * 0.015,),
+                            ]
+                          ],
                         )
                       ],
                     ),
                     SizedBox(height: media.height * 0.02,),
-          
+
                     // Health Information
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,11 +217,11 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                                 height: 50,
                                 width: media.width * 0.46,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: TColor.BORDER_COLOR,
-                                    width: 2
-                                  )
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                        color: TColor.BORDER_COLOR,
+                                        width: 2
+                                    )
                                 ),
                                 child: Row(
                                   children: [
@@ -234,7 +234,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                                         });
                                       },
                                       fillColor: MaterialStateProperty.all<Color>(
-                                          Color(0xffcdcdcd),
+                                        Color(0xffcdcdcd),
                                       ),
                                     ),
                                     Text(
@@ -252,7 +252,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                         ),
                         SizedBox(height: media.height * 0.015,),
                         CustomTextFormField(
-                          initialValue: fields[4]["initialValue"],
+                          // initialValue: fields[4]["initialValue"],
                           decoration: CustomInputDecoration(
                             label: Text(
                               fields[4]["hintText"],
@@ -272,17 +272,17 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                             SizedBox(
                               width: media.width * 0.46,
                               child: CustomTextFormField(
-                                initialValue: fields[5]["initialValue"],
+                                // initialValue: fields[5]["initialValue"],
                                 decoration: CustomInputDecoration(
                                   // hintText: fields[5]["hintText"],
-                                  label: Text(
-                                    fields[5]["hintText"],
-                                    style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: FontSize.NORMAL,
+                                    label: Text(
+                                      fields[5]["hintText"],
+                                      style: TextStyle(
+                                        color: TColor.DESCRIPTION,
+                                        fontSize: FontSize.NORMAL,
+                                      ),
                                     ),
-                                  ),
-                                  floatingLabelBehavior: FloatingLabelBehavior.auto
+                                    floatingLabelBehavior: FloatingLabelBehavior.auto
                                 ),
                                 keyboardType: TextInputType.text,
                               ),
@@ -290,17 +290,17 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                             SizedBox(
                               width: media.width * 0.46,
                               child: CustomTextFormField(
-                                initialValue: fields[6]["initialValue"],
+                                // initialValue: fields[6]["initialValue"],
                                 decoration: CustomInputDecoration(
                                   // hintText: fields[6]["hintText"],
-                                  label: Text(
-                                    fields[6]["hintText"],
-                                    style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: FontSize.NORMAL,
+                                    label: Text(
+                                      fields[6]["hintText"],
+                                      style: TextStyle(
+                                        color: TColor.DESCRIPTION,
+                                        fontSize: FontSize.NORMAL,
+                                      ),
                                     ),
-                                  ),
-                                  floatingLabelBehavior: FloatingLabelBehavior.auto
+                                    floatingLabelBehavior: FloatingLabelBehavior.auto
                                 ),
                                 keyboardType: TextInputType.text,
                               ),
@@ -326,17 +326,17 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                         SizedBox(height: media.height * 0.02,),
                         for(int i = 7; i < 10; i++)...[
                           CustomTextFormField(
-                            initialValue: fields[i]["initialValue"],
+                            // initialValue: fields[i]["initialValue"],
                             decoration: CustomInputDecoration(
                               // hintText: fields[i]["hintText"],
-                              label: Text(
-                                fields[i]["hintText"],
-                                style: TextStyle(
-                                  color: TColor.DESCRIPTION,
-                                  fontSize: FontSize.NORMAL,
+                                label: Text(
+                                  fields[i]["hintText"],
+                                  style: TextStyle(
+                                    color: TColor.DESCRIPTION,
+                                    fontSize: FontSize.NORMAL,
+                                  ),
                                 ),
-                              ),
-                              floatingLabelBehavior: FloatingLabelBehavior.auto
+                                floatingLabelBehavior: FloatingLabelBehavior.auto
                             ),
                             keyboardType: TextInputType.text,
                           ),
@@ -387,9 +387,9 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                         child: Text(
                           "Save",
                           style: TextStyle(
-                            color: TColor.PRIMARY_TEXT,
-                            fontSize: FontSize.LARGE,
-                            fontWeight: FontWeight.w800
+                              color: TColor.PRIMARY_TEXT,
+                              fontSize: FontSize.LARGE,
+                              fontWeight: FontWeight.w800
                           ),
                         ),
                       ),

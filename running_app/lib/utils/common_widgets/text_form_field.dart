@@ -16,6 +16,7 @@ class CustomTextFormField extends TextFormField {
     Color cursorColor = const Color(0xffcdcdcd),
     TextEditingController? controller,
     int? maxLength,
+    String? initialValue,
   }) : super(
     key: key,
     style: inputTextStyle,
@@ -27,5 +28,7 @@ class CustomTextFormField extends TextFormField {
     controller: controller,
     cursorColor: cursorColor,
     maxLength: maxLength,
+    initialValue: initialValue,
+
   );
 }

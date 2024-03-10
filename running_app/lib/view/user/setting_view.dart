@@ -27,12 +27,12 @@ class _SettingViewState extends State<SettingView> {
     {
       "icon": Icons.privacy_tip_outlined,
       "text": "Privacy",
-      "url": "/privacy_seting",
+      "url": "/privacy_setting",
     },
     {
       "icon": Icons.notifications_none_rounded,
       "text": "Notification",
-      "url": "/notification_seting",
+      "url": "/notification_setting",
     },
     // {
     //   "icon": Icons.policy_outlined,

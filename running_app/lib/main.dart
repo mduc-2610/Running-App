@@ -12,6 +12,7 @@ import 'package:running_app/view/home/home_view.dart';
 import 'package:running_app/view/home/notification_view.dart';
 import 'package:running_app/view/login/get_started_view.dart';
 import 'package:running_app/view/login/on_boarding_view.dart';
+import 'package:running_app/view/login/profile_create_view.dart';
 import 'package:running_app/view/login/sign_in_view.dart';
 import 'package:running_app/view/login/sign_up_view.dart';
 import 'package:running_app/view/rank/rank_view.dart';
@@ -44,12 +45,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/',
+      initialRoute: '/account_information_setting',
       routes: {
         '/': (context) => const GetStartedView(),
         '/on_board': (context) => const OnBoardingView(),
         '/sign_in': (context) => const SignInView(),
         '/sign_up': (context) => const SignUpView(),
+        '/profile_create': (context) => const ProfileCreateView(),
         '/home': (context) => const HomeView(),
         '/activity': (context) => const ActivityView(),
         '/store': (context) => const StoreView(),

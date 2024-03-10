@@ -6,14 +6,14 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
-class Event extends StatefulWidget {
-  const Event({super.key});
+class EventView extends StatefulWidget {
+  const EventView({super.key});
 
   @override
-  State<Event> createState() => _EventState();
+  State<EventView> createState() => _EventViewState();
 }
 
-class _EventState extends State<Event> {
+class _EventViewState extends State<EventView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);

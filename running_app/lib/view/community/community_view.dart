@@ -7,6 +7,8 @@ import 'package:running_app/utils/common_widgets/stack.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/view/community/club_view.dart';
+import 'package:running_app/view/community/event_view.dart';
+import 'package:running_app/view/community/social_view.dart';
 
 class CommunityView extends StatefulWidget {
   const CommunityView({super.key});
@@ -16,18 +18,23 @@ class CommunityView extends StatefulWidget {
 }
 
 class _CommunityViewState extends State<CommunityView> {
+  String _showView = "Events";
+
+
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-
     List redirect = ["Events", "Social", "Clubs"];
     return Scaffold(
       body: CustomStack(
         children: [
-          BackgroundContainer(
-            // height: media.height * 0.38,
-            height: media.height * 0.36,
-          ),
+          if(_showView != "Social")...[
+            BackgroundContainer(
+              // height: media.height * 0.38,
+              height: media.height * (_showView == "Events" ? 0.38 : 0.36),
+            ),
+          ],
           MainWrapper(
             child: Column(
               children: [
@@ -48,7 +55,11 @@ class _CommunityViewState extends State<CommunityView> {
                     children: [
                       for(var x in redirect)
                         CustomTextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              _showView = x;
+                            });
+                          },
                           style: ButtonStyle(
                               padding: MaterialStateProperty.all<EdgeInsets>(
                                   EdgeInsets.symmetric(
@@ -57,7 +68,7 @@ class _CommunityViewState extends State<CommunityView> {
                                   )
                               ),
                               backgroundColor: MaterialStateProperty.all<Color?>(
-                                  x == "Clubs" ? TColor.PRIMARY : null
+                                _showView == x ? TColor.PRIMARY : null
                               ),
                               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -81,7 +92,8 @@ class _CommunityViewState extends State<CommunityView> {
 
 
                 // EventView(),
-                const ClubView(),
+                (_showView == "Events") ?
+                  EventView() : (_showView == "Social" ? SocialView() : ClubView()),
               ],
             )
           ),
