@@ -5,7 +5,7 @@ import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/progress_bar.dart';
-import 'package:running_app/utils/common_widgets/stack.dart';
+import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 
@@ -24,10 +24,8 @@ class _EventDetailViewState extends State<EventDetailView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
-          height: media.height * 1.4,
-          child: CustomStack(
-            backgroundHeight: media.height * 1.4,
+        child: DefaultBackgroundLayout(
+          child: Stack(
             children: [
               ColorFiltered(
                 colorFilter: ColorFilter.mode(

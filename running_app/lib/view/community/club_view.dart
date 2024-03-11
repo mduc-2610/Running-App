@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
+import 'package:running_app/utils/common_widgets/search_filter.dart';
 import 'package:running_app/utils/common_widgets/seperate_bar.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
@@ -105,51 +106,7 @@ class _ClubViewState extends State<ClubView> {
         SizedBox(height: media.height * 0.01),
 
         // Search clubs
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              width: media.width * 0.78,
-              height: media.height * 0.05,
-              decoration: BoxDecoration(
-                  color: TColor.SECONDARY_BACKGROUND,
-                  borderRadius: BorderRadius.circular(10)
-              ),
-              child: CustomTextFormField(
-                decoration: CustomInputDecoration(
-                    hintText: "Search clubs",
-                    prefixIcon: Icon(Icons.search, color: TColor.DESCRIPTION),
-                    borderSide: 0
-                ),
-                keyboardType: TextInputType.text,
-              ),
-            ),
-            CustomTextButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all<EdgeInsets>(
-                    const EdgeInsets.symmetric(
-                        vertical: 11,
-                        horizontal: 0
-                    )
-                ),
-                backgroundColor: MaterialStateProperty.all<Color?>(
-                    TColor.SECONDARY_BACKGROUND
-                ),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)
-                    )
-                ),
-                side: MaterialStateProperty.all(BorderSide(
-                  color: TColor.BORDER_COLOR, // Set border color here
-                  width: 1.0, // Set border width here
-                )),
-              ),
-              child: Icon(Icons.filter_list_rounded, color: TColor.PRIMARY_TEXT,),
-            )
-          ],
-        ),
+        SearchFilter(hintText: "Search clubs"),
         SizedBox(height: media.height * 0.03,),
 
         // Your clubs

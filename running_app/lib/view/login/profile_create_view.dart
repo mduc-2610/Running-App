@@ -4,7 +4,7 @@ import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/stack.dart';
+import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
@@ -76,10 +76,8 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
-          height: media.height * 1.55,
-          child: CustomStack(
-            backgroundHeight: media.height * 1.55,
+        child: DefaultBackgroundLayout(
+          child: Stack(
             children: [
               MainWrapper(
                 child: Column(

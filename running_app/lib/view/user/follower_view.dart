@@ -4,7 +4,7 @@ import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/stack.dart';
+import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
@@ -23,79 +23,81 @@ class _FollowerViewState extends State<FollowerView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-      body: CustomStack(
-        children: [
-          MainWrapper(
-            child: Column(
-              children: [
-                Header(title: "Follow", noIcon: true,),
-                SizedBox(height: media.height * 0.015,),
-                SizedBox(
-                  height: 40,
-                  child: CustomTextFormField(
-                    decoration: CustomInputDecoration(
-                        hintText: "Type a name of athlete here",
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 20
-                        ),
-                        prefixIcon: Icon(
-                            Icons.search_rounded,
-                            color: TColor.DESCRIPTION
-                        )
+      body: DefaultBackgroundLayout(
+        child: Stack(
+          children: [
+            MainWrapper(
+              child: Column(
+                children: [
+                  Header(title: "Follow", noIcon: true,),
+                  SizedBox(height: media.height * 0.015,),
+                  SizedBox(
+                    height: 40,
+                    child: CustomTextFormField(
+                      decoration: CustomInputDecoration(
+                          hintText: "Type a name of athlete here",
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 20
+                          ),
+                          prefixIcon: Icon(
+                              Icons.search_rounded,
+                              color: TColor.DESCRIPTION
+                          )
+                      ),
+                      keyboardType: TextInputType.text,
                     ),
-                    keyboardType: TextInputType.text,
                   ),
-                ),
-
-                SizedBox(height: media.height * 0.015,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    for (var x in ["Following", "Follower"])...[
-                      SizedBox(
-                        width: media.width * 0.46,
-                        child: CustomTextButton(
-                          onPressed: () {
-                            setState(() {
-                              _showFollowerLayout = x == "Follower";
-                            });
-                          },
-                          style: ButtonStyle(
-                              padding: MaterialStateProperty.all<EdgeInsets>(
-                                  EdgeInsets.symmetric(
-                                      vertical: 5,
-                                      horizontal: media.width * 0.07)),
-                              backgroundColor: MaterialStateProperty.all<
-                                  Color?>(
-                                // x == "Total stats" ? TColor.PRIMARY : null
-
-                                  x == "Following" && _showFollowerLayout == false
-                                      || x == "Follower" && _showFollowerLayout == true
-                                      ? TColor.PRIMARY : null),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.circular(10)))),
-                          child: Text(x,
-                              style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.NORMAL,
-                                fontWeight: FontWeight.w600,
-                              )),
-                        ),
-                      )
+        
+                  SizedBox(height: media.height * 0.015,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      for (var x in ["Following", "Follower"])...[
+                        SizedBox(
+                          width: media.width * 0.46,
+                          child: CustomTextButton(
+                            onPressed: () {
+                              setState(() {
+                                _showFollowerLayout = x == "Follower";
+                              });
+                            },
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                    EdgeInsets.symmetric(
+                                        vertical: 5,
+                                        horizontal: media.width * 0.07)),
+                                backgroundColor: MaterialStateProperty.all<
+                                    Color?>(
+                                  // x == "Total stats" ? TColor.PRIMARY : null
+        
+                                    x == "Following" && _showFollowerLayout == false
+                                        || x == "Follower" && _showFollowerLayout == true
+                                        ? TColor.PRIMARY : null),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(10)))),
+                            child: Text(x,
+                                style: TextStyle(
+                                  color: TColor.PRIMARY_TEXT,
+                                  fontSize: FontSize.NORMAL,
+                                  fontWeight: FontWeight.w600,
+                                )),
+                          ),
+                        )
+                      ],
                     ],
-                  ],
-                ),
-                SizedBox(height: media.height * 0.015,),
-                (_showFollowerLayout)
-                    ? FollowLayout(layout: "Follower", amount: "0")
-                    : FollowLayout(layout: "Following", amount: "0")
-              ],
-            ),
-          )
-        ],
+                  ),
+                  SizedBox(height: media.height * 0.015,),
+                  (_showFollowerLayout)
+                      ? FollowLayout(layout: "Follower", amount: "0")
+                      : FollowLayout(layout: "Following", amount: "0")
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -4,7 +4,7 @@ import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/stack.dart';
+import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
@@ -54,10 +54,6 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
       "initialValue": "0858189821",
     },
     {
-      "hintText": "Address",
-      "initialValue": "Ninh Binh - Nho Quan",
-    },
-    {
       "hintText": "Shoe size",
       "initialValue": "42",
     },
@@ -76,17 +72,15 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
-          height: media.height * 1.55,
-          child: CustomStack(
-            backgroundHeight: media.height * 1.55,
+        child: DefaultBackgroundLayout(
+          child: Stack(
             children: [
               MainWrapper(
                 child: Column(
                   children: [
                     Header(title: "Account Information", noIcon: true,),
                     SizedBox(height: media.height * 0.015,),
-          
+
                     CustomTextButton(
                       onPressed: () {},
                       child: Stack(
@@ -123,7 +117,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                       ),
                     ),
                     SizedBox(height: media.height * 0.015,),
-          
+
                     // Information
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +179,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                                   hintText: fields[i]["hintText"]
                                 ),
                                 dropdownColor: Colors.black,
-          
+
                               ),
                             ),
                             SizedBox(height: media.height * 0.015,),
@@ -195,7 +189,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                       ],
                     ),
                     SizedBox(height: media.height * 0.02,),
-          
+
                     // Health Information
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,7 +318,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                           ),
                         ),
                         SizedBox(height: media.height * 0.02,),
-                        for(int i = 7; i < 10; i++)...[
+                        for(int i = 7; i < 9; i++)...[
                           CustomTextFormField(
                             initialValue: fields[i]["initialValue"],
                             decoration: CustomInputDecoration(
@@ -342,7 +336,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                           ),
                           SizedBox(height: media.height * 0.015,),
                         ],
-                        for(int i = 10; i < 12; i++)...[
+                        for(int i = 9; i < 11; i++)...[
                           SizedBox(
                             height: 60,
                             child: DropdownButtonFormField<String>(
@@ -379,20 +373,43 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                     ),
                     SizedBox(height: media.height * 0.02,),
 
-                    SizedBox(
-                      width: media.width,
-                      child: CustomMainButton(
-                        horizontalPadding: 0,
-                        onPressed: () {},
-                        child: Text(
-                          "Save",
-                          style: TextStyle(
-                            color: TColor.PRIMARY_TEXT,
-                            fontSize: FontSize.LARGE,
-                            fontWeight: FontWeight.w800
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: media.width,
+                          child: CustomMainButton(
+                            background: Colors.transparent,
+                            borderWidth: 2.0,
+                            borderWidthColor: TColor.PRIMARY,
+                            horizontalPadding: 0,
+                            onPressed: () {},
+                            child: Text(
+                              "Add address",
+                              style: TextStyle(
+                                  color: TColor.PRIMARY,
+                                  fontSize: FontSize.LARGE,
+                                  fontWeight: FontWeight.w800
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(height: media.height * 0.02,),
+                        SizedBox(
+                          width: media.width,
+                          child: CustomMainButton(
+                            horizontalPadding: 0,
+                            onPressed: () {},
+                            child: Text(
+                              "Save",
+                              style: TextStyle(
+                                color: TColor.PRIMARY_TEXT,
+                                fontSize: FontSize.LARGE,
+                                fontWeight: FontWeight.w800
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     )
                   ],
                 ),

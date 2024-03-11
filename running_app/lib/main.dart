@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/account_information_setting',
+      initialRoute: '/',
       routes: {
         '/': (context) => const GetStartedView(),
         '/on_board': (context) => const OnBoardingView(),
