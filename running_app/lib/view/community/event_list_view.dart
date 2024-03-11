@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/event_box.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
@@ -135,101 +136,7 @@ class EventList extends StatelessWidget {
         ),
         SizedBox(height: media.height * 0.02,),
         for(int i = 0; i < 10; i++)...[
-          CustomTextButton(
-            onPressed: () {},
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: TColor.SECONDARY_BACKGROUND,
-                boxShadow: [
-                  BShadow.customBoxShadow
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12)
-                    ),
-                    child: Image.asset(
-                      "assets/img/community/ptit_background.jpg",
-                      width: media.width,
-                      height: media.height * 0.15,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(height: media.height * 0.01,),
-                  Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12,
-                        // vertical: 10,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "On-Energize your Dreams",
-                            style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.NORMAL,
-                                fontWeight: FontWeight.w700
-                            ),
-                          ),
-                          SizedBox(height: media.height * 0.01,),
-                          for(var x in [
-                            {
-                              "icon": Icons.calendar_today_rounded,
-                              "text": "Ends in: 7 days",
-                            },
-                            {
-                              "icon": Icons.people_alt_outlined,
-                              "text": "1,812",
-                            }
-                          ])...[
-                            Row(
-                              children: [
-                                Icon(
-                                  x["icon"] as IconData,
-                                  color: TColor.DESCRIPTION,
-                                ),
-                                SizedBox(width: media.width * 0.02,),
-                                Text(
-                                  x["text"] as String,
-                                  style: TextStyle(
-                                    color: TColor.DESCRIPTION,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: media.height * 0.01,),
-                          ],
-                        ],
-                      )
-                  ),
-                  Container(
-                    width: media.width,
-                    margin: EdgeInsets.fromLTRB(12, 0, 12, 20),
-                    child: CustomMainButton(
-                      horizontalPadding: 0,
-                      verticalPadding: 12,
-                      onPressed: () {},
-                      child: Text(
-                        "Join",
-                        style: TextStyle(
-                            color: TColor.PRIMARY_TEXT,
-                            fontSize: FontSize.LARGE,
-                            fontWeight: FontWeight.w800
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
+          EventBox(),
           if(i < 9) SizedBox(height: media.height * 0.02,),
         ]
       ],

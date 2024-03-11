@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:running_app/utils/common_widgets/event_box.dart';
 
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
+import 'package:running_app/utils/common_widgets/main_button.dart';
+import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/search_filter.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
@@ -24,8 +28,8 @@ class _EventViewState extends State<EventView> {
       children: [
         // Search events section
         SearchFilter(hintText: "Search events"),
-
         SizedBox(height: media.height * 0.01,),
+
         // Your event section
         CustomTextButton(
           onPressed: () {
@@ -102,7 +106,96 @@ class _EventViewState extends State<EventView> {
               ],
             ),
           ),
-        )
+        ),
+        SizedBox(height: media.height * 0.03,),
+
+        // Popular Events
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Popular events",
+              style: TextStyle(
+                color: TColor.PRIMARY_TEXT,
+                fontSize: 22,
+                fontWeight: FontWeight.w800
+              ),
+            ),
+            SizedBox(height: media.height * 0.01,),
+            Container(
+              height: media.height * 0.4,
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  viewportFraction: 0.85,
+                  autoPlayAnimationDuration: Duration(milliseconds: 100),
+                  initialPage: 0,
+                  aspectRatio: 1.23,
+                  enlargeCenterPage: true,
+                  enlargeFactor: 0.18,
+                  enableInfiniteScroll: false
+                ),
+
+                items: [
+                  for(int i = 0; i < 3; i ++)...[
+                    EventBox(),
+                  ]
+                ],
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: media.height * 0.02,),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      "All events",
+                      style: TextStyle(
+                        color: TColor.PRIMARY_TEXT,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                      )
+                  ),
+                  CustomTextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/event_list');
+                    },
+                    child: Text(
+                        "See all",
+                        style: TextStyle(
+                          color: TColor.PRIMARY,
+                          fontSize: FontSize.NORMAL,
+                          fontWeight: FontWeight.w500,
+                        )
+                    ),
+                  )
+                ]
+            ),
+            // SizedBox(height: media.height * 0.01,),
+            Container(
+              height: media.height * 0.37,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.only(left: 10),
+
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for(int i = 0; i < 10; i++)...[
+                      IntrinsicHeight(
+                        child: EventBox(width: 200,
+                        buttonMargin: EdgeInsets.fromLTRB(12, 0, 12, 12),)
+                      ),
+                      if(i < 9) SizedBox(width: 10,)
+                    ]
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ],
     );
 

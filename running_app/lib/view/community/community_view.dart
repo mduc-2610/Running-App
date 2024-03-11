@@ -27,79 +27,81 @@ class _CommunityViewState extends State<CommunityView> {
     var media = MediaQuery.sizeOf(context);
     List redirect = ["Events", "Social", "Clubs"];
     return Scaffold(
-      body: DefaultBackgroundLayout(
-        child: Stack(
-          children: [
-            if(_showView != "Social")...[
-              BackgroundContainer(
-                // height: media.height * 0.38,
-                height: media.height * (_showView == "Events" ? 0.38 : 0.36),
+      body: SingleChildScrollView(
+        child: DefaultBackgroundLayout(
+          child: Stack(
+            children: [
+              if(_showView != "Social")...[
+                BackgroundContainer(
+                  // height: media.height * 0.38,
+                  height: media.height * (_showView == "Events" ? 0.38 : 0.36),
+                ),
+              ],
+              MainWrapper(
+                child: Column(
+                  children: [
+                    const Header(title: "Community", backButton: false, noIcon: true),
+                    SizedBox(height: media.height * 0.02,),
+                    // Redirect and search section
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3,
+                          horizontal: 10
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: TColor.SECONDARY_BACKGROUND,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          for(var x in redirect)
+                            CustomTextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _showView = x;
+                                });
+                              },
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all<EdgeInsets>(
+                                      EdgeInsets.symmetric(
+                                          vertical: 5,
+                                          horizontal: media.width * 0.07
+                                      )
+                                  ),
+                                  backgroundColor: MaterialStateProperty.all<Color?>(
+                                    _showView == x ? TColor.PRIMARY : null
+                                  ),
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10)
+                                      )
+                                  )
+                              ),
+                              child: Text(
+                                  x,
+                                  style: TextStyle(
+                                    color: TColor.PRIMARY_TEXT,
+                                    fontSize: FontSize.NORMAL,
+                                    fontWeight: FontWeight.w600,
+                                  )
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: media.height * 0.005,),
+
+
+                    // EventView(),
+                    (_showView == "Events") ?
+                      EventView() : (_showView == "Social" ? SocialView() : ClubView()),
+                  ],
+                )
               ),
+              const Menu(),
             ],
-            MainWrapper(
-              child: Column(
-                children: [
-                  const Header(title: "Community", backButton: false, noIcon: true),
-                  SizedBox(height: media.height * 0.02,),
-                  // Redirect and search section
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 3,
-                        horizontal: 10
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: TColor.SECONDARY_BACKGROUND,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        for(var x in redirect)
-                          CustomTextButton(
-                            onPressed: () {
-                              setState(() {
-                                _showView = x;
-                              });
-                            },
-                            style: ButtonStyle(
-                                padding: MaterialStateProperty.all<EdgeInsets>(
-                                    EdgeInsets.symmetric(
-                                        vertical: 5,
-                                        horizontal: media.width * 0.07
-                                    )
-                                ),
-                                backgroundColor: MaterialStateProperty.all<Color?>(
-                                  _showView == x ? TColor.PRIMARY : null
-                                ),
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10)
-                                    )
-                                )
-                            ),
-                            child: Text(
-                                x,
-                                style: TextStyle(
-                                  color: TColor.PRIMARY_TEXT,
-                                  fontSize: FontSize.NORMAL,
-                                  fontWeight: FontWeight.w600,
-                                )
-                            ),
-                          )
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: media.height * 0.005,),
-
-
-                  // EventView(),
-                  (_showView == "Events") ?
-                    EventView() : (_showView == "Social" ? SocialView() : ClubView()),
-                ],
-              )
-            ),
-            const Menu(),
-          ],
+          ),
         ),
       ),
     );
