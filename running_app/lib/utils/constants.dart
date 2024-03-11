@@ -27,3 +27,12 @@ class FontSize {
   static const BUTTON = 24.0;
   static const TITLE = 30.0;
 }
+
+class BShadow {
+  static final BoxShadow customBoxShadow = BoxShadow(
+    color: Colors.black.withOpacity(0.5),
+    spreadRadius: 3,
+    blurRadius: 7,
+    offset: Offset(0, 3),
+  );
+}

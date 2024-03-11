@@ -28,7 +28,9 @@ class _EventViewState extends State<EventView> {
         SizedBox(height: media.height * 0.01,),
         // Your event section
         CustomTextButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pushNamed(context, '/your_event_list');
+          },
           child: Container(
             padding: const EdgeInsets.symmetric(
               vertical: 10,

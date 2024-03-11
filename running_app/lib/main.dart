@@ -8,6 +8,8 @@ import 'package:running_app/view/community/club_detail_view.dart';
 import 'package:running_app/view/community/club_list_view.dart';
 import 'package:running_app/view/community/community_view.dart';
 import 'package:running_app/view/community/event_detail_view.dart';
+import 'package:running_app/view/community/event_list_view.dart';
+import 'package:running_app/view/community/your_event_list_view.dart';
 import 'package:running_app/view/home/home_view.dart';
 import 'package:running_app/view/home/notification_view.dart';
 import 'package:running_app/view/login/get_started_view.dart';
@@ -45,7 +47,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/',
+      initialRoute: '/event_list',
       routes: {
         '/': (context) => const GetStartedView(),
         '/on_board': (context) => const OnBoardingView(),
@@ -64,6 +66,8 @@ class MyApp extends StatelessWidget {
         '/community': (context) => const CommunityView(),
         '/club_list': (context) => const ClubListView(),
         '/club_detail': (context) => const ClubDetailView(),
+        '/event_list': (context) => const EventListView(),
+        '/your_event_list': (context) => const YourEventListView(),
         '/user': (context) => const UserView(),
         '/setting': (context) => const SettingView(),
         '/event_detail': (context) => const EventDetailView(),
