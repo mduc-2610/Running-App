@@ -27,21 +27,24 @@ class _CommunityViewState extends State<CommunityView> {
     var media = MediaQuery.sizeOf(context);
     List redirect = ["Events", "Social", "Clubs"];
     return Scaffold(
+
+      appBar: AppBar(
+        title: Header(title: "Community", backButton: false, noIcon: true),
+        automaticallyImplyLeading: false,
+        backgroundColor: TColor.PRIMARY,
+      ),
       body: SingleChildScrollView(
         child: DefaultBackgroundLayout(
           child: Stack(
             children: [
               if(_showView != "Social")...[
                 BackgroundContainer(
-                  // height: media.height * 0.38,
-                  height: media.height * (_showView == "Events" ? 0.38 : 0.36),
+                  height: media.height * (_showView == "Events" ? 0.28 : 0.26),
                 ),
               ],
               MainWrapper(
                 child: Column(
                   children: [
-                    const Header(title: "Community", backButton: false, noIcon: true),
-                    SizedBox(height: media.height * 0.02,),
                     // Redirect and search section
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -92,18 +95,17 @@ class _CommunityViewState extends State<CommunityView> {
                     ),
                     SizedBox(height: media.height * 0.005,),
 
-
                     // EventView(),
                     (_showView == "Events") ?
                       EventView() : (_showView == "Social" ? SocialView() : ClubView()),
                   ],
                 )
               ),
-              const Menu(),
             ],
           ),
         ),
       ),
+      bottomNavigationBar: Menu(),
     );
   }
 }

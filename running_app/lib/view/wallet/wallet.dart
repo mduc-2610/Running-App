@@ -31,12 +31,21 @@ class WalletView extends StatelessWidget {
     ];
 
     return Scaffold(
+      appBar: AppBar(
+        title: Header(title: "New wallet", noIcon: true,),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/home/background_1.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: DefaultBackgroundLayout(
         child: Stack(
           children: [
-            const MainWrapper(
-              child: Header(title: "New Wallet"),
-            ),
             Center(
               child: IntrinsicHeight(
                 child: Column(

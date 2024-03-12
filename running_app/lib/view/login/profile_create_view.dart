@@ -7,6 +7,7 @@ import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
+import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 
 class ProfileCreateView extends StatefulWidget {
@@ -75,6 +76,18 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Header(title: "Create your own profile", noIcon: true,),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/home/background_1.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         child: DefaultBackgroundLayout(
           child: Stack(
@@ -82,9 +95,6 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
               MainWrapper(
                 child: Column(
                   children: [
-                    Header(title: "Account Information", noIcon: true,),
-                    SizedBox(height: media.height * 0.015,),
-
                     CustomTextButton(
                       onPressed: () {},
                       child: Stack(
@@ -368,36 +378,37 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
                                   hintText: fields[i]["hintText"]
                               ),
                               dropdownColor: Colors.black,
-
                             ),
                           ),
-                          SizedBox(height: media.height * 0.015,),
+                          if(i < 1) SizedBox(height: media.height * 0.02,),
                         ]
                       ],
                     ),
-                    SizedBox(height: media.height * 0.02,),
-
-                    SizedBox(
-                      width: media.width,
-                      child: CustomMainButton(
-                        horizontalPadding: 0,
-                        onPressed: () {},
-                        child: Text(
-                          "Save",
-                          style: TextStyle(
-                              color: TColor.PRIMARY_TEXT,
-                              fontSize: FontSize.LARGE,
-                              fontWeight: FontWeight.w800
-                          ),
-                        ),
-                      ),
-                    )
                   ],
                 ),
               )
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: Wrapper(
+        child: Container(
+        margin: EdgeInsets.fromLTRB(media.width * 0.025, 0, media.width * 0.025, media.width * 0.025),
+          child: CustomMainButton(
+            horizontalPadding: 0,
+            onPressed: () {
+              Navigator.pushNamed(context, '/home');
+            },
+            child: Text(
+              "Save",
+              style: TextStyle(
+                  color: TColor.PRIMARY_TEXT,
+                  fontSize: FontSize.LARGE,
+                  fontWeight: FontWeight.w800
+              ),
+            ),
+          ),
+        )
       ),
     );
   }

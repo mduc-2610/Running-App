@@ -23,6 +23,18 @@ class _YourEventListViewState extends State<YourEventListView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Header(title: "All events", noIcon: true,),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/home/background_1.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         child: DefaultBackgroundLayout(
           child: Stack(
@@ -30,9 +42,6 @@ class _YourEventListViewState extends State<YourEventListView> {
               MainWrapper(
                 child: Column(
                   children: [
-                    Header(title: "All events", noIcon: true,),
-                    SizedBox(height: media.height * 0.015,),
-
                     // Redirect
                     Container(
                       // padding: EdgeInsets.symmetric(

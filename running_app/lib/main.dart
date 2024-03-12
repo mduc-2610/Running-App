@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/community',
+      initialRoute: '/on_board',
       routes: {
         '/': (context) => const GetStartedView(),
         '/on_board': (context) => const OnBoardingView(),

@@ -29,7 +29,7 @@ class SearchFilter extends StatelessWidget {
             decoration: CustomInputDecoration(
                 hintText: hintText,
                 prefixIcon: Icon(Icons.search, color: TColor.DESCRIPTION),
-                borderSide: 0,
+                borderSide: 1,
                 contentPadding: EdgeInsets.symmetric(
                     horizontal: 20
                 )

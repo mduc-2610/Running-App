@@ -118,6 +118,7 @@ class SignUpView extends StatelessWidget {
                 ),
               ),
               MainWrapper(
+                  topMargin: media.height * 0.06,
                   child: CustomBackButton(context: context)
               ),
               MainWrapper(

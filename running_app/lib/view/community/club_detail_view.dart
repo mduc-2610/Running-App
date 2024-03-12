@@ -16,21 +16,28 @@ class ClubDetailView extends StatelessWidget {
       body: DefaultBackgroundLayout(
         child: Stack(
           children: [
-            Image.asset(
-              "assets/img/community/ptit_background.jpg",
-              width: media.width,
-              height: media.height * 0.2,
-              fit: BoxFit.cover,
+            ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.6),
+                BlendMode.darken,
+              ),
+              child: Image.asset(
+                "assets/img/community/ptit_background.jpg",
+                width: media.width,
+                height: media.height * 0.2,
+                fit: BoxFit.cover,
+              ),
             ),
             MainWrapper(
               child: Column(
                 children: [
-                  const Header(title: "", iconButtons: [
+                  SizedBox(height: media.height * 0.05,),
+                  Header(title: "", iconButtons: [
                     {
                       "icon": Icons.more_vert_rounded,
                     }
                   ],),
-                  SizedBox(height: media.height * 0.07,),
+                  SizedBox(height: media.height * 0.06,),
                   // Main section
                   Container(
                     child: Column(
@@ -44,8 +51,8 @@ class ClubDetailView extends StatelessWidget {
                               borderRadius: BorderRadius.circular(50),
                               child: Image.asset(
                                 "assets/img/community/ptit_logo.png",
-                                width: 85,
-                                height: 85,
+                                width: 100,
+                                height: 100,
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -171,7 +178,7 @@ class ClubDetailView extends StatelessWidget {
                                     ],
                                   ),
                                   if(x["text"] == "Running" || x["text"] == "Join")...[
-                                    SizedBox(width: media.width * 0.02,)
+                                    SizedBox(width: media.width * 0.03,)
                                   ]
                                 ]
                               ],

@@ -7,6 +7,7 @@ import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
+import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 
 class AccountInformationSettingView extends StatefulWidget {
@@ -71,6 +72,18 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Header(title: "Account Information", noIcon: true,),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/home/background_1.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         child: DefaultBackgroundLayout(
           child: Stack(
@@ -78,9 +91,6 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
               MainWrapper(
                 child: Column(
                   children: [
-                    Header(title: "Account Information", noIcon: true,),
-                    SizedBox(height: media.height * 0.015,),
-
                     CustomTextButton(
                       onPressed: () {},
                       child: Stack(
@@ -382,29 +392,15 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                             borderWidth: 2.0,
                             borderWidthColor: TColor.PRIMARY,
                             horizontalPadding: 0,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/address');
+                            },
                             child: Text(
                               "Add address",
                               style: TextStyle(
                                   color: TColor.PRIMARY,
                                   fontSize: FontSize.LARGE,
                                   fontWeight: FontWeight.w800
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: media.height * 0.02,),
-                        SizedBox(
-                          width: media.width,
-                          child: CustomMainButton(
-                            horizontalPadding: 0,
-                            onPressed: () {},
-                            child: Text(
-                              "Save",
-                              style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.LARGE,
-                                fontWeight: FontWeight.w800
                               ),
                             ),
                           ),
@@ -417,6 +413,25 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: Wrapper(
+          child: Container(
+            margin: EdgeInsets.fromLTRB(media.width * 0.025, 0, media.width * 0.025, media.width * 0.025),
+            child: CustomMainButton(
+              horizontalPadding: 0,
+              onPressed: () {
+                Navigator.pushNamed(context, '/home');
+              },
+              child: Text(
+                "Save",
+                style: TextStyle(
+                    color: TColor.PRIMARY_TEXT,
+                    fontSize: FontSize.LARGE,
+                    fontWeight: FontWeight.w800
+                ),
+              ),
+            ),
+          )
       ),
     );
   }

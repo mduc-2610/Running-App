@@ -18,7 +18,7 @@ class BackgroundContainer extends StatelessWidget {
     var media = MediaQuery.sizeOf(context);
     return Container(
       width: width ?? media.width,
-      height: height ?? media.height * 0.535,
+      height: height ?? media.height * 0.44,
       decoration: BoxDecoration(
         color: TColor.PRIMARY.withOpacity(0.6),
         borderRadius: BorderRadius.only(

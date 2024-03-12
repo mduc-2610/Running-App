@@ -23,14 +23,24 @@ class _FollowerViewState extends State<FollowerView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Header(title: "Follow", noIcon: true,),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/home/background_1.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: DefaultBackgroundLayout(
         child: Stack(
           children: [
             MainWrapper(
               child: Column(
                 children: [
-                  Header(title: "Follow", noIcon: true,),
-                  SizedBox(height: media.height * 0.015,),
                   SizedBox(
                     height: 40,
                     child: CustomTextFormField(

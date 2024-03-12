@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/text_button.dart';
 
 import '../../utils/constants.dart';
 import '../../utils/common_widgets/back_button.dart';
@@ -55,6 +56,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
         ),
 
         MainWrapper(
+          topMargin: media.height * 0.06,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -78,46 +80,94 @@ class _OnBoardingViewState extends State<OnBoardingView> {
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
-                    children: guidelineArr.map((guideline) {
-                      return Expanded(
-                        child: Container(
-                          width: media.width * 0.9,
-                          height: media.height * 0.2,
-                          margin: const EdgeInsets.all(8.0),
-                          padding: const EdgeInsets.all(16.0),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                        Container(
+                          height: media.height * 0.35,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 50,
+                            horizontal: 24
+                          ),
                           decoration: BoxDecoration(
                             color: TColor.SECONDARY_BACKGROUND,
-                            borderRadius: BorderRadius.circular(8.0),
+                            borderRadius: BorderRadius.circular(80),
+                            border: Border.all(
+                              width: 2.0,
+                              color: TColor.BORDER_COLOR
+                            )
                           ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                guideline['title'],
+                                guidelineArr[_currentIndex]['title'],
                                 style: TextStyle(
                                   color: TColor.PRIMARY_TEXT,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                guideline['description'],
-                                style: TextStyle(
-                                  color: TColor.DESCRIPTION,
-                                  fontSize: 16,
+                              SizedBox(
+                                width: media.width * 0.75,
+                                child: Text(
+                                  guidelineArr[_currentIndex]['description'],
+                                  style: TextStyle(
+                                    color: TColor.DESCRIPTION,
+                                    fontSize: 16,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                maxLines: 2, // Restrict maximum number of lines
-                                overflow: TextOverflow.ellipsis, // Use ellipsis for overflow
                               ),
+                              SizedBox(height: media.height * 0.02,),
+                              CustomTextButton(
+                                style: ButtonStyle(
+                                    padding: MaterialStateProperty.all(
+                                        EdgeInsets.symmetric(
+                                          vertical: 15,
+                                          horizontal: 24
+                                        )
+                                    ),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        )
+                                    ),
+                                    backgroundColor: MaterialStateProperty.all<Color>(
+                                        TColor.PRIMARY
+                                    )
+                                ),
+                                onPressed: () {
+                                  if(_currentIndex == 2) Navigator.pushNamed(context, '/sign_in');
+                                  else _nextSlide();
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      _currentIndex < 2 ? "Next" : "Skip",
+                                      style: TextStyle(
+                                          color: TColor.PRIMARY_TEXT,
+                                          fontSize: FontSize.LARGE,
+                                          fontWeight: FontWeight.w700
+                                      ),
+                                    ),
+                                    SizedBox(width: media.width * 0.01,),
+                                    if(_currentIndex != 2)
+                                    Icon(
+                                      Icons.arrow_forward_rounded,
+                                      color: TColor.PRIMARY_TEXT,
+                                    )
+                                  ],
+                                ),
+                              )
                             ],
                           ),
                         ),
-                      );
-                    }).toList(),
+                      ],
                   ),
                   SizedBox(height: media.width * 0.03),
                   Row(

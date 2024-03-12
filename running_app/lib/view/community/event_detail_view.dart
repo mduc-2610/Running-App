@@ -35,24 +35,22 @@ class _EventDetailViewState extends State<EventDetailView> {
                 child: Image.asset(
                   "assets/img/community/ptit_background.jpg",
                   width: media.width,
-                  height: media.height * 0.2,
+                  height: media.height * 0.26,
                   fit: BoxFit.cover,
                 ),
               ),
               MainWrapper(
                 child: Column(
                   children: [
+                    SizedBox(height: media.height * 0.05,),
                     // Header
-                    Positioned(
-                      top: 0,
-                      child: Header(
-                        title: "",
-                        iconButtons: [
-                          {
-                            "icon": Icons.more_vert_rounded,
-                          }
-                        ],
-                      ),
+                    Header(
+                      title: "",
+                      iconButtons: [
+                        {
+                          "icon": Icons.more_vert_rounded,
+                        }
+                      ],
                     ),
                     SizedBox(
                       height: media.height * 0.07,

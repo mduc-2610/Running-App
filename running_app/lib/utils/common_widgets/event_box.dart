@@ -19,7 +19,9 @@ class EventBox extends StatelessWidget {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return CustomTextButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pushNamed(context, '/event_detail');
+      },
       child: Container(
         width: width ?? null,
         decoration: BoxDecoration(

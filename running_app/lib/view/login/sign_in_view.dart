@@ -53,6 +53,7 @@ class _SignInViewState extends State<SignInView> {
               ),
             ),
             MainWrapper(
+              topMargin: media.height * 0.06,
               child: CustomBackButton(context: context)
             ),
             MainWrapper(

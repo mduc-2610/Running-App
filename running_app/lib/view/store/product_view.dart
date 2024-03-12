@@ -22,6 +22,25 @@ class _ProductViewState extends State<ProductView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Header(
+          title: "Product",
+          iconButtons: [
+            {
+              "icon": Icons.filter_alt_outlined,
+            }
+          ],
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/home/background_1.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: SingleChildScrollView(
         child: Container(
           child: DefaultBackgroundLayout(
@@ -30,17 +49,6 @@ class _ProductViewState extends State<ProductView> {
                 MainWrapper(
                   child: Column(
                     children: [
-                      // Header
-                      const Header(
-                        title: "Product",
-                        iconButtons: [
-                          {
-                            "icon": Icons.filter_alt_outlined,
-                          }
-                        ],
-                      ),
-                      SizedBox(height: media.height * 0.03,),
-
                       // Search bar
                       CustomTextFormField(
                         decoration: CustomInputDecoration(
@@ -154,12 +162,12 @@ class _ProductViewState extends State<ProductView> {
                     ],
                   ),
                 ),
-                const Menu()
               ],
             ),
           ),
         ),
       ),
+      bottomNavigationBar: Menu()
     );
   }
 }

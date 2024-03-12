@@ -16,6 +16,18 @@ class PrivacySettingView extends StatelessWidget {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Header(title: "Privacy", noIcon: true,),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/home/background_1.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: DefaultBackgroundLayout(
         child: Stack(
           children: [
@@ -23,12 +35,7 @@ class PrivacySettingView extends StatelessWidget {
               child: SizedBox(
                 height: media.height,
                 child: Column(
-                  children: [
-                    // Header
-                    Header(title: "Privacy", noIcon: true,),
-                    SizedBox(height: media.height * 0.02,),
-        
-                    // User privacy
+                  children: [            // User privacy
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

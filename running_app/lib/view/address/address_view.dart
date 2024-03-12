@@ -19,14 +19,25 @@ class _AddressViewState extends State<AddressView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Header(title: "Address", noIcon: true,),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/img/home/background_1.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: DefaultBackgroundLayout(
         child: Stack(
           children: [
             MainWrapper(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Header(title:"Address"),
                   Container(
                     margin: EdgeInsets.symmetric(
                       vertical: 0,
@@ -59,23 +70,30 @@ class _AddressViewState extends State<AddressView> {
                       ],
                     ),
                   ),
-                  CustomMainButton(
-                    horizontalPadding: media.width * 0.32,
-                    onPressed: () {},
-                    background: Colors.transparent,
-                    borderWidth: 2,
-                    borderWidthColor: TColor.PRIMARY,
-                    borderRadius: 16,
-                    child: Text(
-                      "Add address",
-                      style: TextStyle(
-                        color: TColor.PRIMARY,
-                        fontSize: FontSize.LARGE,
-                        fontWeight: FontWeight.w600
-                      ),
-                    ),
-                  )
+
                 ],
+              ),
+            ),
+            // Container(height: media.height,),
+            Positioned(
+              left: media.width * 0.025,
+              right: media.width * 0.025,
+              bottom: media.height * 0.025,
+              child: CustomMainButton(
+                horizontalPadding: media.width * 0.32,
+                onPressed: () {},
+                background: Colors.transparent,
+                borderWidth: 2,
+                borderWidthColor: TColor.PRIMARY,
+                borderRadius: 16,
+                child: Text(
+                  "Add address",
+                  style: TextStyle(
+                      color: TColor.PRIMARY,
+                      fontSize: FontSize.LARGE,
+                      fontWeight: FontWeight.w600
+                  ),
+                ),
               ),
             )
           ],
