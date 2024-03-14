@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
@@ -30,7 +29,7 @@ class SearchFilter extends StatelessWidget {
                 hintText: hintText,
                 prefixIcon: Icon(Icons.search, color: TColor.DESCRIPTION),
                 borderSide: 1,
-                contentPadding: EdgeInsets.symmetric(
+                contentPadding: const EdgeInsets.symmetric(
                     horizontal: 20
                 )
             ),

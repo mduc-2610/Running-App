@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:running_app/utils/common_widgets/input_decoration.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:provider/provider.dart';
+
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/search_filter.dart';
 import 'package:running_app/utils/common_widgets/seperate_bar.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
+
+String title(String? x) {
+  return (x?.substring(0, 1).toUpperCase() ?? "") + (x?.substring(1).toLowerCase() ?? "");
+}
 
 class ClubView extends StatefulWidget {
   const ClubView({super.key});
@@ -14,30 +23,63 @@ class ClubView extends StatefulWidget {
 }
 
 class _ClubViewState extends State<ClubView> {
-  List clubStat = [
-    {
-      "type": "Members",
-      "amount": "10",
-    },
-    {
-      "type": "Week activites",
-      "amount": "10",
-    },
-    {
-      "type": "Posts",
-      "amount": "10",
+  DetailUser? user;
+  List<dynamic>? userClubs;
+  Activity? userActivity;
+  String token = "";
+
+  Future<void> api() async {
+    try {
+      user = Provider.of<UserProvider>(context).user;
+      print('User: _____________________$user');
+      final activity = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+      setState(() {
+        userClubs = activity.clubs;
+        userActivity = activity;
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+      // Handle errors here
     }
-  ];
+  }
+  @override
+  void initState() {
+    super.initState();
+  }
+
+
+  @override
+  void didChangeDependencies() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+    api();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
+    List clubStat = [
+      {
+        "type": "Members",
+        "amount": (i) => userClubs?[i].numberOfParticipants.toString() ?? ""
+      },
+      {
+        "type": "Week activities",
+        "amount": (i) => userClubs?[i].weekActivities.toString() ?? "",
+      },
+      {
+        "type": "Posts",
+        "amount": (i) => "10",
+      }
+    ];
     return Column(
       children: [
 
         SizedBox(height: media.height * 0.005,),
         // View all clubs
-        TextButton(
+        CustomTextButton(
           onPressed: () {
             Navigator.pushNamed(context, '/club_list');
           },
@@ -71,7 +113,7 @@ class _ClubViewState extends State<ClubView> {
                       height: 50,
                     ),
                   ),
-                  SizedBox(width: media.width * 0.02,),
+                  SizedBox(width: media.width * 0.03,),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -106,7 +148,7 @@ class _ClubViewState extends State<ClubView> {
         SizedBox(height: media.height * 0.01),
 
         // Search clubs
-        SearchFilter(hintText: "Search clubs"),
+        const SearchFilter(hintText: "Search clubs"),
         SizedBox(height: media.height * 0.03,),
 
         // Your clubs
@@ -123,13 +165,18 @@ class _ClubViewState extends State<ClubView> {
 
             ),
             SizedBox(height: media.height * 0.015,),
-            for(int i = 0; i < 3; i++)...[
-
+            for(int i = 0; i < userActivity!.clubs.length; i++)...[
               Column(
                 children: [
                   CustomTextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/club_detail');
+                      Navigator.pushNamed(
+                        context,
+                        '/club_detail',
+                        arguments: {
+                          "id": userClubs?[i].id,
+                        }
+                      );
                     },
                     child: Stack(
                       children: [
@@ -177,17 +224,19 @@ class _ClubViewState extends State<ClubView> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "PTIT Runner",
+                                        userClubs?[i].name ?? "",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                             color: TColor.PRIMARY_TEXT,
                                             fontSize: FontSize.NORMAL,
                                             fontWeight: FontWeight.w800),
                                       ),
                                       Text(
-                                        "Running",
-                                        style: TextStyle(
+                                      title(userClubs?[i].sportType),
+                                      style: TextStyle(
                                             color: TColor.DESCRIPTION,
-                                            fontSize: FontSize.SMALL,
+                                            fontSize: 14,
                                             fontWeight: FontWeight.w500),
                                       )
                                     ],
@@ -196,12 +245,12 @@ class _ClubViewState extends State<ClubView> {
                               ),
                               SizedBox(height: media.height * 0.02,),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  for (int i = 0; i < 3; i++) ...[
+                                  for (int j = 0; j < 3; j++) ...[
                                     Row(
                                       children: [
-                                        if (i != 0) ...[
+                                        if (j != 0) ...[
                                           SeparateBar(
                                               width: 2, height: media.height * 0.04),
                                           SizedBox(width: media.width * 0.03)
@@ -210,21 +259,22 @@ class _ClubViewState extends State<ClubView> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              clubStat[i]["type"],
+                                              clubStat[j]["type"],
                                               style: TextStyle(
                                                   color: TColor.DESCRIPTION,
                                                   fontSize: FontSize.SMALL,
                                                   fontWeight: FontWeight.w500),
                                             ),
                                             Text(
-                                              clubStat[i]["amount"],
+                                              clubStat[j]["amount"](i),
                                               style: TextStyle(
                                                   color: TColor.PRIMARY_TEXT,
                                                   fontSize: FontSize.NORMAL,
                                                   fontWeight: FontWeight.w800),
                                             ),
                                           ],
-                                        )
+                                        ),
+                                        if(j < 2) SizedBox(width: media.width * 0.08,),
                                       ],
                                     ),
                                   ]

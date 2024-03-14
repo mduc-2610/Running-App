@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/event_box.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
-import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
@@ -24,9 +22,9 @@ class _YourEventListViewState extends State<YourEventListView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
-        title: Header(title: "All events", noIcon: true,),
+        title: const Header(title: "All events", noIcon: true,),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/img/home/background_1.png"),
               fit: BoxFit.cover,
@@ -66,7 +64,7 @@ class _YourEventListViewState extends State<YourEventListView> {
                                 },
                                 style: ButtonStyle(
                                     padding: MaterialStateProperty.all<EdgeInsets>(
-                                        EdgeInsets.symmetric(
+                                        const EdgeInsets.symmetric(
                                           vertical: 5,
                                         )),
                                     backgroundColor: MaterialStateProperty.all<
@@ -102,7 +100,7 @@ class _YourEventListViewState extends State<YourEventListView> {
                               Icons.search_rounded,
                               color: TColor.DESCRIPTION,
                             ),
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 20
                             )
                         ),
@@ -110,7 +108,7 @@ class _YourEventListViewState extends State<YourEventListView> {
                       ),
                     ),
                     SizedBox(height: media.height * 0.015,),
-                    EventList(eventType: _eventType + " Event",),
+                    EventList(eventType: "$_eventType Event",),
                   ],
                 ),
               )
@@ -145,7 +143,7 @@ class EventList extends StatelessWidget {
         ),
         SizedBox(height: media.height * 0.02,),
         for(int i = 0; i < 10; i++)...[
-          EventBox(),
+          const EventBox(),
           if(i < 9) SizedBox(height: media.height * 0.02,),
         ]
       ],

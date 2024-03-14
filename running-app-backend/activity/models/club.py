@@ -14,20 +14,26 @@ class Club(models.Model):
         ("CYCLING", "Cycling"),
         ("SWIMMING", "Swimming"),
     )
-    sport_type = models.CharField(max_length=15, choices=SPORT_CHOICES)
-    description = models.TextField(
-        blank=True, 
-        null=True,
-        validators=[MaxLengthValidator(255, 'The field can contain at most 200 characters')]
-    )
-    participate_freely = models.BooleanField(default=True)
     ORGANIZATION_CHOICES = (
         ("SPORT_CLUB", "Sport Club"),
         ("BUSINESS", "Business"),
         ("SCHOOL", "School")
     )
-    organization = models.CharField(max_length=15, choices=ORGANIZATION_CHOICES, default="")
+    PRIVACY_CHOICES = (
+        ("PUBLIC", "Public"),
+        ("PRIVATE", "Private"),
+    )
     
+    sport_type = models.CharField(max_length=15, choices=SPORT_CHOICES)
+    organization = models.CharField(max_length=15, choices=ORGANIZATION_CHOICES, default="")
+    privacy = models.CharField(max_length=15, choices=PRIVACY_CHOICES, default="PUBLIC")
+
+    description = models.TextField(
+        blank=True, 
+        null=True,
+        validators=[MaxLengthValidator(255, 'The field can contain at most 200 characters')]
+    )
+
     def week_activities(self):
         # last_week = datetime.datetime.now() - datetime.timedelta(days=7)
         return 0

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
@@ -44,7 +43,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                   children: [
                     SizedBox(height: media.height * 0.05,),
                     // Header
-                    Header(
+                    const Header(
                       title: "",
                       iconButtons: [
                         {
@@ -58,7 +57,7 @@ class _EventDetailViewState extends State<EventDetailView> {
 
                     // Event target
                     Container(
-                      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 12),
                       decoration: BoxDecoration(
                         color: TColor.PRIMARY,
                         borderRadius: BorderRadius.circular(12),
@@ -73,7 +72,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                 Icons.flag_circle_rounded,
                                 color: TColor.PRIMARY_TEXT,
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Text(
@@ -119,7 +118,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                         color: TColor.PRIMARY_TEXT,
                                         fontSize: FontSize.SMALL,
                                         fontWeight: FontWeight.w500),
-                                    children: [
+                                    children: const [
                                       TextSpan(
                                         text: "208416.86",
                                         style: TextStyle(
@@ -151,7 +150,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                               },
                               style: ButtonStyle(
                                   padding: MaterialStateProperty.all<EdgeInsets>(
-                                      EdgeInsets.all(0)),
+                                      const EdgeInsets.all(0)),
                                   backgroundColor:
                                       MaterialStateProperty.all<Color?>(
                                           // x == "Total stats" ? TColor.PRIMARY : null
@@ -180,7 +179,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                     SizedBox(
                       height: media.height * 0.01,
                     ),
-                    _showLeaderBoard == false ? InformationLayout() : AthleteTable()
+                    _showLeaderBoard == false ? const InformationLayout() : AthleteTable()
                   ],
                 ),
               ),
@@ -222,7 +221,7 @@ class _InformationLayoutState extends State<InformationLayout> {
                   },
                   style: ButtonStyle(
                       padding: MaterialStateProperty.all(
-                        EdgeInsets.all(0),
+                        const EdgeInsets.all(0),
                       ),
                       backgroundColor: MaterialStateProperty.all<Color?>(
                           x == "General information" && _showPost == false ||
@@ -254,7 +253,7 @@ class _InformationLayoutState extends State<InformationLayout> {
         SizedBox(
           height: media.height * 0.015,
         ),
-        _showPost == false ? GeneralInformationLayout() : PostLayout(),
+        _showPost == false ? const GeneralInformationLayout() : const PostLayout(),
       ],
     );
   }
@@ -310,7 +309,7 @@ class GeneralInformationLayout extends StatelessWidget {
                     Row(
                       children: [
                         Container(
-                          padding: EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
                             color: TColor.PRIMARY,
                             borderRadius: BorderRadius.circular(6),
@@ -351,7 +350,7 @@ class GeneralInformationLayout extends StatelessWidget {
                       Container(
                         // onPressed: () {},
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
@@ -364,7 +363,7 @@ class GeneralInformationLayout extends StatelessWidget {
                             children: [
                               Container(
                                 // padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(),
+                                decoration: const BoxDecoration(),
                                 child: Icon(
                                   eventInfo[i]["icon"],
                                   color: Colors.green,
@@ -417,7 +416,7 @@ class GeneralInformationLayout extends StatelessWidget {
                 SizedBox(height: media.height * 0.015),
                 Column(
                   children: [
-                    Container(
+                    SizedBox(
                       height: media.height * 0.15,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -479,7 +478,7 @@ class GeneralInformationLayout extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       height: media.height * 0.15,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -543,7 +542,7 @@ class GeneralInformationLayout extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(height: 5,),
+                const SizedBox(height: 5,),
                 RichText(
                   text: TextSpan(
                     style: TextStyle(
@@ -551,7 +550,7 @@ class GeneralInformationLayout extends StatelessWidget {
                       fontSize: FontSize.SMALL,
                       fontWeight: FontWeight.w500,
                     ),
-                    children: [
+                    children: const [
                       TextSpan(
                         text: "* ",
                         style: TextStyle(

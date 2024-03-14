@@ -10,7 +10,6 @@ import 'package:running_app/utils/common_widgets/default_background_layout.dart'
 import 'package:running_app/utils/common_widgets/text_button.dart';
 
 import '../../models/account/user.dart';
-import '../../services/api_service.dart';
 import '../../utils/constants.dart';
 
 class HomeView extends StatefulWidget {
@@ -31,8 +30,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Future<void> _getUserData() async {
-    users = await callListAPI('account/user', User.fromJson);
-    user = await callRetrieveAPI('account/user', users?[0].id, DetailUser.fromJson);
+    // users = await callListAPI('account/user', User.fromJson);
+    // user = await callRetrieveAPI('account/user', users?[0].id, DetailUser.fromJson);
   }
 
   @override
@@ -71,7 +70,7 @@ class _HomeViewState extends State<HomeView> {
                                         fontWeight: FontWeight.w300,
                                       ),
                                       children: [
-                                        TextSpan(
+                                        const TextSpan(
                                           text: "14000 / ",
                                         ),
                                         TextSpan(
@@ -82,7 +81,7 @@ class _HomeViewState extends State<HomeView> {
                                             fontWeight: FontWeight.w800,
                                           ),
                                         ),
-                                        TextSpan(
+                                        const TextSpan(
                                           text: "steps",
                                         ),
                                       ],
@@ -405,7 +404,7 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       ),
-      bottomNavigationBar: Menu(),
+      bottomNavigationBar: const Menu(),
     );
   }
 }

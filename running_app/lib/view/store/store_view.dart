@@ -54,14 +54,14 @@ class StoreView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/img/home/background_1.png"),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          title: Header(title: "Store", backButton: false,),
+          title: const Header(title: "Store", backButton: false,),
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
         ),
@@ -283,7 +283,7 @@ class StoreView extends StatelessWidget {
             ),
           ),
       ),
-      bottomNavigationBar: Menu()
+      bottomNavigationBar: const Menu()
     );
   }
 }

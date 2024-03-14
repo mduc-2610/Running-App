@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -24,9 +22,9 @@ class _FollowerViewState extends State<FollowerView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
-        title: Header(title: "Follow", noIcon: true,),
+        title: const Header(title: "Follow", noIcon: true,),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/img/home/background_1.png"),
               fit: BoxFit.cover,
@@ -46,7 +44,7 @@ class _FollowerViewState extends State<FollowerView> {
                     child: CustomTextFormField(
                       decoration: CustomInputDecoration(
                           hintText: "Type a name of athlete here",
-                          contentPadding: EdgeInsets.symmetric(
+                          contentPadding: const EdgeInsets.symmetric(
                               horizontal: 20
                           ),
                           prefixIcon: Icon(
@@ -101,8 +99,8 @@ class _FollowerViewState extends State<FollowerView> {
                   ),
                   SizedBox(height: media.height * 0.015,),
                   (_showFollowerLayout)
-                      ? FollowLayout(layout: "Follower", amount: "0")
-                      : FollowLayout(layout: "Following", amount: "0")
+                      ? const FollowLayout(layout: "Follower", amount: "0")
+                      : const FollowLayout(layout: "Following", amount: "0")
                 ],
               ),
             )
@@ -152,7 +150,7 @@ class FollowLayout extends StatelessWidget {
               CustomTextButton(
                 onPressed: () {},
                 child: Container(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                       vertical: 10
                   ),
                   decoration: BoxDecoration(
@@ -195,7 +193,7 @@ class FollowLayout extends StatelessWidget {
                             child: CustomTextButton(
                               style: ButtonStyle(
                                   padding: MaterialStateProperty.all(
-                                      EdgeInsets.symmetric(
+                                      const EdgeInsets.symmetric(
                                           horizontal: 20,
                                           vertical: 0
                                       )

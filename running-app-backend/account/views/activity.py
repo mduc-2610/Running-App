@@ -1,5 +1,5 @@
 from rest_framework import generics, \
-                            viewsets
+                            viewsets, permissions
 
 # from activity.models import Event, \
 #                             Club

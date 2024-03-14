@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -14,9 +13,9 @@ class NotificationView extends StatelessWidget {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
-        title: Header(title: "Notification", noIcon: true),
+        title: const Header(title: "Notification", noIcon: true),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/img/home/background_1.png"),
               fit: BoxFit.cover,
@@ -38,7 +37,7 @@ class NotificationView extends StatelessWidget {
                           CustomTextButton(
                             onPressed: () {},
                             child: Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 vertical: 12
                               ),
                               decoration: BoxDecoration(

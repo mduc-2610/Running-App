@@ -1,5 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/services/api_service.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 import '../../utils/common_widgets/back_button.dart';
 import '../../utils/common_widgets/checkbox.dart';
@@ -30,13 +38,89 @@ class _SignInViewState extends State<SignInView> {
     }
   ];
 
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  Future<void> signIn() async {
+    String apiUrl = '${APIEndpoints.BASE_URL}/account/login/';
+    print(usernameController.text);
+    print(passwordController.text);
+    Map<String, String> mainBody = {
+      'username': usernameController.text,
+      'password': passwordController.text,
+    };
+    try {
+      final tokenResponse = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String> {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(mainBody),
+      );
+
+
+      var token;
+      if (tokenResponse.statusCode == 200) {
+        token = jsonDecode(tokenResponse.body)["token"];
+        Provider.of<TokenProvider>(context, listen: false).setToken(token);
+
+        List<dynamic> users = await callListAPI('account/user', User.fromJson, token);
+        final userId = users.firstWhere((element) => element.username == usernameController.text).id;
+        DetailUser userData = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
+        Provider.of<UserProvider>(context, listen: false).setUser(userData);
+        print(userData);
+
+        Navigator.pushNamed(context, '/home', arguments: {
+          'token': token
+        });
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: const Text('Invalid username or password'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Error: $e');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text('An error occurred. Please try again later.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       backgroundColor: TColor.PRIMARY_BACKGROUND,
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           height: media.height,
           child: Stack(children: [
             Padding(
@@ -86,6 +170,7 @@ class _SignInViewState extends State<SignInView> {
                             ),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
+                          controller: usernameController,
                           keyboardType: TextInputType.text,
                           // validator: _validateEmail,
                           onSaved: (String? value) {
@@ -105,6 +190,7 @@ class _SignInViewState extends State<SignInView> {
                             ),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
                           ),
+                          controller: passwordController,
                           obscureText: true,
                           keyboardType: TextInputType.visiblePassword,
                           // validator: _validatePassword,
@@ -151,9 +237,10 @@ class _SignInViewState extends State<SignInView> {
                         SizedBox(height: media.height * 0.01,),
                         CustomMainButton(
                           horizontalPadding: media.width * 0.36,
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/home');
-                          },
+                          // onPressed: () {
+                          //   Navigator.pushReplacementNamed(context, '/home');
+                          // },
+                            onPressed: signIn,
                           child: Text(
                             "Sign In",
                             style: TextStyle(

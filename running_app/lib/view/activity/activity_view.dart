@@ -33,7 +33,7 @@ class ActivityView extends StatelessWidget {
     ];
     return Scaffold(
         appBar: AppBar(
-          title: Header(
+          title: const Header(
             title: "Activity",
             iconButtons: [
               {
@@ -42,7 +42,7 @@ class ActivityView extends StatelessWidget {
             ],
           ),
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/img/home/background_1.png"),
                 fit: BoxFit.cover,
@@ -58,7 +58,6 @@ class ActivityView extends StatelessWidget {
               MainWrapper(
                 child: Column(
                   children: [
-                    SizedBox(height: media.height * 0.02,),
                     Container(
                       padding: EdgeInsets.symmetric(
                         vertical: media.height * 0.02,
@@ -190,7 +189,7 @@ class ActivityView extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: Menu(),
+      bottomNavigationBar: const Menu(),
     );
   }
 }

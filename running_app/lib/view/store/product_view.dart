@@ -22,27 +22,26 @@ class _ProductViewState extends State<ProductView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Header(
-          title: "Product",
-          iconButtons: [
-            {
-              "icon": Icons.filter_alt_outlined,
-            }
-          ],
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/img/home/background_1.png"),
-              fit: BoxFit.cover,
+        appBar: AppBar(
+          title: const Header(
+            title: "Product",
+            iconButtons: [
+              {
+                "icon": Icons.filter_alt_outlined,
+              }
+            ],
+          ),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/img/home/background_1.png"),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
+          automaticallyImplyLeading: false,
         ),
-        automaticallyImplyLeading: false,
-      ),
-      body: SingleChildScrollView(
-        child: Container(
+        body: SingleChildScrollView(
           child: DefaultBackgroundLayout(
             child: Stack(
               children: [
@@ -57,18 +56,18 @@ class _ProductViewState extends State<ProductView> {
                         ),
                         keyboardType: TextInputType.text,
                       ),
-                      SizedBox(height: media.height * 0.03,),
+                      SizedBox(height: media.height * 0.01,),
 
                       // Product
                       SizedBox(
                         height: media.height, // Set a specific height
                         child: GridView.count(
-                          padding: const EdgeInsets.all(0),
-                          crossAxisCount: 2,
-                          crossAxisSpacing: media.width * 0.05,
-                          mainAxisSpacing: media.height * 0.025,
-                          children: [
-                            for(int i = 0; i < 6; i++)
+                            padding: const EdgeInsets.all(0),
+                            crossAxisCount: 2,
+                            crossAxisSpacing: media.width * 0.05,
+                            mainAxisSpacing: media.height * 0.025,
+                            children: [
+                              for(int i = 0; i < 100; i++)
                                 CustomTextButton(
                                   onPressed: () {},
                                   child: Container(
@@ -156,7 +155,7 @@ class _ProductViewState extends State<ProductView> {
                                     ),
                                   ),
                                 ),
-                          ]
+                            ]
                         ),
                       ),
                     ],
@@ -166,8 +165,7 @@ class _ProductViewState extends State<ProductView> {
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: Menu()
+        bottomNavigationBar: const Menu()
     );
   }
 }

@@ -2,6 +2,8 @@ from rest_framework import viewsets, \
                             mixins, \
                             status, \
                             response
+from rest_framework.permissions import IsAuthenticated
+
 
 from activity.models import Club
 from activity.serializers import ClubSerializer, \
@@ -18,6 +20,7 @@ class ClubViewSet(
 ):
     queryset = Club.objects.all()
     serializer_class = ClubSerializer
+    # permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.action == "create" or self.action == "update":

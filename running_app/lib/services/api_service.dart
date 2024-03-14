@@ -3,9 +3,11 @@ import 'package:http/http.dart' as http;
 import '../../utils/constants.dart';
 
 class APIService {
-  final String endpoint;
+  final String? endpoint;
+  final String? fullUrl;
+  final String token;
 
-  APIService({required this.endpoint});
+  APIService({this.endpoint, this.fullUrl, required this.token});
 
   String url({String id = ''}) {
     return '${APIEndpoints.BASE_URL}/$endpoint/${id != '' ? '$id/' : ''}';
@@ -13,28 +15,28 @@ class APIService {
 
   Future<List<dynamic>> fetchList(final modelFromJson) async {
     final response = await http.get(
-        Uri.parse(url())
+      Uri.parse(url()),
+      headers: _getHeaders(),
     );
 
     if (response.statusCode == 200) {
       Iterable jsonResponse = json.decode(response.body);
       return jsonResponse.map((instance) => modelFromJson(instance)).toList();
-    }
-    else {
+    } else {
       throw Exception('Failed to get data');
     }
   }
 
-  Future<dynamic> fetchSingle(final modelFromJson, String id) async {
+  Future<dynamic> fetchSingle(final modelFromJson, String? id) async {
     final response = await http.get(
-        Uri.parse(url(id: id))
+      Uri.parse(endpoint != null ? url(id: id!) : fullUrl!),
+      headers: _getHeaders(),
     );
 
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
       return modelFromJson(jsonResponse);
-    }
-    else {
+    } else {
       throw Exception('Failed to get data');
     }
   }
@@ -42,17 +44,13 @@ class APIService {
   Future<dynamic> create(Map<String, dynamic> data) async {
     final response = await http.post(
       Uri.parse(url()),
-      headers: <String, String> {
-        'Content-Type': 'application/json',
-      },
+      headers: _getHeaders(),
       body: json.encode(data),
     );
 
-    if(response.statusCode == 201) {
+    if (response.statusCode == 201) {
       return json.decode(response.body);
-    }
-    else {
-      // print(response.statusCode);
+    } else {
       throw Exception(response.statusCode);
     }
   }
@@ -60,38 +58,49 @@ class APIService {
   Future<void> update(String id, Map<String, dynamic> data) async {
     final response = await http.put(
       Uri.parse(url(id: id)),
-      headers: <String, String> {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: _getHeaders(),
       body: json.encode(data),
     );
 
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       print("Successfully updated");
-    }
-    else {
+    } else {
       throw Exception(response.statusCode);
     }
   }
-}
 
+  Map<String, String> _getHeaders() {
+    // if (token != null) {
+    return {
+      'Content-Type': 'application/json',
+      'Authorization': 'TOKEN $token',
+      //   };
+      // } else {
+      //   return {'Content-Type': 'application/json'};
+      // }
+    };
+  }
+}
 
 Future<List<dynamic>> callListAPI(
     String endpoint,
-    Function modelFromJson
+    Function modelFromJson,
+    String token,
     ) async {
-  APIService service = APIService(endpoint: endpoint);
+  APIService service = APIService(endpoint: endpoint, token: token);
 
   final List<dynamic> querySet = await service.fetchList(modelFromJson);
   return querySet;
 }
 
 Future<dynamic> callRetrieveAPI(
-    String endpoint,
-    String id,
-    Function modelFromJson
+    String? endpoint,
+    String? id,
+    String? fullUrl,
+    Function modelFromJson,
+    String token
     ) async {
-  APIService service = APIService(endpoint: endpoint);
+  APIService service = APIService(endpoint: endpoint, fullUrl: fullUrl, token: token);
 
   final instance = await service.fetchSingle(modelFromJson, id);
   return instance;
@@ -99,9 +108,10 @@ Future<dynamic> callRetrieveAPI(
 
 Future<dynamic> callCreateAPI(
     String endpoint,
-    modelToJson
+    modelToJson,
+    String token
     ) async {
-  APIService service = APIService(endpoint: endpoint);
+  APIService service = APIService(endpoint: endpoint, token: token);
   return await service.create(modelToJson);
 }
 
@@ -109,7 +119,8 @@ Future<void> callUpdateAPI(
     String endpoint,
     String id,
     modelToJson,
+    String token
     ) async {
-  APIService service = APIService(endpoint: endpoint);
+  APIService service = APIService(endpoint: endpoint, token: token);
   await service.update(id, modelToJson);
 }

@@ -6,7 +6,8 @@ from .privacy import PrivacySerializer, \
 from .user import UserSerializer, \
                 DetailUserSerializer, \
                 CreateUserSerializer, \
-                UpdateUserSerializer
+                UpdateUserSerializer, \
+                LoginSerializer
 
 from .profile import ProfileSerializer, \
                     DetailProfileSerializer, \

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
@@ -73,9 +72,9 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
-        title: Header(title: "Account Information", noIcon: true,),
+        title: const Header(title: "Account Information", noIcon: true,),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/img/home/background_1.png"),
               fit: BoxFit.cover,
@@ -103,7 +102,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                                 height: 100,
                               )
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 120,
                             width: 100,
                           ),
@@ -111,7 +110,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                             bottom: 10,
                             right: 0,
                             child: Container(
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50),
                                   color: TColor.PRIMARY
@@ -238,12 +237,12 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                                         });
                                       },
                                       fillColor: MaterialStateProperty.all<Color>(
-                                          Color(0xffcdcdcd),
+                                          const Color(0xffcdcdcd),
                                       ),
                                     ),
                                     Text(
                                       x[0].toUpperCase() + x.substring(1),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Color(0xffcdcdcd),
                                           fontSize: 15
                                       ),

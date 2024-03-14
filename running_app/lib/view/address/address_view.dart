@@ -20,9 +20,9 @@ class _AddressViewState extends State<AddressView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
-        title: Header(title: "Address", noIcon: true,),
+        title: const Header(title: "Address", noIcon: true,),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/img/home/background_1.png"),
               fit: BoxFit.cover,

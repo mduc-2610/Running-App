@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:running_app/utils/common_widgets/email_verification.dart';
 import 'package:running_app/utils/common_widgets/notification_box.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/activity/activity_view.dart';
-import 'package:running_app/view/activity/running_view.dart';
 import 'package:running_app/view/address/address_view.dart';
 import 'package:running_app/view/community/club_detail_view.dart';
 import 'package:running_app/view/community/club_list_view.dart';
@@ -31,7 +34,19 @@ import 'package:running_app/view/wallet/wallet.dart';
 
 
 void main() async {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UserProvider>(
+          create: (_) => UserProvider(),
+        ),
+        ChangeNotifierProvider<TokenProvider>(
+          create: (_) => TokenProvider(),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -47,7 +62,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/on_board',
+      initialRoute: '/sign_in',
       routes: {
         '/': (context) => const GetStartedView(),
         '/on_board': (context) => const OnBoardingView(),

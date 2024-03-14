@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class DefaultBackgroundLayout extends StatelessWidget {
   final Widget child;
 
-  DefaultBackgroundLayout({required this.child});
+  const DefaultBackgroundLayout({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/img/home/background_1.png"),
               fit: BoxFit.cover,
@@ -18,7 +18,7 @@ class DefaultBackgroundLayout extends StatelessWidget {
           ),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery.sizeOf(context).height,
+              minHeight: MediaQuery.sizeOf(context).height - 109,
             ),
             child: child,
           ),

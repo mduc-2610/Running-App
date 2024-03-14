@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
@@ -23,7 +22,7 @@ class EventBox extends StatelessWidget {
         Navigator.pushNamed(context, '/event_detail');
       },
       child: Container(
-        width: width ?? null,
+        width: width,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: TColor.SECONDARY_BACKGROUND,
@@ -39,7 +38,7 @@ class EventBox extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(12),
                       topRight: Radius.circular(12)
                   ),
@@ -52,7 +51,7 @@ class EventBox extends StatelessWidget {
                 ),
                 SizedBox(height: media.height * 0.01,),
                 Padding(
-                  padding: EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                     horizontal: 12,
                   ),
                   child: Text(
@@ -69,7 +68,7 @@ class EventBox extends StatelessWidget {
               ],
             ),
             Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   // vertical: 10,
                 ),
@@ -111,7 +110,7 @@ class EventBox extends StatelessWidget {
             ),
             Container(
               width: media.width,
-              margin: buttonMargin ?? EdgeInsets.fromLTRB(12, 0, 12, 20),
+              margin: buttonMargin ?? const EdgeInsets.fromLTRB(12, 0, 12, 20),
               child: CustomMainButton(
                 horizontalPadding: 0,
                 verticalPadding: 12,

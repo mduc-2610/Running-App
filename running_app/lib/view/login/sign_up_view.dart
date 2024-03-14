@@ -21,8 +21,8 @@ class SignUpView extends StatelessWidget {
         email: email,
         password: password
     );
-    final data = await callCreateAPI('account/user', userCreate.toJson());
-    print(data);
+    // final data = await callCreateAPI('account/user', userCreate.toJson(), token);
+    // print(data);
   }
 
   String? validateUsername(String? value) {
@@ -101,7 +101,7 @@ class SignUpView extends StatelessWidget {
     return Scaffold(
       backgroundColor: TColor.PRIMARY_BACKGROUND,
         body: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             height: media.height,
             child: Stack(children: [
               Padding(

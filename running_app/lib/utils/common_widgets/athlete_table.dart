@@ -1,13 +1,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/utils/constants.dart';
-
 
 class CustomText extends StatelessWidget {
   final String text;
+  final double? fontSize;
+  final fontWeight;
 
-  const CustomText({required this.text, super.key});
+  const CustomText({this.fontSize, this.fontWeight, required this.text, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,22 +18,42 @@ class CustomText extends StatelessWidget {
       text,
       style: TextStyle(
           color: TColor.PRIMARY_TEXT,
-          fontSize: FontSize.SMALL,
-          fontWeight: FontWeight.w500),
+          fontSize: fontSize ?? 14,
+          fontWeight: fontWeight),
       // overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.start,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }
-
 class AthleteTable extends StatelessWidget {
   final Random random = Random();
   final double? topMargin;
-  AthleteTable({this.topMargin, super.key});
+  final List<DetailUser>? participants;
+  AthleteTable({this.topMargin, this.participants, super.key});
 
   // Generate random data for demonstration
   String generateRandomName() {
     List<String> names = [
+      'John Doe',
+      'Alice Smith',
+      'Michael Johnson',
+      'Emily Brown',
+      'David Lee',
+      'Sophia Garcia',
+      'John Doe',
+      'Alice Smith',
+      'Michael Johnson',
+      'Emily Brown',
+      'David Lee',
+      'Sophia Garcia',
+      'John Doe',
+      'Alice Smith',
+      'Michael Johnson',
+      'Emily Brown',
+      'David Lee',
+      'Sophia Garcia',
       'John Doe',
       'Alice Smith',
       'Michael Johnson',
@@ -55,86 +78,107 @@ class AthleteTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    return Container(
-      // width: media.width,
-      margin: EdgeInsets.only(top: topMargin ?? 0),
-      padding: const EdgeInsets.all(0),
-      // margin: EdgeInsets.only(right: 10),
-      decoration: const BoxDecoration(
-          border: Border(
-              // top: BorderSide(width: 1, color: Color(0xff746cb3)),
-              bottom: BorderSide(width: 2, color: Color(0xff746cb3))
-          ),
-      ),
-      child: Center(
-        child: DataTable(
-            border: const TableBorder(
-                horizontalInside: BorderSide(width: 2, color: Color(0xff746cb3))
+    return SingleChildScrollView(
+      child: Container(
+        // width: media.width,
+        margin: EdgeInsets.only(top: topMargin ?? 0),
+        padding: const EdgeInsets.all(0),
+        // margin: EdgeInsets.only(right: 10),
+        decoration: const BoxDecoration(
+            border: Border(
+                // top: BorderSide(width: 1, color: Color(0xff746cb3)),
+                bottom: BorderSide(width: 2, color: Color(0xff746cb3))
             ),
-            columnSpacing: 12, horizontalMargin: 0, columns: [
-          DataColumn(
-            label: Container(
-              alignment: Alignment.centerLeft,
-              child: const CustomText(text: 'Rank    '),
+        ),
+        child: Center(
+          child: DataTable(
+              border: const TableBorder(
+                  horizontalInside: BorderSide(width: 2, color: Color(0xff746cb3))
+              ),
+              columnSpacing: 12, horizontalMargin: 0, columns: [
+            DataColumn(
+              label: Container(
+                alignment: Alignment.centerLeft,
+                child: const CustomText(fontWeight: FontWeight.w700, text: 'Rank    '),
+              ),
+              numeric: true,
+              tooltip: 'Athlete Rank',
+              onSort: (columnIndex, ascending) {
+              },
             ),
-            numeric: true,
-            tooltip: 'Athlete Rank',
-            onSort: (columnIndex, ascending) {
-            },
-          ),
-          const DataColumn(
-            label: Center(
-              child: CustomText(text: 'Athlete Name'),
+            const DataColumn(
+              label: Center(
+                child: CustomText(fontWeight: FontWeight.w700, text: 'Athlete Name'),
+              ),
+              numeric: false,
+              tooltip: 'Athlete Name',
             ),
-            numeric: false,
-            tooltip: 'Athlete Name',
-          ),
-          const DataColumn(
-            label: Center(
-              child: CustomText(text: 'Total (km)'),
+            const DataColumn(
+              label: Center(
+                child: CustomText(fontWeight: FontWeight.w700, text: 'Total (km)'),
+              ),
+              numeric: true,
+              tooltip: 'Total Distance',
             ),
-            numeric: true,
-            tooltip: 'Total Distance',
-          ),
-          const DataColumn(
-            label: Center(
-              child: CustomText(text: 'Time       '),
+            const DataColumn(
+              label: Center(
+                child: CustomText(fontWeight: FontWeight.w700, text: 'Time       '),
+              ),
+              numeric: true,
+              tooltip: 'Athlete Time',
             ),
-            numeric: true,
-            tooltip: 'Athlete Time',
-          ),
-        ], rows: [
-          for (int i = 0; i < 5; i++) ...[
-            DataRow(
-                cells: [
-                  DataCell(
-                    Center(
-                      child: Container(
-                          alignment: Alignment.center,
-                          child: CustomText(text: (i + 1).toString())),
-                    ),
-                  ),
-                  DataCell(
-                    Center(
+          ], rows: [
+
+            for (var participant in participants ?? []) ...[
+              DataRow(
+                  cells: [
+                    DataCell(
+                      Center(
                         child: Container(
+                            alignment: Alignment.center,
+                            child: CustomText(text: (participants!.indexOf(participant) + 1).toString())),
+                      ),
+                    ),
+                    DataCell(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: Image.asset(
+                              "assets/img/community/ptit_logo.png",
+                              width: 30,
+                              height: 30,
+                            ),
+                          ),
+                          SizedBox(width: media.width * 0.02,),
+                          Container(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                width: media.width * 0.25,
+                                child: CustomText(
+                                    text: participant?.username,
+                                ),
+                              )),
+                        ],
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                          child: Container(
                             alignment: Alignment.centerLeft,
-                            child: CustomText(text: generateRandomName()))),
-                  ),
-                  DataCell(
-                    Center(
+                            child: CustomText(text: generateRandomDistance()),
+                          )),
+                    ),
+                    DataCell(Center(
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: CustomText(text: generateRandomDistance()),
-                        )),
-                  ),
-                  DataCell(Center(
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: CustomText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m'),
-                      ))),
-                ]),
-          ]
-        ]),
+                          child: CustomText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m'),
+                        ))),
+                  ]),
+            ]
+          ]),
+        ),
       ),
     );
   }

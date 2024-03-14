@@ -20,8 +20,6 @@ class CommunityView extends StatefulWidget {
 class _CommunityViewState extends State<CommunityView> {
   String _showView = "Events";
 
-
-
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -29,7 +27,7 @@ class _CommunityViewState extends State<CommunityView> {
     return Scaffold(
 
       appBar: AppBar(
-        title: Header(title: "Community", backButton: false, noIcon: true),
+        title: const Header(title: "Community", backButton: false, noIcon: true),
         automaticallyImplyLeading: false,
         backgroundColor: TColor.PRIMARY,
       ),
@@ -97,7 +95,7 @@ class _CommunityViewState extends State<CommunityView> {
 
                     // EventView(),
                     (_showView == "Events") ?
-                      EventView() : (_showView == "Social" ? SocialView() : ClubView()),
+                      const EventView() : (_showView == "Social" ? const SocialView() : const ClubView()),
                   ],
                 )
               ),
@@ -105,7 +103,7 @@ class _CommunityViewState extends State<CommunityView> {
           ),
         ),
       ),
-      bottomNavigationBar: Menu(),
+      bottomNavigationBar: const Menu(),
     );
   }
 }

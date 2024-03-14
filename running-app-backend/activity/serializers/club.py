@@ -22,6 +22,9 @@ class DetailClubSerializer(serializers.ModelSerializer):
     week_activites = serializers.SerializerMethodField()
     number_of_participants = serializers.SerializerMethodField()
     participants = serializers.SerializerMethodField()
+    sport_type = serializers.CharField(source='get_sport_type_display')
+    organization = serializers.CharField(source='get_organization_display')
+    privacy = serializers.CharField(source='get_privacy_display') 
 
     def get_week_activites(self, instance):
         return instance.week_activities()

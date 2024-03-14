@@ -153,7 +153,7 @@ def run():
             "cover_photo": "",
             "sport_type": random.choice(["RUNNING", "CYCLING", "SWIMMING"]),
             "description": fake.text(max_nb_chars=250),
-            "participate_freely": random.choice([True, False]),
+            "privacy": random.choice(["Public", "Private"]),
             "organization": random.choice(["SPORT_CLUB", "BUSINESS", "SCHOOL"]),
         }
         club = Club.objects.create(**data)
@@ -328,4 +328,3 @@ def run():
         user_product = UserProduct.objects.get_or_create(**data)
         user_product_list.append(user_product)
         print(f"\tSuccesfully created User Product: {user_product}")
-        

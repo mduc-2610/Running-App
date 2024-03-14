@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/switch_button.dart';
+import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 
 class NotificationSettingView extends StatelessWidget {
@@ -16,9 +15,9 @@ class NotificationSettingView extends StatelessWidget {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
-        title: Header(title: "Notifications", noIcon: true,),
+        title: const Header(title: "Notifications", noIcon: true,),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/img/home/background_1.png"),
               fit: BoxFit.cover,
@@ -104,7 +103,7 @@ class NotificationSettingView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  SwitchButton()
+                                  const SwitchButton()
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,)
@@ -176,7 +175,7 @@ class NotificationSettingView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  SwitchButton()
+                                  const SwitchButton()
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,)
@@ -240,7 +239,7 @@ class NotificationSettingView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  SwitchButton()
+                                  const SwitchButton()
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,)
@@ -251,33 +250,30 @@ class NotificationSettingView extends StatelessWidget {
                     ),
                   ),
                 ),
-                Positioned(
-                  bottom: media.height * 0.025,
-                  left: media.width * 0.025,
-                  right: media.width * 0.025,
-                  child: SizedBox(
-                    width: media.width,
-                    child: CustomMainButton(
-                        horizontalPadding: 0,
-                        onPressed: () {
-
-                        },
-                        child: Text(
-                          "Save",
-                          style: TextStyle(
-                            color: TColor.PRIMARY_TEXT,
-                            fontSize: FontSize.BUTTON,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        )
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
         ),
       ),
+        bottomNavigationBar: Wrapper(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(media.width * 0.025, 0, media.width * 0.025, media.width * 0.025),
+          child: CustomMainButton(
+            horizontalPadding: 0,
+            onPressed: () {
+              Navigator.pushNamed(context, '/home');
+            },
+            child: Text(
+              "Save",
+              style: TextStyle(
+                  color: TColor.PRIMARY_TEXT,
+                  fontSize: FontSize.LARGE,
+                  fontWeight: FontWeight.w800
+              ),
+            ),
+          ),
+        )
+    )
     );
   }
 }

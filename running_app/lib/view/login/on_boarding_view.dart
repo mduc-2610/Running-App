@@ -127,7 +127,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                               CustomTextButton(
                                 style: ButtonStyle(
                                     padding: MaterialStateProperty.all(
-                                        EdgeInsets.symmetric(
+                                        const EdgeInsets.symmetric(
                                           vertical: 15,
                                           horizontal: 24
                                         )
@@ -142,8 +142,11 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                                     )
                                 ),
                                 onPressed: () {
-                                  if(_currentIndex == 2) Navigator.pushNamed(context, '/sign_in');
-                                  else _nextSlide();
+                                  if(_currentIndex == 2) {
+                                    Navigator.pushNamed(context, '/sign_in');
+                                  } else {
+                                    _nextSlide();
+                                  }
                                 },
                                 child: Row(
                                   children: [

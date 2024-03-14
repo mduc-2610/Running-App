@@ -17,6 +17,8 @@ class User {
         username = json['username'],
         phoneNumber = json['phone_number'];
 
+
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -35,6 +37,7 @@ class User {
 class DetailUser extends User {
   final bool isVerifiedEmail;
   final bool isVerifiedPhone;
+  final activity;
 
   DetailUser({
     String? id,
@@ -43,6 +46,7 @@ class DetailUser extends User {
     String? phoneNumber,
     required this.isVerifiedEmail,
     required this.isVerifiedPhone,
+    required this.activity
   }) : super(
     id: id,
     email: email,
@@ -52,6 +56,7 @@ class DetailUser extends User {
 
   DetailUser.fromJson(Map<String, dynamic> json)
       : isVerifiedEmail = json['is_verified_email'],
+        activity = json['activity'],
         isVerifiedPhone = json['is_verified_phone'],
         super.fromJson(json);
 
@@ -60,6 +65,7 @@ class DetailUser extends User {
     final Map<String, dynamic> data = super.toJson();
     data['is_verified_email'] = isVerifiedEmail;
     data['is_verified_phone'] = isVerifiedPhone;
+    data['activity'] = activity;
     return data;
   }
 
@@ -71,7 +77,8 @@ class DetailUser extends User {
         'username: $username, '
         'phoneNumber: $phoneNumber, '
         'isVerifiedEmail: $isVerifiedEmail, '
-        'isVerifiedPhone: $isVerifiedPhone}';
+        'isVerifiedPhone: $isVerifiedPhone, '
+        'activity: $activity}';
   }
 }
 

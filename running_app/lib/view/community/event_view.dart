@@ -3,12 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:running_app/utils/common_widgets/event_box.dart';
 
-import 'package:running_app/utils/common_widgets/input_decoration.dart';
-import 'package:running_app/utils/common_widgets/main_button.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/search_filter.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
 class EventView extends StatefulWidget {
@@ -27,7 +23,7 @@ class _EventViewState extends State<EventView> {
     return Column(
       children: [
         // Search events section
-        SearchFilter(hintText: "Search events"),
+        const SearchFilter(hintText: "Search events"),
         SizedBox(height: media.height * 0.01,),
 
         // Your event section
@@ -122,12 +118,12 @@ class _EventViewState extends State<EventView> {
               ),
             ),
             SizedBox(height: media.height * 0.01,),
-            Container(
+            SizedBox(
               height: media.height * 0.4,
               child: CarouselSlider(
                 options: CarouselOptions(
                   viewportFraction: 0.85,
-                  autoPlayAnimationDuration: Duration(milliseconds: 100),
+                  autoPlayAnimationDuration: const Duration(milliseconds: 100),
                   initialPage: 0,
                   aspectRatio: 1.23,
                   enlargeCenterPage: true,
@@ -137,7 +133,7 @@ class _EventViewState extends State<EventView> {
 
                 items: [
                   for(int i = 0; i < 3; i ++)...[
-                    EventBox(),
+                    const EventBox(),
                   ]
                 ],
               ),
@@ -175,20 +171,20 @@ class _EventViewState extends State<EventView> {
                 ]
             ),
             // SizedBox(height: media.height * 0.01,),
-            Container(
+            SizedBox(
               height: media.height * 0.37,
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(left: 10),
+                padding: const EdgeInsets.only(left: 10),
 
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
                     for(int i = 0; i < 10; i++)...[
-                      IntrinsicHeight(
+                      const IntrinsicHeight(
                         child: EventBox(width: 200,
                         buttonMargin: EdgeInsets.fromLTRB(12, 0, 12, 12),)
                       ),
-                      if(i < 9) SizedBox(width: 10,)
+                      if(i < 9) const SizedBox(width: 10,)
                     ]
                   ],
                 ),

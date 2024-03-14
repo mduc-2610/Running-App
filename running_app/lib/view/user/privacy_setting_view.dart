@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/switch_button.dart';
 import 'package:running_app/utils/common_widgets/switch_button.dart';
 import 'package:running_app/utils/constants.dart';
 
@@ -17,9 +14,9 @@ class PrivacySettingView extends StatelessWidget {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
-        title: Header(title: "Privacy", noIcon: true,),
+        title: const Header(title: "Privacy", noIcon: true,),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/img/home/background_1.png"),
               fit: BoxFit.cover,
@@ -90,7 +87,7 @@ class PrivacySettingView extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              SwitchButton()
+                              const SwitchButton()
                             ],
                           ),
                           SizedBox(height: media.height * 0.01,)
@@ -158,7 +155,7 @@ class PrivacySettingView extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              SwitchButton()
+                              const SwitchButton()
                             ],
                           ),
                           SizedBox(height: media.height * 0.01,)
