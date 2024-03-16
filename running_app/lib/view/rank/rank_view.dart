@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:running_app/utils/common_widgets/appbar.dart';
+import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -45,7 +45,7 @@ class _RankViewState extends State<RankView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-        appBar: CustomAppBar(
+        appBar: const CustomAppBar(
           title: Header(title: "Rank", backButton: false, noIcon: true)
         ),
         body: DefaultBackgroundLayout(

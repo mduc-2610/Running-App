@@ -1,7 +1,14 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/performance.dart';
+
 import 'package:running_app/models/account/user.dart';
-import 'package:running_app/utils/common_widgets/appbar.dart';
+import 'package:running_app/models/product/product.dart';
+import 'package:running_app/services/api_service.dart';
+import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_box.dart';
@@ -11,6 +18,8 @@ import 'package:running_app/utils/common_widgets/search_filter.dart';
 import 'package:running_app/utils/common_widgets/stats_box.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class UserView extends StatefulWidget {
   const UserView({Key? key}) : super(key: key);
@@ -21,12 +30,55 @@ class UserView extends StatefulWidget {
 
 class _UserViewState extends State<UserView> {
   bool _showTotalStatsLayout = true;
+  String token = "";
   DetailUser? user;
+  Performance? userPerformance;
+  Activity? userActivity;
 
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+
+  void initUserPerformance() async {
+    final data = await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
+    print(user?.performance);
+
+    setState(() {
+      userPerformance = data;
+    });
+  }
+
+  void initUserActivity() async {
+    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    setState(() {
+      userActivity = data;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initUser();
+    initToken();
+    initUserPerformance();
+    initUserActivity();
+  }
   
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
+    List<Product>? productList = userActivity?.products;
+    print(userPerformance);
+    // print(userActivity);
     return Scaffold(
       appBar: CustomAppBar(
         title: Header(
@@ -45,7 +97,7 @@ class _UserViewState extends State<UserView> {
         child: Stack(
           children: [
             BackgroundContainer(
-              height: media.height * 0.31,
+              height: media.height * 0.33,
             ),
             MainWrapper(
               child: Column(
@@ -68,11 +120,13 @@ class _UserViewState extends State<UserView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Đặng Minh Đức",
+                            user?.username ?? "",
                             style: TextStyle(
                                 color: TColor.PRIMARY_TEXT,
                                 fontSize: FontSize.LARGE,
                                 fontWeight: FontWeight.w900),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(
                             height: media.height * 0.005,
@@ -116,7 +170,7 @@ class _UserViewState extends State<UserView> {
                     children: [
                       Container(
                         width: media.width * 0.71,
-                        height: media.height * 0.17,
+                        height: media.height * 0.19,
                         padding:
                         const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
                         decoration: BoxDecoration(
@@ -192,12 +246,14 @@ class _UserViewState extends State<UserView> {
                                 Navigator.pushReplacementNamed(context, x["url"] as String);
                               },
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   IconBox(
                                     icon: x["icon"] as IconData,
                                     iconColor: TColor.PRIMARY_TEXT,
                                     iconBackgroundColor: x["color"] as Color,
                                   ),
+                                  SizedBox(height: media.height * 0.01,),
                                   Text(
                                     x["text"] as String,
                                     style: TextStyle(
@@ -265,7 +321,7 @@ class _UserViewState extends State<UserView> {
                       height: media.height * 0.01,
                     ),
                     // Best performance
-                    _showTotalStatsLayout ? const StatsLayout() : const BackpackLayout(),
+                    _showTotalStatsLayout ? StatsLayout() : BackpackLayout(productList: productList),
                   ])
                 ],
               ),
@@ -382,7 +438,9 @@ class StatsLayout extends StatelessWidget {
 }
 
 class BackpackLayout extends StatelessWidget {
-  const BackpackLayout({super.key});
+  List<Product>? productList;
+
+  BackpackLayout({required this.productList, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -392,7 +450,7 @@ class BackpackLayout extends StatelessWidget {
         // Search bar
         const SearchFilter(hintText: "Search items"),
         SizedBox(
-          height: media.height * 0.01,
+          height: media.height * 0.015,
         ),
 
         // Product
@@ -403,9 +461,9 @@ class BackpackLayout extends StatelessWidget {
                 padding: const EdgeInsets.all(0),
                 crossAxisCount: 2,
                 crossAxisSpacing: media.width * 0.03,
-                mainAxisSpacing: media.height * 0.025,
+                mainAxisSpacing: media.height * 0.016,
                 children: [
-                  for (int i = 0; i < 100; i++)
+                  for (var product in productList ?? [])
                     CustomTextButton(
                       onPressed: () {},
                       child: Container(
@@ -476,7 +534,7 @@ class BackpackLayout extends StatelessWidget {
                             ),
                             SizedBox(height: media.height * 0.01),
                             Text(
-                              "Nike",
+                              product.brand.name,
                               style: TextStyle(
                                 color: TColor.DESCRIPTION,
                                 fontSize: FontSize.SMALL,
@@ -484,7 +542,7 @@ class BackpackLayout extends StatelessWidget {
                             ),
                             // SizedBox(height: media.height * 0.005),
                             Text(
-                              "Air Force 1 Low '07",
+                              product.name,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(
@@ -497,7 +555,10 @@ class BackpackLayout extends StatelessWidget {
                         ),
                       ),
                     ),
-                ]),
+
+                ],
+
+            ),
           ),
         ),
       ],

@@ -14,7 +14,7 @@ class UserParticipationEventInline(admin.TabularInline):
     fields = ("is_admin", "event")
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("email", "username")
+    list_display = ("id", "email", "username")
     list_filter = ("email", "is_verified_email", "username")
     inlines = [
         # UserParticipationClubInline, 

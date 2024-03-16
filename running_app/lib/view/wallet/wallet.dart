@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:running_app/utils/common_widgets/appbar.dart';
+import 'package:running_app/utils/common_widgets/app_bar.dart';
 
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
@@ -32,7 +32,7 @@ class WalletView extends StatelessWidget {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "New wallet", noIcon: true,),
+        title: const Header(title: "New wallet", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: DefaultBackgroundLayout(

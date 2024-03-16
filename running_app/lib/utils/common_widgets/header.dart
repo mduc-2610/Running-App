@@ -87,7 +87,7 @@ class Header extends StatelessWidget {
             CustomTextButton(
               style: ButtonStyle(
                 padding: MaterialStateProperty.all<EdgeInsets>(
-                  EdgeInsets.all(0)
+                  const EdgeInsets.all(0)
                 )
               ),
               onPressed: () {
@@ -99,8 +99,8 @@ class Header extends StatelessWidget {
                     borderRadius: BorderRadius.circular(50),
                     child: Image.asset(
                       "assets/img/home/avatar.png",
-                      width: 50,
-                      height: 50,
+                      width: 45,
+                      height: 45,
                       fit: BoxFit.cover,
                     ),
                   ),

@@ -46,6 +46,9 @@ class Performance(models.Model):
         # root_url = "static/images/stars/star_"
         return int(self.level / 5);
 
+    def total_stats(self, col):
+        return self.user.activity_record.aggregate(total=Sum(col))['total'] or 0
+
     def week_stats(self, col):
         today = datetime.now().date()
         start_of_week = today - timedelta(days=today.weekday())

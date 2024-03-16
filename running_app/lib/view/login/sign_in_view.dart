@@ -10,7 +10,6 @@ import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
-import '../../utils/common_widgets/back_button.dart';
 import '../../utils/common_widgets/checkbox.dart';
 import '../../utils/common_widgets/input_decoration.dart';
 import '../../utils/common_widgets/main_button.dart';

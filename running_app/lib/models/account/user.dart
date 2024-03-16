@@ -37,7 +37,10 @@ class User {
 class DetailUser extends User {
   final bool isVerifiedEmail;
   final bool isVerifiedPhone;
-  final activity;
+  final String activity;
+  final String performance;
+  final String profile;
+  final String privacy;
 
   DetailUser({
     String? id,
@@ -46,7 +49,11 @@ class DetailUser extends User {
     String? phoneNumber,
     required this.isVerifiedEmail,
     required this.isVerifiedPhone,
-    required this.activity
+    required this.activity,
+    required this.profile,
+    required this.performance,
+    required this.privacy,
+
   }) : super(
     id: id,
     email: email,
@@ -57,6 +64,9 @@ class DetailUser extends User {
   DetailUser.fromJson(Map<String, dynamic> json)
       : isVerifiedEmail = json['is_verified_email'],
         activity = json['activity'],
+        profile = json['profile'] ?? "" ,
+        performance = json['performance'] ?? "" ,
+        privacy = json['privacy'] ?? "" ,
         isVerifiedPhone = json['is_verified_phone'],
         super.fromJson(json);
 
@@ -66,19 +76,26 @@ class DetailUser extends User {
     data['is_verified_email'] = isVerifiedEmail;
     data['is_verified_phone'] = isVerifiedPhone;
     data['activity'] = activity;
+    data['performance'] = performance;
+    data['privacy'] = privacy;
+    data['profile'] = profile;
     return data;
   }
 
   @override
   String toString() {
-    return 'DetailUser{'
-        'id: $id, '
-        'email: $email, '
-        'username: $username, '
-        'phoneNumber: $phoneNumber, '
-        'isVerifiedEmail: ${isVerifiedEmail.toString()}, '
-        'isVerifiedPhone: ${isVerifiedPhone.toString()}, '
-        'activity: $activity}';
+    return 'DetailUser{\n\t'
+        'id: $id,\n\t '
+        'email: $email,\n\t '
+        'username: $username,\n\t '
+        'phoneNumber: $phoneNumber,\n\t '
+        'isVerifiedEmail: ${isVerifiedEmail.toString()},\n\t '
+        'isVerifiedPhone: ${isVerifiedPhone.toString()},\n\t '
+        'activity: $activity,\n\t'
+        'performance: $performance,\n\t'
+        'privacy: $privacy,\n\t'
+        'profile: $profile \n'
+        '},\n';
   }
 }
 

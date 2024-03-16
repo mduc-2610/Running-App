@@ -10,8 +10,8 @@ class APIEndpoints {
 }
 
 class TColor {
-  // static Color get PRIMARY => const Color(0xff7b61ff);
-  static Color get PRIMARY => Colors.green;
+  static Color get PRIMARY => const Color(0xff7b61ff);
+  // static Color get PRIMARY => Colors.green;
   static Color get PRIMARY_TEXT => const Color(0xffffffff);
   static Color get SECONDARY_TEXT => const Color(0xff7b61ff);
   static Color get DESCRIPTION => const Color(0xffcdcdcd);

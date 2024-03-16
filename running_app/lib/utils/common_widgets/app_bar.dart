@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/constants.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -7,7 +6,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String? backgroundImage;
   final Color? backgroundColor;
 
-  CustomAppBar({
+  const CustomAppBar({
     required this.title,
     this.backgroundImage,
     this.backgroundColor,
@@ -18,7 +17,7 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   _CustomAppBarState createState() => _CustomAppBarState();
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 class _CustomAppBarState extends State<CustomAppBar> {

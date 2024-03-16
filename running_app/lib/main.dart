@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 
 
@@ -46,9 +47,8 @@ void main() async {
   String token = prefs.getString('token') ?? '';
   String userPref = prefs.getString('user') ?? '';
   bool logged = prefs.getBool('logged') ?? false;
-  print(logged);
   DetailUser? user = userPref != "" ? DetailUser.fromJson(json.decode(userPref) ?? "") : null ;
-  Widget homeScreen = token != "" ? const HomeView() : (logged == false) ? const GetStartedView() : SignInView();
+  Widget homeScreen = token != "" ? const HomeView() : (logged == false) ? const GetStartedView() : const SignInView();
   runApp(
     MultiProvider(
       providers: [
@@ -73,8 +73,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Token: $token, User: $user');
-    print('TokenProvider: ${Provider.of<TokenProvider>(context).token}, UserProvider: ${Provider.of<UserProvider>(context).user}');
+    // print('Token: $token, User: $user');
+    // print('TokenProvider: ${Provider.of<TokenProvider>(context).token}, UserProvider: ${Provider.of<UserProvider>(context).user}');
+
     return MaterialApp(
       title: 'Running',
       debugShowCheckedModeBanner: false,
