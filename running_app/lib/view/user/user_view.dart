@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/utils/common_widgets/appbar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_box.dart';
@@ -19,12 +21,14 @@ class UserView extends StatefulWidget {
 
 class _UserViewState extends State<UserView> {
   bool _showTotalStatsLayout = true;
+  DetailUser? user;
 
+  
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Header(
           title: "",
           iconButtons: [
@@ -36,8 +40,6 @@ class _UserViewState extends State<UserView> {
             }
           ],
         ),
-        backgroundColor: TColor.PRIMARY,
-        automaticallyImplyLeading: false,
       ),
       body: DefaultBackgroundLayout(
         child: Stack(

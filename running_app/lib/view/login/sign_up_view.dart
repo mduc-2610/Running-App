@@ -10,7 +10,6 @@ import '../../utils/common_widgets/back_button.dart';
 import '../../utils/common_widgets/text_form_field.dart';
 import '../../utils/common_widgets/main_wrapper.dart';
 
-import '../../services/api_service.dart';
 
 class SignUpView extends StatelessWidget {
   const SignUpView({super.key});

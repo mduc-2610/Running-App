@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:running_app/utils/common_widgets/appbar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -38,10 +39,8 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: Header(username: '${user?.username?.substring(0, 5)}...' ?? "",),
-        automaticallyImplyLeading: false,
-        backgroundColor: TColor.PRIMARY,
       ),
       body: SingleChildScrollView(
         child: DefaultBackgroundLayout(

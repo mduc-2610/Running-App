@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
-
 import '../../utils/common_widgets/back_button.dart';
 import '../../utils/common_widgets/checkbox.dart';
 import '../../utils/common_widgets/input_decoration.dart';
@@ -26,6 +27,12 @@ class SignInView extends StatefulWidget {
 
 class _SignInViewState extends State<SignInView> {
   bool _isChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   List logoButton = [
     {
       "assets": "assets/img/login/google_logo.svg",
@@ -66,9 +73,13 @@ class _SignInViewState extends State<SignInView> {
 
         List<dynamic> users = await callListAPI('account/user', User.fromJson, token);
         final userId = users.firstWhere((element) => element.username == usernameController.text).id;
-        DetailUser userData = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
-        Provider.of<UserProvider>(context, listen: false).setUser(userData);
-        print(userData);
+        DetailUser user = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
+        Provider.of<UserProvider>(context, listen: false).setUser(user);
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
+        await prefs.setString('user', jsonEncode(user.toJson()));
+        print(user);
 
         Navigator.pushNamed(context, '/home', arguments: {
           'token': token
@@ -117,6 +128,7 @@ class _SignInViewState extends State<SignInView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
+
     return Scaffold(
       backgroundColor: TColor.PRIMARY_BACKGROUND,
       body: SingleChildScrollView(
@@ -136,10 +148,7 @@ class _SignInViewState extends State<SignInView> {
                 ]
               ),
             ),
-            MainWrapper(
-              topMargin: media.height * 0.06,
-              child: CustomBackButton(context: context)
-            ),
+            SizedBox(height: media.height * 0.06,),
             MainWrapper(
               child: Container(
                 margin: EdgeInsets.fromLTRB(media.width * 0.015, media.height * 0.32, media.width * 0.015, 0),

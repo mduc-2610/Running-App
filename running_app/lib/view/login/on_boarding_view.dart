@@ -66,7 +66,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                   CustomBackButton(context: context),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/sign_in');
+                      Navigator.pushReplacementNamed(context, '/sign_in');
                     },
                     child: const Text(
                       "Skip",
@@ -185,7 +185,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, '/sign_in');
+                          Navigator.pushReplacementNamed(context, '/sign_in');
                         },
                         child: Text(
                           'Sign in',

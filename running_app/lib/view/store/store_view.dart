@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:running_app/utils/common_widgets/appbar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
@@ -52,18 +53,9 @@ class StoreView extends StatelessWidget {
       ]
     ];
     return Scaffold(
-        appBar: AppBar(
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/img/home/background_1.png"),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+        appBar: CustomAppBar(
           title: const Header(title: "Store", backButton: false,),
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.transparent,
+          backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
         ),
       body: SingleChildScrollView(
         child:

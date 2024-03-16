@@ -10,7 +10,8 @@ class APIEndpoints {
 }
 
 class TColor {
-  static Color get PRIMARY => const Color(0xff7b61ff);
+  // static Color get PRIMARY => const Color(0xff7b61ff);
+  static Color get PRIMARY => Colors.green;
   static Color get PRIMARY_TEXT => const Color(0xffffffff);
   static Color get SECONDARY_TEXT => const Color(0xff7b61ff);
   static Color get DESCRIPTION => const Color(0xffcdcdcd);
@@ -18,6 +19,10 @@ class TColor {
   static Color get SECONDARY_BACKGROUND => const Color(0xff2f3c50);
   static Color get BUTTON => const Color(0xff7b61ff);
   static Color get BORDER_COLOR => const Color(0xff444b5e);
+}
+
+class TImage {
+  static String get PRIMARY_BACKGROUND_IMAGE => "assets/img/home/background_1.png";
 }
 
 class FontSize {

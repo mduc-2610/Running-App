@@ -45,6 +45,7 @@ dev_dependencies:
   auto_size_text: ^3.0.0
   carousel_slider: 4.2.1
   provider: 6.1.2
+  shared_preferences: 2.2.2
   #  permission: ^0.1.7
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

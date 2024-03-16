@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
 
 class UserProvider with ChangeNotifier {
@@ -7,7 +6,7 @@ class UserProvider with ChangeNotifier {
 
   DetailUser? get user => _user;
 
-  void setUser(DetailUser user) {
+  void setUser(DetailUser? user) {
     _user = user;
     notifyListeners();
   }

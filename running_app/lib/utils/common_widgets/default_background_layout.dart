@@ -18,7 +18,7 @@ class DefaultBackgroundLayout extends StatelessWidget {
           ),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              minHeight: MediaQuery.sizeOf(context).height - 109,
+              minHeight: MediaQuery.sizeOf(context).height - 80,
             ),
             child: child,
           ),

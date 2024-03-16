@@ -1,5 +1,11 @@
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
+
 
 import 'package:running_app/utils/common_widgets/email_verification.dart';
 import 'package:running_app/utils/common_widgets/notification_box.dart';
@@ -34,26 +40,41 @@ import 'package:running_app/view/wallet/wallet.dart';
 
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  // prefs.setBool('logged', false);
+  String token = prefs.getString('token') ?? '';
+  String userPref = prefs.getString('user') ?? '';
+  bool logged = prefs.getBool('logged') ?? false;
+  print(logged);
+  DetailUser? user = userPref != "" ? DetailUser.fromJson(json.decode(userPref) ?? "") : null ;
+  Widget homeScreen = token != "" ? const HomeView() : (logged == false) ? const GetStartedView() : SignInView();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<UserProvider>(
-          create: (_) => UserProvider(),
+          create: (_) => UserProvider()..setUser(user),
         ),
         ChangeNotifierProvider<TokenProvider>(
-          create: (_) => TokenProvider(),
+          create: (_) => TokenProvider()..setToken(token),
         ),
       ],
-      child: MyApp(),
+      child: MyApp(homeScreen: homeScreen, token: token, user: user),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget homeScreen;
+  final String? token;
+  final DetailUser? user;
+
+  const MyApp({required this.homeScreen, required this.token, required this.user, super.key});
 
   @override
   Widget build(BuildContext context) {
+    print('Token: $token, User: $user');
+    print('TokenProvider: ${Provider.of<TokenProvider>(context).token}, UserProvider: ${Provider.of<UserProvider>(context).user}');
     return MaterialApp(
       title: 'Running',
       debugShowCheckedModeBanner: false,
@@ -62,9 +83,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/sign_in',
+      initialRoute: '/',
       routes: {
-        '/': (context) => const GetStartedView(),
+        '/': (context) => homeScreen,
         '/on_board': (context) => const OnBoardingView(),
         '/sign_in': (context) => const SignInView(),
         '/sign_up': (context) => const SignUpView(),

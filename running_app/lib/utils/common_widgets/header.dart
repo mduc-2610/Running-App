@@ -43,6 +43,9 @@ class Header extends StatelessWidget {
     var media = MediaQuery.of(context).size;
     var buttons = iconButtons ?? defaultIconButtons();
     return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: media.width * 0.025
+      ),
       // decoration: BoxDecoration(
       //   image: DecorationImage(
       //     image: AssetImage("assets/img/home/background_1.png"),
@@ -81,45 +84,50 @@ class Header extends StatelessWidget {
               ),
             )],
           ] else ...[
-            Row(
-              children: [
-                // CustomIconButton(
-                //   onPressed: () {},
-                //   icon: const Icon(Icons.menu),
-                //   color: TColor.PRIMARY_TEXT,
-                // ),
-                // if (username != null) SizedBox(width: media.width * 0.03),
-                CustomTextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/user');
-                  },
-                  child: Image.asset(
-                    "assets/img/home/avatar.png",
-                  ),
-                ),
-                SizedBox(width: media.width * 0.02),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Hello! ",
-                      style: TextStyle(
-                        color: TColor.PRIMARY_TEXT,
-                        fontSize: FontSize.SMALL,
-                        fontWeight: FontWeight.w300,
-                      ),
+            CustomTextButton(
+              style: ButtonStyle(
+                padding: MaterialStateProperty.all<EdgeInsets>(
+                  EdgeInsets.all(0)
+                )
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/user');
+              },
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: Image.asset(
+                      "assets/img/home/avatar.png",
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
                     ),
-                    Text(
-                      '$username',
-                      style: TextStyle(
-                        color: TColor.PRIMARY_TEXT,
-                        fontSize: FontSize.LARGE,
-                        fontWeight: FontWeight.w900,
+                  ),
+                  SizedBox(width: media.width * 0.02),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Hello! ",
+                        style: TextStyle(
+                          color: TColor.PRIMARY_TEXT,
+                          fontSize: FontSize.SMALL,
+                          fontWeight: FontWeight.w300,
+                        ),
                       ),
-                    )
-                  ],
-                ),
-              ],
+                      Text(
+                        '$username',
+                        style: TextStyle(
+                          color: TColor.PRIMARY_TEXT,
+                          fontSize: FontSize.LARGE,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             )
           ],
           Row(
@@ -142,7 +150,7 @@ class Header extends StatelessWidget {
                         ),
                       ),
                       if (buttons.length % 2 == 0 && buttons.indexOf(button) != buttons.length - 1)
-                        SizedBox(width: media.width * 0.03)
+                        SizedBox(width: media.width * 0.015)
                     ],
                   ),
               ] else...[

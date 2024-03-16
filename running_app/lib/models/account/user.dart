@@ -76,8 +76,8 @@ class DetailUser extends User {
         'email: $email, '
         'username: $username, '
         'phoneNumber: $phoneNumber, '
-        'isVerifiedEmail: $isVerifiedEmail, '
-        'isVerifiedPhone: $isVerifiedPhone, '
+        'isVerifiedEmail: ${isVerifiedEmail.toString()}, '
+        'isVerifiedPhone: ${isVerifiedPhone.toString()}, '
         'activity: $activity}';
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:running_app/utils/common_widgets/appbar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -21,17 +22,9 @@ class _FollowerViewState extends State<FollowerView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: const Header(title: "Follow", noIcon: true,),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/img/home/background_1.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
+        backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: DefaultBackgroundLayout(
         child: Stack(

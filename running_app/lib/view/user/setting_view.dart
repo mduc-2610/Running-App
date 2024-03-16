@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/utils/common_widgets/appbar.dart';
+
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+void signOut(BuildContext context) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove('token');
+  await prefs.remove('user');
+
+  Provider.of<TokenProvider>(context, listen: false).setToken('');
+  Provider.of<UserProvider>(context, listen: false).setUser(null);
+
+  Navigator.pushReplacementNamed(context, '/sign_in');
+}
 
 class SettingView extends StatefulWidget {
   const SettingView({super.key});
@@ -44,17 +62,9 @@ class _SettingViewState extends State<SettingView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: const Header(title: "Setting", noIcon: true,),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/img/home/background_1.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
+        backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: DefaultBackgroundLayout(
         child: Stack(
@@ -131,7 +141,11 @@ class _SettingViewState extends State<SettingView> {
                           )
                         )
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        signOut(context);
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setBool('logged', true);
+                      },
                       child: const Text(
                         "Sign Out",
                         style: TextStyle(

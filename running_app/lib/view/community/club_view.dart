@@ -60,6 +60,7 @@ class _ClubViewState extends State<ClubView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
+    print('Club: $token');
     List clubStat = [
       {
         "type": "Members",

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:running_app/utils/common_widgets/appbar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -26,10 +27,8 @@ class _CommunityViewState extends State<CommunityView> {
     List redirect = ["Events", "Social", "Clubs"];
     return Scaffold(
 
-      appBar: AppBar(
-        title: const Header(title: "Community", backButton: false, noIcon: true),
-        automaticallyImplyLeading: false,
-        backgroundColor: TColor.PRIMARY,
+      appBar: CustomAppBar(
+        title: Header(title: "Community", backButton: false, noIcon: true),
       ),
       body: SingleChildScrollView(
         child: DefaultBackgroundLayout(

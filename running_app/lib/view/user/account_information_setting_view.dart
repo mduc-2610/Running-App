@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:running_app/utils/common_widgets/appbar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
@@ -71,17 +72,9 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Header(title: "Account Information", noIcon: true,),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/img/home/background_1.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
+      appBar: CustomAppBar(
+        title: Header(title: "Account Information", noIcon: true,),
+        backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
         child: DefaultBackgroundLayout(
