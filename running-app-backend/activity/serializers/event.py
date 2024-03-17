@@ -21,6 +21,12 @@ class DetailEventSerializer(serializers.ModelSerializer):
     days_remain = serializers.SerializerMethodField()
     number_of_participants = serializers.SerializerMethodField()
     participants = serializers.SerializerMethodField()
+    privacy = serializers.CharField(source='get_privacy_display')
+    competition = serializers.CharField(source='get_competition_display')
+    sport_type = serializers.CharField(source='get_sport_type_display')
+    started_at = serializers.SerializerMethodField()
+    ended_at = serializers.SerializerMethodField()
+    regulation = serializers.SerializerMethodField()
 
     def get_days_remain(self, instance):
         return instance.days_remain()
@@ -33,6 +39,29 @@ class DetailEventSerializer(serializers.ModelSerializer):
         users = [instance.user for instance in instance.events.all()]
         return DetailUserSerializer(users, many=True, context={'request': request}).data
 
+    def get_started_at(self, instance):
+        return instance.get_readable_time('started_at')
+    
+    def get_ended_at(self, instance):
+        return instance.get_readable_time('ended_at')
+    
+    def get_regulation(self, instance):
+        regulations = instance.regulations
+        if regulations is None:
+            regulations = {
+                "min_distance": "Unlimited",
+                "max_distance": "Unlimited",
+                "min_avg_pace": "Unlimited",
+                "max_avg_pace": "Unlimited",
+            }
+        else:
+            regulations["min_distance"] = f"{regulations.get('min_distance', 'Unlimited')}{'km' if regulations.get('min_distance', 'Unlimited') != 'Unlimited' else ''}"
+            regulations["max_distance"] = f"{regulations.get('max_distance', 'Unlimited')}{'km' if regulations.get('max_distance', 'Unlimited') != 'Unlimited' else ''}"
+            regulations["min_avg_pace"] = f"{regulations.get('min_avg_pace', 'Unlimited')}{'/km' if regulations.get('min_avg_pace', 'Unlimited') != 'Unlimited' else ''}"
+            regulations["max_avg_pace"] = f"{regulations.get('max_avg_pace', 'Unlimited')}{'/km' if regulations.get('max_avg_pace', 'Unlimited') != 'Unlimited' else ''}"
+
+        return regulations
+    
     class Meta:
         model = Event
         fields = "__all__"

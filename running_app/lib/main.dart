@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
+import 'package:running_app/view/community/club_detail_information_view.dart';
+import 'package:running_app/view/community/member_view.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 
 
@@ -32,7 +34,7 @@ import 'package:running_app/view/store/product_view.dart';
 import 'package:running_app/view/store/store_view.dart';
 import 'package:running_app/view/user/account_information_setting_view.dart';
 import 'package:running_app/view/user/athlete_discovery_view.dart';
-import 'package:running_app/view/user/follower_view.dart';
+import 'package:running_app/view/user/follow_view.dart';
 import 'package:running_app/view/user/notification_setting_view.dart';
 import 'package:running_app/view/user/privacy_setting_view.dart';
 import 'package:running_app/view/user/setting_view.dart';
@@ -103,6 +105,8 @@ class MyApp extends StatelessWidget {
         '/community': (context) => const CommunityView(),
         '/club_list': (context) => const ClubListView(),
         '/club_detail': (context) => const ClubDetailView(),
+        '/club_detail_information': (context) => const ClubDetailInformationView(),
+        '/member': (context) => const MemberView(),
         '/event_list': (context) => const EventListView(),
         '/your_event_list': (context) => const YourEventListView(),
         '/user': (context) => const UserView(),
@@ -112,7 +116,7 @@ class MyApp extends StatelessWidget {
         '/account_information_setting': (context) => const AccountInformationSettingView(),
         '/notification_setting': (context) => const NotificationSettingView(),
         '/athlete_discovery': (context) => const AthleteDiscoveryView(),
-        '/follower': (context) => const FollowerView(),
+        '/follow': (context) => const FollowView(),
         '/notification': (context) => const NotificationView(),
         // '/verify': (context) => VerifyCodeForm(),
         // '/running': (context) => const RunningView(),

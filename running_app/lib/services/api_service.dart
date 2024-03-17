@@ -13,9 +13,9 @@ class APIService {
     return '${APIEndpoints.BASE_URL}/$endpoint/${id != '' ? '$id/' : ''}';
   }
 
-  Future<List<dynamic>> fetchList(final modelFromJson) async {
+  Future<List<dynamic>> fetchList(final modelFromJson, { String queryParams = "" }) async {
     final response = await http.get(
-      Uri.parse(url()),
+      Uri.parse(url() + queryParams ?? ""),
       headers: _getHeaders(),
     );
 
@@ -86,10 +86,11 @@ Future<List<dynamic>> callListAPI(
     String endpoint,
     Function modelFromJson,
     String token,
+    { String queryParams = "" }
     ) async {
   APIService service = APIService(endpoint: endpoint, token: token);
 
-  final List<dynamic> querySet = await service.fetchList(modelFromJson);
+  final List<dynamic> querySet = await service.fetchList(modelFromJson, queryParams: queryParams);
   return querySet;
 }
 

@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:running_app/utils/common_widgets/event_box.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/activity/event.dart';
+import 'package:running_app/services/api_service.dart';
 
 import 'package:running_app/utils/common_widgets/search_filter.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/constants.dart';
 
 class EventView extends StatefulWidget {
@@ -15,10 +19,37 @@ class EventView extends StatefulWidget {
 }
 
 class _EventViewState extends State<EventView> {
+  List<dynamic>? popularEvents;
+  List<dynamic>? allEvents;
+  String token = "";
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initEvents() async{
+    final data1 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?sort=participants&limit=10");
+    final data2 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?limit=20");
+    setState(() {
+      popularEvents = data1;
+      allEvents = data2;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initToken();
+    initEvents();
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-
+    // print('Popular events: $popularEvents');
+    // print('All events: $allEvents');
     List text = ["About to start: 0", "Ended: 7"];
     return Column(
       children: [
@@ -132,8 +163,8 @@ class _EventViewState extends State<EventView> {
                 ),
 
                 items: [
-                  for(int i = 0; i < 3; i ++)...[
-                    const EventBox(),
+                  for(var event in popularEvents ?? [])...[
+                    EventBox(event: event,),
                   ]
                 ],
               ),
@@ -179,12 +210,12 @@ class _EventViewState extends State<EventView> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    for(int i = 0; i < 10; i++)...[
-                      const IntrinsicHeight(
-                        child: EventBox(width: 200,
+                    for(var event in allEvents ?? [])...[
+                      IntrinsicHeight(
+                        child: EventBox(event: event, width: 200,
                         buttonMargin: EdgeInsets.fromLTRB(12, 0, 12, 12),)
                       ),
-                      if(i < 9) const SizedBox(width: 10,)
+                      SizedBox(width: 10,)
                     ]
                   ],
                 ),

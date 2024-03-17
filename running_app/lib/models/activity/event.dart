@@ -1,16 +1,18 @@
+import 'package:running_app/models/account/user.dart';
+
 class Event {
   final String? id;
   final String? name;
   final int? numberOfParticipants;
   final String? banner;
-  final String? daysRemaining;
+  final String? daysRemain;
 
   Event({
     required this.id,
     required this.name,
     required this.numberOfParticipants,
     required this.banner,
-    required this.daysRemaining,
+    required this.daysRemain,
   });
 
   Event.fromJson(Map<String, dynamic> json)
@@ -18,7 +20,7 @@ class Event {
       name = json['name'],
       numberOfParticipants = json['number_of_participants'],
       banner = json['banner'],
-      daysRemaining = json['days_remaining'];
+      daysRemain = json['days_remaining'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -26,81 +28,96 @@ class Event {
       'name': name,
       'number_of_participants': numberOfParticipants,
       'banner': banner,
-      'days_remaining': daysRemaining,
+      'days_remaining': daysRemain,
     };
   }
 
   @override
   String toString() {
-    return 'Event{id: $id, name: $name, numberOfParticipants: $numberOfParticipants, banner: $banner, daysRemaining: $daysRemaining}';
+    return 'Event{id: $id, name: $name, numberOfParticipants: $numberOfParticipants, banner: $banner, daysRemain: $daysRemain}';
   }
 }
 
 class DetailEvent extends Event {
-  final List<Map<String, dynamic>>? users;
   final String? startedAt;
   final String? endedAt;
   final Map<String, dynamic>? regulations;
   final String? description;
   final String? contactInformation;
   final String? sportType;
-  final bool? isGroup;
+  final String? privacy;
+  final String? competition;
+  final List<DetailUser>? participants;
 
   DetailEvent({
     String? id,
     String? name,
     int? numberOfParticipants,
     String? banner,
-    String? daysRemaining,
-    required this.users,
+    String? daysRemain,
     required this.startedAt,
     required this.endedAt,
     required this.regulations,
     required this.description,
     required this.contactInformation,
     required this.sportType,
-    required this.isGroup
+    required this.privacy,
+    required this.competition,
+    required this.participants,
   }) : super(
     id: id,
     name: name,
     numberOfParticipants: numberOfParticipants,
     banner: banner,
-    daysRemaining: daysRemaining
+    daysRemain: daysRemain
   );
 
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
-    data['users'] = users;
     data['started_at'] = startedAt;
     data['ended_at'] = endedAt;
     data['regulations'] = regulations;
     data['description'] = description;
     data['contact_information'] = contactInformation;
     data['sport_type'] = sportType;
-    data['is_group'] = isGroup;
+    data['privacy'] = privacy;
+    data['competition'] = competition;
+    data['participants'] = participants;
     return data;
   }
 
   DetailEvent.fromJson(Map<String, dynamic> json)
-      : users = json['users'],
-        startedAt = json['started_at'],
+      : startedAt = json['started_at'],
         endedAt = json['ended_at'],
         regulations = json['regulations'],
         description = json['description'],
         contactInformation = json['contact_information'],
         sportType = json['sport_type'],
-        isGroup = json['is_group'],
+        privacy = json['privacy'],
+        competition = json['competition'],
+        participants = (json['participants'] as List<dynamic>).map((e) => DetailUser.fromJson(e)).toList(),
         super(
           id: json['id'],
           name: json['name'],
           numberOfParticipants: json['number_of_participants'],
           banner: json['banner'],
-          daysRemaining: json['days_remaining']
+          daysRemain: json['days_remaining']
         );
 
   @override
   String toString() {
-    return 'DetailEvent{${super.toString()}, users: $users, startedAt: $startedAt, endedAt: $endedAt, regulations: $regulations, description: $description, contactInformation: $contactInformation, sportType: $sportType, isGroup: $isGroup}';
+    return 'DetailEvent{\n'
+        '${super.toString()},'
+        'startedAt: $startedAt,\n\t '
+        'endedAt: $endedAt,\n\t '
+        'regulations: $regulations,\n\t '
+        'description: $description,\n\t '
+        'contactInformation: $contactInformation,\n\t '
+        'sportType: $sportType,\n\t '
+        'competition: $competition,\n\t '
+        'privacy: $privacy,\n\t'
+        'participants: $participants\n'
+        '}\n';
   }
 }

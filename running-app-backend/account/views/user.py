@@ -29,7 +29,7 @@ class UserViewSet(
     serializer_class = UserSerializer
     
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = super().get_queryset()
         username = self.request.query_params.get('username', None)
         email = self.request.query_params.get('email', None)
         if username or email:

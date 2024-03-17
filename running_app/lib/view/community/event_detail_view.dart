@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/activity/event.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/progress_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/scroll_synchronized.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
 
 class EventDetailView extends StatefulWidget {
   const EventDetailView({super.key});
@@ -16,13 +21,47 @@ class EventDetailView extends StatefulWidget {
 }
 
 class _EventDetailViewState extends State<EventDetailView> {
-  bool _showLeaderBoard = false;
+  String _showLayout = "Information";
+  String token = "";
+  String eventId = "";
+  DetailEvent? event;
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initEventId() {
+    setState(() {
+      eventId = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?)?["id"];
+    });
+  }
+
+  void initDetailEvent() async {
+    final data = await callRetrieveAPI('activity/event', eventId, null, DetailEvent.fromJson, token);
+    setState(() {
+      event = data;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initToken();
+    initEventId();
+    initDetailEvent();
+  }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
+    ScrollController parentScrollController = ScrollController();
+    print('Event id: ${eventId}');
+    print('Event: ${event}');
     return Scaffold(
       body: SingleChildScrollView(
+        controller: parentScrollController,
         child: DefaultBackgroundLayout(
           child: Stack(
             children: [
@@ -106,7 +145,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "153 days left",
+                                event?.daysRemain ?? "0",
                                 style: TextStyle(
                                     color: TColor.DESCRIPTION,
                                     fontSize: FontSize.SMALL,
@@ -145,7 +184,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                             child: CustomTextButton(
                               onPressed: () {
                                 setState(() {
-                                  _showLeaderBoard = x == "Leaderboard";
+                                  _showLayout = x;
                                 });
                               },
                               style: ButtonStyle(
@@ -153,14 +192,8 @@ class _EventDetailViewState extends State<EventDetailView> {
                                       const EdgeInsets.all(0)),
                                   backgroundColor:
                                       MaterialStateProperty.all<Color?>(
-                                          // x == "Total stats" ? TColor.PRIMARY : null
-
-                                          x == "Information" &&
-                                                      _showLeaderBoard == false ||
-                                                  x == "Leaderboard" &&
-                                                      _showLeaderBoard == true
-                                              ? TColor.PRIMARY
-                                              : null),
+                                        _showLayout == x ? TColor.PRIMARY : null
+                                      ),
                                   shape: MaterialStateProperty.all<
                                           RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
@@ -179,7 +212,9 @@ class _EventDetailViewState extends State<EventDetailView> {
                     SizedBox(
                       height: media.height * 0.01,
                     ),
-                    _showLeaderBoard == false ? const InformationLayout() : AthleteTable()
+                    _showLayout == "Information"
+                        ? InformationLayout(event: event,)
+                        : LeaderBoardLayout(event: event, parentScrollController: parentScrollController,)
                   ],
                 ),
               ),
@@ -192,18 +227,23 @@ class _EventDetailViewState extends State<EventDetailView> {
 }
 
 class InformationLayout extends StatefulWidget {
-  const InformationLayout({super.key});
+  final DetailEvent? event;
+  const InformationLayout({
+    this.event,
+    super.key
+  });
 
   @override
   State<InformationLayout> createState() => _InformationLayoutState();
 }
 
 class _InformationLayoutState extends State<InformationLayout> {
-  bool _showPost = false;
+  String _showLayout = "General information";
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -216,7 +256,7 @@ class _InformationLayoutState extends State<InformationLayout> {
                 child: CustomTextButton(
                   onPressed: () {
                     setState(() {
-                      _showPost = x == "Post";
+                      _showLayout = x;
                     });
                   },
                   style: ButtonStyle(
@@ -224,16 +264,13 @@ class _InformationLayoutState extends State<InformationLayout> {
                         const EdgeInsets.all(0),
                       ),
                       backgroundColor: MaterialStateProperty.all<Color?>(
-                          x == "General information" && _showPost == false ||
-                                  x == "Post" && _showPost == true
-                              ? Colors.transparent
-                              : TColor.SECONDARY_BACKGROUND),
+                          _showLayout == x ? Colors.transparent : TColor.SECONDARY_BACKGROUND
+                      ),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
                       side: MaterialStateProperty.all(
-                          x == "General information" && _showPost == false ||
-                                  x == "Post" && _showPost == true
+                          _showLayout == x
                               ? BorderSide(
                                   color: TColor.PRIMARY,
                                   width: 2.0,
@@ -253,14 +290,40 @@ class _InformationLayoutState extends State<InformationLayout> {
         SizedBox(
           height: media.height * 0.015,
         ),
-        _showPost == false ? const GeneralInformationLayout() : const PostLayout(),
+        _showLayout == "General information" ? GeneralInformationLayout(event: widget.event,) : PostLayout(),
       ],
     );
   }
 }
 
+class LeaderBoardLayout extends StatelessWidget {
+  final ScrollController parentScrollController;
+  DetailEvent? event;
+  LeaderBoardLayout({
+    required this.parentScrollController,
+    required this.event,
+    super.key
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    var media = MediaQuery.sizeOf(context);
+    ScrollController childScrollController = ScrollController();
+
+    return ScrollSynchronized(
+      child: AthleteTable(participants: event?.participants ?? [], tableHeight: media.height - media.height * 0.16, controller: childScrollController,),
+      parentScrollController: parentScrollController,
+    );
+  }
+}
+
+
 class GeneralInformationLayout extends StatelessWidget {
-  const GeneralInformationLayout({super.key});
+  final DetailEvent? event;
+  const GeneralInformationLayout({
+    this.event,
+    super.key
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -269,17 +332,17 @@ class GeneralInformationLayout extends StatelessWidget {
       {
         "icon": Icons.calendar_today_rounded,
         "type": "Duration",
-        "content": "00:00 - 22/02/2024 to 23:59 - 17/03/2024"
+        "content": "${event?.endedAt ?? ""} to ${event?.startedAt ?? ""}"
       },
       {
         "icon": Icons.directions_run_rounded,
         "type": "Competition",
-        "content": "Individual",
+        "content": "${event?.competition}",
       },
       {
         "icon": Icons.shield_outlined,
         "type": "Event mode",
-        "content": "Public",
+        "content": "${event?.privacy}",
       }
     ];
     return SizedBox(
@@ -293,7 +356,7 @@ class GeneralInformationLayout extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Ptit event",
+                  event?.name ?? "",
                   style: TextStyle(
                     color: TColor.PRIMARY_TEXT,
                     fontSize: FontSize.LARGE,
@@ -323,7 +386,7 @@ class GeneralInformationLayout extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          " - 4,577 join",
+                          "  •  ${event?.numberOfParticipants ?? 0} join",
                           style: TextStyle(
                             color: TColor.DESCRIPTION,
                             fontSize: FontSize.SMALL,
@@ -425,7 +488,7 @@ class GeneralInformationLayout extends StatelessWidget {
                             {
                               "icon": Icons.directions_run_rounded,
                               "type": "Minimum distance",
-                              "figure": "1km",
+                              "figure": "${event?.regulations?["min_distance"]}",
                               "border": Border(
                                 right: BorderSide(width: 1.0, color: TColor.BORDER_COLOR),
                                 bottom: BorderSide(width: 1.0, color: TColor.BORDER_COLOR),
@@ -434,7 +497,7 @@ class GeneralInformationLayout extends StatelessWidget {
                             {
                               "icon": Icons.directions_run_rounded,
                               "type": "Maximum distance",
-                              "figure": "100km",
+                              "figure": "${event?.regulations?["max_distance"]}",
                               "border": Border(
                                 left: BorderSide(width: 1.0, color: TColor.BORDER_COLOR),
                                 bottom: BorderSide(width: 1.0, color: TColor.BORDER_COLOR),
@@ -486,8 +549,8 @@ class GeneralInformationLayout extends StatelessWidget {
                           for (var x in [
                             {
                               "icon": Icons.directions_run_rounded,
-                              "type": "Minimum distance",
-                              "figure": "1km",
+                              "type": "Slowest Avg Pace",
+                              "figure": "${event?.regulations?["min_avg_pace"]}",
                               "border": Border(
                                 top: BorderSide(width: 1.0, color: TColor.BORDER_COLOR),
                                 right: BorderSide(width: 1.0, color: TColor.BORDER_COLOR),
@@ -495,8 +558,8 @@ class GeneralInformationLayout extends StatelessWidget {
                             },
                             {
                               "icon": Icons.directions_run_rounded,
-                              "type": "Maximum distance",
-                              "figure": "100km",
+                              "type": "Fastest Avg Pace",
+                              "figure": "${event?.regulations?["max_avg_pace"]}",
                               "border": Border(
                                 left: BorderSide(width: 1.0, color: TColor.BORDER_COLOR),
                                 top: BorderSide(width: 1.0, color: TColor.BORDER_COLOR),
@@ -566,51 +629,56 @@ class GeneralInformationLayout extends StatelessWidget {
               ],
             ),
             SizedBox(height: media.height * 0.015,),
+
             // Description section
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Event's description",
-                  style: TextStyle(
-                    color: TColor.PRIMARY_TEXT,
-                    fontSize: FontSize.LARGE,
-                    fontWeight: FontWeight.w800,
+            if(event?.description != null)...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Event's description",
+                    style: TextStyle(
+                      color: TColor.PRIMARY_TEXT,
+                      fontSize: FontSize.LARGE,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
-                ),
-                Text(
-                  "Thử thách số Km tối đa năm 2024 bạn chạy được bao nhiêu",
-                  style: TextStyle(
-                    color: TColor.DESCRIPTION,
-                    fontSize: FontSize.SMALL,
-                    fontWeight: FontWeight.w500,
-                  ),
-                )
-              ],
-            ),
-            SizedBox(height: media.height * 0.015,),
+                  Text(
+                    event?.description ?? "",
+                    style: TextStyle(
+                      color: TColor.DESCRIPTION,
+                      fontSize: FontSize.SMALL,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: media.height * 0.015,),
+            ],
             // Contact section
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Contact information",
-                  style: TextStyle(
-                    color: TColor.PRIMARY_TEXT,
-                    fontSize: FontSize.LARGE,
-                    fontWeight: FontWeight.w800,
+            if(event?.contactInformation != null)...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Contact information",
+                    style: TextStyle(
+                      color: TColor.PRIMARY_TEXT,
+                      fontSize: FontSize.LARGE,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
-                ),
-                Text(
-                  "Liên hệ Mr: Lê Hữu Tài - 0986663579",
-                  style: TextStyle(
-                    color: TColor.DESCRIPTION,
-                    fontSize: FontSize.SMALL,
-                    fontWeight: FontWeight.w500,
-                  ),
-                )
-              ],
-            ),
+                  Text(
+                    event?.contactInformation ?? "",
+                    style: TextStyle(
+                      color: TColor.DESCRIPTION,
+                      fontSize: FontSize.SMALL,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  )
+                ],
+              ),
+            ]
           ],
         ),
       ),

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/activity/event.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -7,12 +10,15 @@ import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/view/community/club_view.dart';
 import 'package:running_app/view/community/event_view.dart';
 import 'package:running_app/view/community/social_view.dart';
 
 class CommunityView extends StatefulWidget {
-  const CommunityView({super.key});
+  const CommunityView({
+    super.key
+  });
 
   @override
   State<CommunityView> createState() => _CommunityViewState();
@@ -26,7 +32,6 @@ class _CommunityViewState extends State<CommunityView> {
     var media = MediaQuery.sizeOf(context);
     List redirect = ["Events", "Social", "Clubs"];
     return Scaffold(
-
       appBar: const CustomAppBar(
         title: Header(title: "Community", backButton: false, noIcon: true),
       ),

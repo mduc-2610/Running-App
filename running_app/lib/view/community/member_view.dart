@@ -9,15 +9,15 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
-class AthleteDiscoveryView extends StatelessWidget {
-  const AthleteDiscoveryView({super.key});
+class MemberView extends StatelessWidget {
+  const MemberView({super.key});
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "Search", noIcon: true,),
+        title: const Header(title: "Members", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -31,7 +31,7 @@ class AthleteDiscoveryView extends StatelessWidget {
                       height: 40,
                       child: CustomTextFormField(
                         decoration: CustomInputDecoration(
-                            hintText: "Type name of athlete here",
+                            hintText: "Search",
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 20
                             ),
@@ -54,7 +54,7 @@ class AthleteDiscoveryView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Suggestion",
+                                  "Administrator",
                                   style: TextStyle(
                                       color: TColor.PRIMARY_TEXT,
                                       fontSize: FontSize.LARGE,
@@ -115,44 +115,48 @@ class AthleteDiscoveryView extends StatelessWidget {
                                               ),
                                               Row(
                                                 children: [
-                                                  SizedBox(
-                                                    child: CustomTextButton(
-                                                      style: ButtonStyle(
-                                                          padding: MaterialStateProperty.all(
-                                                              const EdgeInsets.symmetric(
-                                                                  horizontal: 20,
-                                                                  vertical: 0
-                                                              )
-                                                          ),
-                                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                            RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10.0),
-                                                            ),
-                                                          ),
-                                                          backgroundColor: MaterialStateProperty.all(
-                                                              TColor.PRIMARY
-                                                          )
-                                                      ),
-                                                      onPressed: () {},
-                                                      child: Text(
-                                                        "Follow",
-                                                        style: TextStyle(
-                                                            color: TColor.PRIMARY_TEXT,
-                                                            fontSize: FontSize.NORMAL,
-                                                            fontWeight: FontWeight.w700
+                                                  CustomTextButton(
+                                                    style: ButtonStyle(
+                                                        padding: MaterialStateProperty.all(
+                                                            const EdgeInsets.symmetric(
+                                                                horizontal: 20,
+                                                                vertical: 0
+                                                            )
                                                         ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: media.width * 0.02,),
-                                                  CustomIconButton(
-                                                    icon: Icon(
-                                                      Icons.cancel,
-                                                      color: TColor.PRIMARY_TEXT,
-                                                      size: 20,
+                                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10.0),
+                                                          ),
+                                                        ),
+                                                        backgroundColor: MaterialStateProperty.all(
+                                                            // TColor.PRIMARY
+                                                          Colors.transparent
+                                                        )
                                                     ),
                                                     onPressed: () {},
+                                                    child:
+                                                    // Text(
+                                                    //   "Follow",
+                                                    //   style: TextStyle(
+                                                    //       color: TColor.PRIMARY_TEXT,
+                                                    //       fontSize: FontSize.NORMAL,
+                                                    //       fontWeight: FontWeight.w700
+                                                    //   ),
+                                                    // ),
+                                                      Icon(
+                                                        Icons.more_horiz_outlined,
+                                                        color: TColor.PRIMARY_TEXT,
+                                                      )
                                                   )
+                                                  // SizedBox(width: media.width * 0.02,),
+                                                  // CustomIconButton(
+                                                  //   icon: Icon(
+                                                  //     Icons.cancel,
+                                                  //     color: TColor.PRIMARY_TEXT,
+                                                  //     size: 20,
+                                                  //   ),
+                                                  //   onPressed: () {},
+                                                  // )
                                                 ],
                                               )
                                             ],
@@ -169,7 +173,7 @@ class AthleteDiscoveryView extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "People on App",
+                                  "Members",
                                   style: TextStyle(
                                       color: TColor.PRIMARY_TEXT,
                                       fontSize: FontSize.LARGE,

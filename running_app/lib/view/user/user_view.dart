@@ -93,116 +93,65 @@ class _UserViewState extends State<UserView> {
           ],
         ),
       ),
-      body: DefaultBackgroundLayout(
-        child: Stack(
-          children: [
-            BackgroundContainer(
-              height: media.height * 0.33,
-            ),
-            MainWrapper(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Image.asset(
-                          "assets/img/home/avatar.png",
-                          width: 90,
-                          height: 90,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      SizedBox(
-                        width: media.width * 0.02,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            user?.username ?? "",
-                            style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.LARGE,
-                                fontWeight: FontWeight.w900),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+      body: SingleChildScrollView(
+        child: DefaultBackgroundLayout(
+          child: Stack(
+            children: [
+              BackgroundContainer(
+                height: media.height * 0.33,
+              ),
+              MainWrapper(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.asset(
+                            "assets/img/home/avatar.png",
+                            width: 90,
+                            height: 90,
+                            fit: BoxFit.contain,
                           ),
-                          SizedBox(
-                            height: media.height * 0.005,
-                          ),
-                          Row(
-                            children: [
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    "assets/img/home/coin_icon.svg",
-                                    width: 15,
-                                    height: 15,
-                                  ),
-                                  Text(
-                                    "1200 points",
-                                    style: TextStyle(
-                                        color: TColor.PRIMARY_TEXT,
-                                        fontSize: FontSize.NORMAL,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
-                              Text(
-                                " - Starter 7",
-                                style: TextStyle(
-                                    color: TColor.DESCRIPTION,
-                                    fontSize: FontSize.SMALL,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: media.height * 0.01,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: media.width * 0.71,
-                        height: media.height * 0.19,
-                        padding:
-                        const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
-                        decoration: BoxDecoration(
-                          color: TColor.SECONDARY_BACKGROUND,
-                          borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        SizedBox(
+                          width: media.width * 0.02,
+                        ),
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Seasonal Ranking",
+                              user?.username ?? "",
                               style: TextStyle(
                                   color: TColor.PRIMARY_TEXT,
                                   fontSize: FontSize.LARGE,
                                   fontWeight: FontWeight.w900),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(
+                              height: media.height * 0.005,
                             ),
                             Row(
                               children: [
-                                Text(
-                                  "Current",
-                                  style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: FontSize.SMALL,
-                                      fontWeight: FontWeight.w500),
+                                Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      "assets/img/home/coin_icon.svg",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                    Text(
+                                      "1200 points",
+                                      style: TextStyle(
+                                          color: TColor.PRIMARY_TEXT,
+                                          fontSize: FontSize.NORMAL,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            Row(
-                              children: [
                                 Text(
-                                  "Highest",
+                                  " - Starter 7",
                                   style: TextStyle(
                                       color: TColor.DESCRIPTION,
                                       fontSize: FontSize.SMALL,
@@ -211,122 +160,175 @@ class _UserViewState extends State<UserView> {
                               ],
                             )
                           ],
-                        ),
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          for (var x in [
-                            {
-                              "icon": Icons.local_activity_outlined,
-                              "color": const Color(0xff2c50f0),
-                              "text": "Activities",
-                              "url": "/activity",
-                            },
-                            {
-                              "icon": Icons.people_outline,
-                              "color": const Color(0xfff3b242),
-                              "text": "Followers",
-                              "url": "/follower",
-                            }
-                          ]) ...[
-                            CustomTextButton(
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all<EdgeInsets>(
-                                      const EdgeInsets.all(8)),
-                                  backgroundColor:
-                                  MaterialStateProperty.all<Color>(
-                                      TColor.SECONDARY_BACKGROUND),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(12)))),
-                              onPressed: () {
-                                Navigator.pushReplacementNamed(context, x["url"] as String);
-                              },
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: media.height * 0.01,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: media.width * 0.71,
+                          height: media.height * 0.19,
+                          padding:
+                          const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                          decoration: BoxDecoration(
+                            color: TColor.SECONDARY_BACKGROUND,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Seasonal Ranking",
+                                style: TextStyle(
+                                    color: TColor.PRIMARY_TEXT,
+                                    fontSize: FontSize.LARGE,
+                                    fontWeight: FontWeight.w900),
+                              ),
+                              Row(
                                 children: [
-                                  IconBox(
-                                    icon: x["icon"] as IconData,
-                                    iconColor: TColor.PRIMARY_TEXT,
-                                    iconBackgroundColor: x["color"] as Color,
-                                  ),
-                                  SizedBox(height: media.height * 0.01,),
                                   Text(
-                                    x["text"] as String,
+                                    "Current",
                                     style: TextStyle(
                                         color: TColor.DESCRIPTION,
                                         fontSize: FontSize.SMALL,
                                         fontWeight: FontWeight.w500),
-                                  )
+                                  ),
                                 ],
                               ),
-                            ),
-                            if (x["text"] == "Activities")
-                              SizedBox(
-                                height: media.height * 0.01,
+                              Row(
+                                children: [
+                                  Text(
+                                    "Highest",
+                                    style: TextStyle(
+                                        color: TColor.DESCRIPTION,
+                                        fontSize: FontSize.SMALL,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
                               )
-                          ],
-                        ],
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: media.height * 0.03,
-                  ),
-                  Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        for (var x in ["Total stats", "Backpack"])
-                          SizedBox(
-                            width: media.width * 0.46,
-                            child: CustomTextButton(
-                              onPressed: () {
-                                setState(() {
-                                  _showTotalStatsLayout = x == "Total stats";
-                                });
+                            ],
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            for (var x in [
+                              {
+                                "icon": Icons.local_activity_outlined,
+                                "color": const Color(0xff2c50f0),
+                                "text": "Activities",
+                                "url": "/activity",
                               },
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all<EdgeInsets>(
-                                      EdgeInsets.symmetric(
-                                          vertical: 5,
-                                          horizontal: media.width * 0.07)),
-                                  backgroundColor: MaterialStateProperty.all<
-                                      Color?>(
-                                    // x == "Total stats" ? TColor.PRIMARY : null
-
-                                      x == "Backpack" && _showTotalStatsLayout == false
-                                          || x == "Total stats" && _showTotalStatsLayout == true
-                                          ? TColor.PRIMARY : null),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10)))),
-                              child: Text(x,
-                                  style: TextStyle(
-                                    color: TColor.PRIMARY_TEXT,
-                                    fontSize: FontSize.NORMAL,
-                                    fontWeight: FontWeight.w600,
-                                  )),
-                            ),
-                          )
+                              {
+                                "icon": Icons.people_outline,
+                                "color": const Color(0xfff3b242),
+                                "text": "Followers",
+                                "url": "/follow",
+                              }
+                            ]) ...[
+                              CustomTextButton(
+                                style: ButtonStyle(
+                                    padding: MaterialStateProperty.all<EdgeInsets>(
+                                        const EdgeInsets.all(8)),
+                                    backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        TColor.SECONDARY_BACKGROUND),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(12)))),
+                                onPressed: () {
+                                  Navigator.pushReplacementNamed(context, x["url"] as String);
+                                },
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IconBox(
+                                      icon: x["icon"] as IconData,
+                                      iconColor: TColor.PRIMARY_TEXT,
+                                      iconBackgroundColor: x["color"] as Color,
+                                    ),
+                                    SizedBox(height: media.height * 0.01,),
+                                    Text(
+                                      x["text"] as String,
+                                      style: TextStyle(
+                                          color: TColor.DESCRIPTION,
+                                          fontSize: FontSize.SMALL,
+                                          fontWeight: FontWeight.w500),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              if (x["text"] == "Activities")
+                                SizedBox(
+                                  height: media.height * 0.01,
+                                )
+                            ],
+                          ],
+                        )
                       ],
                     ),
-
                     SizedBox(
-                      height: media.height * 0.01,
+                      height: media.height * 0.03,
                     ),
-                    // Best performance
-                    _showTotalStatsLayout ? StatsLayout() : BackpackLayout(productList: productList),
-                  ])
-                ],
+                    Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          for (var x in ["Total stats", "Backpack"])
+                            SizedBox(
+                              width: media.width * 0.46,
+                              child: CustomTextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _showTotalStatsLayout = x == "Total stats";
+                                  });
+                                },
+                                style: ButtonStyle(
+                                    padding: MaterialStateProperty.all<EdgeInsets>(
+                                        EdgeInsets.symmetric(
+                                            vertical: 5,
+                                            horizontal: media.width * 0.07)),
+                                    backgroundColor: MaterialStateProperty.all<
+                                        Color?>(
+                                      // x == "Total stats" ? TColor.PRIMARY : null
+
+                                        x == "Backpack" && _showTotalStatsLayout == false
+                                            || x == "Total stats" && _showTotalStatsLayout == true
+                                            ? TColor.PRIMARY : null),
+                                    shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(10)))),
+                                child: Text(x,
+                                    style: TextStyle(
+                                      color: TColor.PRIMARY_TEXT,
+                                      fontSize: FontSize.NORMAL,
+                                      fontWeight: FontWeight.w600,
+                                    )),
+                              ),
+                            )
+                        ],
+                      ),
+
+                      SizedBox(
+                        height: media.height * 0.01,
+                      ),
+                      // Best performance
+                      _showTotalStatsLayout ? StatsLayout() : BackpackLayout(productList: productList),
+                    ])
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -456,7 +458,7 @@ class BackpackLayout extends StatelessWidget {
         // Product
         SingleChildScrollView(
           child: SizedBox(
-            height: media.height * 0.4, // Set a specific height
+            height: media.height, // Set a specific height
             child: GridView.count(
                 padding: const EdgeInsets.all(0),
                 crossAxisCount: 2,

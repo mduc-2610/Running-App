@@ -143,7 +143,7 @@ class ActivityView extends StatelessWidget {
                                                     color: Color(0xffda477e),
                                                   ),
                                                 ),
-                                                TextSpan(text: " - 12,4 km - 1222 kcal"),
+                                                TextSpan(text: "  •  12,4 km  •  1222 kcal"),
                                               ]
                                           )
                                       )

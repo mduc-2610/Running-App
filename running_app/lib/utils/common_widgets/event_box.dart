@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
@@ -7,10 +8,12 @@ class EventBox extends StatelessWidget {
   final EdgeInsets? buttonMargin;
   final double? width;
   final String? buttonText;
+  final Event? event;
   const EventBox({
     this.buttonMargin,
     this.width,
     this.buttonText,
+    this.event,
     super.key
   });
 
@@ -19,7 +22,9 @@ class EventBox extends StatelessWidget {
     var media = MediaQuery.sizeOf(context);
     return CustomTextButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/event_detail');
+        Navigator.pushNamed(context, '/event_detail', arguments: {
+          "id": event?.id
+        });
       },
       child: Container(
         width: width,
@@ -55,7 +60,7 @@ class EventBox extends StatelessWidget {
                     horizontal: 12,
                   ),
                   child: Text(
-                    "On-Energize your Dreams",
+                    event?.name ?? "",
                     style: TextStyle(
                         color: TColor.PRIMARY_TEXT,
                         fontSize: FontSize.NORMAL,
@@ -80,11 +85,11 @@ class EventBox extends StatelessWidget {
                     for(var x in [
                       {
                         "icon": Icons.calendar_today_rounded,
-                        "text": "Ends in: 7 days",
+                        "text": "Ends in: ${event?.daysRemain}",
                       },
                       {
                         "icon": Icons.people_alt_outlined,
-                        "text": "1,812",
+                        "text": "Join: ${event?.numberOfParticipants}"
                       }
                     ])...[
                       Row(

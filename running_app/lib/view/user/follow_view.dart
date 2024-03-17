@@ -8,14 +8,14 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
-class FollowerView extends StatefulWidget {
-  const FollowerView({super.key});
+class FollowView extends StatefulWidget {
+  const FollowView({super.key});
 
   @override
-  State<FollowerView> createState() => _FollowerViewState();
+  State<FollowView> createState() => _FollowViewState();
 }
 
-class _FollowerViewState extends State<FollowerView> {
+class _FollowViewState extends State<FollowView> {
   bool _showFollowerLayout = false;
 
   @override
@@ -115,116 +115,126 @@ class FollowLayout extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              layout,
-              style: TextStyle(
-                  color: TColor.PRIMARY_TEXT,
-                  fontSize: FontSize.LARGE,
-                  fontWeight: FontWeight.w800
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: 8
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                layout,
+                style: TextStyle(
+                    color: TColor.PRIMARY_TEXT,
+                    fontSize: FontSize.LARGE,
+                    fontWeight: FontWeight.w800
+                ),
               ),
-            ),
-            Text(
-              amount,
-              style: TextStyle(
-                  color: TColor.PRIMARY_TEXT,
-                  fontSize: FontSize.LARGE,
-                  fontWeight: FontWeight.w800
+              Text(
+                amount,
+                style: TextStyle(
+                    color: TColor.PRIMARY_TEXT,
+                    fontSize: FontSize.LARGE,
+                    fontWeight: FontWeight.w800
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for(int i = 0; i < 3; i++)...[
-              CustomTextButton(
-                onPressed: () {},
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 10
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+        SizedBox(
+          height: media.height - 260,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for(int i = 0; i < 30; i++)...[
+                  CustomTextButton(
+                    onPressed: () {},
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.asset(
-                              "assets/img/community/ptit_logo.png",
-                              width: 35,
-                              height: 35,
-                            ),
-                          ),
-                          SizedBox(width: media.width * 0.02,),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
-                              Text(
-                                layout == "Following" ? "Minh Duc" : "Dang Minh Duc",
-                                style: TextStyle(
-                                    color: TColor.PRIMARY_TEXT,
-                                    fontSize: FontSize.SMALL,
-                                    fontWeight: FontWeight.w800
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: Image.asset(
+                                  "assets/img/community/ptit_logo.png",
+                                  width: 35,
+                                  height: 35,
                                 ),
+                              ),
+                              SizedBox(width: media.width * 0.02,),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    layout == "Following" ? "Minh Duc" : "Dang Minh Duc",
+                                    style: TextStyle(
+                                        color: TColor.PRIMARY_TEXT,
+                                        fontSize: FontSize.SMALL,
+                                        fontWeight: FontWeight.w800
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            child: CustomTextButton(
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all(
-                                      const EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                          vertical: 0
+                          Row(
+                            children: [
+                              SizedBox(
+                                child: CustomTextButton(
+                                  style: ButtonStyle(
+                                      padding: MaterialStateProperty.all(
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 20,
+                                              vertical: 0
+                                          )
+                                      ),
+                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                      ),
+                                      backgroundColor: MaterialStateProperty.all(
+                                          (layout == "Follower") ? TColor.PRIMARY : Colors.transparent
+                                      ),
+                                      side: MaterialStateProperty.all(
+                                          BorderSide(
+                                              width: 1.0,
+                                              color: TColor.PRIMARY
+                                          )
                                       )
                                   ),
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
+                                  onPressed: () {},
+                                  child: Text(
+                                    (layout == "Follower") ? "Follow" : "Unfollow",
+                                    style: TextStyle(
+                                        color: TColor.PRIMARY_TEXT,
+                                        fontSize: FontSize.LARGE,
+                                        fontWeight: FontWeight.w700
                                     ),
                                   ),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      (layout == "Follower") ? TColor.PRIMARY : Colors.transparent
-                                  ),
-                                  side: MaterialStateProperty.all(
-                                    BorderSide(
-                                      width: 1.0,
-                                      color: TColor.PRIMARY
-                                    )
-                                  )
-                              ),
-                              onPressed: () {},
-                              child: Text(
-                                (layout == "Follower") ? "Follow" : "Unfollow",
-                                style: TextStyle(
-                                    color: TColor.PRIMARY_TEXT,
-                                    fontSize: FontSize.LARGE,
-                                    fontWeight: FontWeight.w700
                                 ),
                               ),
-                            ),
-                          ),
+                            ],
+                          )
                         ],
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ]
-          ],
+                      ),
+                    ),
+                  )
+                ]
+              ],
+            ),
+          ),
         )
       ],
     );

@@ -47,7 +47,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
       backgroundColor: TColor.PRIMARY_BACKGROUND,
       body: Stack(children: [
         Container(
-          margin: EdgeInsets.fromLTRB(0, media.height * 1 / 5, 0, 0),
+          margin: EdgeInsets.fromLTRB(0, media.height * 0.16, 0, 0),
           child: SvgPicture.asset(
               'assets/img/login/on_board_bg.svg',
               width: media.width,
@@ -85,9 +85,9 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                         Container(
-                          height: media.height * 0.35,
+                          height: media.height * 0.38,
                           padding: const EdgeInsets.symmetric(
-                            vertical: 50,
+                            vertical: 35,
                             horizontal: 24
                           ),
                           decoration: BoxDecoration(
