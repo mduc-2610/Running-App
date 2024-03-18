@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:running_app/models/account/user.dart';
 import 'package:running_app/utils/constants.dart';
 
 class CustomText extends StatelessWidget {
@@ -83,7 +82,7 @@ class AthleteTable extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             bottom: 8
           ),
           child: Row(
@@ -94,13 +93,13 @@ class AthleteTable extends StatelessWidget {
                   Container(
                       alignment: Alignment.centerLeft,
                       width: media.width * 0.1,
-                      child: CustomText(fontWeight: FontWeight.w700, text: 'Rank'),
+                      child: const CustomText(fontWeight: FontWeight.w700, text: 'Rank'),
                   ),
                   SizedBox(width: media.width * 0.02,),
                   Container(
                     alignment: Alignment.centerLeft,
                     width: media.width * 0.35,
-                    child: CustomText(fontWeight: FontWeight.w700, text: 'Athlete name'),
+                    child: const CustomText(fontWeight: FontWeight.w700, text: 'Athlete name'),
                   )
               ]),
               Row(
@@ -108,12 +107,12 @@ class AthleteTable extends StatelessWidget {
                   Container(
                       alignment: Alignment.centerLeft,
                       width: media.width * 0.2,
-                      child: CustomText(fontWeight: FontWeight.w700, text: 'Total (km)'),
+                      child: const CustomText(fontWeight: FontWeight.w700, text: 'Total (km)'),
                   ),
                   Container(
                       alignment: Alignment.centerLeft,
                       width: media.width * 0.15,
-                      child: CustomText(fontWeight: FontWeight.w700, text: 'Time'),
+                      child: const CustomText(fontWeight: FontWeight.w700, text: 'Time'),
                   )
                 ],
               )
@@ -128,11 +127,11 @@ class AthleteTable extends StatelessWidget {
                 // for(int i = 0; i < 100; i++)
                 for(var participant in participants ?? [])...[
                   Container(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 12
                     ),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       border: Border(
                         bottom: BorderSide(width: 1, color: Color(0xff746cb3))
                       )

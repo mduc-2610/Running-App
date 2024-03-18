@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/services/api_service.dart';
+
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
@@ -8,16 +12,44 @@ import 'package:running_app/utils/common_widgets/default_background_layout.dart'
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
 
-class AthleteDiscoveryView extends StatelessWidget {
+class AthleteDiscoveryView extends StatefulWidget {
   const AthleteDiscoveryView({super.key});
+
+  @override
+  State<AthleteDiscoveryView> createState() => _AthleteDiscoveryViewState();
+}
+
+class _AthleteDiscoveryViewState extends State<AthleteDiscoveryView> {
+  List<dynamic>? userList;
+  String token = "";
+
+  void initToken() {
+    token = Provider.of<TokenProvider>(context).token;
+  }
+
+  void initUser() async {
+    final data = await callListAPI('account/user', User.fromJson, token);
+    setState(() {
+      userList = data;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initToken();
+    initUser();
+  }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
+
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "Search", noIcon: true,),
+        title: const Header(title: "Search", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -64,9 +96,13 @@ class AthleteDiscoveryView extends StatelessWidget {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    for(int i = 0; i < 30; i++)...[
+                                    for(var user in userList ?? [])...[
                                       CustomTextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.pushNamed(context, '/other_user', arguments: {
+                                            "id": user.id
+                                          });
+                                        },
                                         child: Container(
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 10
@@ -90,26 +126,31 @@ class AthleteDiscoveryView extends StatelessWidget {
                                                     ),
                                                   ),
                                                   SizedBox(width: media.width * 0.02,),
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        "Minh Duc",
-                                                        style: TextStyle(
-                                                            color: TColor.PRIMARY_TEXT,
-                                                            fontSize: FontSize.SMALL,
-                                                            fontWeight: FontWeight.w800
+                                                  SizedBox(
+                                                    width: media.width * 0.5,
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          user?.username,
+                                                          style: TextStyle(
+                                                              color: TColor.PRIMARY_TEXT,
+                                                              fontSize: FontSize.SMALL,
+                                                              fontWeight: FontWeight.w800
+                                                          ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow.ellipsis,
                                                         ),
-                                                      ),
-                                                      Text(
-                                                        "Nho Quan - Ninh Binh",
-                                                        style: TextStyle(
-                                                            color: TColor.DESCRIPTION,
-                                                            fontSize: FontSize.SMALL,
-                                                            fontWeight: FontWeight.w500
+                                                        Text(
+                                                          "Nho Quan - Ninh Binh",
+                                                          style: TextStyle(
+                                                              color: TColor.DESCRIPTION,
+                                                              fontSize: FontSize.SMALL,
+                                                              fontWeight: FontWeight.w500
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:running_app/models/activity/event.dart';
-import 'package:running_app/services/api_service.dart';
+import 'package:running_app/utils/common_widgets/add_button.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -10,9 +8,8 @@ import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
-import 'package:running_app/utils/providers/token_provider.dart';
-import 'package:running_app/view/community/club_view.dart';
-import 'package:running_app/view/community/event_view.dart';
+import 'package:running_app/view/community/club/club_view.dart';
+import 'package:running_app/view/community/event/event_view.dart';
 import 'package:running_app/view/community/social_view.dart';
 
 class CommunityView extends StatefulWidget {
@@ -26,7 +23,7 @@ class CommunityView extends StatefulWidget {
 
 class _CommunityViewState extends State<CommunityView> {
   String _showView = "Events";
-
+  
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -100,6 +97,7 @@ class _CommunityViewState extends State<CommunityView> {
                     // EventView(),
                     (_showView == "Events") ?
                       const EventView() : (_showView == "Social" ? const SocialView() : const ClubView()),
+                    SizedBox(height: media.height * 0.05,),
                   ],
                 )
               ),
@@ -107,7 +105,54 @@ class _CommunityViewState extends State<CommunityView> {
           ),
         ),
       ),
+      // bottomSheet: Container(
+      //   padding: EdgeInsets.only(
+      //     bottom: 20,
+      //     top: 5
+      //   ),
+      //   decoration: BoxDecoration(
+      //       image: DecorationImage(
+      //         image: AssetImage(
+      //             TImage.PRIMARY_BACKGROUND_IMAGE
+      //         ),
+      //         fit: BoxFit.cover
+      //       )
+      //   ),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.end,
+      //     children: [
+      //       AddButton(),
+      //     ],
+      //   ),
+      // ),
+      bottomSheet: AddButton(
+        text: (_showView == "Events") 
+            ? "Create your own event" 
+            : "Create your own club",
+        onPressed: () {
+          Navigator.pushNamed(context, _showView == "Events" ? "/add_event" : "/add_club");
+        },
+      ),
       bottomNavigationBar: const Menu(),
+      // bottomNavigationBar: Stack(
+      //   clipBehavior: Clip.none,
+      //   children: [
+      //     Container(
+      //       padding: EdgeInsets.only(
+      //         top: media.height * 0.09
+      //       ),
+      //       child: Menu()
+      //     ),
+      //     Positioned(
+      //       // bottom: 25.0, // Adjust this value to change the distance from bottom
+      //       // right: 25.0,
+      //       bottom: media.height * 0.09,
+      //       right: media.width * 0.025,
+      //       child: AddButton(),
+      //     ),
+      //     // AddButton()
+      //   ],
+      // ),
     );
   }
 }

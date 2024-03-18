@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/product/product.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -8,6 +11,7 @@ import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
 import '../../utils/constants.dart';
 import '../../utils/common_widgets/text_button.dart';
 
@@ -19,6 +23,29 @@ class ProductView extends StatefulWidget {
 }
 
 class _ProductViewState extends State<ProductView> {
+  List<dynamic>? productList;
+  String token = "";
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initProduct() async {
+    final data = await callListAPI('product/product', Product.fromJson, token);
+    setState(() {
+      productList = data;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initToken();
+    initProduct();
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -60,7 +87,7 @@ class _ProductViewState extends State<ProductView> {
                             crossAxisSpacing: media.width * 0.05,
                             mainAxisSpacing: media.height * 0.025,
                             children: [
-                              for(int i = 0; i < 100; i++)
+                              for(var product in productList ?? [])
                                 CustomTextButton(
                                   onPressed: () {},
                                   child: Container(
@@ -88,46 +115,45 @@ class _ProductViewState extends State<ProductView> {
                                                 fit: BoxFit.cover,
                                               ),
                                             ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                      margin: EdgeInsets.fromLTRB(media.width * 0.18, 5, 0, 0),
-                                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(15.0),
-                                                        color: TColor.SECONDARY_BACKGROUND.withOpacity(0.7),
-                                                      ),
-                                                      child: Row(
-                                                        children: [
-                                                          SvgPicture.asset(
-                                                            "assets/img/home/coin_icon.svg",
-                                                            width: 16,
-                                                            height: 16,
-                                                            fit: BoxFit.contain,
-                                                          ),
-                                                          Text(
-                                                            "1200",
-                                                            style: TextStyle(
-                                                              color: TColor.PRIMARY_TEXT,
-                                                              fontSize: FontSize.NORMAL,
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
+                                            Positioned(
+                                              top: 5,
+                                              right: 5,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(12.0),
+                                                      color: TColor.SECONDARY_BACKGROUND.withOpacity(0.7),
                                                     ),
-                                                  ],
-                                                ),
-                                              ],
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        SvgPicture.asset(
+                                                          "assets/img/home/coin_icon.svg",
+                                                          width: 16,
+                                                          height: 16,
+                                                          fit: BoxFit.contain,
+                                                        ),
+                                                        Text(
+                                                          product.price.toString() ?? "",
+                                                          style: TextStyle(
+                                                            color: TColor.PRIMARY_TEXT,
+                                                            fontSize: FontSize.NORMAL,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             )
                                           ],
                                         ),
                                         SizedBox(height: media.height * 0.01),
                                         Text(
-                                          "Nike",
+                                          product.brand.name ?? "",
                                           style: TextStyle(
                                             color: TColor.DESCRIPTION,
                                             fontSize: FontSize.SMALL,
@@ -135,7 +161,7 @@ class _ProductViewState extends State<ProductView> {
                                         ),
                                         // SizedBox(height: media.height * 0.005),
                                         Text(
-                                          "Air Force 1 Low '07",
+                                          product.name ?? "",
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                           style: TextStyle(

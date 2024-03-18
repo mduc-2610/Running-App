@@ -4,11 +4,11 @@ import '../constants.dart';
 class CustomTextFormField extends TextFormField {
   CustomTextFormField({
     Key? key,
-    required InputDecoration decoration, // Require decoration to be provided
-    required TextInputType keyboardType, // Require keyboardType to be provided
+    required InputDecoration decoration,
+    required TextInputType keyboardType,
     bool obscureText = false,
-    FormFieldValidator<String>? validator, // Allow validator to be nullable
-    FormFieldSetter<String>? onSaved, // Allow onSaved to be nullable
+    FormFieldValidator<String>? validator,
+    FormFieldSetter<String>? onSaved,
     TextStyle inputTextStyle = const TextStyle(
       color: Color(0xffcdcdcd),
       fontSize: FontSize.NORMAL,
@@ -16,6 +16,7 @@ class CustomTextFormField extends TextFormField {
     Color cursorColor = const Color(0xffcdcdcd),
     TextEditingController? controller,
     int? maxLength,
+    int? maxLines,
     String? initialValue,
   }) : super(
     key: key,
@@ -29,6 +30,6 @@ class CustomTextFormField extends TextFormField {
     cursorColor: cursorColor,
     maxLength: maxLength,
     initialValue: initialValue,
-
+    maxLines: maxLines,
   );
 }

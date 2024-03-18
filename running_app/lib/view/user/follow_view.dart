@@ -26,78 +26,80 @@ class _FollowViewState extends State<FollowView> {
         title: const Header(title: "Follow", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
-      body: DefaultBackgroundLayout(
-        child: Stack(
-          children: [
-            MainWrapper(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 40,
-                    child: CustomTextFormField(
-                      decoration: CustomInputDecoration(
-                          hintText: "Type a name of athlete here",
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20
-                          ),
-                          prefixIcon: Icon(
-                              Icons.search_rounded,
-                              color: TColor.DESCRIPTION
-                          )
+      body: SingleChildScrollView(
+        child: DefaultBackgroundLayout(
+          child: Stack(
+            children: [
+              MainWrapper(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 40,
+                      child: CustomTextFormField(
+                        decoration: CustomInputDecoration(
+                            hintText: "Type a name of athlete here",
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20
+                            ),
+                            prefixIcon: Icon(
+                                Icons.search_rounded,
+                                color: TColor.DESCRIPTION
+                            )
+                        ),
+                        keyboardType: TextInputType.text,
                       ),
-                      keyboardType: TextInputType.text,
                     ),
-                  ),
-        
-                  SizedBox(height: media.height * 0.015,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      for (var x in ["Following", "Follower"])...[
-                        SizedBox(
-                          width: media.width * 0.46,
-                          child: CustomTextButton(
-                            onPressed: () {
-                              setState(() {
-                                _showFollowerLayout = x == "Follower";
-                              });
-                            },
-                            style: ButtonStyle(
-                                padding: MaterialStateProperty.all<EdgeInsets>(
-                                    EdgeInsets.symmetric(
-                                        vertical: 5,
-                                        horizontal: media.width * 0.07)),
-                                backgroundColor: MaterialStateProperty.all<
-                                    Color?>(
-                                  // x == "Total stats" ? TColor.PRIMARY : null
-        
-                                    x == "Following" && _showFollowerLayout == false
-                                        || x == "Follower" && _showFollowerLayout == true
-                                        ? TColor.PRIMARY : null),
-                                shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(10)))),
-                            child: Text(x,
-                                style: TextStyle(
-                                  color: TColor.PRIMARY_TEXT,
-                                  fontSize: FontSize.NORMAL,
-                                  fontWeight: FontWeight.w600,
-                                )),
-                          ),
-                        )
+
+                    SizedBox(height: media.height * 0.015,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        for (var x in ["Following", "Follower"])...[
+                          SizedBox(
+                            width: media.width * 0.46,
+                            child: CustomTextButton(
+                              onPressed: () {
+                                setState(() {
+                                  _showFollowerLayout = x == "Follower";
+                                });
+                              },
+                              style: ButtonStyle(
+                                  padding: MaterialStateProperty.all<EdgeInsets>(
+                                      EdgeInsets.symmetric(
+                                          vertical: 5,
+                                          horizontal: media.width * 0.07)),
+                                  backgroundColor: MaterialStateProperty.all<
+                                      Color?>(
+                                    // x == "Total stats" ? TColor.PRIMARY : null
+
+                                      x == "Following" && _showFollowerLayout == false
+                                          || x == "Follower" && _showFollowerLayout == true
+                                          ? TColor.PRIMARY : null),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(10)))),
+                              child: Text(x,
+                                  style: TextStyle(
+                                    color: TColor.PRIMARY_TEXT,
+                                    fontSize: FontSize.NORMAL,
+                                    fontWeight: FontWeight.w600,
+                                  )),
+                            ),
+                          )
+                        ],
                       ],
-                    ],
-                  ),
-                  SizedBox(height: media.height * 0.015,),
-                  (_showFollowerLayout)
-                      ? const FollowLayout(layout: "Follower", amount: "0")
-                      : const FollowLayout(layout: "Following", amount: "0")
-                ],
-              ),
-            )
-          ],
+                    ),
+                    SizedBox(height: media.height * 0.015,),
+                    (_showFollowerLayout)
+                        ? const FollowLayout(layout: "Follower", amount: "0")
+                        : const FollowLayout(layout: "Following", amount: "0")
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -116,7 +118,7 @@ class FollowLayout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             bottom: 8
           ),
           child: Row(
@@ -142,7 +144,7 @@ class FollowLayout extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: media.height - 260,
+          height: media.height,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

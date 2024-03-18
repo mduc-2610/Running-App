@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:running_app/utils/constants.dart';
 
 class Wrapper extends StatelessWidget {
   final Widget child;
@@ -8,10 +9,10 @@ class Wrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           image: DecorationImage(
               image: AssetImage(
-                "assets/img/home/background_1.png",
+                TImage.PRIMARY_BACKGROUND_IMAGE
               ),
               fit: BoxFit.cover),
         ),

@@ -57,8 +57,8 @@ class _EventDetailViewState extends State<EventDetailView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     ScrollController parentScrollController = ScrollController();
-    print('Event id: ${eventId}');
-    print('Event: ${event}');
+    print('Event id: $eventId');
+    print('Event: $event');
     return Scaffold(
       body: SingleChildScrollView(
         controller: parentScrollController,
@@ -290,7 +290,7 @@ class _InformationLayoutState extends State<InformationLayout> {
         SizedBox(
           height: media.height * 0.015,
         ),
-        _showLayout == "General information" ? GeneralInformationLayout(event: widget.event,) : PostLayout(),
+        _showLayout == "General information" ? GeneralInformationLayout(event: widget.event,) : const PostLayout(),
       ],
     );
   }
@@ -311,8 +311,8 @@ class LeaderBoardLayout extends StatelessWidget {
     ScrollController childScrollController = ScrollController();
 
     return ScrollSynchronized(
-      child: AthleteTable(participants: event?.participants ?? [], tableHeight: media.height - media.height * 0.16, controller: childScrollController,),
       parentScrollController: parentScrollController,
+      child: AthleteTable(participants: event?.participants ?? [], tableHeight: media.height - media.height * 0.16, controller: childScrollController,),
     );
   }
 }

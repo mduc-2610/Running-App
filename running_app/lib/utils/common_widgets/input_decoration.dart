@@ -22,6 +22,8 @@ class CustomInputDecoration extends InputDecoration {
     double borderSide = 2.0,
     FloatingLabelBehavior floatingLabelBehavior = FloatingLabelBehavior.never,
     Text? label,
+    String? labelText,
+    TextStyle? labelStyle,
   }) : super(
     hintText: hintText,
     hintStyle: hintStyle,
@@ -50,5 +52,7 @@ class CustomInputDecoration extends InputDecoration {
     prefixIcon: prefixIcon,
     suffixIcon: suffixIcon,
     label: label,
+    labelText: labelText,
+    labelStyle: labelStyle
   );
 }

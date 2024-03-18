@@ -1,41 +1,72 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/models/activity/club.dart';
-import 'package:running_app/utils/common_widgets/default_background_layout.dart';
+import 'package:running_app/services/api_service.dart';
+import 'package:provider/provider.dart';
+
+import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/scroll_synchronized.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
 
-class ClubDetailInformationView extends StatefulWidget {
-  const ClubDetailInformationView({super.key});
+class ClubDetailView extends StatefulWidget {
+  const ClubDetailView({super.key});
 
   @override
-  State<ClubDetailInformationView> createState() => _ClubDetailInformationViewState();
+  State<ClubDetailView> createState() => _ClubDetailViewState();
 }
 
-class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
+class _ClubDetailViewState extends State<ClubDetailView> {
   DetailClub? club;
+  String clubId = "";
+  String token = "";
 
-  void initClub() {
-    setState(() {
-      club = (ModalRoute.of(context)?.settings.arguments as Map<String, DetailClub>)["club"];
-    });
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
   void didChangeDependencies() {
+    Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (arguments != null) {
+      setState(() {
+        clubId = arguments["id"] as String;
+      });
+    }
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+    api();
     super.didChangeDependencies();
-    initClub();
+  }
+
+  Future<void> api() async {
+    try {
+      final data = await callRetrieveAPI(
+          'activity/club', clubId, null, DetailClub.fromJson, token);
+      setState(() {
+        club = data;
+      });
+    }
+    catch(e) {
+      print('Error: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    print(club);
+    ScrollController childScrollController = ScrollController();
+    ScrollController parentScrollController = ScrollController();
+
     return Scaffold(
       body: SingleChildScrollView(
+        controller: parentScrollController,
         child: DefaultBackgroundLayout(
           child: Stack(
               children: [
@@ -119,7 +150,11 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                                   )
                                               )
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.pushNamed(context, '/club_detail_information', arguments: {
+                                              "club": club as DetailClub,
+                                            });
+                                          },
                                           child: Icon(
                                             Icons.info_outline_rounded,
                                             color: TColor.PRIMARY_TEXT,
@@ -196,175 +231,170 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                                 fontSize: FontSize.SMALL
                                             ),
                                           ),
-                                          // SizedBox(width: media.width * 0.03,)
+                                           // SizedBox(width: media.width * 0.03,)
                                         ],
                                       ),
                                     ]
                                   ],
                                 ),
                                 SizedBox(height: media.height * 0.015,),
+                                // Activity stats
                                 Row(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Stack(
-                                      children: [
-                                        Icon(
-                                            Icons.shield_outlined,
-                                            color: TColor.DESCRIPTION,
-                                        ),
-                                        Positioned(
-                                          top: 0,
-                                          left: 0,
-                                          right: 0,
-                                          bottom: 0,
-                                          child: Icon(
-                                              Icons.star_border_outlined,
-                                              color: TColor.DESCRIPTION,
-                                              size: 15,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(width: media.width * 0.01,),
-                                    Text(
-                                      '${club?.participants[0].username}  •  ${club?.organization}',
-                                      style: TextStyle(
-                                          color: TColor.DESCRIPTION,
-                                          fontSize: FontSize.SMALL
-                                      ),
-                                      maxLines: 10,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: media.height * 0.01,),
-                                Text(
-                                  club?.description ?? "",
-                                  style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: FontSize.SMALL
-                                  ),
-                                ),
-                                SizedBox(height: media.height * 0.015,),
-
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                          "Members",
-                                          style: TextStyle(
-                                            color: TColor.PRIMARY_TEXT,
-                                            fontSize: FontSize.NORMAL,
-                                            fontWeight: FontWeight.w600,
-                                          )
-                                      ),
-                                      CustomTextButton(
+                                    SizedBox(
+                                      child: CustomTextButton(
                                         onPressed: () {
-                                          Navigator.pushNamed(context, '/member');
+        
                                         },
-                                        child: Text(
-                                            "View more",
-                                            style: TextStyle(
-                                              color: TColor.PRIMARY,
-                                              fontSize: FontSize.NORMAL,
-                                              fontWeight: FontWeight.w500,
-                                            )
-                                        ),
-                                      )
-                                    ]
-                                ),
-                                // SizedBox(height: media.height * 0.01,),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    for(var participant in club?.participants ?? [])...[
-                                      CustomTextButton(
-                                        onPressed: () {},
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10
-                                          ),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
+                                        child: Stack(
+                                          children: [
+                                            Transform(
+                                              transform: Matrix4.skewX(0.4),
+                                              child: Container(
+                                                  width: media.width * 0.4,
+                                                  height: media.height * 0.1,
+                                                  decoration: BoxDecoration(
+                                                      color: TColor.PRIMARY,
+                                                      borderRadius: BorderRadius.circular(10)
+                                                  )
+                                              ),
                                             ),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
+                                            Container(
+                                              padding: const EdgeInsets.only(left: 25),
+                                              width: media.width * 0.4,
+                                              height: media.height * 0.1,
+                                              decoration: BoxDecoration(
+                                                  color: TColor.PRIMARY,
+                                                  borderRadius: BorderRadius.circular(10)
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  ClipRRect(
-                                                    borderRadius: BorderRadius.circular(50),
-                                                    child: Image.asset(
-                                                      "assets/img/community/ptit_logo.png",
-                                                      width: 35,
-                                                      height: 35,
+                                                  Text(
+                                                    "3061",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: TColor.PRIMARY_TEXT,
+                                                      fontSize: 22,
+                                                      fontWeight: FontWeight.w800,
                                                     ),
                                                   ),
-                                                  SizedBox(width: media.width * 0.025,),
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        participant?.username ?? "",
-                                                        style: TextStyle(
-                                                            color: TColor.PRIMARY_TEXT,
-                                                            fontSize: FontSize.SMALL,
-                                                            fontWeight: FontWeight.w800
-                                                        ),
-                                                      ),
-                                                      // Text(
-                                                      //   "Nho Quan - Ninh Binh",
-                                                      //   style: TextStyle(
-                                                      //       color: TColor.DESCRIPTION,
-                                                      //       fontSize: FontSize.SMALL,
-                                                      //       fontWeight: FontWeight.w500
-                                                      //   ),
-                                                      // ),
-                                                    ],
+                                                  Text(
+                                                    "Activities per week",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: TColor.PRIMARY_TEXT,
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w800,
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                              Row(
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: media.width * 0.043,),
+                                    SizedBox(
+                                      child: CustomTextButton(
+                                        onPressed: () {
+        
+                                        },
+                                        child: Stack(
+                                          children: [
+                                            Transform(
+                                              transform: Matrix4.skewX(0.4),
+                                              child: Container(
+                                                  width: media.width * 0.4,
+                                                  height: media.height * 0.1,
+                                                  decoration: BoxDecoration(
+                                                      color: TColor.PRIMARY,
+                                                      borderRadius: BorderRadius.circular(10)
+                                                  )
+                                              ),
+                                            ),
+                                            Container(
+                                              padding: const EdgeInsets.only(right: 25),
+                                              margin: const EdgeInsets.only(left: 40),
+                                              width: media.width * 0.4,
+                                              height: media.height * 0.1,
+                                              decoration: BoxDecoration(
+                                                  color: TColor.PRIMARY,
+                                                  borderRadius: BorderRadius.circular(10)
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.end,
                                                 children: [
-                                                  SizedBox(
-                                                    child: CustomTextButton(
-                                                      style: ButtonStyle(
-                                                          padding: MaterialStateProperty.all(
-                                                              const EdgeInsets.symmetric(
-                                                                  horizontal: 20,
-                                                                  vertical: 0
-                                                              )
-                                                          ),
-                                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                            RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10.0),
-                                                            ),
-                                                          ),
-                                                          backgroundColor: MaterialStateProperty.all(
-                                                              TColor.PRIMARY
-                                                          )
-                                                      ),
-                                                      onPressed: () {},
-                                                      child: Text(
-                                                        "Follow",
-                                                        style: TextStyle(
-                                                            color: TColor.PRIMARY_TEXT,
-                                                            fontSize: FontSize.NORMAL,
-                                                            fontWeight: FontWeight.w700
-                                                        ),
-                                                      ),
+                                                  Text(
+                                                    "Posts per week",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: TColor.PRIMARY_TEXT,
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w800,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    "0",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: TColor.PRIMARY_TEXT,
+                                                      fontSize: 22,
+                                                      fontWeight: FontWeight.w800,
                                                     ),
                                                   ),
                                                 ],
-                                              )
-                                            ],
-                                          ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      )
-                                    ]
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: media.height * 0.015,),
+        
+                                // Table section
+                                Column(
+                                  children: [
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                              "Weekly statistics",
+                                              style: TextStyle(
+                                                color: TColor.PRIMARY_TEXT,
+                                                fontSize: FontSize.NORMAL,
+                                                fontWeight: FontWeight.w600,
+                                              )
+                                          ),
+                                          CustomTextButton(
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, '/rank');
+                                            },
+                                            child: Text(
+                                                "View more",
+                                                style: TextStyle(
+                                                  color: TColor.PRIMARY,
+                                                  fontSize: FontSize.NORMAL,
+                                                  fontWeight: FontWeight.w500,
+                                                )
+                                            ),
+                                          )
+                                        ]
+                                    ),
+                                    // SizedBox(height: media.height * 0.01,),
+                                    ScrollSynchronized(
+                                      parentScrollController: parentScrollController,
+                                      child: AthleteTable(participants: club?.participants, tableHeight: media.height - media.height * 0.15, controller: childScrollController,),
+                                    ),
                                   ],
                                 )
+        
                               ],
                             )
                           ],

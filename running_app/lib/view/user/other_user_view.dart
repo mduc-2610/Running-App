@@ -19,18 +19,18 @@ import 'package:running_app/utils/common_widgets/stats_box.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
-import 'package:running_app/utils/providers/user_provider.dart';
 
-class UserView extends StatefulWidget {
-  const UserView({Key? key}) : super(key: key);
+class OtherUserView extends StatefulWidget {
+  const OtherUserView({Key? key}) : super(key: key);
 
   @override
-  State<UserView> createState() => _UserViewState();
+  State<OtherUserView> createState() => _OtherUserViewState();
 }
 
-class _UserViewState extends State<UserView> {
+class _OtherUserViewState extends State<OtherUserView> {
   String _showLayout = "Total stats";
   String token = "";
+  String? userId;
   DetailUser? user;
   Performance? userPerformance;
   Activity? userActivity;
@@ -41,12 +41,18 @@ class _UserViewState extends State<UserView> {
     });
   }
 
-  void initUser() {
+  void initUserId() {
     setState(() {
-      user = Provider.of<UserProvider>(context).user;
+      userId = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>)["id"];
     });
   }
 
+  void initUser() async {
+    final data = await callRetrieveAPI('account/user', userId, "", DetailUser.fromJson, token);
+    setState(() {
+      user = data;
+    });
+  }
 
   void initUserPerformance() async {
     final data = await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
@@ -67,30 +73,34 @@ class _UserViewState extends State<UserView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    initUser();
     initToken();
+    initUserId();
+    initUser();
     initUserPerformance();
     initUserActivity();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.of(context).size;
-    List<Product>? productList = userActivity?.products;
-    print(userPerformance);
+    List<Product>? productList = userActivity?.products ?? [];
+    print(user);
+    // print(userPerformance);
     // print(userActivity);
+    print("Other user: $user");
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: Header(
           title: "",
-          iconButtons: [
-            {
-              "icon": Icons.settings_outlined,
-              "onPressed": () {
-                Navigator.pushNamed(context, '/setting');
-              }
-            }
-          ],
+          // iconButtons: [
+          //   {
+          //     "icon": Icons.settings_outlined,
+          //     "onPressed": () {
+          //       Navigator.pushNamed(context, '/setting');
+          //     }
+          //   }
+          // ],
+          noIcon: true,
         ),
       ),
       body: SingleChildScrollView(
@@ -120,14 +130,17 @@ class _UserViewState extends State<UserView> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              user?.username ?? "",
-                              style: TextStyle(
-                                  color: TColor.PRIMARY_TEXT,
-                                  fontSize: FontSize.LARGE,
-                                  fontWeight: FontWeight.w900),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            SizedBox(
+                              width: media.width * 0.7,
+                              child: Text(
+                                '${user?.username}' ?? "",
+                                style: TextStyle(
+                                    color: TColor.PRIMARY_TEXT,
+                                    fontSize: FontSize.LARGE,
+                                    fontWeight: FontWeight.w900),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                             SizedBox(
                               height: media.height * 0.005,
@@ -297,7 +310,7 @@ class _UserViewState extends State<UserView> {
                                             horizontal: media.width * 0.07)),
                                     backgroundColor: MaterialStateProperty.all<
                                         Color?>(
-                                      _showLayout == x ? TColor.PRIMARY : null),
+                                        _showLayout == x ? TColor.PRIMARY : null),
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
@@ -456,105 +469,105 @@ class BackpackLayout extends StatelessWidget {
           child: SizedBox(
             height: media.height, // Set a specific height
             child: GridView.count(
-                padding: const EdgeInsets.all(0),
-                crossAxisCount: 2,
-                crossAxisSpacing: media.width * 0.03,
-                mainAxisSpacing: media.height * 0.016,
-                children: [
-                  for (var product in productList ?? [])
-                    CustomTextButton(
-                      onPressed: () {},
-                      child: Container(
-                        padding: EdgeInsets.all(media.width * 0.025),
-                        // width: media.width * 0.45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.0),
-                          color: TColor.SECONDARY_BACKGROUND,
-                          border: Border.all(
-                            color: const Color(0xff495466),
-                            width: 2.0,
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.0),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/img/store/product/air_force_1.png",
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.fromLTRB(
-                                              media.width * 0.18, 5, 0, 0),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 5),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(15.0),
-                                            color: TColor.SECONDARY_BACKGROUND
-                                                .withOpacity(0.7),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              SvgPicture.asset(
-                                                "assets/img/home/coin_icon.svg",
-                                                width: 16,
-                                                height: 16,
-                                                fit: BoxFit.contain,
-                                              ),
-                                              Text(
-                                                "1200",
-                                                style: TextStyle(
-                                                  color: TColor.PRIMARY_TEXT,
-                                                  fontSize: FontSize.NORMAL,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            SizedBox(height: media.height * 0.01),
-                            Text(
-                              product.brand.name,
-                              style: TextStyle(
-                                color: TColor.DESCRIPTION,
-                                fontSize: FontSize.SMALL,
-                              ),
-                            ),
-                            // SizedBox(height: media.height * 0.005),
-                            Text(
-                              product.name,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.SMALL,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          ],
+              padding: const EdgeInsets.all(0),
+              crossAxisCount: 2,
+              crossAxisSpacing: media.width * 0.03,
+              mainAxisSpacing: media.height * 0.016,
+              children: [
+                for (var product in productList ?? [])
+                  CustomTextButton(
+                    onPressed: () {},
+                    child: Container(
+                      padding: EdgeInsets.all(media.width * 0.025),
+                      // width: media.width * 0.45,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.0),
+                        color: TColor.SECONDARY_BACKGROUND,
+                        border: Border.all(
+                          color: const Color(0xff495466),
+                          width: 2.0,
                         ),
                       ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                child: Image.asset(
+                                  "assets/img/store/product/air_force_1.png",
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(
+                                            media.width * 0.18, 5, 0, 0),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 5),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(15.0),
+                                          color: TColor.SECONDARY_BACKGROUND
+                                              .withOpacity(0.7),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            SvgPicture.asset(
+                                              "assets/img/home/coin_icon.svg",
+                                              width: 16,
+                                              height: 16,
+                                              fit: BoxFit.contain,
+                                            ),
+                                            Text(
+                                              "1200",
+                                              style: TextStyle(
+                                                color: TColor.PRIMARY_TEXT,
+                                                fontSize: FontSize.NORMAL,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          SizedBox(height: media.height * 0.01),
+                          Text(
+                            product.brand.name,
+                            style: TextStyle(
+                              color: TColor.DESCRIPTION,
+                              fontSize: FontSize.SMALL,
+                            ),
+                          ),
+                          // SizedBox(height: media.height * 0.005),
+                          Text(
+                            product.name,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: TColor.PRIMARY_TEXT,
+                              fontSize: FontSize.SMALL,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
+                  ),
 
-                ],
+              ],
 
             ),
           ),

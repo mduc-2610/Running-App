@@ -5,7 +5,7 @@ class ScrollSynchronized extends StatelessWidget {
   final ScrollController parentScrollController;
   final ScrollController? childScrollController;
 
-  const ScrollSynchronized({
+  const ScrollSynchronized({super.key, 
     required this.child,
     required this.parentScrollController,
     this.childScrollController,

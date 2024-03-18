@@ -384,23 +384,23 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
         ),
       ),
       bottomNavigationBar: Wrapper(
-        child: Container(
-        margin: EdgeInsets.fromLTRB(media.width * 0.025, 0, media.width * 0.025, media.width * 0.025),
-          child: CustomMainButton(
-            horizontalPadding: 0,
-            onPressed: () {
-              Navigator.pushNamed(context, '/home');
-            },
-            child: Text(
-              "Save",
-              style: TextStyle(
-                  color: TColor.PRIMARY_TEXT,
-                  fontSize: FontSize.LARGE,
-                  fontWeight: FontWeight.w800
+          child: Container(
+            margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
+            child: CustomMainButton(
+              horizontalPadding: 0,
+              onPressed: () {
+                Navigator.pushNamed(context, '/home');
+              },
+              child: Text(
+                "Create club",
+                style: TextStyle(
+                    color: TColor.PRIMARY_TEXT,
+                    fontSize: FontSize.LARGE,
+                    fontWeight: FontWeight.w800
+                ),
               ),
             ),
-          ),
-        )
+          )
       ),
     );
   }

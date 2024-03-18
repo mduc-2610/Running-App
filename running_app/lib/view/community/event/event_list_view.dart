@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/event_box.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -8,30 +9,22 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
-class YourEventListView extends StatefulWidget {
-  const YourEventListView({super.key});
+class EventListView extends StatefulWidget {
+  const EventListView({super.key});
 
   @override
-  State<YourEventListView> createState() => _YourEventListViewState();
+  State<EventListView> createState() => _EventListViewState();
 }
 
-class _YourEventListViewState extends State<YourEventListView> {
-  String _eventType = "Joined";
+class _EventListViewState extends State<EventListView> {
+  String _eventType = "Ongoing";
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-      appBar: AppBar(
+      appBar: CustomAppBar(
         title: const Header(title: "All events", noIcon: true,),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/img/home/background_1.png"),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
+        backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
         child: DefaultBackgroundLayout(
@@ -42,20 +35,20 @@ class _YourEventListViewState extends State<YourEventListView> {
                   children: [
                     // Redirect
                     Container(
-                      // padding: EdgeInsets.symmetric(
-                      //     vertical: 5,
-                      //     horizontal: 10
-                      // ),
-                      // decoration: BoxDecoration(
-                      //   color: TColor.SECONDARY_BACKGROUND,
-                      //   borderRadius: BorderRadius.circular(12),
-                      // ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 5,
+                        horizontal: 10
+                      ),
+                      decoration: BoxDecoration(
+                        color: TColor.SECONDARY_BACKGROUND,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          for (var x in ["Joined", "Ended"])
+                          for (var x in ["Ongoing", "Upcoming", "Ended"])
                             SizedBox(
-                              width: media.width * 0.46,
+                              width: media.width * 0.3,
                               child: CustomTextButton(
                                 onPressed: () {
                                   setState(() {
@@ -65,12 +58,12 @@ class _YourEventListViewState extends State<YourEventListView> {
                                 style: ButtonStyle(
                                     padding: MaterialStateProperty.all<EdgeInsets>(
                                         const EdgeInsets.symmetric(
-                                          vertical: 5,
+                                            vertical: 5,
                                         )),
                                     backgroundColor: MaterialStateProperty.all<
                                         Color?>(
-                                        _eventType == x ? TColor.PRIMARY : null
-                                    ),
+                                          _eventType == x ? TColor.PRIMARY : null
+                                        ),
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
@@ -95,14 +88,14 @@ class _YourEventListViewState extends State<YourEventListView> {
                       height: 50,
                       child: CustomTextFormField(
                         decoration: CustomInputDecoration(
-                            hintText: "Search events",
-                            prefixIcon: Icon(
-                              Icons.search_rounded,
-                              color: TColor.DESCRIPTION,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20
-                            )
+                          hintText: "Search events",
+                          prefixIcon: Icon(
+                            Icons.search_rounded,
+                            color: TColor.DESCRIPTION,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20
+                          )
                         ),
                         keyboardType: TextInputType.text,
                       ),
@@ -136,9 +129,9 @@ class EventList extends StatelessWidget {
         Text(
           eventType,
           style: TextStyle(
-              color: TColor.PRIMARY_TEXT,
-              fontSize: FontSize.LARGE,
-              fontWeight: FontWeight.w800
+            color: TColor.PRIMARY_TEXT,
+            fontSize: FontSize.LARGE,
+            fontWeight: FontWeight.w800
           ),
         ),
         SizedBox(height: media.height * 0.02,),

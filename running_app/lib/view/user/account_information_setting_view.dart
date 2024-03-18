@@ -408,7 +408,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
       ),
       bottomNavigationBar: Wrapper(
           child: Container(
-            margin: EdgeInsets.fromLTRB(media.width * 0.025, 0, media.width * 0.025, media.width * 0.025),
+            margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
               onPressed: () {

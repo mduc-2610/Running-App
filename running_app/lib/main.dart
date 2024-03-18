@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
-import 'package:running_app/services/api_service.dart';
-import 'package:running_app/view/community/club_detail_information_view.dart';
+import 'package:running_app/view/community/club/add_club.dart';
+import 'package:running_app/view/community/club/club_detail_information_view.dart';
+import 'package:running_app/view/community/event/add_event.dart';
 import 'package:running_app/view/community/member_view.dart';
+import 'package:running_app/view/user/other_user_view.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 
 
@@ -16,12 +18,12 @@ import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/activity/activity_view.dart';
 import 'package:running_app/view/address/address_view.dart';
-import 'package:running_app/view/community/club_detail_view.dart';
-import 'package:running_app/view/community/club_list_view.dart';
+import 'package:running_app/view/community/club/club_detail_view.dart';
+import 'package:running_app/view/community/club/club_list_view.dart';
 import 'package:running_app/view/community/community_view.dart';
-import 'package:running_app/view/community/event_detail_view.dart';
-import 'package:running_app/view/community/event_list_view.dart';
-import 'package:running_app/view/community/your_event_list_view.dart';
+import 'package:running_app/view/community/event/event_detail_view.dart';
+import 'package:running_app/view/community/event/event_list_view.dart';
+import 'package:running_app/view/community/event/your_event_list_view.dart';
 import 'package:running_app/view/home/home_view.dart';
 import 'package:running_app/view/home/notification_view.dart';
 import 'package:running_app/view/login/get_started_view.dart';
@@ -86,7 +88,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/',
+      initialRoute: '/add_club',
       routes: {
         '/': (context) => homeScreen,
         '/on_board': (context) => const OnBoardingView(),
@@ -106,10 +108,13 @@ class MyApp extends StatelessWidget {
         '/club_list': (context) => const ClubListView(),
         '/club_detail': (context) => const ClubDetailView(),
         '/club_detail_information': (context) => const ClubDetailInformationView(),
+        '/add_club': (context) => const AddClubView(),
         '/member': (context) => const MemberView(),
         '/event_list': (context) => const EventListView(),
+        '/add_event': (context) => const AddEventView(),
         '/your_event_list': (context) => const YourEventListView(),
         '/user': (context) => const UserView(),
+        '/other_user': (context) => const OtherUserView(),
         '/setting': (context) => const SettingView(),
         '/event_detail': (context) => const EventDetailView(),
         '/privacy_setting': (context) => const PrivacySettingView(),

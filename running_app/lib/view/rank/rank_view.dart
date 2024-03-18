@@ -46,7 +46,7 @@ class _RankViewState extends State<RankView> {
     }
   ];
 
-  List<dynamic>? users;
+  List<dynamic>? userList;
   String token = "";
 
   void initToken() {
@@ -56,7 +56,7 @@ class _RankViewState extends State<RankView> {
   void initUser() async {
     final data = await callListAPI('account/user', User.fromJson, token);
     setState(() {
-      users = data;
+      userList = data;
     });
   }
 
@@ -331,8 +331,8 @@ class _RankViewState extends State<RankView> {
                     ),
                     SizedBox(height: media.height * 0.04,),
                     ScrollSynchronized(
-                      child: AthleteTable(participants: users, tableHeight: media.height - media.height * 0.26, controller: childScrollController),
                       parentScrollController: parentScrollController,
+                      child: AthleteTable(participants: userList, tableHeight: media.height - media.height * 0.26, controller: childScrollController),
                     )
                   ],
                 ),

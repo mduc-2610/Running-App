@@ -153,18 +153,21 @@ class _EventViewState extends State<EventView> {
               height: media.height * 0.4,
               child: CarouselSlider(
                 options: CarouselOptions(
-                  viewportFraction: 0.85,
+                  viewportFraction: 0.9,
                   autoPlayAnimationDuration: const Duration(milliseconds: 100),
                   initialPage: 0,
-                  aspectRatio: 1.23,
+                  aspectRatio: 1.2,
                   enlargeCenterPage: true,
-                  enlargeFactor: 0.18,
+                  enlargeFactor: 0.16,
                   enableInfiniteScroll: false
                 ),
 
                 items: [
                   for(var event in popularEvents ?? [])...[
-                    EventBox(event: event,),
+                    Container(
+                      margin: const EdgeInsets.only(right: 15),
+                      child: EventBox(event: event,)
+                    ),
                   ]
                 ],
               ),
@@ -213,9 +216,9 @@ class _EventViewState extends State<EventView> {
                     for(var event in allEvents ?? [])...[
                       IntrinsicHeight(
                         child: EventBox(event: event, width: 200,
-                        buttonMargin: EdgeInsets.fromLTRB(12, 0, 12, 12),)
+                        buttonMargin: const EdgeInsets.fromLTRB(12, 0, 12, 12),)
                       ),
-                      SizedBox(width: 10,)
+                      const SizedBox(width: 10,)
                     ]
                   ],
                 ),
