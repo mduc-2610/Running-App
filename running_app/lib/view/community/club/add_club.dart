@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
+import 'package:running_app/utils/common_widgets/choice_button.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
@@ -21,6 +22,7 @@ class _AddClubViewState extends State<AddClubView> {
   String sportChoice = "Running";
   String organizationChoice = "Sport Club";
   String? privacy = "Public";
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -327,6 +329,7 @@ class _AddClubViewState extends State<AddClubView> {
                                     ],
                                   ),
                                   Radio(
+                                    visualDensity: VisualDensity(horizontal: -4, vertical: -4),
                                     value: x["mode"],
                                     groupValue: privacy,
                                     onChanged: (value) {
@@ -371,60 +374,6 @@ class _AddClubViewState extends State<AddClubView> {
               ),
             ),
           )
-      ),
-    );
-  }
-}
-
-class ChoiceButton extends StatelessWidget {
-  final IconData? icon;
-  final String text;
-  final Map<String, dynamic> buttonState;
-  final VoidCallback onPressed;
-  const ChoiceButton({
-    this.icon,
-    required this.buttonState,
-    required this.text,
-    required this.onPressed,
-    super.key
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    var media = MediaQuery.sizeOf(context);
-    return CustomTextButton(
-      onPressed: onPressed,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 12
-        ),
-        decoration: BoxDecoration(
-          color: buttonState["backgroundColor"],
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            width: 2,
-            color: buttonState["borderColor"]
-          )
-        ),
-        child: Row(
-          children: [
-            if(icon != null)...[
-              Icon(
-                icon,
-                color: buttonState["iconColor"],
-              ),
-              SizedBox(width: media.width * 0.01,)
-            ],
-            Text(
-              text,
-              style: TextStyle(
-                color: buttonState["textColor"],
-                fontSize: FontSize.NORMAL,
-              ),
-            )
-          ],
-        ),
       ),
     );
   }

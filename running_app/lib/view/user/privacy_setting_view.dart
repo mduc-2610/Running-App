@@ -48,7 +48,7 @@ class PrivacySettingView extends StatelessWidget {
                             "content": "Anyone can send you follow request, search for an view certain profile information, and you can apporve who follows you"
                           }
                         ])...[
-        
+
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,7 +88,7 @@ class PrivacySettingView extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: media.height * 0.02,),
-        
+
                     // Activity Privacy
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +116,7 @@ class PrivacySettingView extends StatelessWidget {
                             "content": "Your activities are private. Only you can view them. No one will see your activity history, and your activities won't show up on App Event leaderboard or anywhere on the App",
                           }
                         ])...[
-        
+
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -168,7 +168,7 @@ class PrivacySettingView extends StatelessWidget {
                 child: CustomMainButton(
                     horizontalPadding: 0,
                     onPressed: () {
-        
+
                     },
                     child: Text(
                       "Save",

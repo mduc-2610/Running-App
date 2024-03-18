@@ -24,19 +24,20 @@ class _SwitchButtonState extends State<SwitchButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Switch(
-          value: light0,
-          onChanged: (bool value) {
-            setState(() {
-              light0 = value;
-            });
-          },
-          activeColor: TColor.PRIMARY,
-        ),
-      ],
+    return ButtonTheme(
+      // padding: EdgeInsets.all(0),
+      // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //limits the touch area to the button area
+      // minWidth: 0, //wraps child's width
+      // height: 0, //wraps child's height
+      child: Switch(
+        value: light0,
+        onChanged: (bool value) {
+          setState(() {
+            light0 = value;
+          });
+        },
+        activeColor: TColor.PRIMARY,
+      ),
     );
   }
 }

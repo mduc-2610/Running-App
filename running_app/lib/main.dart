@@ -10,6 +10,7 @@ import 'package:running_app/view/community/event/add_event.dart';
 import 'package:running_app/view/community/member_view.dart';
 import 'package:running_app/view/user/other_user_view.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
+import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
 
 
 import 'package:running_app/utils/common_widgets/email_verification.dart';
@@ -42,10 +43,63 @@ import 'package:running_app/view/user/privacy_setting_view.dart';
 import 'package:running_app/view/user/setting_view.dart';
 import 'package:running_app/view/user/user_view.dart';
 import 'package:running_app/view/wallet/wallet.dart';
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Number Picker'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            _showNumberPicker(context);
+          },
+          child: Text('Choose a number'),
+        ),
+      ),
+    );
+  }
 
+  void _showNumberPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 200.0,
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Center(child: Text('Choose a number')),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 20, // Number of items in the list
+                  itemBuilder: (BuildContext context, int index) {
+                    // Generating list items
+                    return ListTile(
+                      title: Center(child: Text((index + 1).toString())),
+                      onTap: () {
+                        // You can do something with the selected number here
+                        print('Selected number: ${index + 1}');
+                        Navigator.pop(context); // Close the bottom sheet
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await findSystemLocale();
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
   // prefs.setBool('logged', false);
   String token = prefs.getString('token') ?? '';
@@ -88,8 +142,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/add_club',
+      initialRoute: '/',
       routes: {
+        // '/add_event_featuree': (context) =>  MyHomePage(),
         '/': (context) => homeScreen,
         '/on_board': (context) => const OnBoardingView(),
         '/sign_in': (context) => const SignInView(),
@@ -111,7 +166,9 @@ class MyApp extends StatelessWidget {
         '/add_club': (context) => const AddClubView(),
         '/member': (context) => const MemberView(),
         '/event_list': (context) => const EventListView(),
-        '/add_event': (context) => const AddEventView(),
+        '/add_event_feature': (context) => const AddEventFeatureView(),
+        '/add_event_information': (context) => const AddEventInformationView(),
+        '/add_event_advanced_option': (context) => const AddEventAdvancedOption(),
         '/your_event_list': (context) => const YourEventListView(),
         '/user': (context) => const UserView(),
         '/other_user': (context) => const OtherUserView(),

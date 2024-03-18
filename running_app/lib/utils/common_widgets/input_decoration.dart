@@ -24,6 +24,7 @@ class CustomInputDecoration extends InputDecoration {
     Text? label,
     String? labelText,
     TextStyle? labelStyle,
+    String? counterText,
   }) : super(
     hintText: hintText,
     hintStyle: hintStyle,
@@ -53,6 +54,7 @@ class CustomInputDecoration extends InputDecoration {
     suffixIcon: suffixIcon,
     label: label,
     labelText: labelText,
-    labelStyle: labelStyle
+    labelStyle: labelStyle,
+    counterText: counterText
   );
 }
