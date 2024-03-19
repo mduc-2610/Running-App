@@ -10,7 +10,6 @@ class SwitchButton extends StatefulWidget {
 
 class _SwitchButtonState extends State<SwitchButton> {
   bool light0 = true;
-  bool light1 = true;
 
   final MaterialStateProperty<Icon?> thumbIcon =
   MaterialStateProperty.resolveWith<Icon?>(
@@ -24,20 +23,16 @@ class _SwitchButtonState extends State<SwitchButton> {
 
   @override
   Widget build(BuildContext context) {
-    return ButtonTheme(
-      // padding: EdgeInsets.all(0),
-      // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, //limits the touch area to the button area
-      // minWidth: 0, //wraps child's width
-      // height: 0, //wraps child's height
-      child: Switch(
-        value: light0,
-        onChanged: (bool value) {
-          setState(() {
-            light0 = value;
-          });
-        },
-        activeColor: TColor.PRIMARY,
-      ),
+    return  Switch.adaptive(
+      value: light0,
+      onChanged: (bool value) {
+        setState(() {
+          light0 = value;
+        });
+      },
+      activeColor: TColor.PRIMARY,
     );
-  }
+   {
+
+  }}
 }

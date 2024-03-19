@@ -142,7 +142,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/',
+      initialRoute: '/add_event_information',
       routes: {
         // '/add_event_featuree': (context) =>  MyHomePage(),
         '/': (context) => homeScreen,
@@ -168,7 +168,7 @@ class MyApp extends StatelessWidget {
         '/event_list': (context) => const EventListView(),
         '/add_event_feature': (context) => const AddEventFeatureView(),
         '/add_event_information': (context) => const AddEventInformationView(),
-        '/add_event_advanced_option': (context) => const AddEventAdvancedOption(),
+        '/add_event_advanced_option': (context) => const AddEventAdvancedOptionView(),
         '/your_event_list': (context) => const YourEventListView(),
         '/user': (context) => const UserView(),
         '/other_user': (context) => const OtherUserView(),

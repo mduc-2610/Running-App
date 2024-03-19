@@ -24,7 +24,7 @@ class AddEventFeatureView extends StatefulWidget {
 
 class _AddEventFeatureViewState extends State<AddEventFeatureView> {
   String sportChoice = "Running";
-  String? privacy = "Public";
+  String competitionType = "Group";
 
   @override
   Widget build(BuildContext context) {
@@ -77,11 +77,7 @@ class _AddEventFeatureViewState extends State<AddEventFeatureView> {
                       children: [
                         Text(
                           "Competition",
-                          style: TextStyle(
-                              color: TColor.PRIMARY_TEXT,
-                              fontSize: FontSize.LARGE,
-                              fontWeight: FontWeight.w800
-                          ),
+                          style: TxtStyle.headSection
                         ),
                         SizedBox(height: media.height * 0.02,),
                         Column(
@@ -89,17 +85,18 @@ class _AddEventFeatureViewState extends State<AddEventFeatureView> {
                           children: [
                             for(var x in [
                               {
-                                "mode": "Group",
+                                "competitionType": "Group",
                                 "icon": Icons.people_alt_rounded,
                                 "desc": "Group in the competition will be ranked based on the total achievements of the group members",
                               },
                               {
-                                "mode": "Individual",
+                                "competitionType": "Individual",
                                 "icon": Icons.person,
                                 "desc": "Individual in the competition will be ranked based on their achievements"
                               }
                             ])...[
                               Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
@@ -113,7 +110,7 @@ class _AddEventFeatureViewState extends State<AddEventFeatureView> {
                                           ),
                                           SizedBox(width: media.width * 0.02,),
                                           Text(
-                                            x["mode"] as String,
+                                            x["competitionType"] as String,
                                             style: TextStyle(
                                                 color: TColor.PRIMARY_TEXT,
                                                 fontSize: FontSize.NORMAL,
@@ -122,6 +119,7 @@ class _AddEventFeatureViewState extends State<AddEventFeatureView> {
                                           ),
                                         ],
                                       ),
+                                      SizedBox(height: media.height * 0.005,),
                                       SizedBox(
                                         width: media.width * 0.85,
                                         child: Text(
@@ -136,11 +134,11 @@ class _AddEventFeatureViewState extends State<AddEventFeatureView> {
                                   ),
                                   Radio(
                                     visualDensity: VisualDensity(horizontal: -4, vertical: -4),
-                                    value: x["mode"] as String,
-                                    groupValue: privacy,
+                                    value: x["competitionType"] as String,
+                                    groupValue: competitionType,
                                     onChanged: (value) {
                                       setState(() {
-                                        privacy = value;
+                                        competitionType = value!;
                                       });
                                     },
                                     fillColor: MaterialStateProperty.all<Color>(
@@ -163,11 +161,7 @@ class _AddEventFeatureViewState extends State<AddEventFeatureView> {
                       children: [
                         Text(
                           "Sport type",
-                          style: TextStyle(
-                              color: TColor.PRIMARY_TEXT,
-                              fontSize: FontSize.LARGE,
-                              fontWeight: FontWeight.w800
-                          ),
+                          style: TxtStyle.headSection
                         ),
                         SizedBox(height: media.height * 0.01,),
                         SingleChildScrollView(
@@ -235,6 +229,14 @@ class AddEventInformationView extends StatefulWidget {
 
 class _AddEventInformationViewState extends State<AddEventInformationView> {
   DateTime? selectedDate;
+  String rankingType = "Distance (km)";
+
+  @override
+  void initState() {
+    super.initState();
+    // Set the default checked option
+    rankingType = "Distance (km)";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -262,7 +264,7 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
                           style: TextStyle(
                               color: TColor.PRIMARY_TEXT,
                               fontSize: FontSize.LARGE,
-                              fontWeight: FontWeight.w800
+                              fontWeight: FontWeight.w900
                           ),
                         ),
                         SizedBox(height: media.height * 0.02,),
@@ -348,11 +350,7 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
                       children: [
                         Text(
                           "Contact information",
-                          style: TextStyle(
-                              color: TColor.PRIMARY_TEXT,
-                              fontSize: FontSize.LARGE,
-                              fontWeight: FontWeight.w800
-                          ),
+                          style: TxtStyle.headSection
                         ),
                         SizedBox(height: media.height * 0.01,),
                         Row(
@@ -373,38 +371,304 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
                             const SwitchButton()
                           ],
                         ),
+                        SizedBox(height: media.height * 0.01,),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Start date",
-                              style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.NORMAL,
-                                fontWeight: FontWeight.w600
-                              ),
-                            ),
-                            Row(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // DateTimeFormField(onChanged: (value){}),
-                                // DateTimeFormField(
-                                //   decoration: const InputDecoration(
-                                //     labelText: 'Enter Date',
-                                //   ),
-                                //   firstDate: DateTime.now().add(const Duration(days: 10)),
-                                //   lastDate: DateTime.now().add(const Duration(days: 40)),
-                                //   initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
-                                //   onChanged: (DateTime? value) {
-                                //     selectedDate = value;
-                                //   },
-                                // ),
+                                Text(
+                                  "Start date",
+                                  style: TextStyle(
+                                    color: TColor.PRIMARY_TEXT,
+                                    fontSize: FontSize.NORMAL,
+                                    fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                                SizedBox(height: media.height * 0.01,),
+                                Container(
+                                  alignment: Alignment.center,
+                                  width: media.width * 0.65,
+                                  // height: 70,
+                                  child: DateTimeFormField(
+                                    style: TextStyle(
+                                      color: TColor.DESCRIPTION,
+                                      fontSize: FontSize.SMALL,
+                                    ),
+                                    decoration: CustomInputDecoration(
+                                      suffixIcon: Icon(
+                                        Icons.calendar_today_rounded,
+                                        color: TColor.DESCRIPTION,
+                                      ),
+                                    //   hintText: "${DateTime.now().toString().split(' ')[0]} 00:00",
+                                    //   hintStyle: TextStyle(
+                                    //   color: TColor.DESCRIPTION,
+                                    //   fontSize: FontSize.SMALL,
+                                    // ),
+                                        label: Text(
+                                        "${DateTime.now().toString().split(' ')[0]} 00:00",
+                                        style: TextStyle(
+                                          color: TColor.DESCRIPTION,
+                                          fontSize: FontSize.SMALL,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      contentPadding: EdgeInsets.symmetric(
+                                        horizontal: 20
+                                      ),
+                                    ),
+
+                                    materialDatePickerOptions: MaterialDatePickerOptions(),
+                                    firstDate: DateTime.now().add(const Duration(days: 10)),
+                                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                                    initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
+                                    onChanged: (DateTime? value) {
+                                      selectedDate = value;
+                                    },
+                                  ),
+                                )
                               ],
-                            )
+                            ),
+                            SizedBox(height: media.height * 0.01,),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "End date",
+                                  style: TextStyle(
+                                      color: TColor.PRIMARY_TEXT,
+                                      fontSize: FontSize.NORMAL,
+                                      fontWeight: FontWeight.w600
+                                  ),
+                                ),
+                                SizedBox(height: media.height * 0.01,),
+                                SizedBox(
+                                  width: media.width * 0.65,
+                                  // height: 50,
+                                  child: DateTimeFormField(
+                                    style: TextStyle(
+                                      color: TColor.DESCRIPTION,
+                                      fontSize: FontSize.SMALL,
+                                    ),
+                                    decoration: CustomInputDecoration(
+                                      suffixIcon: Icon(
+                                        Icons.calendar_today_rounded,
+                                        color: TColor.DESCRIPTION,
+                                      ),
+                                      label: Text(
+                                        "${DateTime.now().add(Duration(days: 7)).toString().split(' ')[0]} 23:59",
+                                        style: TextStyle(
+                                          color: TColor.DESCRIPTION,
+                                          fontSize: FontSize.SMALL,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 20
+                                      ),
+                                    ),
+
+                                    firstDate: DateTime.now().add(const Duration(days: 10)),
+                                    lastDate: DateTime.now().add(const Duration(days: 40)),
+                                    initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
+                                    onChanged: (DateTime? value) {
+                                      selectedDate = value;
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
                           ],
                         ),
                         SizedBox(height: media.height * 0.02,),
 
-                        // Advanced button
+                        // Ranking section
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Ranking",
+                              style: TxtStyle.headSection
+                            ),
+                            SizedBox(height: media.height * 0.01,),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                for(var x in [
+                                  {
+                                    "rankingType": "Distance (km)",
+                                  },
+                                  {
+                                    "rankingType": "Total time"
+                                  }
+                                ])...[
+                                  Column(
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            x["rankingType"] as String,
+                                            style: TextStyle(
+                                                color: TColor.PRIMARY_TEXT,
+                                                fontSize: FontSize.NORMAL,
+                                                fontWeight: FontWeight.w600
+                                            ),
+                                          ),
+                                          Radio(
+                                            visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                                            value: x["rankingType"] as String,
+                                            groupValue: rankingType,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                rankingType = value!;
+                                              });
+                                            },
+                                            fillColor: MaterialStateProperty.all<Color>(
+                                                TColor.PRIMARY
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      if(rankingType == x["rankingType"])...[
+                                        SizedBox(height: media.height * 0.01,),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 16,
+                                              horizontal: 12
+                                          ),
+                                          decoration: BoxDecoration(
+                                              color: TColor.SECONDARY_BACKGROUND,
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: Border.all(
+                                                width: 1,
+                                                color: TColor.BORDER_COLOR,
+                                              )
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Challenge goal",
+                                                style: TextStyle(
+                                                    color: TColor.PRIMARY_TEXT,
+                                                    fontSize: FontSize.NORMAL,
+                                                    fontWeight: FontWeight.w600
+                                                ),
+                                              ),
+                                              SizedBox(height: media.height * 0.01,),
+                                              Text(
+                                                "Groups/Members hitting the goal will be recognized for completing the challenge",
+                                                style: TextStyle(
+                                                  color: TColor.DESCRIPTION,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              SizedBox(height: media.height * 0.01,),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "Completion goal",
+                                                    style: TextStyle(
+                                                        color: TColor.PRIMARY_TEXT,
+                                                        fontSize: FontSize.NORMAL,
+                                                        fontWeight: FontWeight.w600
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      if(rankingType == "Distance (km)")...[
+                                                        Row(
+                                                          children: [
+                                                            SizedBox(
+                                                              width: media.width * 0.25,
+                                                              height: 30,
+                                                              child: CustomTextFormField(
+                                                                textAlign: TextAlign.center,
+                                                                decoration: CustomInputDecoration(
+                                                                    contentPadding: EdgeInsets.zero,
+                                                                    borderRadius: BorderRadius.circular(5),
+                                                                    counterText: ''
+                                                                ),
+                                                                keyboardType: TextInputType.number,
+                                                                // cursorHeight: 15,
+                                                                maxLines: 1,
+                                                                maxLength: 7,
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: media.width * 0.01),
+                                                            Text(
+                                                              "km",
+                                                              style: TextStyle(
+                                                                color: TColor.DESCRIPTION,
+                                                                fontSize: 14,
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ]
+                                                      else...[
+                                                        for(x in [
+                                                          {
+                                                            "unit": "hours"
+                                                          },
+                                                          {
+                                                            "unit": "minutes"
+                                                          }
+                                                        ])...[
+                                                          Row(
+                                                            children: [
+                                                              SizedBox(
+                                                                width: media.width * 0.12,
+                                                                height: 30,
+                                                                child: CustomTextFormField(
+                                                                  textAlign: TextAlign.center,
+                                                                  decoration: CustomInputDecoration(
+                                                                      contentPadding: EdgeInsets.zero,
+                                                                      borderRadius: BorderRadius.circular(5),
+                                                                      counterText: ''
+                                                                  ),
+                                                                  keyboardType: TextInputType.number,
+                                                                  // cursorHeight: 15,
+                                                                  maxLines: 1,
+                                                                  maxLength: 7,
+                                                                ),
+                                                              ),
+                                                              SizedBox(width: media.width * 0.01),
+                                                              Text(
+                                                                x["unit"] as String,
+                                                                style: TextStyle(
+                                                                  color: TColor.DESCRIPTION,
+                                                                  fontSize: 14,
+                                                                ),
+                                                              ),
+                                                              SizedBox(width: media.width * 0.01),
+                                                            ],
+                                                          ),
+                                                        ]
+                                                      ]
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ]
+                                    ],
+                                  ),
+                                  SizedBox(height: media.height * 0.02,),
+                                ]
+                              ],
+                            )
+                          ],
+                        ),
+
+                        // Advanced button section
                         CustomTextButton(
                           onPressed: () {
                             Navigator.pushNamed(context, '/add_event_advanced_option');
@@ -469,14 +733,14 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
   }
 }
 
-class AddEventAdvancedOption extends StatefulWidget {
-  const AddEventAdvancedOption({super.key});
+class AddEventAdvancedOptionView extends StatefulWidget {
+  const AddEventAdvancedOptionView({super.key});
 
   @override
-  State<AddEventAdvancedOption> createState() => _AddEventAdvancedOptionState();
+  State<AddEventAdvancedOptionView> createState() => _AddEventAdvancedOptionViewState();
 }
 
-class _AddEventAdvancedOptionState extends State<AddEventAdvancedOption> {
+class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView> {
   String? privacy = "Public";
 
   @override
@@ -500,11 +764,7 @@ class _AddEventAdvancedOptionState extends State<AddEventAdvancedOption> {
                       children: [
                         Text(
                           "Privacy settings",
-                          style: TextStyle(
-                              color: TColor.PRIMARY_TEXT,
-                              fontSize: FontSize.LARGE,
-                              fontWeight: FontWeight.w800
-                          ),
+                          style: TxtStyle.headSection,
                         ),
                         SizedBox(height: media.height * 0.01,),
                         Column(
@@ -574,11 +834,7 @@ class _AddEventAdvancedOptionState extends State<AddEventAdvancedOption> {
                           children: [
                             Text(
                               "Rules for the valid activity",
-                              style: TextStyle(
-                                  color: TColor.PRIMARY_TEXT,
-                                  fontSize: FontSize.LARGE,
-                                  fontWeight: FontWeight.w800
-                              ),
+                              style: TxtStyle.headSection,
                             ),
                             SwitchButton()
                           ],
@@ -643,17 +899,16 @@ class _AddEventAdvancedOptionState extends State<AddEventAdvancedOption> {
                                       child: Row(
                                         children: [
                                           SizedBox(
-                                            width: 50,
-                                            height: 25,
+                                            width: media.width * 0.15,
+                                            height: 30,
                                             child: CustomTextFormField(
+                                              textAlign: TextAlign.center,
                                               decoration: CustomInputDecoration(
-                                                contentPadding: EdgeInsets.symmetric(
-                                                  horizontal: 10
-                                                ),
+                                                contentPadding: EdgeInsets.zero,
                                                 borderRadius: BorderRadius.circular(5),
                                                 counterText: ''
                                               ),
-                                              keyboardType: TextInputType.text,
+                                              keyboardType: TextInputType.number,
                                               // cursorHeight: 15,
                                               maxLines: 1,
                                               maxLength: x["inp_max_length"] as int,
@@ -680,17 +935,128 @@ class _AddEventAdvancedOptionState extends State<AddEventAdvancedOption> {
                     ),
                     SizedBox(height: media.height * 0.02,),
 
+                    // Advanced display section
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Advanced display",
+                          style: TxtStyle.headSection,
+                        ),
+                        SizedBox(height: media.height * 0.015,),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for(var x in [
+                              {
+                                "type": "Display total accumulated distance",
+                                "desc": "Displays the total distance the members/group have accumulated throughout the event",
+                              },
+                              {
+                                "type": "Display total money donated for the event",
+                                "desc": "Displays the total amount of money donated by members/groups based on accumulated distance"
+                              }
+                            ])...[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    width: media.width * 0.8,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          x["type"] as String,
+                                          style: TextStyle(
+                                              color: TColor.PRIMARY_TEXT,
+                                              fontSize: FontSize.NORMAL,
+                                              fontWeight: FontWeight.w600
+                                          ),
+                                        ),
+                                        SizedBox(height: media.height * 0.01,),
+                                        Text(
+                                          x["desc"] as String,
+                                          style: TextStyle(
+                                            color: TColor.DESCRIPTION,
+                                            fontSize: 14,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  SwitchButton()
+                                ],
+                              ),
+                              SizedBox(height: media.height * 0.01,),
+
+                              if(x["type"] != "Display total accumulated distance")...[
+                                Container(
+                                  width: media.width * 0.85,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 8,
+                                      horizontal: 10
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                      width: 2,
+                                      color: TColor.BORDER_COLOR
+                                    )
+                                  ),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Exchange:     1km = ",
+                                          style: TextStyle(
+                                            color: TColor.DESCRIPTION,
+                                            fontSize: FontSize.SMALL,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: media.width * 0.3,
+                                          height: 35,
+                                          child: CustomTextFormField(
+                                            textAlign: TextAlign.center,
+                                            decoration: CustomInputDecoration(
+                                                contentPadding: EdgeInsets.symmetric(
+                                                    horizontal: 10
+                                                ),
+                                                borderRadius: BorderRadius.circular(5),
+                                                counterText: ''
+                                            ),
+                                            keyboardType: TextInputType.number,
+                                            maxLength: 5,
+                                          ),
+                                        ),
+                                        Text(
+                                          "   USD",
+                                          style: TextStyle(
+                                            color: TColor.DESCRIPTION,
+                                            fontSize: FontSize.SMALL,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+
+                            ]
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: media.height * 0.02,),
+
                     // Certificate section
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "Certificate",
-                          style: TextStyle(
-                              color: TColor.PRIMARY_TEXT,
-                              fontSize: FontSize.LARGE,
-                              fontWeight: FontWeight.w800
-                          ),
+                          style: TxtStyle.headSection,
                         ),
                         SizedBox(height: media.height * 0.01,),
                         Text(

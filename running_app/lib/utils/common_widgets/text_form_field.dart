@@ -19,6 +19,7 @@ class CustomTextFormField extends TextFormField {
     int? maxLines,
     String? initialValue,
     double? cursorHeight,
+    TextAlign textAlign = TextAlign.left,
   }) : super(
     key: key,
     style: inputTextStyle,
@@ -33,5 +34,6 @@ class CustomTextFormField extends TextFormField {
     initialValue: initialValue,
     maxLines: maxLines,
     cursorHeight: cursorHeight,
+    textAlign:textAlign,
   );
 }

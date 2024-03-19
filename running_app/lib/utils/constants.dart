@@ -33,6 +33,14 @@ class FontSize {
   static const TITLE = 30.0;
 }
 
+class TxtStyle {
+  static TextStyle get headSection => TextStyle(
+    color: TColor.PRIMARY_TEXT,
+    fontSize: FontSize.LARGE,
+    fontWeight: FontWeight.w900
+  );
+}
+
 class BShadow {
   static final BoxShadow customBoxShadow = BoxShadow(
     color: Colors.black.withOpacity(0.5),
