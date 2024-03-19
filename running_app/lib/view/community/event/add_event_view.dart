@@ -368,8 +368,16 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
                                 ),
                               ),
                             ),
-                            const SwitchButton()
+                            SwitchButton()
                           ],
+                        ),
+                        SizedBox(height: media.height * 0.01,),
+                        CustomTextFormField(
+                          decoration: CustomInputDecoration(
+                            hintText: "Contact information",
+                          ),
+                          keyboardType: TextInputType.text,
+                          maxLines: 3,
                         ),
                         SizedBox(height: media.height * 0.01,),
                         Column(

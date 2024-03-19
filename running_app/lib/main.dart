@@ -4,9 +4,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
-import 'package:running_app/view/community/club/add_club.dart';
+import 'package:running_app/view/community/club/add_club_view.dart';
 import 'package:running_app/view/community/club/club_detail_information_view.dart';
-import 'package:running_app/view/community/event/add_event.dart';
+import 'package:running_app/view/community/event/add_event_view.dart';
+import 'package:running_app/view/community/event/add_group_view.dart';
 import 'package:running_app/view/community/management/group_management_view.dart';
 import 'package:running_app/view/community/management/member_management_private_view.dart';
 import 'package:running_app/view/community/management/member_management_public_view.dart';
@@ -145,7 +146,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/group_management',
+      initialRoute: '/add_group',
       routes: {
         // '/add_event_featuree': (context) =>  MyHomePage(),
         '/': (context) => homeScreen,
@@ -169,6 +170,7 @@ class MyApp extends StatelessWidget {
         '/add_club': (context) => const AddClubView(),
         '/member': (context) => const MemberView(),
         '/event_list': (context) => const EventListView(),
+        '/add_group': (context) => const AddGroupView(),
         '/add_event_feature': (context) => const AddEventFeatureView(),
         '/add_event_information': (context) => const AddEventInformationView(),
         '/add_event_advanced_option': (context) => const AddEventAdvancedOptionView(),

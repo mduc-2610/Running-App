@@ -46,7 +46,7 @@ class _HomeViewState extends State<HomeView> {
         child: DefaultBackgroundLayout(
           child: Stack(
             children: [
-              BackgroundContainer(height: media.height * 0.39,),
+              BackgroundContainer(height: media.height * 0.4,),
               MainWrapper(
                 child: Column(
                   children: [
