@@ -16,7 +16,7 @@ class FollowView extends StatefulWidget {
 }
 
 class _FollowViewState extends State<FollowView> {
-  bool _showFollowerLayout = false;
+  String _showLayout = "Following";
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class _FollowViewState extends State<FollowView> {
                             child: CustomTextButton(
                               onPressed: () {
                                 setState(() {
-                                  _showFollowerLayout = x == "Follower";
+                                  _showLayout = x;
                                 });
                               },
                               style: ButtonStyle(
@@ -70,11 +70,7 @@ class _FollowViewState extends State<FollowView> {
                                           horizontal: media.width * 0.07)),
                                   backgroundColor: MaterialStateProperty.all<
                                       Color?>(
-                                    // x == "Total stats" ? TColor.PRIMARY : null
-
-                                      x == "Following" && _showFollowerLayout == false
-                                          || x == "Follower" && _showFollowerLayout == true
-                                          ? TColor.PRIMARY : null),
+                                      _showLayout == x ? TColor.PRIMARY : null),
                                   shape: MaterialStateProperty.all<
                                       RoundedRectangleBorder>(
                                       RoundedRectangleBorder(
@@ -92,7 +88,7 @@ class _FollowViewState extends State<FollowView> {
                       ],
                     ),
                     SizedBox(height: media.height * 0.015,),
-                    (_showFollowerLayout)
+                    (_showLayout == "Follower")
                         ? const FollowLayout(layout: "Follower", amount: "0")
                         : const FollowLayout(layout: "Following", amount: "0")
                   ],

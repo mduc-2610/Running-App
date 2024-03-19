@@ -150,7 +150,7 @@ class _EventViewState extends State<EventView> {
             ),
             SizedBox(height: media.height * 0.01,),
             SizedBox(
-              height: media.height * 0.4,
+              height: media.height * 0.43,
               child: CarouselSlider(
                 options: CarouselOptions(
                   viewportFraction: 0.9,
@@ -218,12 +218,13 @@ class _EventViewState extends State<EventView> {
                         child: EventBox(event: event, width: 200,
                         buttonMargin: const EdgeInsets.fromLTRB(12, 0, 12, 12),)
                       ),
-                      const SizedBox(width: 10,)
+                      SizedBox(width: 10,)
                     ]
                   ],
                 ),
               ),
-            )
+            ),
+            SizedBox(height: media.height * 0.02,),
           ],
         ),
       ],

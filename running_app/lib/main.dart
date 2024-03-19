@@ -7,7 +7,10 @@ import 'package:running_app/models/account/user.dart';
 import 'package:running_app/view/community/club/add_club.dart';
 import 'package:running_app/view/community/club/club_detail_information_view.dart';
 import 'package:running_app/view/community/event/add_event.dart';
-import 'package:running_app/view/community/member_view.dart';
+import 'package:running_app/view/community/management/group_management_view.dart';
+import 'package:running_app/view/community/management/member_management_private_view.dart';
+import 'package:running_app/view/community/management/member_management_public_view.dart';
+import 'package:running_app/view/community/club/member_view.dart';
 import 'package:running_app/view/user/other_user_view.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
@@ -142,7 +145,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/add_event_information',
+      initialRoute: '/group_management',
       routes: {
         // '/add_event_featuree': (context) =>  MyHomePage(),
         '/': (context) => homeScreen,
@@ -170,6 +173,9 @@ class MyApp extends StatelessWidget {
         '/add_event_information': (context) => const AddEventInformationView(),
         '/add_event_advanced_option': (context) => const AddEventAdvancedOptionView(),
         '/your_event_list': (context) => const YourEventListView(),
+        '/group_management': (context) => GroupManagementView(),
+        '/member_management_private': (context) => MemberManagementPrivateView(),
+        '/member_management_public': (context) => MemberManagementPublicView(),
         '/user': (context) => const UserView(),
         '/other_user': (context) => const OtherUserView(),
         '/setting': (context) => const SettingView(),

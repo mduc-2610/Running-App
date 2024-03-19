@@ -37,7 +37,12 @@ class TxtStyle {
   static TextStyle get headSection => TextStyle(
     color: TColor.PRIMARY_TEXT,
     fontSize: FontSize.LARGE,
-    fontWeight: FontWeight.w900
+    fontWeight: FontWeight.w900,
+    letterSpacing: 0.95
+  );
+  static TextStyle get descSection => TextStyle(
+      color: TColor.DESCRIPTION,
+      fontSize: 14,
   );
 }
 

@@ -125,14 +125,14 @@ class _CommunityViewState extends State<CommunityView> {
       //     ],
       //   ),
       // ),
-      bottomSheet: AddButton(
+      bottomSheet: (_showView == "Events" || _showView == "Clubs") ? AddButton(
         text: (_showView == "Events") 
-            ? "Create your own event" 
+            ? "Create your own event"
             : "Create your own club",
         onPressed: () {
           Navigator.pushNamed(context, _showView == "Events" ? "/add_event_feature" : "/add_club");
         },
-      ),
+      ) : null,
       bottomNavigationBar: const Menu(),
       // bottomNavigationBar: Stack(
       //   clipBehavior: Clip.none,

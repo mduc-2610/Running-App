@@ -7,7 +7,8 @@ class CustomMainButton extends StatelessWidget {
   final double borderRadius;
   final VoidCallback onPressed;
   final Widget child;
-  final Icon? icon;
+  final Icon? prefixIcon;
+  final Icon? suffixIcon;
   final Color? background;
   final double? borderWidth;
   final Color? borderWidthColor;
@@ -20,7 +21,8 @@ class CustomMainButton extends StatelessWidget {
     this.borderRadius = 12.0,
     required this.onPressed,
     required this.child,
-    this.icon,
+    this.prefixIcon,
+    this.suffixIcon,
     this.background,
     this.borderWidth,
     this.borderWidthColor,
@@ -47,14 +49,16 @@ class CustomMainButton extends StatelessWidget {
         ),
         backgroundColor: MaterialStateProperty.all<Color?>(background ?? TColor.PRIMARY),
       ),
-      child: icon == null
+      child: suffixIcon == null && prefixIcon == null
           ? child
           : Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          prefixIcon ?? SizedBox(),
+          const SizedBox(width: 5),
           child,
-          const SizedBox(width: 5), // Adjust spacing between text and icon
-          icon!,
+          const SizedBox(width: 5),
+          suffixIcon ?? SizedBox(),
         ],
       ),
     );

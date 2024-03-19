@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
+import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/progress_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -25,6 +29,7 @@ class _EventDetailViewState extends State<EventDetailView> {
   String token = "";
   String eventId = "";
   DetailEvent? event;
+  int currentSlide = 0;
 
   void initToken() {
     setState(() {
@@ -95,85 +100,238 @@ class _EventDetailViewState extends State<EventDetailView> {
                     ),
 
                     // Event target
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 12),
-                      decoration: BoxDecoration(
-                        color: TColor.PRIMARY,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.flag_circle_rounded,
-                                color: TColor.PRIMARY_TEXT,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "Target: ",
-                                style: TextStyle(
-                                    color: TColor.DESCRIPTION,
-                                    fontSize: FontSize.SMALL,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              Text(
-                                "25000.0 km",
-                                style: TextStyle(
-                                    color: TColor.PRIMARY_TEXT,
-                                    fontSize: FontSize.LARGE,
-                                    fontWeight: FontWeight.w800),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: media.height * 0.01,
-                          ),
-                          ProgressBar(
-                            totalSteps: 10,
-                            currentStep: 8,
-                            width: media.width,
-                          ),
-                          SizedBox(
-                            height: media.height * 0.01,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                event?.daysRemain ?? "0",
-                                style: TextStyle(
-                                    color: TColor.DESCRIPTION,
-                                    fontSize: FontSize.SMALL,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              RichText(
-                                text: TextSpan(
-                                    style: TextStyle(
-                                        color: TColor.PRIMARY_TEXT,
-                                        fontSize: FontSize.SMALL,
-                                        fontWeight: FontWeight.w500),
-                                    children: const [
-                                      TextSpan(
-                                        text: "208416.86",
-                                        style: TextStyle(
-                                          color: Color(0xff6cb64f),
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: media.height * 0.16,
+                          width: media.width,
+                          child: CarouselSlider(
+                            options: CarouselOptions(
+                                viewportFraction: 0.96,
+                                autoPlayAnimationDuration: const Duration(milliseconds: 100),
+                                initialPage: 0,
+                                enableInfiniteScroll: false,
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    currentSlide = index;
+                                  });
+                                },
+                            ),
+
+                            items: [
+                              Container(
+                                margin: EdgeInsets.only(
+                                  left: media.width * 0.03
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+                                decoration: BoxDecoration(
+                                  color: TColor.PRIMARY,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.flag_circle_rounded,
+                                          color: TColor.PRIMARY_TEXT,
                                         ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          "Target: ",
+                                          style: TextStyle(
+                                              color: TColor.DESCRIPTION,
+                                              fontSize: FontSize.SMALL,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          "25000.0 km",
+                                          style: TextStyle(
+                                              color: TColor.PRIMARY_TEXT,
+                                              fontSize: FontSize.LARGE,
+                                              fontWeight: FontWeight.w800),
+                                        )
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: media.height * 0.01,
+                                    ),
+                                    ProgressBar(
+                                      totalSteps: 10,
+                                      currentStep: 8,
+                                      width: media.width,
+                                    ),
+                                    SizedBox(
+                                      height: media.height * 0.01,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          event?.daysRemain ?? "0",
+                                          style: TextStyle(
+                                              color: TColor.DESCRIPTION,
+                                              fontSize: FontSize.SMALL,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        RichText(
+                                          text: TextSpan(
+                                              style: TextStyle(
+                                                  color: TColor.PRIMARY_TEXT,
+                                                  fontSize: FontSize.SMALL,
+                                                  fontWeight: FontWeight.w500),
+                                              children: const [
+                                                TextSpan(
+                                                  text: "208416.86",
+                                                  style: TextStyle(
+                                                    color: Color(0xff6cb64f),
+                                                  ),
+                                                ),
+                                                TextSpan(text: "/25000.0km")
+                                              ]),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: media.width * 0.03),
+                                decoration: BoxDecoration(
+                                  color: TColor.PRIMARY,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(12),
+                                            bottomRight: Radius.circular(12),
+                                            topLeft: Radius.circular(200),
+                                          ),
+                                          child: Image.asset(
+                                            "assets/img/community/keep_running.jpg",
+                                            // width: media.width,
+                                            height: media.height * 0.16,
+                                            width: media.width * 0.46,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                              "Total event distance:",
+                                              style: TextStyle(
+                                                  color: TColor.PRIMARY_TEXT,
+                                                  fontSize: FontSize.NORMAL,
+                                                  fontWeight: FontWeight.w600
+                                              )
+                                          ),
+                                          Text(
+                                              "197,390 km",
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: FontSize.TITLE,
+                                                fontWeight: FontWeight.w900,
+                                              )
+                                          ),
+                                        ],
                                       ),
-                                      TextSpan(text: "/25000.0km")
-                                    ]),
-                              )
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: media.width * 0.03),
+                                decoration: BoxDecoration(
+                                  color: TColor.PRIMARY,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          height: media.height * 0.16,
+                                          width: media.width * 0.48,
+                                          decoration: BoxDecoration(
+                                          color: TColor.PRIMARY_TEXT,
+                                            borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(12),
+                                              bottomRight: Radius.circular(12),
+                                              topLeft: Radius.circular(100),
+                                              // bottomLeft: Radius.circular(10),
+                                            ),
+                                          ),
+                                          child: ClipRRect(
+                                            child: SvgPicture.asset(
+                                              "assets/img/community/donation.svg",
+                                              // width: media.width,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                              "Donation amount:",
+                                              style: TextStyle(
+                                                color: TColor.PRIMARY_TEXT,
+                                                fontSize: FontSize.NORMAL,
+                                                fontWeight: FontWeight.w600
+                                              )
+                                          ),
+                                          Text(
+                                              "3,125 USD",
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: FontSize.TITLE,
+                                                fontWeight: FontWeight.w900,
+                                              )
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ],
-                          )
-                        ],
-                      ),
+                          ),
+                        ),
+                        SizedBox(height: media.height * 0.01,),
+                        DotsIndicator(
+                          dotsCount: 3,
+                          position: currentSlide,
+                          decorator: DotsDecorator(
+                            activeColor: TColor.PRIMARY,
+                            spacing: EdgeInsets.only(left: 8),
+                          ),
+                        )
+                      ],
                     ),
+
                     SizedBox(
-                      height: media.height * 0.015,
+                      height: media.height * 0.01,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -357,11 +515,7 @@ class GeneralInformationLayout extends StatelessWidget {
               children: [
                 Text(
                   event?.name ?? "",
-                  style: TextStyle(
-                    color: TColor.PRIMARY_TEXT,
-                    fontSize: FontSize.LARGE,
-                    fontWeight: FontWeight.w800,
-                  ),
+                  style: TxtStyle.headSection
                 ),
                 SizedBox(
                   height: media.height * 0.015,
@@ -429,7 +583,7 @@ class GeneralInformationLayout extends StatelessWidget {
                                 decoration: const BoxDecoration(),
                                 child: Icon(
                                   eventInfo[i]["icon"],
-                                  color: Colors.green,
+                                  color: TColor.PRIMARY_TEXT,
                                   size: 35,
                                 ),
                               ),
@@ -461,21 +615,40 @@ class GeneralInformationLayout extends StatelessWidget {
                       ),
                     ]
                   ],
+                ),
+                SizedBox(height: media.height * 0.015,),
+                SizedBox(
+                  width: media.width,
+                  child: CustomMainButton(
+                    horizontalPadding: 0,
+                    verticalPadding: 14,
+                    onPressed: () {},
+                    child: Text(
+                      "Event management",
+                      style: TxtStyle.headSection,
+                    ),
+                    prefixIcon: Icon(
+                        Icons.shield_outlined,
+                        color: TColor.PRIMARY_TEXT,
+                    ),
+                    borderWidth: 2,
+                    borderWidthColor: TColor.PRIMARY,
+                    background: Colors.transparent,
+                  )
                 )
               ],
             ),
             SizedBox(
-              height: media.height * 0.015,
+              height: media.height * 0.02,
             ),
+
+            // Rules section
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Rules for a valid activity",
-                    style: TextStyle(
-                      color: TColor.PRIMARY_TEXT,
-                      fontSize: FontSize.LARGE,
-                      fontWeight: FontWeight.w800,
-                    )),
+                    style: TxtStyle.headSection
+                ),
                 SizedBox(height: media.height * 0.015),
                 Column(
                   children: [
@@ -628,7 +801,7 @@ class GeneralInformationLayout extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(height: media.height * 0.015,),
+            SizedBox(height: media.height * 0.02,),
 
             // Description section
             if(event?.description != null)...[
@@ -637,11 +810,7 @@ class GeneralInformationLayout extends StatelessWidget {
                 children: [
                   Text(
                     "Event's description",
-                    style: TextStyle(
-                      color: TColor.PRIMARY_TEXT,
-                      fontSize: FontSize.LARGE,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: TxtStyle.headSection
                   ),
                   Text(
                     event?.description ?? "",
@@ -653,7 +822,7 @@ class GeneralInformationLayout extends StatelessWidget {
                   )
                 ],
               ),
-              SizedBox(height: media.height * 0.015,),
+              SizedBox(height: media.height * 0.02,),
             ],
             // Contact section
             if(event?.contactInformation != null)...[
@@ -662,11 +831,7 @@ class GeneralInformationLayout extends StatelessWidget {
                 children: [
                   Text(
                     "Contact information",
-                    style: TextStyle(
-                      color: TColor.PRIMARY_TEXT,
-                      fontSize: FontSize.LARGE,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    style: TxtStyle.headSection
                   ),
                   Text(
                     event?.contactInformation ?? "",
