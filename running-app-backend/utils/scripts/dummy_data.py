@@ -3,6 +3,7 @@ from datetime import timedelta
 from faker import Faker
 from django.contrib.auth.hashers import make_password
 
+from rest_framework.authtoken.models import Token
 
 from account.models import User, \
                         Performance, \
@@ -44,7 +45,8 @@ def run():
         User, Performance, Privacy, Profile, Activity,
         ActivityRecord, Club, Group, UserGroup, 
         Event, UserParticipationClub, UserParticipationEvent,
-        Brand, Category, Product, ProductImage, UserProduct
+        Brand, Category, Product, ProductImage, UserProduct, 
+        Token
     ]
 
     for model in model_list:

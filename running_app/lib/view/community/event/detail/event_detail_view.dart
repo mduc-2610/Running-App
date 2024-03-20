@@ -13,6 +13,7 @@ import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/progress_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/scroll_synchronized.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom_sheet.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
@@ -456,8 +457,8 @@ class _InformationLayoutState extends State<InformationLayout> {
 
 class LeaderBoardLayout extends StatelessWidget {
   final ScrollController parentScrollController;
-  DetailEvent? event;
-  LeaderBoardLayout({
+  final DetailEvent? event;
+  const LeaderBoardLayout({
     required this.parentScrollController,
     required this.event,
     super.key
@@ -622,7 +623,26 @@ class GeneralInformationLayout extends StatelessWidget {
                   child: CustomMainButton(
                     horizontalPadding: 0,
                     verticalPadding: 14,
-                    onPressed: () {},
+                    onPressed: () {
+                      showActionList(
+                          context,
+                        [
+                          {
+                            "text": "Member management",
+                            "onPressed": () {
+                              Navigator.pushNamed(context, '/member_management_private');
+                            }
+                          },
+                          {
+                            "text": "Group management",
+                            "onPressed": () {
+                              Navigator.pushNamed(context, '/group_management');
+                            }
+                          }
+                        ],
+                        "Admin privileges"
+                      );
+                    },
                     child: Text(
                       "Event management",
                       style: TxtStyle.headSection,

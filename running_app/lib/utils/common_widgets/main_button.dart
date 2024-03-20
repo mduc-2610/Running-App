@@ -63,5 +63,38 @@ class CustomMainButton extends StatelessWidget {
       ),
     );
   }
+  void _showNumberPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 200.0,
+          child: Column(
+            children: <Widget>[
+              ListTile(
+                title: Center(child: Text('Choose a number')),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 20, // Number of items in the list
+                  itemBuilder: (BuildContext context, int index) {
+                    // Generating list items
+                    return ListTile(
+                      title: Center(child: Text((index + 1).toString())),
+                      onTap: () {
+                        // You can do something with the selected number here
+                        print('Selected number: ${index + 1}');
+                        Navigator.pop(context); // Close the bottom sheet
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 

@@ -32,7 +32,7 @@ class CustomTextFormField extends TextFormField {
     cursorColor: cursorColor,
     maxLength: maxLength,
     initialValue: initialValue,
-    maxLines: maxLines,
+    maxLines: maxLines ?? 1,
     cursorHeight: cursorHeight,
     textAlign:textAlign,
   );

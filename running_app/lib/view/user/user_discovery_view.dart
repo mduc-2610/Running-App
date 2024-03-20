@@ -14,14 +14,14 @@ import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 
-class AthleteDiscoveryView extends StatefulWidget {
-  const AthleteDiscoveryView({super.key});
+class UserDiscoveryView extends StatefulWidget {
+  const UserDiscoveryView({super.key});
 
   @override
-  State<AthleteDiscoveryView> createState() => _AthleteDiscoveryViewState();
+  State<UserDiscoveryView> createState() => _UserDiscoveryViewState();
 }
 
-class _AthleteDiscoveryViewState extends State<AthleteDiscoveryView> {
+class _UserDiscoveryViewState extends State<UserDiscoveryView> {
   List<dynamic>? userList;
   String token = "";
 

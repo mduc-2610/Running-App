@@ -17,14 +17,14 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 
-class EventUserDetailView extends StatefulWidget {
-  const EventUserDetailView({super.key});
+class EventMemberDetailView extends StatefulWidget {
+  const EventMemberDetailView({super.key});
 
   @override
-  State<EventUserDetailView> createState() => _EventUserDetailViewState();
+  State<EventMemberDetailView> createState() => _EventMemberDetailViewState();
 }
 
-class _EventUserDetailViewState extends State<EventUserDetailView> {
+class _EventMemberDetailViewState extends State<EventMemberDetailView> {
   bool certified = true;
 
   @override

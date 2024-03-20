@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/view/community/club/add_club_view.dart';
 import 'package:running_app/view/community/club/club_detail_information_view.dart';
 import 'package:running_app/view/community/event/add/add_event_view.dart';
@@ -27,7 +28,7 @@ import 'package:running_app/view/community/club/club_detail_view.dart';
 import 'package:running_app/view/community/club/club_list_view.dart';
 import 'package:running_app/view/community/community_view.dart';
 import 'package:running_app/view/community/event/detail/event_detail_view.dart';
-import 'package:running_app/view/community/event/detail/event_user_detail_view.dart';
+import 'package:running_app/view/community/event/detail/event_member_detail_view.dart';
 import 'package:running_app/view/community/event/detail/event_group_detail_view.dart';
 import 'package:running_app/view/community/event/event_list_view.dart';
 import 'package:running_app/view/community/event/your_event_list_view.dart';
@@ -42,7 +43,7 @@ import 'package:running_app/view/rank/rank_view.dart';
 import 'package:running_app/view/store/product_view.dart';
 import 'package:running_app/view/store/store_view.dart';
 import 'package:running_app/view/user/setting/account_information_setting_view.dart';
-import 'package:running_app/view/user/athlete_discovery_view.dart';
+import 'package:running_app/view/user/user_discovery_view.dart';
 import 'package:running_app/view/user/follow_view.dart';
 import 'package:running_app/view/user/setting/notification_setting_view.dart';
 import 'package:running_app/view/user/setting/privacy_setting_view.dart';
@@ -50,70 +51,23 @@ import 'package:running_app/view/user/setting/setting_view.dart';
 import 'package:running_app/view/user/user_view.dart';
 import 'package:running_app/view/wallet/wallet.dart';
 
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Number Picker'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            _showNumberPicker(context);
-          },
-          child: Text('Choose a number'),
-        ),
-      ),
-    );
-  }
-
-  void _showNumberPicker(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Container(
-          height: 200.0,
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                title: Center(child: Text('Choose a number')),
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 20, // Number of items in the list
-                  itemBuilder: (BuildContext context, int index) {
-                    // Generating list items
-                    return ListTile(
-                      title: Center(child: Text((index + 1).toString())),
-                      onTap: () {
-                        // You can do something with the selected number here
-                        print('Selected number: ${index + 1}');
-                        Navigator.pop(context); // Close the bottom sheet
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await findSystemLocale();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  // prefs.setBool('logged', false);
   String token = prefs.getString('token') ?? '';
   String userPref = prefs.getString('user') ?? '';
   bool logged = prefs.getBool('logged') ?? false;
   DetailUser? user = userPref != "" ? DetailUser.fromJson(json.decode(userPref) ?? "") : null ;
   Widget homeScreen = token != "" ? const HomeView() : (logged == false) ? const GetStartedView() : const SignInView();
+  try {
+    final data = await callRetrieveAPI('account/user', user?.id, null, DetailUser.fromJson, token);
+  }
+  catch (e) {
+    homeScreen = GetStartedView();
+
+  }
   runApp(
     MultiProvider(
       providers: [
@@ -172,7 +126,7 @@ class MyApp extends StatelessWidget {
         '/add_club': (context) => const AddClubView(),
         '/member': (context) => const ClubMemberView(),
         '/event_list': (context) => const EventListView(),
-        '/event_user_detail': (context) => const EventUserDetailView(),
+        '/event_user_detail': (context) => const EventMemberDetailView(),
         '/event_group_detail': (context) => const EventGroupDetailView(),
         '/add_group': (context) => const AddGroupView(),
         '/add_event_feature': (context) => const AddEventFeatureView(),
@@ -189,7 +143,7 @@ class MyApp extends StatelessWidget {
         '/privacy_setting': (context) => const PrivacySettingView(),
         '/account_information_setting': (context) => const AccountInformationSettingView(),
         '/notification_setting': (context) => const NotificationSettingView(),
-        '/athlete_discovery': (context) => const AthleteDiscoveryView(),
+        '/athlete_discovery': (context) => const UserDiscoveryView(),
         '/follow': (context) => const FollowView(),
         '/notification': (context) => const NotificationView(),
         // '/verify': (context) => VerifyCodeForm(),
