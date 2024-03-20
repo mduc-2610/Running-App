@@ -107,7 +107,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                           width: media.width,
                           child: CarouselSlider(
                             options: CarouselOptions(
-                                viewportFraction: 0.96,
+                                viewportFraction: 1,
                                 autoPlayAnimationDuration: const Duration(milliseconds: 100),
                                 initialPage: 0,
                                 enableInfiniteScroll: false,
@@ -121,7 +121,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                             items: [
                               Container(
                                 margin: EdgeInsets.only(
-                                  left: media.width * 0.03
+                                  // right: media.width * 0.03
                                 ),
                                 padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
                                 decoration: BoxDecoration(

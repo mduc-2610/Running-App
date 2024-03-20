@@ -6,12 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/view/community/club/add_club_view.dart';
 import 'package:running_app/view/community/club/club_detail_information_view.dart';
-import 'package:running_app/view/community/event/add_event_view.dart';
-import 'package:running_app/view/community/event/add_group_view.dart';
-import 'package:running_app/view/community/management/group_management_view.dart';
-import 'package:running_app/view/community/management/member_management_private_view.dart';
-import 'package:running_app/view/community/management/member_management_public_view.dart';
-import 'package:running_app/view/community/club/member_view.dart';
+import 'package:running_app/view/community/event/add/add_event_view.dart';
+import 'package:running_app/view/community/event/add/add_group_view.dart';
+import 'package:running_app/view/community/event/management/group_management_view.dart';
+import 'package:running_app/view/community/event/management/member_management_private_view.dart';
+import 'package:running_app/view/community/event/management/member_management_public_view.dart';
+import 'package:running_app/view/community/club/club_member_view.dart';
 import 'package:running_app/view/user/other_user_view.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
@@ -26,7 +26,9 @@ import 'package:running_app/view/address/address_view.dart';
 import 'package:running_app/view/community/club/club_detail_view.dart';
 import 'package:running_app/view/community/club/club_list_view.dart';
 import 'package:running_app/view/community/community_view.dart';
-import 'package:running_app/view/community/event/event_detail_view.dart';
+import 'package:running_app/view/community/event/detail/event_detail_view.dart';
+import 'package:running_app/view/community/event/detail/event_user_detail_view.dart';
+import 'package:running_app/view/community/event/detail/event_group_detail_view.dart';
 import 'package:running_app/view/community/event/event_list_view.dart';
 import 'package:running_app/view/community/event/your_event_list_view.dart';
 import 'package:running_app/view/home/home_view.dart';
@@ -39,14 +41,15 @@ import 'package:running_app/view/login/sign_up_view.dart';
 import 'package:running_app/view/rank/rank_view.dart';
 import 'package:running_app/view/store/product_view.dart';
 import 'package:running_app/view/store/store_view.dart';
-import 'package:running_app/view/user/account_information_setting_view.dart';
+import 'package:running_app/view/user/setting/account_information_setting_view.dart';
 import 'package:running_app/view/user/athlete_discovery_view.dart';
 import 'package:running_app/view/user/follow_view.dart';
-import 'package:running_app/view/user/notification_setting_view.dart';
-import 'package:running_app/view/user/privacy_setting_view.dart';
-import 'package:running_app/view/user/setting_view.dart';
+import 'package:running_app/view/user/setting/notification_setting_view.dart';
+import 'package:running_app/view/user/setting/privacy_setting_view.dart';
+import 'package:running_app/view/user/setting/setting_view.dart';
 import 'package:running_app/view/user/user_view.dart';
 import 'package:running_app/view/wallet/wallet.dart';
+
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -146,7 +149,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/add_group',
+      initialRoute: '/event_user_detail',
       routes: {
         // '/add_event_featuree': (context) =>  MyHomePage(),
         '/': (context) => homeScreen,
@@ -168,8 +171,10 @@ class MyApp extends StatelessWidget {
         '/club_detail': (context) => const ClubDetailView(),
         '/club_detail_information': (context) => const ClubDetailInformationView(),
         '/add_club': (context) => const AddClubView(),
-        '/member': (context) => const MemberView(),
+        '/member': (context) => const ClubMemberView(),
         '/event_list': (context) => const EventListView(),
+        '/event_user_detail': (context) => const EventUserDetailView(),
+        '/event_group_detail': (context) => const EventGroupDetailView(),
         '/add_group': (context) => const AddGroupView(),
         '/add_event_feature': (context) => const AddEventFeatureView(),
         '/add_event_information': (context) => const AddEventInformationView(),

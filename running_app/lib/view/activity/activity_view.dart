@@ -6,6 +6,7 @@ import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/constants.dart';
 
 class ActivityView extends StatelessWidget {
@@ -67,33 +68,35 @@ class ActivityView extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          for(var stats in statsList)
-                          Column(
-                            children: [
-                              SvgPicture.asset(
-                                stats["icon"],
-                                width: media.width * 0.08,
-                                height: media.width * 0.08,
-                                fit: BoxFit.contain,
-                              ),
-                              Text(
-                                "${stats["figure"]}",
-                                style: TextStyle(
-                                  color: TColor.PRIMARY_TEXT,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w900,
+                          for(var stats in statsList)...[
+                            Column(
+                              children: [
+                                SvgPicture.asset(
+                                  stats["icon"],
+                                  width: media.width * 0.08,
+                                  height: media.width * 0.08,
+                                  fit: BoxFit.contain,
                                 ),
-                              ),
-                              Text(
-                                "${stats["type"]}",
-                                style: TextStyle(
-                                  color: TColor.DESCRIPTION,
-                                  fontSize: FontSize.NORMAL,
-                                  fontWeight: FontWeight.w500
+                                Text(
+                                  "${stats["figure"]}",
+                                  style: TextStyle(
+                                    color: TColor.PRIMARY_TEXT,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                                Text(
+                                  "${stats["type"]}",
+                                  style: TextStyle(
+                                    color: TColor.DESCRIPTION,
+                                    fontSize: FontSize.NORMAL,
+                                    fontWeight: FontWeight.w500
+                                  )
                                 )
-                              )
-                            ],
-                          )
+                              ],
+                            ),
+                            if(statsList.indexOf(stats) != 2) SeparateBar(width: 2, height: media.height * 0.07)
+                          ]
                         ],
                       ),
                     ),

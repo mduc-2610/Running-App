@@ -8,8 +8,8 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
-class MemberView extends StatelessWidget {
-  const MemberView({super.key});
+class ClubMemberView extends StatelessWidget {
+  const ClubMemberView({super.key});
 
   @override
   Widget build(BuildContext context) {
