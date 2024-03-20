@@ -14,7 +14,7 @@ class Event(models.Model):
         null=True,
         validators=[MaxLengthValidator(1500, 'The field can contain at most 200 characters')]
     )
-    contactInformation = models.TextField(
+    contact_information = models.TextField(
         blank=True, 
         null=True,
         validators=[MaxLengthValidator(500, 'The field can contain at most 200 characters')]

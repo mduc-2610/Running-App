@@ -180,15 +180,15 @@ def run():
             "regulations": {
                 "min_distance": 1,
                 "max_distance": random.randint(80, 100),
-                "min_avg_pace": min_avg_pace,
-                "max_avg_pace": max_avg_pace,
+                "min_avg_pace": str(min_avg_pace),
+                "max_avg_pace": str(max_avg_pace),
             },
             "description": fake.text(max_nb_chars=250),
-            "contact_information": generate_phone_number(),
+            "contact_information": fake.text(max_nb_chars=100),
             "banner": "",
             "sport_type": random.choice(["RUNNING", "CYCLING", "SWIMMING"]),
             "privacy": random.choice(["PUBLIC", "PRIVATE"]),
-            "is_group": random.choice([True, False])
+            "competition": random.choice(["INDIVIDUAL", "GROUP"])
         }
         event = Event.objects.create(**data)
         event_list.append(event)

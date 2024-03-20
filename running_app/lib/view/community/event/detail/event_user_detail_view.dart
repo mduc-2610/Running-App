@@ -291,28 +291,31 @@ class _EventUserDetailViewState extends State<EventUserDetailView> {
                                 ),
                               ),
                               SizedBox(width: media.width * 0.05,),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Challenge completed ",
-                                    style: TextStyle(
-                                        color: TColor.PRIMARY,
-                                        fontSize: FontSize.LARGE,
-                                        fontWeight: FontWeight.w900,
-                                        letterSpacing: 0.9
+                              SizedBox(
+                                width: media.width * 0.65,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Challenge completed ",
+                                      style: TextStyle(
+                                          color: TColor.PRIMARY,
+                                          fontSize: FontSize.LARGE,
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: 0.9
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(height: media.height * 0.005,),
-                                  Text(
-                                    "Member's certificate is being processing",
-                                    style: TextStyle(
-                                        color: TColor.PRIMARY_TEXT,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500
+                                    SizedBox(height: media.height * 0.005,),
+                                    Text(
+                                      "Congratulations on completing the running event challenge! Your dedication and contribution is truly commendable.",
+                                      style: TextStyle(
+                                          color: TColor.PRIMARY_TEXT,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               )
                             ],
                           ),

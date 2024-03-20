@@ -149,9 +149,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/event_user_detail',
+      initialRoute: '/',
       routes: {
-        // '/add_event_featuree': (context) =>  MyHomePage(),
         '/': (context) => homeScreen,
         '/on_board': (context) => const OnBoardingView(),
         '/sign_in': (context) => const SignInView(),
