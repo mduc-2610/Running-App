@@ -29,6 +29,12 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location is required to show your current location on the map.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Your location is required to show your current location on the map.</string>
+
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>

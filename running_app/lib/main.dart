@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
+import 'package:running_app/view/activity/running_view.dart';
 import 'package:running_app/view/community/club/club_create_view.dart';
 import 'package:running_app/view/community/club/club_detail_information_view.dart';
 import 'package:running_app/view/community/event/create/event_create_view.dart';
@@ -103,7 +104,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/',
+      initialRoute: '/running',
       routes: {
         '/': (context) => homeScreen,
         '/on_board': (context) => const OnBoardingView(),
@@ -147,7 +148,7 @@ class MyApp extends StatelessWidget {
         '/follow': (context) => const FollowView(),
         '/notification': (context) => const NotificationView(),
         // '/verify': (context) => VerifyCodeForm(),
-        // '/running': (context) => const RunningView(),
+        '/running': (context) => const RunningView(),
       },
     );
   }
