@@ -3,7 +3,6 @@ import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
-import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
@@ -50,7 +49,7 @@ class MemberManagementPublicViewState extends State<MemberManagementPublicView> 
                       ),
                     ),
                     SizedBox(height: media.height * 0.015,),
-                    MemberLayout(layout: "Joined", amount: [1, 0, 0])
+                    const MemberLayout(layout: "Joined", amount: [1, 0, 0])
                   ],
                 ),
               )

@@ -199,6 +199,8 @@ class GroupApproveLayout extends StatelessWidget {
                                       borderRadius: 10,
                                       onPressed: () {},
                                       background: Colors.transparent,
+                                      borderWidth: 2,
+                                      borderWidthColor: TColor.PRIMARY,
                                       child: Text(
                                         "Reject",
                                         style: TextStyle(
@@ -207,8 +209,6 @@ class GroupApproveLayout extends StatelessWidget {
                                             fontWeight: FontWeight.w800
                                         ),
                                       ),
-                                      borderWidth: 2,
-                                      borderWidthColor: TColor.PRIMARY,
                                     )
                                 ),
                                 SizedBox(width: media.width * 0.02,),

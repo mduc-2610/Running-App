@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/activity/club.dart';
 import 'package:running_app/services/api_service.dart';
-import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -178,7 +177,7 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
                                 onPressed: () {},
                                 child: Container(
                                   width: media.width * 0.33,
-                                  padding: EdgeInsets.all(6),
+                                  padding: const EdgeInsets.all(6),
                                   decoration: BoxDecoration(
                                     color: TColor.SECONDARY_BACKGROUND,
                                     borderRadius: BorderRadius.circular(10),
@@ -218,7 +217,7 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
 
                         // Event target section
                         Container(
-                          margin: EdgeInsets.only(
+                          margin: const EdgeInsets.only(
                             // left: media.width * 0.03
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),

@@ -14,15 +14,15 @@ import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 
-class AddEventFeatureView extends StatefulWidget {
+class EventCreateFeatureView extends StatefulWidget {
 
-  const AddEventFeatureView({super.key});
+  const EventCreateFeatureView({super.key});
 
   @override
-  State<AddEventFeatureView> createState() => _AddEventFeatureViewState();
+  State<EventCreateFeatureView> createState() => _EventCreateFeatureViewState();
 }
 
-class _AddEventFeatureViewState extends State<AddEventFeatureView> {
+class _EventCreateFeatureViewState extends State<EventCreateFeatureView> {
   String sportChoice = "Running";
   String competitionType = "Group";
 
@@ -133,7 +133,7 @@ class _AddEventFeatureViewState extends State<AddEventFeatureView> {
                                     ],
                                   ),
                                   Radio(
-                                    visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                                    visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                                     value: x["competitionType"] as String,
                                     groupValue: competitionType,
                                     onChanged: (value) {
@@ -219,15 +219,15 @@ class _AddEventFeatureViewState extends State<AddEventFeatureView> {
   }
 }
 
-class AddEventInformationView extends StatefulWidget {
+class EventCreateInformationView extends StatefulWidget {
 
-  const AddEventInformationView({super.key});
+  const EventCreateInformationView({super.key});
 
   @override
-  State<AddEventInformationView> createState() => _AddEventInformationViewState();
+  State<EventCreateInformationView> createState() => _EventCreateInformationViewState();
 }
 
-class _AddEventInformationViewState extends State<AddEventInformationView> {
+class _EventCreateInformationViewState extends State<EventCreateInformationView> {
   DateTime? selectedDate;
   String rankingType = "Distance (km)";
 
@@ -368,7 +368,7 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
                                 ),
                               ),
                             ),
-                            SwitchButton()
+                            const SwitchButton()
                           ],
                         ),
                         SizedBox(height: media.height * 0.01,),
@@ -422,12 +422,12 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
-                                      contentPadding: EdgeInsets.symmetric(
+                                      contentPadding: const EdgeInsets.symmetric(
                                         horizontal: 20
                                       ),
                                     ),
 
-                                    materialDatePickerOptions: MaterialDatePickerOptions(),
+                                    materialDatePickerOptions: const MaterialDatePickerOptions(),
                                     firstDate: DateTime.now().add(const Duration(days: 10)),
                                     lastDate: DateTime.now().add(const Duration(days: 365)),
                                     initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
@@ -465,14 +465,14 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
                                         color: TColor.DESCRIPTION,
                                       ),
                                       label: Text(
-                                        "${DateTime.now().add(Duration(days: 7)).toString().split(' ')[0]} 23:59",
+                                        "${DateTime.now().add(const Duration(days: 7)).toString().split(' ')[0]} 23:59",
                                         style: TextStyle(
                                           color: TColor.DESCRIPTION,
                                           fontSize: FontSize.SMALL,
                                         ),
                                         textAlign: TextAlign.center,
                                       ),
-                                      contentPadding: EdgeInsets.symmetric(
+                                      contentPadding: const EdgeInsets.symmetric(
                                           horizontal: 20
                                       ),
                                     ),
@@ -526,7 +526,7 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
                                             ),
                                           ),
                                           Radio(
-                                            visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                                            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                                             value: x["rankingType"] as String,
                                             groupValue: rankingType,
                                             onChanged: (value) {
@@ -544,7 +544,7 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
                                       if(rankingType == x["rankingType"])...[
                                         SizedBox(height: media.height * 0.01,),
                                         Container(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               vertical: 16,
                                               horizontal: 12
                                           ),
@@ -682,7 +682,7 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
                             Navigator.pushNamed(context, '/add_event_advanced_option');
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               vertical: 16
                             ),
                             decoration: BoxDecoration(
@@ -741,14 +741,14 @@ class _AddEventInformationViewState extends State<AddEventInformationView> {
   }
 }
 
-class AddEventAdvancedOptionView extends StatefulWidget {
-  const AddEventAdvancedOptionView({super.key});
+class EventCreateAdvancedOptionView extends StatefulWidget {
+  const EventCreateAdvancedOptionView({super.key});
 
   @override
-  State<AddEventAdvancedOptionView> createState() => _AddEventAdvancedOptionViewState();
+  State<EventCreateAdvancedOptionView> createState() => _EventCreateAdvancedOptionViewState();
 }
 
-class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView> {
+class _EventCreateAdvancedOptionViewState extends State<EventCreateAdvancedOptionView> {
   String? privacy = "Public";
 
   @override
@@ -756,7 +756,7 @@ class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView>
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "Create challenge", noIcon: true,),
+        title: const Header(title: "Create challenge", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -812,7 +812,7 @@ class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView>
                                     ],
                                   ),
                                   Radio(
-                                    visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                                    visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                                     value: x["mode"],
                                     groupValue: privacy,
                                     onChanged: (value) {
@@ -844,7 +844,7 @@ class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView>
                               "Rules for the valid activity",
                               style: TxtStyle.headSection,
                             ),
-                            SwitchButton()
+                            const SwitchButton()
                           ],
                         ),
                         // SizedBox(height: media.height * 0.015,),
@@ -872,7 +872,7 @@ class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView>
                           }
                         ])...[
                           Container(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                               bottom: 8
                             ),
                             decoration: BoxDecoration(
@@ -899,7 +899,7 @@ class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView>
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    SwitchButton(),
+                                    const SwitchButton(),
                                     Container(
                                       margin: EdgeInsets.only(
                                         right: media.width * 0.03
@@ -992,7 +992,7 @@ class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView>
                                       ],
                                     ),
                                   ),
-                                  SwitchButton()
+                                  const SwitchButton()
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,),
@@ -1000,7 +1000,7 @@ class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView>
                               if(x["type"] != "Display total accumulated distance")...[
                                 Container(
                                   width: media.width * 0.85,
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       vertical: 8,
                                       horizontal: 10
                                   ),
@@ -1028,7 +1028,7 @@ class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView>
                                           child: CustomTextFormField(
                                             textAlign: TextAlign.center,
                                             decoration: CustomInputDecoration(
-                                                contentPadding: EdgeInsets.symmetric(
+                                                contentPadding: const EdgeInsets.symmetric(
                                                     horizontal: 10
                                                 ),
                                                 borderRadius: BorderRadius.circular(5),
@@ -1103,7 +1103,7 @@ class _AddEventAdvancedOptionViewState extends State<AddEventAdvancedOptionView>
                           onPressed: () {},
                           child: Container(
                             width: media.width * 0.55,
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               vertical: 12,
                             ),
                             decoration: BoxDecoration(

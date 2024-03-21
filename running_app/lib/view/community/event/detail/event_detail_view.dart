@@ -121,7 +121,7 @@ class _EventDetailViewState extends State<EventDetailView> {
 
                             items: [
                               Container(
-                                margin: EdgeInsets.only(
+                                margin: const EdgeInsets.only(
                                   // right: media.width * 0.03
                                 ),
                                 padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
@@ -212,7 +212,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         ClipRRect(
-                                          borderRadius: BorderRadius.only(
+                                          borderRadius: const BorderRadius.only(
                                             topRight: Radius.circular(12),
                                             bottomRight: Radius.circular(12),
                                             topLeft: Radius.circular(200),
@@ -241,7 +241,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                                   fontWeight: FontWeight.w600
                                               )
                                           ),
-                                          Text(
+                                          const Text(
                                               "197,390 km",
                                               style: TextStyle(
                                                 color: Colors.green,
@@ -271,7 +271,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                           width: media.width * 0.48,
                                           decoration: BoxDecoration(
                                           color: TColor.PRIMARY_TEXT,
-                                            borderRadius: BorderRadius.only(
+                                            borderRadius: const BorderRadius.only(
                                               topRight: Radius.circular(12),
                                               bottomRight: Radius.circular(12),
                                               topLeft: Radius.circular(100),
@@ -302,7 +302,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                                 fontWeight: FontWeight.w600
                                               )
                                           ),
-                                          Text(
+                                          const Text(
                                               "3,125 USD",
                                               style: TextStyle(
                                                 color: Colors.green,
@@ -325,7 +325,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                           position: currentSlide,
                           decorator: DotsDecorator(
                             activeColor: TColor.PRIMARY,
-                            spacing: EdgeInsets.only(left: 8),
+                            spacing: const EdgeInsets.only(left: 8),
                           ),
                         )
                       ],
@@ -369,11 +369,86 @@ class _EventDetailViewState extends State<EventDetailView> {
                       ],
                     ),
                     SizedBox(
-                      height: media.height * 0.01,
+                      height: media.height * 0.02,
                     ),
                     _showLayout == "Information"
                         ? InformationLayout(event: event,)
-                        : LeaderBoardLayout(event: event, parentScrollController: parentScrollController,)
+                        : Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Stack(
+                              children: [
+                                Image.asset(
+                                  "assets/img/community/athlete_on_fire.png",
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    left: 50,
+                                    top: 25
+                                  ),
+                                  child: Image.asset(
+                                    "assets/img/community/athlete_trophy.png",
+                                    width: 80,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: media.height * 0.01,),
+                            Text(
+                              "No groups created yet!",
+                              style: TxtStyle.headSection,
+                            ),
+                            SizedBox(height: media.height * 0.01,),
+                            Text(
+                              "Please create a new group for joining the group ranking right away",
+                              style: TextStyle(
+                                color: TColor.DESCRIPTION,
+                                fontSize: FontSize.NORMAL,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: media.height * 0.02,),
+                            CustomTextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/group_create');
+                              },
+                              child: Container(
+                                width: media.width * 0.55,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: TColor.PRIMARY,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add_circle,
+                                      color: TColor.PRIMARY_TEXT,
+                                    ),
+                                    SizedBox(width: media.width * 0.02,),
+                                    Text(
+                                      "Create a group",
+                                      style: TextStyle(
+                                          color: TColor.PRIMARY_TEXT,
+                                          fontSize: FontSize.NORMAL,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        )
+                    // : LeaderBoardLayout(event: event, parentScrollController: parentScrollController,)
                   ],
                 ),
               ),
@@ -449,12 +524,13 @@ class _InformationLayoutState extends State<InformationLayout> {
         SizedBox(
           height: media.height * 0.015,
         ),
-        _showLayout == "General information" ? GeneralInformationLayout(event: widget.event,) : const PostLayout(),
+        _showLayout == "General information"
+            ? GeneralInformationLayout(event: widget.event,)
+            : const PostLayout(),
       ],
     );
   }
 }
-
 class LeaderBoardLayout extends StatelessWidget {
   final ScrollController parentScrollController;
   final DetailEvent? event;
@@ -643,10 +719,6 @@ class GeneralInformationLayout extends StatelessWidget {
                         "Admin privileges"
                       );
                     },
-                    child: Text(
-                      "Event management",
-                      style: TxtStyle.headSection,
-                    ),
                     prefixIcon: Icon(
                         Icons.shield_outlined,
                         color: TColor.PRIMARY_TEXT,
@@ -654,7 +726,11 @@ class GeneralInformationLayout extends StatelessWidget {
                     borderWidth: 2,
                     borderWidthColor: TColor.PRIMARY,
                     background: Colors.transparent,
-                  )
+
+                    child: Text(
+                      "Event management",
+                      style: TxtStyle.headSection,
+                    ),                  )
                 )
               ],
             ),

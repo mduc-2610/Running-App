@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
-import 'package:running_app/view/community/club/add_club_view.dart';
+import 'package:running_app/view/community/club/club_create_view.dart';
 import 'package:running_app/view/community/club/club_detail_information_view.dart';
-import 'package:running_app/view/community/event/add/add_event_view.dart';
-import 'package:running_app/view/community/event/add/add_group_view.dart';
+import 'package:running_app/view/community/event/create/event_create_view.dart';
+import 'package:running_app/view/community/event/create/group_create_view.dart';
 import 'package:running_app/view/community/event/management/group_management_view.dart';
 import 'package:running_app/view/community/event/management/member_management_private_view.dart';
 import 'package:running_app/view/community/event/management/member_management_public_view.dart';
@@ -65,7 +65,7 @@ void main() async {
     final data = await callRetrieveAPI('account/user', user?.id, null, DetailUser.fromJson, token);
   }
   catch (e) {
-    homeScreen = GetStartedView();
+    homeScreen = const GetStartedView();
 
   }
   runApp(
@@ -123,19 +123,19 @@ class MyApp extends StatelessWidget {
         '/club_list': (context) => const ClubListView(),
         '/club_detail': (context) => const ClubDetailView(),
         '/club_detail_information': (context) => const ClubDetailInformationView(),
-        '/add_club': (context) => const AddClubView(),
+        '/club_create': (context) => const ClubCreateView(),
         '/member': (context) => const ClubMemberView(),
         '/event_list': (context) => const EventListView(),
         '/event_user_detail': (context) => const EventMemberDetailView(),
         '/event_group_detail': (context) => const EventGroupDetailView(),
-        '/add_group': (context) => const AddGroupView(),
-        '/add_event_feature': (context) => const AddEventFeatureView(),
-        '/add_event_information': (context) => const AddEventInformationView(),
-        '/add_event_advanced_option': (context) => const AddEventAdvancedOptionView(),
+        '/group_create': (context) => const GroupCreateView(),
+        '/event_create_feature': (context) => const EventCreateFeatureView(),
+        '/event_create_information': (context) => const EventCreateInformationView(),
+        '/event_create_advanced_option': (context) => const EventCreateAdvancedOptionView(),
         '/your_event_list': (context) => const YourEventListView(),
-        '/group_management': (context) => GroupManagementView(),
-        '/member_management_private': (context) => MemberManagementPrivateView(),
-        '/member_management_public': (context) => MemberManagementPublicView(),
+        '/group_management': (context) => const GroupManagementView(),
+        '/member_management_private': (context) => const MemberManagementPrivateView(),
+        '/member_management_public': (context) => const MemberManagementPublicView(),
         '/user': (context) => const UserView(),
         '/other_user': (context) => const OtherUserView(),
         '/setting': (context) => const SettingView(),

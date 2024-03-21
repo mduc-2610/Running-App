@@ -11,14 +11,14 @@ import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 
-class AddClubView extends StatefulWidget {
-  const AddClubView({super.key});
+class ClubCreateView extends StatefulWidget {
+  const ClubCreateView({super.key});
 
   @override
-  State<AddClubView> createState() => _AddClubViewState();
+  State<ClubCreateView> createState() => _ClubCreateViewState();
 }
 
-class _AddClubViewState extends State<AddClubView> {
+class _ClubCreateViewState extends State<ClubCreateView> {
   String sportChoice = "Running";
   String organizationChoice = "Sport Club";
   String? privacy = "Public";
@@ -329,7 +329,7 @@ class _AddClubViewState extends State<AddClubView> {
                                     ],
                                   ),
                                   Radio(
-                                    visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                                    visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                                     value: x["mode"],
                                     groupValue: privacy,
                                     onChanged: (value) {

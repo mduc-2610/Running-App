@@ -1,21 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:running_app/models/account/user.dart';
-import 'package:running_app/models/activity/club.dart';
-import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
-import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/progress_bar.dart';
-import 'package:running_app/utils/common_widgets/scroll_synchronized.dart';
-import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
-import 'package:running_app/utils/providers/token_provider.dart';
 
 class EventMemberDetailView extends StatefulWidget {
   const EventMemberDetailView({super.key});
@@ -31,7 +21,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-        appBar: CustomAppBar(
+        appBar: const CustomAppBar(
           title: Header(title: "Dang Minh Duc", noIcon: true,),
         ),
         body: DefaultBackgroundLayout(
@@ -44,7 +34,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                       CustomTextButton(
                         onPressed: () {},
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 12,
                           ),
                           decoration: BoxDecoration(
@@ -106,7 +96,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                           ])
                           Container(
                             width: media.width * 0.46,
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               vertical: 8,
                               horizontal: 12
                             ),
@@ -155,7 +145,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                         children: [
                           for(var x in [
                             {
-                              "icon": Icon(
+                              "icon": const Icon(
                                 Icons.local_fire_department_outlined,
                                 color: Color(0xffF3Af3D),
                                 size: 30,
@@ -164,7 +154,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                               "figure": "464"
                             },
                             {
-                              "icon": Stack(
+                              "icon": const Stack(
                                 children: [
                                   Icon(
                                     Icons.calendar_today_rounded,
@@ -187,7 +177,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                             }
                           ])
                           Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               vertical: 12
                             ),
                             decoration: BoxDecoration(
@@ -230,7 +220,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                       CustomTextButton(
                         onPressed: () {},
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 12
                           ),
                           decoration: BoxDecoration(
@@ -263,7 +253,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                       // Notify certification section
                       if(certified)...[
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               vertical: 12,
                               horizontal: 16
                           ),

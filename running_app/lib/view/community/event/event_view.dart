@@ -218,7 +218,7 @@ class _EventViewState extends State<EventView> {
                         child: EventBox(event: event, width: 200,
                         buttonMargin: const EdgeInsets.fromLTRB(12, 0, 12, 12),)
                       ),
-                      SizedBox(width: 10,)
+                      const SizedBox(width: 10,)
                     ]
                   ],
                 ),

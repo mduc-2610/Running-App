@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/constants.dart';
 
 void showActionList(
@@ -17,7 +16,7 @@ void showActionList(
         height: (title != "" ? 60 : 0) + (itemCount * 60),
         decoration: BoxDecoration(
           color: TColor.PRIMARY_BACKGROUND,
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(15.0),
             topRight: Radius.circular(15.0),
           ),
@@ -38,7 +37,7 @@ void showActionList(
                     )
                 ),
                 child: ListTile(
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                     side: BorderSide(color: Colors.black, width: 1),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(15.0),

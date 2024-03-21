@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
-import 'package:running_app/utils/common_widgets/choice_button.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
@@ -11,14 +10,14 @@ import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 
-class AddGroupView extends StatefulWidget {
-  const AddGroupView({super.key});
+class GroupCreateView extends StatefulWidget {
+  const GroupCreateView({super.key});
 
   @override
-  State<AddGroupView> createState() => _AddGroupViewState();
+  State<GroupCreateView> createState() => _GroupCreateViewState();
 }
 
-class _AddGroupViewState extends State<AddGroupView> {
+class _GroupCreateViewState extends State<GroupCreateView> {
   String sportChoice = "Running";
   String organizationChoice = "Sport Club";
   String? privacy = "Public";
@@ -71,7 +70,7 @@ class _AddGroupViewState extends State<AddGroupView> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Header(title: "Create a group", noIcon: true,),
+        title: const Header(title: "Create group", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(

@@ -54,11 +54,11 @@ class CustomMainButton extends StatelessWidget {
           : Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          prefixIcon ?? SizedBox(),
+          prefixIcon ?? const SizedBox(),
           const SizedBox(width: 5),
           child,
           const SizedBox(width: 5),
-          suffixIcon ?? SizedBox(),
+          suffixIcon ?? const SizedBox(),
         ],
       ),
     );
@@ -67,11 +67,11 @@ class CustomMainButton extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Container(
+        return SizedBox(
           height: 200.0,
           child: Column(
             children: <Widget>[
-              ListTile(
+              const ListTile(
                 title: Center(child: Text('Choose a number')),
               ),
               Expanded(
