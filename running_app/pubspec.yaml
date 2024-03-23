@@ -53,6 +53,13 @@ dev_dependencies:
   shared_preferences: 2.2.2
   date_field: 4.0.1
   dots_indicator: 3.0.0
+  geolocator: 11.0.0
+
+  stop_watch_timer: ^3.1.1
+  path_provider: ^2.1.2
+  sqflite: ^2.3.2
+  intl: ^0.18.0
+  location: ^5.0.0
   #  permission: ^0.1.7
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

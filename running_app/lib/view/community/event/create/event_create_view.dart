@@ -43,21 +43,6 @@ class _EventCreateFeatureViewState extends State<EventCreateFeatureView> {
         "text": "Swimming"
       },
     ];
-
-    Map<String, dynamic> buttonStateClicked = {
-      "iconColor": TColor.PRIMARY,
-      "backgroundColor": Colors.transparent,
-      "borderColor": TColor.PRIMARY,
-      "textColor": TColor.PRIMARY,
-    };
-
-    Map<String, dynamic> buttonStateUnClicked = {
-      "iconColor": TColor.PRIMARY_TEXT,
-      "backgroundColor": TColor.SECONDARY_BACKGROUND,
-      "borderColor": TColor.BORDER_COLOR,
-      "textColor": TColor.PRIMARY_TEXT,
-    };
-
     return Scaffold(
       appBar: CustomAppBar(
         title: const Header(title: "Create challenge", noIcon: true,),
@@ -172,7 +157,7 @@ class _EventCreateFeatureViewState extends State<EventCreateFeatureView> {
                                 ChoiceButton(
                                   text: sport["text"],
                                   icon: sport["icon"] as IconData,
-                                  buttonState: (sport["text"] == sportChoice) ? buttonStateClicked : buttonStateUnClicked,
+                                  buttonState: (sport["text"] == sportChoice) ? BtnState.buttonStateClicked : BtnState.buttonStateUnClicked,
                                   onPressed: () {
                                     setState(() {
                                       sportChoice = sport["text"];

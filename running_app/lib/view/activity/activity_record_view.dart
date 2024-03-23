@@ -9,8 +9,8 @@ import 'package:running_app/utils/common_widgets/default_background_layout.dart'
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/constants.dart';
 
-class ActivityView extends StatelessWidget {
-  const ActivityView({super.key});
+class ActivityRecordView extends StatelessWidget {
+  const ActivityRecordView({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -126,7 +126,7 @@ class _CommunityViewState extends State<CommunityView> {
       //   ),
       // ),
       bottomSheet: (_showView == "Events" || _showView == "Clubs") ? AddButton(
-        text: (_showView == "Events") 
+        text: (_showView == "Events")
             ? "Create your own event"
             : "Create your own club",
         onPressed: () {

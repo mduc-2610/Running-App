@@ -71,7 +71,7 @@ void showActionList(
                           child: Text(
                             action[index]["text"],
                             style: TextStyle(
-                              color: TColor.PRIMARY_TEXT,
+                              color: action[index]["textColor"] ?? TColor.PRIMARY_TEXT,
                               fontSize: FontSize.NORMAL
                             ),
                           )

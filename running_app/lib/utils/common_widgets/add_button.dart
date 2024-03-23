@@ -43,7 +43,7 @@ class AddButton extends StatelessWidget {
       Wrapper(
           child: Container(
             width: media.width,
-            margin: EdgeInsets.fromLTRB(0, 15, 0, media.width * 0.025),
+            margin: EdgeInsets.fromLTRB(media.height * 0.01, 15, media.height * 0.01, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
               verticalPadding: 16,
