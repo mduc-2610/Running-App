@@ -30,7 +30,7 @@ class FontSize {
   static const SMALL = 16.0;
   static const NORMAL = 18.0;
   static const LARGE = 20.0;
-  static const EXTRA_LARGE = 24.0;
+  static const EXTRA_LARGE = 22.0;
   static const BUTTON = 24.0;
   static const TITLE = 30.0;
 }
@@ -48,6 +48,13 @@ class TxtStyle {
       // fontWeight: FontWeight.w600,
       // letterSpacing: 0.8
   );
+  static TextStyle get normalTextWarning => TextStyle(
+    color: TColor.WARNING,
+    fontSize: FontSize.SMALL,
+    // fontWeight: FontWeight.w600,
+    // letterSpacing: 0.8
+  );
+
   static TextStyle get extraLargeText => TextStyle(
       color: TColor.PRIMARY_TEXT,
       fontSize: FontSize.EXTRA_LARGE,
@@ -59,6 +66,13 @@ class TxtStyle {
     fontSize: FontSize.LARGE,
     fontWeight: FontWeight.w900,
     letterSpacing: 0.95
+  );
+
+  static TextStyle get headSectionExtra => TextStyle(
+      color: TColor.PRIMARY_TEXT,
+      fontSize: FontSize.EXTRA_LARGE,
+      fontWeight: FontWeight.w900,
+      letterSpacing: 0.95
   );
 
   static TextStyle get headSectionWarning => TextStyle(

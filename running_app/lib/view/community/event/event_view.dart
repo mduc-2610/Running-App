@@ -136,97 +136,97 @@ class _EventViewState extends State<EventView> {
         ),
         SizedBox(height: media.height * 0.03,),
 
-        // Popular Events
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Popular events",
-              style: TextStyle(
-                color: TColor.PRIMARY_TEXT,
-                fontSize: 22,
-                fontWeight: FontWeight.w800
-              ),
-            ),
-            SizedBox(height: media.height * 0.01,),
-            SizedBox(
-              height: media.height * 0.43,
-              child: CarouselSlider(
-                options: CarouselOptions(
-                  viewportFraction: 0.9,
-                  autoPlayAnimationDuration: const Duration(milliseconds: 100),
-                  initialPage: 0,
-                  aspectRatio: 1.2,
-                  enlargeCenterPage: true,
-                  enlargeFactor: 0.16,
-                  enableInfiniteScroll: false
-                ),
-
-                items: [
-                  for(var event in popularEvents ?? [])...[
-                    Container(
-                      margin: const EdgeInsets.only(right: 15),
-                      child: EventBox(event: event,)
-                    ),
-                  ]
-                ],
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: media.height * 0.02,),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                      "All events",
-                      style: TextStyle(
-                        color: TColor.PRIMARY_TEXT,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                      )
-                  ),
-                  CustomTextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/event_list');
-                    },
-                    child: Text(
-                        "See all",
-                        style: TextStyle(
-                          color: TColor.PRIMARY,
-                          fontSize: FontSize.NORMAL,
-                          fontWeight: FontWeight.w500,
-                        )
-                    ),
-                  )
-                ]
-            ),
-            // SizedBox(height: media.height * 0.01,),
-            SizedBox(
-              height: media.height * 0.37,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(left: 10),
-
-                scrollDirection: Axis.horizontal,
-                child: Row(
+        SizedBox(
+          height: media.height * 0.4,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Popular Events
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for(var event in allEvents ?? [])...[
-                      IntrinsicHeight(
-                        child: EventBox(event: event, width: 200,
-                        buttonMargin: const EdgeInsets.fromLTRB(12, 0, 12, 12),)
+                    Text(
+                      "Popular events",
+                      style: TxtStyle.headSectionExtra,
+                    ),
+                    SizedBox(height: media.height * 0.01,),
+                    SizedBox(
+                      height: media.height * 0.43,
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                            viewportFraction: 0.9,
+                            autoPlayAnimationDuration: const Duration(milliseconds: 100),
+                            initialPage: 0,
+                            aspectRatio: 1.2,
+                            enlargeCenterPage: true,
+                            enlargeFactor: 0.16,
+                            enableInfiniteScroll: false
+                        ),
+
+                        items: [
+                          for(var event in popularEvents ?? [])...[
+                            Container(
+                                margin: const EdgeInsets.only(right: 15),
+                                child: EventBox(event: event,)
+                            ),
+                          ]
+                        ],
                       ),
-                      const SizedBox(width: 10,)
-                    ]
+                    ),
                   ],
                 ),
-              ),
+                SizedBox(height: media.height * 0.02,),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                              "All events",
+                              style: TxtStyle.headSectionExtra
+                          ),
+                          CustomTextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/event_list');
+                            },
+                            child: Text(
+                                "See all",
+                                style: TextStyle(
+                                  color: TColor.PRIMARY,
+                                  fontSize: FontSize.NORMAL,
+                                  fontWeight: FontWeight.w500,
+                                )
+                            ),
+                          )
+                        ]
+                    ),
+                    // SizedBox(height: media.height * 0.01,),
+                    SizedBox(
+                      height: media.height * 0.35,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.only(left: 10),
+
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            for(var event in allEvents ?? [])...[
+                              IntrinsicHeight(
+                                  child: EventBox(event: event, width: 200,
+                                    buttonMargin: const EdgeInsets.fromLTRB(12, 0, 12, 12),)
+                              ),
+                              const SizedBox(width: 10,)
+                            ]
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            SizedBox(height: media.height * 0.02,),
-          ],
-        ),
+          ),
+        )
       ],
     );
 

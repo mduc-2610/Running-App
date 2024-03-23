@@ -299,15 +299,11 @@ class _HomeViewState extends State<HomeView> {
                           children: [
                             Text(
                               "History",
-                              style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.NORMAL,
-                                fontWeight: FontWeight.w600,
-                              )
+                              style: TxtStyle.headSection
                             ),
                             CustomTextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/activity');
+                                Navigator.pushNamed(context, '/activity_record_list');
                               },
                               child: Text(
                                   "See all",

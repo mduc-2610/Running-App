@@ -9,8 +9,8 @@ import 'package:running_app/utils/common_widgets/default_background_layout.dart'
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/constants.dart';
 
-class ActivityRecordView extends StatelessWidget {
-  const ActivityRecordView({super.key});
+class ActivityRecordListView extends StatelessWidget {
+  const ActivityRecordListView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +35,14 @@ class ActivityRecordView extends StatelessWidget {
     ];
     return Scaffold(
         appBar: CustomAppBar(
-          title: const Header(
+          title: Header(
             title: "Activity",
             iconButtons: [
               {
-                "icon": Icons.query_stats_rounded
+                "icon": Icons.query_stats_rounded,
+                "onPressed": () {
+                  Navigator.pushNamed(context, '/activity_record_stats');
+                },
               }
             ],
           ),

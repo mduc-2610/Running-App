@@ -8,6 +8,7 @@ import 'package:running_app/services/api_service.dart';
 import 'package:running_app/view/activity/activity_record_create_view.dart';
 import 'package:running_app/view/activity/activity_record_detail_view.dart';
 import 'package:running_app/view/activity/activity_record_edit_view.dart';
+import 'package:running_app/view/activity/activity_record_stats_view.dart';
 import 'package:running_app/view/activity/running_view.dart';
 import 'package:running_app/view/community/club/club_create_view.dart';
 import 'package:running_app/view/community/club/club_detail_information_view.dart';
@@ -26,7 +27,7 @@ import 'package:running_app/utils/common_widgets/email_verification.dart';
 import 'package:running_app/utils/common_widgets/notification_box.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
-import 'package:running_app/view/activity/activity_record_view.dart';
+import 'package:running_app/view/activity/activity_record_list_view.dart';
 import 'package:running_app/view/address/address_view.dart';
 import 'package:running_app/view/community/club/club_detail_view.dart';
 import 'package:running_app/view/community/club/club_list_view.dart';
@@ -107,7 +108,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/community',
+      initialRoute: '/activity_record_stats',
       routes: {
         '/': (context) => homeScreen,
         '/on_board': (context) => const OnBoardingView(),
@@ -115,11 +116,11 @@ class MyApp extends StatelessWidget {
         '/sign_up': (context) => const SignUpView(),
         '/profile_create': (context) => const ProfileCreateView(),
         '/home': (context) => const HomeView(),
-        '/activity_record': (context) => const ActivityRecordView(),
+        '/activity_record_list': (context) => const ActivityRecordListView(),
         '/activity_record_detail': (context) => const ActivityRecordDetailView(),
         '/activity_record_edit': (context) => const ActivityRecordEditView(),
         '/activity_record_create': (context) => const ActivityRecordCreateView(),
-
+        '/activity_record_stats': (context) => const ActivityRecordStatsView(),
         '/store': (context) => const StoreView(),
         '/product': (context) => const ProductView(),
         '/rank': (context) => const RankView(),

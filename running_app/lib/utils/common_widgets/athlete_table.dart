@@ -124,7 +124,7 @@ class AthleteTable extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                for(int i = 0; i < 30; i++)
+                // for(int i = 0; i < 30; i++)
                 for(var participant in participants ?? [])...[
                   Container(
                     padding: const EdgeInsets.symmetric(
