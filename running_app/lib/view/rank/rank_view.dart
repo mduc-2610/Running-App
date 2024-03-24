@@ -330,10 +330,10 @@ class _RankViewState extends State<RankView> {
                       ],
                     ),
                     SizedBox(height: media.height * 0.04,),
-                    ScrollSynchronized(
-                      parentScrollController: parentScrollController,
-                      child: AthleteTable(participants: userList, tableHeight: media.height - media.height * 0.26, controller: childScrollController),
-                    )
+                    // ScrollSynchronized(
+                    //   parentScrollController: parentScrollController,
+                    //   child: AthleteTable(participants: userList, tableHeight: media.height - media.height * 0.26, controller: childScrollController),
+                    // )
                   ],
                 ),
               ),

@@ -47,6 +47,7 @@ class DetailClub extends Club {
   final String? description;
   final String? privacy;
   final String? organization;
+  final String? cover_photo;
 
   DetailClub({
     String? id,
@@ -58,7 +59,8 @@ class DetailClub extends Club {
     required this.participants,
     required this.description,
     required this.privacy,
-    required this.organization
+    required this.organization,
+    required this.cover_photo,
   }) : super(
     id: id,
     name: name,
@@ -73,6 +75,7 @@ class DetailClub extends Club {
         participants = (json['participants'] as List<dynamic>).map((e) => DetailUser.fromJson(e)).toList(),
         privacy = json['privacy'],
         organization = json['organization'],
+        cover_photo = json['cover_photo'],
         super(
           id: json['id'],
           name: json['name'],
@@ -95,5 +98,43 @@ class DetailClub extends Club {
   @override
   String toString() {
     return 'DetailClub{${super.toString()}, participants: $participants, description: $description, privacy: $privacy, organization: $organization}';
+  }
+}
+
+class CreateClub {
+  final String? name;
+  final String? description;
+  final String? avatar;
+  final String? cover_photo;
+  final String? sportType;
+  final String? organization;
+  final String? privacy;
+
+  CreateClub({
+    required this.name,
+    required this.description,
+    required this.avatar,
+    required this.cover_photo,
+    required this.sportType,
+    required this.organization,
+    required this.privacy
+  });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'avatar': avatar,
+      'cover_photo': cover_photo,
+      'name': name,
+      'description': description,
+      'sport_type': sportType,
+      'organization': organization,
+      'privacy': privacy
+    };
+  }
+
+  @override
+  String toString() {
+    return 'CreateClub:${toJson()}';
   }
 }

@@ -29,7 +29,6 @@ class APIService {
 
   Future<dynamic> fetchSingle(final modelFromJson, String? id, { String queryParams = "" }) async {
     final url_ = endpoint != null ? url(id: id!) : fullUrl! + queryParams ?? "";
-    print(url_);
     final response = await http.get(
       Uri.parse(url_),
       headers: _getHeaders(),

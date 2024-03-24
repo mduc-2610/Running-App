@@ -15,6 +15,7 @@ class CustomTextFormField extends StatefulWidget {
   final String? initialValue;
   final double? cursorHeight;
   final TextAlign textAlign;
+  final bool? clearIcon;
 
   const CustomTextFormField({
     Key? key,
@@ -34,6 +35,7 @@ class CustomTextFormField extends StatefulWidget {
     this.initialValue,
     this.cursorHeight,
     this.textAlign = TextAlign.left,
+    this.clearIcon = true,
   }) : super(key: key);
 
   @override
@@ -67,7 +69,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return TextFormField(
       style: widget.inputTextStyle,
       decoration: widget.decoration.copyWith(
-        suffixIcon: _showClearButton
+        suffixIcon: (widget.clearIcon == true && _showClearButton)
             ? IconButton(
           icon: Icon(
               Icons.cancel,

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/activity/club.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/choice_button.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -10,6 +13,8 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
 
 class ClubCreateView extends StatefulWidget {
   const ClubCreateView({super.key});
@@ -21,7 +26,41 @@ class ClubCreateView extends StatefulWidget {
 class _ClubCreateViewState extends State<ClubCreateView> {
   String sportChoice = "Running";
   String organizationChoice = "Sport Club";
-  String? privacy = "Public";
+  String privacy = "Public";
+  String token = "";
+
+  TextEditingController clubNameTextController = TextEditingController();
+  TextEditingController clubDescriptionTextController = TextEditingController();
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initToken();
+  }
+
+  void createClub() async {
+    final club = CreateClub(
+      avatar: "",
+      cover_photo: "",
+      name: clubNameTextController.text,
+      description: clubDescriptionTextController.text,
+      sportType: convertChoice(sportChoice),
+      organization: convertChoice(organizationChoice),
+      privacy: convertChoice(privacy),
+    );
+    print(club);
+    print(token);
+      final x = await callCreateAPI(
+        'activity/club',
+        club.toJson(),
+        token,);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +204,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
                         ),
                         SizedBox(height: media.height * 0.01,),
                         CustomTextFormField(
+                          controller: clubNameTextController,
                           decoration: CustomInputDecoration(
                             label: Text(
                               "Club name *",
@@ -178,6 +218,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
                         ),
                         SizedBox(height: media.height * 0.01,),
                         CustomTextFormField(
+                          controller: clubDescriptionTextController,
                           decoration: CustomInputDecoration(
                             hintText: "Club description *",
                               // label: Text(
@@ -334,7 +375,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
                                     groupValue: privacy,
                                     onChanged: (value) {
                                       setState(() {
-                                        privacy = value;
+                                        privacy = value ?? "Public";
                                       });
                                     },
                                     fillColor: MaterialStateProperty.all<Color>(
@@ -361,9 +402,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
             margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
-              onPressed: () {
-                Navigator.pushNamed(context, '/home');
-              },
+              onPressed: createClub,
               child: Text(
                 "Create club",
                 style: TextStyle(

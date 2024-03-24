@@ -4,7 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
-import 'package:running_app/view/community/event/utils/event_box.dart';
+import 'package:running_app/view/community/event/utils/common_widgets/event_box.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/services/api_service.dart';

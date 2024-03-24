@@ -18,6 +18,8 @@ import 'package:running_app/view/community/event/management/group_management_vie
 import 'package:running_app/view/community/event/management/member_management_private_view.dart';
 import 'package:running_app/view/community/event/management/member_management_public_view.dart';
 import 'package:running_app/view/community/club/club_member_view.dart';
+import 'package:running_app/view/community/event/utils/provider/event_advanced_option_create_provider.dart';
+import 'package:running_app/view/community/event/utils/provider/event_feature_create_provider.dart';
 import 'package:running_app/view/user/other_user_view.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
@@ -82,7 +84,13 @@ void main() async {
         ChangeNotifierProvider<TokenProvider>(
           create: (_) => TokenProvider()..setToken(token),
         ),
-      ],
+        ChangeNotifierProvider<EventFeatureCreateProvider>(
+            create: (_) => EventFeatureCreateProvider()
+        ),
+        ChangeNotifierProvider<EventAdvancedOptionCreateProvider>(
+          create: (_) => EventAdvancedOptionCreateProvider()
+        ),
+  ],
       child: MyApp(homeScreen: homeScreen, token: token, user: user),
     ),
   );
@@ -138,9 +146,9 @@ class MyApp extends StatelessWidget {
         '/event_user_detail': (context) => const EventMemberDetailView(),
         '/event_group_detail': (context) => const EventGroupDetailView(),
         '/group_create': (context) => const GroupCreateView(),
-        '/event_create_feature': (context) => const EventCreateFeatureView(),
-        '/event_create_information': (context) => const EventCreateInformationView(),
-        '/event_create_advanced_option': (context) => const EventCreateAdvancedOptionView(),
+        '/event_feature_create': (context) => const EventFeatureCreateView(),
+        '/event_information_create': (context) => const EventInformationCreateView(),
+        '/event_advanced_option_create': (context) => const EventAdvancedOptionCreateView(),
         '/your_event_list': (context) => const YourEventListView(),
         '/group_management': (context) => const GroupManagementView(),
         '/member_management_private': (context) => const MemberManagementPrivateView(),

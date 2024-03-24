@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
@@ -5,7 +7,8 @@ import 'package:running_app/utils/constants.dart';
 
 class BottomStickButton extends StatelessWidget {
   final String text;
-  const BottomStickButton({required this.text, super.key});
+  final VoidCallback? onPressed;
+  const BottomStickButton({required this.text, this.onPressed, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,7 @@ class BottomStickButton extends StatelessWidget {
           child: CustomMainButton(
             horizontalPadding: 0,
             verticalPadding: 20,
-            onPressed: () {
+            onPressed: onPressed ?? () {
               Navigator.pushNamed(context, '/home');
             },
             child: Text(

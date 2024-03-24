@@ -108,7 +108,7 @@ class _CommunityViewState extends State<CommunityView> {
             ? "Create your own event"
             : "Create your own club",
         onPressed: () {
-          Navigator.pushNamed(context, _showView == "Events" ? "/add_event_feature" : "/add_club");
+          Navigator.pushNamed(context, _showView == "Events" ? "/event_feature_create" : "/club_create");
         },
       ) : null,
       bottomNavigationBar: Menu(),

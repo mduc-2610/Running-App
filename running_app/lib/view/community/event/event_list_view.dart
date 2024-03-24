@@ -5,7 +5,7 @@ import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
-import 'package:running_app/view/community/event/utils/event_box.dart';
+import 'package:running_app/view/community/event/utils/common_widgets/event_box.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -13,7 +13,7 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
-import 'package:running_app/view/community/event/utils/event_list.dart';
+import 'package:running_app/view/community/event/utils/common_widgets/event_list.dart';
 
 class EventListView extends StatefulWidget {
   const EventListView({super.key});

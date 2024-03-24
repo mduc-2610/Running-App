@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
+import 'package:provider/provider.dart';
 
 import 'package:running_app/utils/common_widgets/app_bar.dart';
+import 'package:running_app/utils/common_widgets/bottom_stick_button.dart';
 import 'package:running_app/utils/common_widgets/choice_button.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -13,18 +15,24 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/view/community/event/utils/provider/event_advanced_option_create_provider.dart';
+import 'package:running_app/view/community/event/utils/provider/event_feature_create_provider.dart';
 
-class EventCreateFeatureView extends StatefulWidget {
-
-  const EventCreateFeatureView({super.key});
+class EventFeatureCreateView extends StatefulWidget {
+  const EventFeatureCreateView({super.key});
 
   @override
-  State<EventCreateFeatureView> createState() => _EventCreateFeatureViewState();
+  State<EventFeatureCreateView> createState() => _EventFeatureCreateViewState();
 }
 
-class _EventCreateFeatureViewState extends State<EventCreateFeatureView> {
+class _EventFeatureCreateViewState extends State<EventFeatureCreateView> {
   String sportChoice = "Running";
   String competitionType = "Group";
+
+  void setProvider() {
+    Provider.of<EventFeatureCreateProvider>(context, listen: false).setData(sportType: sportChoice, competition: competitionType);
+    Navigator.pushNamed(context, '/event_information_create');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -186,9 +194,7 @@ class _EventCreateFeatureViewState extends State<EventCreateFeatureView> {
             margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
-              onPressed: () {
-                Navigator.pushNamed(context, '/add_event_information');
-              },
+              onPressed: setProvider,
               child: Text(
                 "Continue",
                 style: TextStyle(
@@ -204,29 +210,57 @@ class _EventCreateFeatureViewState extends State<EventCreateFeatureView> {
   }
 }
 
-class EventCreateInformationView extends StatefulWidget {
+class EventInformationCreateView extends StatefulWidget {
 
-  const EventCreateInformationView({super.key});
+  const EventInformationCreateView({super.key});
 
   @override
-  State<EventCreateInformationView> createState() => _EventCreateInformationViewState();
+  State<EventInformationCreateView> createState() => _EventInformationCreateViewState();
 }
 
-class _EventCreateInformationViewState extends State<EventCreateInformationView> {
+class _EventInformationCreateViewState extends State<EventInformationCreateView> {
   DateTime? selectedDate;
   String rankingType = "Distance (km)";
+  String competition = "";
+  String sportType = "";
+
+  String privacy = "Public";
+  Map<String, dynamic>? regulations;
+  bool? totalAccumulatedDistance;
+  bool? totalMoneyDonated;
+  double? donatedMoneyExchange;
+
+  void getProvider() {
+    setState(() {
+      final advancedOptionProvider = Provider.of<EventAdvancedOptionCreateProvider>(context);
+      privacy = advancedOptionProvider.privacy ?? "Public";
+      regulations = advancedOptionProvider.regulations;
+      totalAccumulatedDistance = advancedOptionProvider.totalAccumulatedDistance;
+      totalMoneyDonated = advancedOptionProvider.totalMoneyDonated;
+      donatedMoneyExchange = advancedOptionProvider.donatedMoneyExchange;
+
+      final featureProvider = Provider.of<EventFeatureCreateProvider>(context);
+      competition = featureProvider.competition ?? "Group" ;
+      sportType = featureProvider.sportType ?? "Running";
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    // Set the default checked option
     rankingType = "Distance (km)";
+  }
+
+  @override
+  void didChangeDependencies() {
+    getProvider();
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-
+    print('${regulations}  ${sportType}');
     return Scaffold(
       appBar: CustomAppBar(
         title: const Header(title: "Create challenge", noIcon: true,),
@@ -664,7 +698,7 @@ class _EventCreateInformationViewState extends State<EventCreateInformationView>
                         // Advanced button section
                         CustomTextButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, '/add_event_advanced_option');
+                            Navigator.pushNamed(context, '/event_advanced_option_create');
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -726,18 +760,50 @@ class _EventCreateInformationViewState extends State<EventCreateInformationView>
   }
 }
 
-class EventCreateAdvancedOptionView extends StatefulWidget {
-  const EventCreateAdvancedOptionView({super.key});
+class EventAdvancedOptionCreateView extends StatefulWidget {
+  const EventAdvancedOptionCreateView({super.key});
 
   @override
-  State<EventCreateAdvancedOptionView> createState() => _EventCreateAdvancedOptionViewState();
+  State<EventAdvancedOptionCreateView> createState() => _EventAdvancedOptionCreateViewState();
 }
 
-class _EventCreateAdvancedOptionViewState extends State<EventCreateAdvancedOptionView> {
+class _EventAdvancedOptionCreateViewState extends State<EventAdvancedOptionCreateView> {
   String? privacy = "Public";
+  TextEditingController minimumDistanceTextController = TextEditingController();
+  TextEditingController maximumDistanceTextController = TextEditingController();
+  TextEditingController slowestAvgPaceTextController = TextEditingController();
+  TextEditingController fastestAvgPaceTextController = TextEditingController();
+  TextEditingController donatedMoneyExchangeTextController = TextEditingController();
+
+  bool totalAccumulatedDistance = false;
+  bool totalMoneyDonated = false;
+  double donatedMoneyExchange = 0.5;
+
+  void setProvider() {
+    setState(() {
+      Provider.of<EventAdvancedOptionCreateProvider>(context, listen: false).setData(
+        privacy: privacy,
+        regulations: {
+          "min_distance": minimumDistanceTextController.text != "" ? minimumDistanceTextController.text : "Unlimited",
+          "max_distance": maximumDistanceTextController.text != "" ? maximumDistanceTextController.text : "Unlimited",
+          "max_avg_pace": fastestAvgPaceTextController.text != "" ? fastestAvgPaceTextController.text : "Unlimited",
+          "min_avg_pace": slowestAvgPaceTextController.text != "" ? slowestAvgPaceTextController.text : "Unlimited",
+        },
+        totalAccumulatedDistance: false,
+        totalMoneyDonated: false,
+        donatedMoneyExchange: (totalMoneyDonated) ? 0.5 : null,
+      );
+    });
+    Navigator.pushNamed(context, '/event_information_create');
+  }
 
   @override
   Widget build(BuildContext context) {
+    minimumDistanceTextController.text = "1";
+    maximumDistanceTextController.text = "100";
+    slowestAvgPaceTextController.text = "15:00";
+    fastestAvgPaceTextController.text = "04:00";
+    donatedMoneyExchangeTextController.text = "0.5";
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -839,21 +905,25 @@ class _EventCreateAdvancedOptionViewState extends State<EventCreateAdvancedOptio
                             "text": "Minimum Distance",
                             "unit": "km",
                             "inp_max_length": 3,
+                            "controller": minimumDistanceTextController,
                           },
                           {
                             "text": "Maximum Distance",
                             "unit": "km",
                             "inp_max_length": 3,
+                            "controller": maximumDistanceTextController,
                           },
                           {
                             "text": "Slowest Avg. Pace",
                             "unit": "/km",
                             "inp_max_length": 4,
+                            "controller": slowestAvgPaceTextController,
                           },
                           {
                             "text": "Fastest Avg. Pace",
                             "unit": "/km",
                             "inp_max_length": 4,
+                            "controller": fastestAvgPaceTextController,
                           }
                         ])...[
                           Container(
@@ -895,6 +965,8 @@ class _EventCreateAdvancedOptionViewState extends State<EventCreateAdvancedOptio
                                             width: media.width * 0.15,
                                             height: 30,
                                             child: CustomTextFormField(
+                                              clearIcon: false,
+                                              // controller: x["controller"] as TextEditingController,
                                               textAlign: TextAlign.center,
                                               decoration: CustomInputDecoration(
                                                 contentPadding: EdgeInsets.zero,
@@ -1127,6 +1199,10 @@ class _EventCreateAdvancedOptionViewState extends State<EventCreateAdvancedOptio
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: BottomStickButton(
+          text: "Save",
+          onPressed: setProvider,
       ),
     );
   }

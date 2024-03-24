@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 import 'package:running_app/utils/constants.dart';
-import 'package:running_app/view/community/event/utils/event_box.dart';
+import 'package:running_app/view/community/event/utils/common_widgets/event_box.dart';
 
 
 class EventList extends StatelessWidget {

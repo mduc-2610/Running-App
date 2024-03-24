@@ -45,13 +45,13 @@ class DetailClubSerializer(serializers.ModelSerializer):
         }
     
 class CreateUpdateClubSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Club
         fields = "__all__"
         extra_kwargs = {
             "id": {"read_only": True},
         }
-
 # class UpdateClubSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = Club
