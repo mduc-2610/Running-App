@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:running_app/utils/common_widgets/event_box.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
+import 'package:running_app/view/community/event/utils/event_box.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/services/api_service.dart';
@@ -22,6 +25,42 @@ class _EventViewState extends State<EventView> {
   List<dynamic>? popularEvents;
   List<dynamic>? allEvents;
   String token = "";
+  DetailUser? user;
+  int upcomingEvent = 0;
+  int endedEvent = 0;
+
+  void initActivity() async {
+    try {
+      final activity = await callRetrieveAPI(
+          null, null,
+          user?.activity,
+          Activity.fromJson,
+          token,
+          queryParams: "?state=joined"
+      );
+      print(activity);
+      final activity2 = await callRetrieveAPI(
+          null, null,
+          user?.activity,
+          Activity.fromJson,
+          token,
+          queryParams: "?state=ended"
+      );
+      setState(() {
+        upcomingEvent = activity?.events.length;
+        endedEvent = activity2?.events.length;
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+      // Handle errors here
+    }
+  }
+
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
 
   void initToken() {
     setState(() {
@@ -30,7 +69,7 @@ class _EventViewState extends State<EventView> {
   }
 
   void initEvents() async{
-    final data1 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?sort=participants&limit=10");
+    final data1 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?sort=-participants&limit=10");
     final data2 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?limit=20");
     setState(() {
       popularEvents = data1;
@@ -43,6 +82,8 @@ class _EventViewState extends State<EventView> {
     super.didChangeDependencies();
     initToken();
     initEvents();
+    initUser();
+    initActivity();
   }
 
   @override
@@ -50,7 +91,7 @@ class _EventViewState extends State<EventView> {
     var media = MediaQuery.sizeOf(context);
     // print('Popular events: $popularEvents');
     // print('All events: $allEvents');
-    List text = ["About to start: 0", "Ended: 7"];
+    List text = ["Joined: $upcomingEvent", "Ended: $endedEvent"];
     return Column(
       children: [
         // Search events section
@@ -107,6 +148,7 @@ class _EventViewState extends State<EventView> {
                       children: [
                         for(var x in text)...[
                           Container(
+                            width: media.width * 0.3,
                             padding: const EdgeInsets.symmetric(
                               vertical: 3,
                               horizontal: 15,
@@ -117,6 +159,7 @@ class _EventViewState extends State<EventView> {
                             ),
                             child: Text(
                               x,
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: TColor.PRIMARY_TEXT,
                                   fontSize: FontSize.SMALL,

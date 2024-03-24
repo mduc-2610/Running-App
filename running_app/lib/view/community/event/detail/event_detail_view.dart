@@ -6,6 +6,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
+import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
@@ -373,82 +374,19 @@ class _EventDetailViewState extends State<EventDetailView> {
                     ),
                     _showLayout == "Information"
                         ? InformationLayout(event: event,)
-                        : Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Stack(
-                              children: [
-                                Image.asset(
-                                  "assets/img/community/athlete_on_fire.png",
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.only(
-                                    left: 50,
-                                    top: 25
-                                  ),
-                                  child: Image.asset(
-                                    "assets/img/community/athlete_trophy.png",
-                                    width: 80,
-                                    height: 80,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: media.height * 0.01,),
-                            Text(
-                              "No groups created yet!",
-                              style: TxtStyle.headSection,
-                            ),
-                            SizedBox(height: media.height * 0.01,),
-                            Text(
-                              "Please create a new group for joining the group ranking right away",
-                              style: TextStyle(
-                                color: TColor.DESCRIPTION,
-                                fontSize: FontSize.NORMAL,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: media.height * 0.02,),
-                            CustomTextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/group_create');
-                              },
-                              child: Container(
-                                width: media.width * 0.55,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
-                                ),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: TColor.PRIMARY,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.add_circle,
-                                      color: TColor.PRIMARY_TEXT,
-                                    ),
-                                    SizedBox(width: media.width * 0.02,),
-                                    Text(
-                                      "Create a group",
-                                      style: TextStyle(
-                                          color: TColor.PRIMARY_TEXT,
-                                          fontSize: FontSize.NORMAL,
-                                          fontWeight: FontWeight.w600
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
+                        : (event?.participants?.length == 0)
+                        ? EmptyListNotification(
+                            title: (event?.competition == "Group") ? "No groups created yet!" : "No users joined yet!",
+                            description: (event?.competition == "Group")
+                                ? "Please create a new group for joining the group ranking right away"
+                                : "Invite your friend for joining the event ranking right away",
+                            addButton: (event?.competition == "Group") ? true : false,
+                            addButtonText: "Create a group",
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/group_create');
+                            },
                         )
-                    // : LeaderBoardLayout(event: event, parentScrollController: parentScrollController,)
+                    : LeaderBoardLayout(event: event, parentScrollController: parentScrollController,)
                   ],
                 ),
               ),

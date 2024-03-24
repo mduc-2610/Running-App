@@ -37,6 +37,7 @@ class UserViewSet(
                 Q(username__icontains=username) if username else Q()
                 | Q(email__icontains=email) if email else Q()
             )
+    
         return queryset
 
     def get_serializer_class(self):

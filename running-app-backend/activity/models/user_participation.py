@@ -27,5 +27,6 @@ class UserParticipationClub(UserParticipation):
         "activity.Club", on_delete=models.CASCADE)
     
 class UserParticipationEvent(UserParticipation):
+    is_superadmin = models.BooleanField(default=False)
     event = models.ForeignKey(
         "activity.Event", on_delete=models.CASCADE)

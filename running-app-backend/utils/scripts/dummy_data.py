@@ -58,8 +58,8 @@ def run():
     MAX_NUMBER_CLUBS = 50
     MAX_NUMBER_EVENT_GROUPS = 35
     MAX_NUMBER_USER_EVENT_GROUPS = 30
-    MAX_NUMBER_USER_PARTICIPATION_CLUBS = 100
-    MAX_NUMBER_USER_PARTICIPATION_EVENTS = 100
+    MAX_NUMBER_USER_PARTICIPATION_CLUBS = 30
+    MAX_NUMBER_USER_PARTICIPATION_EVENTS = 20
     MAX_NUMBER_USER_PRODUCTS = 50
     MAX_NUMBER_PRODUCT_IMAGES = 30
     # MAX_NUMBER_CATEGORIES = 20
@@ -227,30 +227,36 @@ def run():
     print("________________________________________________________________")
     print("USER PARTICIPATION CLUB:")
     user_participation_club_list = []
-    for i in range(MAX_NUMBER_USER_PARTICIPATION_CLUBS):
-        data = {
-            "user": random.choice(user_activity_list),
-            "club": random.choice(club_list),
-            "is_admin": random.choice([True, False]),
-            "participated_at": fake.date_time_this_year(),
-        }
-        user_participation_club, _ = UserParticipationClub.objects.get_or_create(**data)
-        user_participation_club_list.append(user_participation_club)
-        print(f"\tSuccesfully created User Participation Club: {user_participation_club}")
+    for club in club_list:
+        user_tmp = user_activity_list.copy()
+        for i in range(random.randint(0, max(MAX_NUMBER_USER_PARTICIPATION_CLUBS, MAX_NUMBER_USERS))):
+            random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
+            data = {
+                "user": random_user,
+                "club": club,
+                "is_admin": random.choice([True, False]),
+                "participated_at": fake.date_time_this_year(),
+            }
+            user_participation_club, _ = UserParticipationClub.objects.get_or_create(**data)
+            user_participation_club_list.append(user_participation_club)
+            print(f"\tSuccesfully created User Participation Club: {user_participation_club}")
     
     print("________________________________________________________________")
     print("USER PARTICIPATION EVENT:")
     user_participation_event_list = []
-    for i in range(MAX_NUMBER_USER_PARTICIPATION_EVENTS):
-        random_event = random.choice(event_list)
-        data = {
-            "user": random.choice(user_activity_list),
-            "participated_at": fake.date_time_this_year(),
-            "event": random_event
-        }
-        user_participation_event = UserParticipationEvent.objects.create(**data)
-        user_participation_event_list.append(user_participation_event)
-        print(f"\tSuccesfully created User Participation Event: {user_participation_event}")
+    for event in event_list:
+        user_tmp = user_activity_list.copy()
+        for i in range(random.randint(0, max(MAX_NUMBER_USER_PARTICIPATION_EVENTS, MAX_NUMBER_USERS))):
+            random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
+            data = {
+                "user": random_user,
+                "participated_at": fake.date_time_this_year(),
+                "event": event,
+                "is_superadmin": True if i == 0 else False
+            }
+            user_participation_event = UserParticipationEvent.objects.create(**data)
+            user_participation_event_list.append(user_participation_event)
+            print(f"\tSuccesfully created User Participation Event: {user_participation_event}")
 
     
     print("________________________________________________________________")
@@ -316,14 +322,15 @@ def run():
     print("________________________________________________________________")
     print("PRODUCT IMAGE:")
     product_image_list = []
-    for i in range(MAX_NUMBER_PRODUCT_IMAGES):
-        data = {
-            "product": random.choice(product_list),  
-            "image": "",
-        }
-        product_image = ProductImage.objects.create(**data)
-        product_image_list.append(product_image)
-        print(f"\tSuccesfully created Product Image: {product_image}")
+    for product in product_list:
+        for i in range(random.randint(0, MAX_NUMBER_PRODUCT_IMAGES)):
+            data = {
+                "product": product,  
+                "image": "",
+            }
+            product_image = ProductImage.objects.create(**data)
+            product_image_list.append(product_image)
+            print(f"\tSuccesfully created Product Image: {product_image}")
     
     print("________________________________________________________________")
     print("USER:")

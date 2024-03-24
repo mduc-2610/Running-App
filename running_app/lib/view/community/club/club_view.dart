@@ -11,10 +11,6 @@ import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 
-String title(String? x) {
-  return (x?.substring(0, 1).toUpperCase() ?? "") + (x?.substring(1).toLowerCase() ?? "");
-}
-
 class ClubView extends StatefulWidget {
   const ClubView({super.key});
 
@@ -239,7 +235,7 @@ class _ClubViewState extends State<ClubView> {
                                                     fontWeight: FontWeight.w800),
                                               ),
                                               Text(
-                                                title(userClubs?[i].sportType),
+                                                userClubs?[i].sportType,
                                                 style: TextStyle(
                                                     color: TColor.DESCRIPTION,
                                                     fontSize: 14,

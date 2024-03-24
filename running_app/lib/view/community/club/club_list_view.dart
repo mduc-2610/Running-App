@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
@@ -7,6 +11,8 @@ import 'package:running_app/utils/common_widgets/default_background_layout.dart'
 import 'package:running_app/utils/common_widgets/search_filter.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class ClubListView extends StatefulWidget {
   const ClubListView({super.key});
@@ -16,8 +22,38 @@ class ClubListView extends StatefulWidget {
 }
 
 class _ClubListViewState extends State<ClubListView> {
+  List<dynamic>? clubs;
+  String token = "";
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initClubs() async {
+    try {
+      final data = await callListAPI("activity/club", Activity.fromJson, token);
+      print('data ${data}');
+      setState(() {
+        clubs = data;
+      });
+    }
+    catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    initToken();
+    initClubs();
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('Clubs: ${clubs}');
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(

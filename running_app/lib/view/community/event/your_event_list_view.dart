@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/activity/event.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/event_box.dart';
+import 'package:running_app/view/community/event/utils/event_box.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
+import 'package:running_app/view/community/event/utils/event_list.dart';
 
 class YourEventListView extends StatefulWidget {
   const YourEventListView({super.key});
@@ -17,42 +25,94 @@ class YourEventListView extends StatefulWidget {
 }
 
 class _YourEventListViewState extends State<YourEventListView> {
-  String _eventType = "Joined";
+  String eventType = "Joined";
+  DetailUser? user;
+  Activity? userActivity;
+  List<dynamic>? events;
+  String token = "";
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initActivity() async {
+    try {
+      final activity = await callRetrieveAPI(
+          null, null,
+          user?.activity,
+          Activity.fromJson,
+          token,
+          queryParams: "?state=${eventType.toLowerCase()}"
+      );
+      setState(() {
+        userActivity = activity;
+        events = userActivity?.events;
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+      // Handle errors here
+    }
+  }
+
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initToken();
+    initUser();
+    initActivity();
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
+    print("${APIEndpoints.BASE_URL}/account/activity/3efff185-0eab-47a9-a260-0be004b277d7/" + "?state=${eventType.toLowerCase()}");
+    print('Length: ${events?.length} ');
+    for(var event in events ?? []) {
+      print(event.name);
+    }
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Header(title: "All events", noIcon: true,),
+        title: const Header(title: "Your events", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
-      body: SingleChildScrollView(
-        child: DefaultBackgroundLayout(
-          child: Stack(
-            children: [
-              MainWrapper(
-                child: Column(
-                  children: [
-                    // Redirect
-                    Container(
-                      // padding: EdgeInsets.symmetric(
-                      //     vertical: 5,
-                      //     horizontal: 10
-                      // ),
-                      // decoration: BoxDecoration(
-                      //   color: TColor.SECONDARY_BACKGROUND,
-                      //   borderRadius: BorderRadius.circular(12),
-                      // ),
+      body: DefaultBackgroundLayout(
+        child: Stack(
+          children: [
+            MainWrapper(
+              bottomMargin: 0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Redirect
+                  Container(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 10
+                      ),
+                      decoration: BoxDecoration(
+                        color: TColor.SECONDARY_BACKGROUND,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          for (var x in ["Joined", "Ended"])
+                          for (var x in ["Created", "Joined", "Ended"])
                             SizedBox(
-                              width: media.width * 0.46,
+                              width: media.width * 0.3,
                               child: CustomTextButton(
                                 onPressed: () {
                                   setState(() {
-                                    _eventType = x;
+                                    eventType = x;
+                                    initActivity();
                                   });
                                 },
                                 style: ButtonStyle(
@@ -62,14 +122,15 @@ class _YourEventListViewState extends State<YourEventListView> {
                                         )),
                                     backgroundColor: MaterialStateProperty.all<
                                         Color?>(
-                                        _eventType == x ? TColor.PRIMARY : null
+                                        eventType == x ? TColor.PRIMARY : null
                                     ),
                                     shape: MaterialStateProperty.all<
                                         RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
                                             borderRadius:
                                             BorderRadius.circular(10)))),
-                                child: Text(x,
+                                child: Text(
+                                    '${x} ${(eventType == x) ? ('(${events?.length})') : ""}',
                                     style: TextStyle(
                                       color: TColor.PRIMARY_TEXT,
                                       fontSize: FontSize.NORMAL,
@@ -80,66 +141,35 @@ class _YourEventListViewState extends State<YourEventListView> {
                         ],
                       ),
                     ),
+                  ),
 
-                    // Search
+                  // Search
 
-                    SizedBox(height: media.height * 0.015,),
-                    SizedBox(
-                      height: 50,
-                      child: CustomTextFormField(
-                        decoration: CustomInputDecoration(
-                            hintText: "Search events",
-                            prefixIcon: Icon(
-                              Icons.search_rounded,
-                              color: TColor.DESCRIPTION,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20
-                            )
-                        ),
-                        keyboardType: TextInputType.text,
+                  SizedBox(height: media.height * 0.015,),
+                  SizedBox(
+                    height: 50,
+                    child: CustomTextFormField(
+                      decoration: CustomInputDecoration(
+                          hintText: "Search events",
+                          prefixIcon: Icon(
+                            Icons.search_rounded,
+                            color: TColor.DESCRIPTION,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20
+                          )
                       ),
+                      keyboardType: TextInputType.text,
                     ),
-                    SizedBox(height: media.height * 0.015,),
-                    EventList(eventType: "$_eventType Event",),
-                  ],
-                ),
-              )
-            ],
-          ),
+                  ),
+                  SizedBox(height: media.height * 0.015,),
+                  EventList(eventType: "$eventType Event", events: events),
+                ],
+              ),
+            )
+          ],
         ),
       ),
-    );
-  }
-}
-
-class EventList extends StatelessWidget {
-  final String eventType;
-  const EventList({
-    required this.eventType,
-    super.key
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    var media = MediaQuery.sizeOf(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          eventType,
-          style: TextStyle(
-              color: TColor.PRIMARY_TEXT,
-              fontSize: FontSize.LARGE,
-              fontWeight: FontWeight.w800
-          ),
-        ),
-        SizedBox(height: media.height * 0.02,),
-        for(int i = 0; i < 10; i++)...[
-          const EventBox(),
-          if(i < 9) SizedBox(height: media.height * 0.02,),
-        ]
-      ],
     );
   }
 }

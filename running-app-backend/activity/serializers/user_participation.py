@@ -17,9 +17,23 @@ class UserParticipationClubSerializer(serializers.Serializer):
         fields = "__all__"
 
 class UserParticipationEventSerializer(serializers.Serializer):
-    # user = ActivitySerializer()
+    # user = ActivitySerializer(many=False)
     event = EventSerializer()
+    is_admin = serializers.BooleanField()
+    is_superadmin = serializers.BooleanField()
+    participated_at = serializers.DateTimeField()
+
+    # def get_is_admin(self, instance):
+    #     return instance.is_admin
+    
+
 
     class Meta:
         model = UserParticipationEvent
-        fields = "__all__"
+        fields = (
+            "is_admin",
+            "is_superadmin",
+            "participated_at",
+            "user",
+            "event"
+        )

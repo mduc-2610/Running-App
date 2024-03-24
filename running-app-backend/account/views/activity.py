@@ -1,5 +1,8 @@
 from rest_framework import generics, \
-                            viewsets, permissions
+                            viewsets, \
+                            permissions, \
+                            mixins, \
+                            response
 
 # from activity.models import Event, \
 #                             Club
@@ -14,7 +17,18 @@ from account.models import Activity
 from account.serializers import ActivitySerializer
 
 class ActivityViewSet(
-    viewsets.ModelViewSet
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
 ):
     queryset = Activity.objects.all()
     serializer_class = ActivitySerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        state = request.query_params.get('state', None)
+        serializer = self.get_serializer(instance, context={'state': state})
+        return response.Response(serializer.data)
+
+
+
+    

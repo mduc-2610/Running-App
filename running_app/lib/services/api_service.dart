@@ -27,9 +27,11 @@ class APIService {
     }
   }
 
-  Future<dynamic> fetchSingle(final modelFromJson, String? id) async {
+  Future<dynamic> fetchSingle(final modelFromJson, String? id, { String queryParams = "" }) async {
+    final url_ = endpoint != null ? url(id: id!) : fullUrl! + queryParams ?? "";
+    print(url_);
     final response = await http.get(
-      Uri.parse(endpoint != null ? url(id: id!) : fullUrl!),
+      Uri.parse(url_),
       headers: _getHeaders(),
     );
 
@@ -90,7 +92,10 @@ Future<List<dynamic>> callListAPI(
     ) async {
   APIService service = APIService(endpoint: endpoint, token: token);
 
-  final List<dynamic> querySet = await service.fetchList(modelFromJson, queryParams: queryParams);
+  final List<dynamic> querySet = await service.fetchList(
+      modelFromJson,
+      queryParams: queryParams
+  );
   return querySet;
 }
 
@@ -99,11 +104,20 @@ Future<dynamic> callRetrieveAPI(
     String? id,
     String? fullUrl,
     Function modelFromJson,
-    String token
+    String token,
+    { String queryParams = "" }
     ) async {
-  APIService service = APIService(endpoint: endpoint, fullUrl: fullUrl, token: token);
+  APIService service = APIService(
+      endpoint: endpoint,
+      fullUrl: fullUrl,
+      token: token
+  );
 
-  final instance = await service.fetchSingle(modelFromJson, id);
+  final instance = await service.fetchSingle(
+      modelFromJson,
+      id,
+      queryParams: queryParams
+  );
   return instance;
 }
 

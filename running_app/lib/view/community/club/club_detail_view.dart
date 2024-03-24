@@ -5,6 +5,7 @@ import 'package:running_app/services/api_service.dart';
 import 'package:provider/provider.dart';
 
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
+import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -388,10 +389,15 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                         ]
                                     ),
                                     // SizedBox(height: media.height * 0.01,),
-                                    ScrollSynchronized(
-                                      parentScrollController: parentScrollController,
-                                      child: AthleteTable(participants: club?.participants, tableHeight: media.height - media.height * 0.15, controller: childScrollController,),
-                                    ),
+                                    (club?.numberOfParticipants != 0)
+                                        ? ScrollSynchronized(
+                                          parentScrollController: parentScrollController,
+                                          child: AthleteTable(participants: club?.participants, tableHeight: media.height - media.height * 0.15, controller: childScrollController,),
+                                        )
+                                        : EmptyListNotification(
+                                          title: "No users joined yet!",
+                                          description: "Invite your friend for joining the club ranking right away",
+                                        )
                                   ],
                                 )
         
