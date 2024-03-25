@@ -272,6 +272,8 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
 
   void createChallenge() async {
     final event = CreateEvent(
+      name: eventNameTextController.text,
+      description: eventDescriptionTextController.text,
       competition: competition,
       sportType: sportType,
       contactInformation: contactInformationButtonState ? contactInformationTextController.text : null,
@@ -284,7 +286,27 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
       totalAccumulatedDistance: totalAccumulatedDistanceButtonState,
       totalMoneyDonated: totalMoneyDonatedButtonState,
     );
-    
+
+    // final event = CreateEvent(
+    //   name: "Running event",
+    //   description: "Running, cycling, swimming is good for your health",
+    //   competition: "INDIVIDUAL",
+    //   sportType: "RUNNING",
+    //   contactInformation: "contact@example.com",
+    //   startedAt: "2024-03-25T10:00:00",
+    //   endedAt: "2024-03-30T10:00:00",
+    //   rankingType: "DISTANCE",
+    //   completionGoal: "100 km",
+    //   privacy: "PUBLIC",
+    //   regulations: {
+    //     "min_distance": 1,
+    //     "max_distance": 100,
+    //     "min_avg_pace": "15:00",
+    //     "max_avg_pace": "4:00",
+    //   },
+    //   totalAccumulatedDistance: true,
+    //   totalMoneyDonated: false,
+    // );
     final data = callCreateAPI('activity/event', event.toJson(), token);
   }
 

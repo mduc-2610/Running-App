@@ -38,7 +38,6 @@ class _EventViewState extends State<EventView> {
           token,
           queryParams: "?state=joined"
       );
-      print(activity);
       final activity2 = await callRetrieveAPI(
           null, null,
           user?.activity,
@@ -89,8 +88,6 @@ class _EventViewState extends State<EventView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    // print('Popular events: $popularEvents');
-    // print('All events: $allEvents');
     List text = ["Joined: $upcomingEvent", "Ended: $endedEvent"];
     return Column(
       children: [

@@ -19,7 +19,7 @@ class Event(models.Model):
         null=True,
         validators=[MaxLengthValidator(500, 'The field can contain at most 200 characters')]
     )
-    banner = models.ImageField(upload_to="", default="")
+    banner = models.ImageField(upload_to="", default="", null=True)
     SPORT_CHOICES = (
         ("RUNNING", "Running"),
         ("CYCLING", "Cycling"),
@@ -33,10 +33,18 @@ class Event(models.Model):
         ("INDIVIDUAL", "Individual"),
         ("GROUP", "Group"),
     )
+    RANKING_CHOICES = (
+        ("DISTANCE", "Distance"),
+        ("TOTAL_TIME", "Total time")
+    )
     sport_type = models.CharField(max_length=15, choices=SPORT_CHOICES, default="RUNNING")
     privacy = models.CharField(max_length=15, choices=PRIVACY_CHOICES, default="PUBLIC")
     competition = models.CharField(max_length=15, choices=COMPETITION_CHOICES, default="INDIVIDUAL")
-    
+    ranking_type = models.CharField(max_length=15, choices=RANKING_CHOICES, default="DISTANCE")
+    completion_goal = models.CharField(max_length=12, null=True)
+    total_accumulated_distance = models.BooleanField(default=False)
+    total_money_donated = models.BooleanField(default=False)
+
     def days_remain(self):
         return (self.ended_at.date() - self.started_at.date()).days
     

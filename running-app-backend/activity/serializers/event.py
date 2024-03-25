@@ -26,7 +26,7 @@ class DetailEventSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='get_sport_type_display')
     started_at = serializers.SerializerMethodField()
     ended_at = serializers.SerializerMethodField()
-    regulation = serializers.SerializerMethodField()
+    regulations = serializers.SerializerMethodField()
 
     def get_days_remain(self, instance):
         return instance.days_remain()
@@ -45,7 +45,7 @@ class DetailEventSerializer(serializers.ModelSerializer):
     def get_ended_at(self, instance):
         return instance.get_readable_time('ended_at')
     
-    def get_regulation(self, instance):
+    def get_regulations(self, instance):
         regulations = instance.regulations
         if regulations is None:
             regulations = {

@@ -123,6 +123,8 @@ class DetailEvent extends Event {
 }
 
 class CreateEvent {
+  final String? name;
+  final String? description;
   final String? competition;
   final String? sportType;
   final String? contactInformation;
@@ -136,6 +138,8 @@ class CreateEvent {
   final bool? totalMoneyDonated;
 
   CreateEvent({
+     required this.name,
+     required this.description,
      required this.competition,
      required this.sportType,
      required this.contactInformation,
@@ -151,17 +155,19 @@ class CreateEvent {
 
   Map<String, dynamic> toJson() {
     return {
+      'name': name,
+      'description': description,
       'competition': competition,
-      'sportType': sportType,
-      'contactInformation': contactInformation,
-      'startedAt': startedAt,
-      'endedAt': endedAt,
-      'rankingType': rankingType,
-      'completionGoal': completionGoal,
+      'sport_type': sportType,
+      'contact_information': contactInformation,
+      'started_at': startedAt,
+      'ended_at': endedAt,
+      'ranking_type': rankingType,
+      'completion_goal': completionGoal,
       'privacy': privacy,
       'regulations': regulations,
-      'totalAccumulatedDistance': totalAccumulatedDistance,
-      'totalMoneyDonated': totalMoneyDonated,
+      'total_accumulated_distance': totalAccumulatedDistance,
+      'total_money_donated': totalMoneyDonated,
     };
   }
 

@@ -7,8 +7,8 @@ from django.core.validators import MaxLengthValidator
 class Club(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     name = models.CharField(max_length=150)
-    avatar = models.ImageField(upload_to="", default="")
-    cover_photo = models.ImageField(upload_to="", default="")
+    avatar = models.ImageField(upload_to="", default="", null=True)
+    cover_photo = models.ImageField(upload_to="", default="", null=True)
     SPORT_CHOICES = (
         ("RUNNING", "Running"),
         ("CYCLING", "Cycling"),
@@ -16,7 +16,7 @@ class Club(models.Model):
     )
     ORGANIZATION_CHOICES = (
         ("SPORT_CLUB", "Sport Club"),
-        ("BUSINESS", "Business"),
+        ("COMPANY", "Company"),
         ("SCHOOL", "School")
     )
     PRIVACY_CHOICES = (

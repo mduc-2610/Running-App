@@ -55,11 +55,15 @@ class _ClubCreateViewState extends State<ClubCreateView> {
       privacy: convertChoice(privacy),
     );
     print(club);
-    print(token);
     final data = await callCreateAPI(
         'activity/club',
         club.toJson(),
-        token,);
+        token,
+    );
+    Navigator.pop(context);
+    Navigator.pushNamed(context, '/club_detail', arguments: {
+      "id": data["id"],
+    });
   }
 
   @override
