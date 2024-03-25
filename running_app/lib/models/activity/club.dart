@@ -113,8 +113,8 @@ class CreateClub {
   CreateClub({
     required this.name,
     required this.description,
-    required this.avatar,
-    required this.cover_photo,
+    this.avatar,
+    this.cover_photo,
     required this.sportType,
     required this.organization,
     required this.privacy

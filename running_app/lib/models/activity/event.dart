@@ -121,3 +121,52 @@ class DetailEvent extends Event {
         '}\n';
   }
 }
+
+class CreateEvent {
+  final String? competition;
+  final String? sportType;
+  final String? contactInformation;
+  final String? startedAt;
+  final String? endedAt;
+  final String? rankingType;
+  final String? completionGoal;
+  final String? privacy;
+  final Map<String, dynamic>? regulations;
+  final bool? totalAccumulatedDistance;
+  final bool? totalMoneyDonated;
+
+  CreateEvent({
+     required this.competition,
+     required this.sportType,
+     required this.contactInformation,
+     required this.startedAt,
+     required this.endedAt,
+     required this.rankingType,
+     required this.completionGoal,
+     required this.privacy,
+     required this.regulations,
+     required this.totalAccumulatedDistance,
+     required this.totalMoneyDonated,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'competition': competition,
+      'sportType': sportType,
+      'contactInformation': contactInformation,
+      'startedAt': startedAt,
+      'endedAt': endedAt,
+      'rankingType': rankingType,
+      'completionGoal': completionGoal,
+      'privacy': privacy,
+      'regulations': regulations,
+      'totalAccumulatedDistance': totalAccumulatedDistance,
+      'totalMoneyDonated': totalMoneyDonated,
+    };
+  }
+
+  @override
+  String toString() {
+    return '${toJson()}';
+  }
+}

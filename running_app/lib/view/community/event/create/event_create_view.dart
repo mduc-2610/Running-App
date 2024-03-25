@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/activity/event.dart';
+import 'package:running_app/services/api_service.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/bottom_stick_button.dart';
@@ -34,6 +38,28 @@ class _EventFeatureCreateViewState extends State<EventFeatureCreateView> {
     Navigator.pushNamed(context, '/event_information_create');
   }
 
+  void deleteAllPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('privacy');
+    await prefs.remove('minimumDistance');
+    await prefs.remove('maximumDistance');
+    await prefs.remove('slowestAvgPace');
+    await prefs.remove('fastestAvgPace');
+    await prefs.remove('donatedMoneyExchange');
+    await prefs.remove('ruleButtonState');
+    await prefs.remove('minimumDistanceButtonState');
+    await prefs.remove('maximumDistanceButtonState');
+    await prefs.remove('slowestAvgPaceButtonState');
+    await prefs.remove('fastestAvgPaceButtonState');
+    await prefs.remove('totalAccumulatedDistance');
+    await prefs.remove('totalMoneyDonated');
+  }
+  
+  void backButtonOnPressed() {
+    deleteAllPreferences();
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -53,7 +79,7 @@ class _EventFeatureCreateViewState extends State<EventFeatureCreateView> {
     ];
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Header(title: "Create challenge", noIcon: true,),
+        title: Header(title: "Create challengeee", noIcon: true, backButtonOnPressed: backButtonOnPressed),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -219,24 +245,56 @@ class EventInformationCreateView extends StatefulWidget {
 }
 
 class _EventInformationCreateViewState extends State<EventInformationCreateView> {
-  DateTime? selectedDate;
+  String token = "";
+  // Event information data
+  DateTime? startDate;
+  DateTime? endDate;
   String rankingType = "Distance (km)";
+  bool contactInformationButtonState = false;
+  TextEditingController eventNameTextController = TextEditingController();
+  TextEditingController eventDescriptionTextController = TextEditingController();
+  TextEditingController contactInformationTextController = TextEditingController();
+  TextEditingController distanceCompletionTextController = TextEditingController();
+  TextEditingController timeCompletionTextController = TextEditingController();
+  TextEditingController hours = TextEditingController();
+  TextEditingController minutes = TextEditingController();
+
+  // Event feature data
   String competition = "";
   String sportType = "";
 
+  // Event advanced option data
   String privacy = "Public";
   Map<String, dynamic>? regulations;
-  bool? totalAccumulatedDistance;
-  bool? totalMoneyDonated;
+  bool? totalAccumulatedDistanceButtonState;
+  bool? totalMoneyDonatedButtonState;
   double? donatedMoneyExchange;
+
+  void createChallenge() async {
+    final event = CreateEvent(
+      competition: competition,
+      sportType: sportType,
+      contactInformation: contactInformationButtonState ? contactInformationTextController.text : null,
+      startedAt: startDate?.toString(),
+      endedAt: endDate?.toString(),
+      rankingType: rankingType,
+      completionGoal: distanceCompletionTextController.text,
+      privacy: privacy,
+      regulations: regulations,
+      totalAccumulatedDistance: totalAccumulatedDistanceButtonState,
+      totalMoneyDonated: totalMoneyDonatedButtonState,
+    );
+    
+    final data = callCreateAPI('activity/event', event.toJson(), token);
+  }
 
   void getProvider() {
     setState(() {
       final advancedOptionProvider = Provider.of<EventAdvancedOptionCreateProvider>(context);
       privacy = advancedOptionProvider.privacy ?? "Public";
       regulations = advancedOptionProvider.regulations;
-      totalAccumulatedDistance = advancedOptionProvider.totalAccumulatedDistance;
-      totalMoneyDonated = advancedOptionProvider.totalMoneyDonated;
+      totalAccumulatedDistanceButtonState = advancedOptionProvider.totalAccumulatedDistance;
+      totalMoneyDonatedButtonState = advancedOptionProvider.totalMoneyDonated;
       donatedMoneyExchange = advancedOptionProvider.donatedMoneyExchange;
 
       final featureProvider = Provider.of<EventFeatureCreateProvider>(context);
@@ -245,25 +303,50 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
     });
   }
 
+  Future<void> deleteAllPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('privacy');
+    await prefs.remove('minimumDistance');
+    await prefs.remove('maximumDistance');
+    await prefs.remove('slowestAvgPace');
+    await prefs.remove('fastestAvgPace');
+    await prefs.remove('donatedMoneyExchange');
+    await prefs.remove('ruleButtonState');
+    await prefs.remove('minimumDistanceButtonState');
+    await prefs.remove('maximumDistanceButtonState');
+    await prefs.remove('slowestAvgPaceButtonState');
+    await prefs.remove('fastestAvgPaceButtonState');
+    await prefs.remove('totalAccumulatedDistance');
+    await prefs.remove('totalMoneyDonated');
+  }
+
   @override
   void initState() {
     super.initState();
     rankingType = "Distance (km)";
   }
 
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
   @override
   void didChangeDependencies() {
     getProvider();
+    initToken();
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    print(token);
     var media = MediaQuery.sizeOf(context);
-    print('${regulations}  ${sportType}');
+    print(contactInformationButtonState);
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Header(title: "Create challenge", noIcon: true,),
+        title: Header(title: "Create challenge", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -340,6 +423,7 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                         SizedBox(height: media.height * 0.015,),
 
                         CustomTextFormField(
+                          controller: eventNameTextController,
                           decoration: CustomInputDecoration(
                               label: Text(
                                 "Event's name *",
@@ -353,6 +437,7 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                         ),
                         SizedBox(height: media.height * 0.015,),
                         CustomTextFormField(
+                          controller: eventDescriptionTextController,
                           decoration: CustomInputDecoration(
                             hintText: "Event's description *",
                           ),
@@ -387,17 +472,27 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                                 ),
                               ),
                             ),
-                            const SwitchButton()
+                            SwitchButton(
+                              switchState: contactInformationButtonState,
+                              onChanged: (value) {
+                                setState(() {
+                                  contactInformationButtonState = value;
+                                });
+                              },
+                            )
                           ],
                         ),
-                        SizedBox(height: media.height * 0.01,),
-                        CustomTextFormField(
-                          decoration: CustomInputDecoration(
-                            hintText: "Contact information",
+                        if(contactInformationButtonState)...[
+                          SizedBox(height: media.height * 0.01,),
+                          CustomTextFormField(
+                            controller: contactInformationTextController,
+                            decoration: CustomInputDecoration(
+                              hintText: "Contact information",
+                            ),
+                            keyboardType: TextInputType.text,
+                            maxLines: 3,
                           ),
-                          keyboardType: TextInputType.text,
-                          maxLines: 3,
-                        ),
+                        ],
                         SizedBox(height: media.height * 0.01,),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -428,11 +523,6 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                                         Icons.calendar_today_rounded,
                                         color: TColor.DESCRIPTION,
                                       ),
-                                    //   hintText: "${DateTime.now().toString().split(' ')[0]} 00:00",
-                                    //   hintStyle: TextStyle(
-                                    //   color: TColor.DESCRIPTION,
-                                    //   fontSize: FontSize.SMALL,
-                                    // ),
                                         label: Text(
                                         "${DateTime.now().toString().split(' ')[0]} 00:00",
                                         style: TextStyle(
@@ -451,7 +541,7 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                                     lastDate: DateTime.now().add(const Duration(days: 365)),
                                     initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
                                     onChanged: (DateTime? value) {
-                                      selectedDate = value;
+                                      startDate = value;
                                     },
                                   ),
                                 )
@@ -500,7 +590,7 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                                     lastDate: DateTime.now().add(const Duration(days: 40)),
                                     initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
                                     onChanged: (DateTime? value) {
-                                      selectedDate = value;
+                                      endDate = value;
                                     },
                                   ),
                                 )
@@ -742,7 +832,9 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
             margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
-              onPressed: () {
+              onPressed: () async {
+                await deleteAllPreferences();
+                createChallenge();
                 Navigator.pushNamed(context, '/home');
               },
               child: Text(
@@ -768,41 +860,98 @@ class EventAdvancedOptionCreateView extends StatefulWidget {
 }
 
 class _EventAdvancedOptionCreateViewState extends State<EventAdvancedOptionCreateView> {
-  String? privacy = "Public";
+  String privacy = "Public";
   TextEditingController minimumDistanceTextController = TextEditingController();
   TextEditingController maximumDistanceTextController = TextEditingController();
   TextEditingController slowestAvgPaceTextController = TextEditingController();
   TextEditingController fastestAvgPaceTextController = TextEditingController();
   TextEditingController donatedMoneyExchangeTextController = TextEditingController();
 
-  bool totalAccumulatedDistance = false;
-  bool totalMoneyDonated = false;
+  bool ruleButtonState = true;
+  Map<String, bool> statsButtonStates = {
+    "Minimum Distance": true,
+    "Maximum Distance": true,
+    "Slowest Avg. Pace": true,
+    "Fastest Avg. Pace": true,
+  };
+
+  Map<String, bool> advancedDisplayButtonStates = {
+    "Total Accumulated Distance": false,
+    "Total Money Donated": false,
+  };
   double donatedMoneyExchange = 0.5;
 
-  void setProvider() {
+  @override
+  void initState() {
+    super.initState();
+    initValues();
+  }
+
+  void initValues() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      privacy = prefs.getString('privacy') ?? "Public";
+      minimumDistanceTextController.text =
+          prefs.getString('minimumDistance') ?? "1";
+      maximumDistanceTextController.text =
+          prefs.getString('maximumDistance') ?? "100";
+      slowestAvgPaceTextController.text =
+          prefs.getString('slowestAvgPace') ?? "15:00";
+      fastestAvgPaceTextController.text =
+          prefs.getString('fastestAvgPace') ?? "04:00";
+      donatedMoneyExchangeTextController.text =
+          prefs.getString('donatedMoneyExchange') ?? "";
+      ruleButtonState = prefs.getBool('ruleButtonState') ?? true;
+
+      statsButtonStates["Minimum Distance"] =
+          prefs.getBool('minimumDistanceButtonState') ?? true;
+      statsButtonStates["Maximum Distance"] =
+          prefs.getBool('maximumDistanceButtonState') ?? true;
+      statsButtonStates["Slowest Avg. Pace"] =
+          prefs.getBool('slowestAvgPaceButtonState') ?? true;
+      statsButtonStates["Fastest Avg. Pace"] =
+          prefs.getBool('fastestAvgPaceButtonState') ?? true;
+
+      advancedDisplayButtonStates["Total Accumulated Distance"] =
+          prefs.getBool('totalAccumulatedDistance') ?? false;
+      advancedDisplayButtonStates["Total Money Donated"] =
+          prefs.getBool('totalMoneyDonated') ?? false;
+      donatedMoneyExchange =
+          prefs.getDouble('donatedMoneyExchange') ?? 0.5;
+    });
+  }
+
+  void setProvider() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('minimumDistance', minimumDistanceTextController.text);
+    prefs.setString('maximumDistance', maximumDistanceTextController.text);
+    prefs.setString('slowestAvgPace', slowestAvgPaceTextController.text);
+    prefs.setString('fastestAvgPace', fastestAvgPaceTextController.text);
+    prefs.setBool('ruleButtonState', ruleButtonState);
+    prefs.setBool('minimumDistanceButtonState', statsButtonStates["Minimum Distance"] ?? true);
+    prefs.setBool('maximumDistanceButtonState', statsButtonStates["Maximum Distance"] ?? true);
+    prefs.setBool('slowestAvgPaceButtonState', statsButtonStates["Slowest Avg. Pace"] ?? true);
+    prefs.setBool('fastestAvgPaceButtonState', statsButtonStates["Fastest Avg. Pace"] ?? true);
+
     setState(() {
       Provider.of<EventAdvancedOptionCreateProvider>(context, listen: false).setData(
         privacy: privacy,
         regulations: {
-          "min_distance": minimumDistanceTextController.text != "" ? minimumDistanceTextController.text : "Unlimited",
-          "max_distance": maximumDistanceTextController.text != "" ? maximumDistanceTextController.text : "Unlimited",
-          "max_avg_pace": fastestAvgPaceTextController.text != "" ? fastestAvgPaceTextController.text : "Unlimited",
-          "min_avg_pace": slowestAvgPaceTextController.text != "" ? slowestAvgPaceTextController.text : "Unlimited",
+          "min_distance": prefs.getBool('minimumDistanceButtonState') == true ? prefs.getString('minimumDistance') : "Unlimited",
+          "max_distance": prefs.getBool('maximumDistanceButtonState') == true ? prefs.getString('maximumDistance') : "Unlimited",
+          "max_avg_pace": prefs.getBool('slowestAvgPaceButtonState') == true ? prefs.getString('slowestAvgPace') : "Unlimited",
+          "min_avg_pace": prefs.getBool('fastestAvgPaceButtonState') == true ? prefs.getString('fastestAvgPace') : "Unlimited",
         },
         totalAccumulatedDistance: false,
         totalMoneyDonated: false,
-        donatedMoneyExchange: (totalMoneyDonated) ? 0.5 : null,
+        donatedMoneyExchange: (advancedDisplayButtonStates["Total Money Donated"] == true) ? 0.5 : null,
       );
     });
-    Navigator.pushNamed(context, '/event_information_create');
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    minimumDistanceTextController.text = "1";
-    maximumDistanceTextController.text = "100";
-    slowestAvgPaceTextController.text = "15:00";
-    fastestAvgPaceTextController.text = "04:00";
     donatedMoneyExchangeTextController.text = "0.5";
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
@@ -868,7 +1017,7 @@ class _EventAdvancedOptionCreateViewState extends State<EventAdvancedOptionCreat
                                     groupValue: privacy,
                                     onChanged: (value) {
                                       setState(() {
-                                        privacy = value;
+                                        privacy = value ?? "Public";
                                       });
                                     },
                                     fillColor: MaterialStateProperty.all<Color>(
@@ -895,106 +1044,124 @@ class _EventAdvancedOptionCreateViewState extends State<EventAdvancedOptionCreat
                               "Rules for the valid activity",
                               style: TxtStyle.headSection,
                             ),
-                            const SwitchButton()
+                            SwitchButton(
+                              switchState: ruleButtonState,
+                              onChanged: (value) {
+                                setState(() {
+                                  ruleButtonState = value;
+                                });
+                              },
+                            )
                           ],
                         ),
                         // SizedBox(height: media.height * 0.015,),
 
-                        for(var x in [
-                          {
-                            "text": "Minimum Distance",
-                            "unit": "km",
-                            "inp_max_length": 3,
-                            "controller": minimumDistanceTextController,
-                          },
-                          {
-                            "text": "Maximum Distance",
-                            "unit": "km",
-                            "inp_max_length": 3,
-                            "controller": maximumDistanceTextController,
-                          },
-                          {
-                            "text": "Slowest Avg. Pace",
-                            "unit": "/km",
-                            "inp_max_length": 4,
-                            "controller": slowestAvgPaceTextController,
-                          },
-                          {
-                            "text": "Fastest Avg. Pace",
-                            "unit": "/km",
-                            "inp_max_length": 4,
-                            "controller": fastestAvgPaceTextController,
-                          }
-                        ])...[
-                          Container(
-                            padding: const EdgeInsets.only(
-                              bottom: 8
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(width: 1, color: TColor.BORDER_COLOR)
-                              )
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                SizedBox(
-                                  // width: media.width * 0.8,
-                                  child:
-                                  Text(
-                                    x["text"] as String,
-                                    style: TextStyle(
-                                      color: TColor.PRIMARY_TEXT,
-                                      fontSize: FontSize.NORMAL,
-                                      fontWeight: FontWeight.w600
+                        if(ruleButtonState)...[
+                          for(var x in [
+                            {
+                              "text": "Minimum Distance",
+                              "unit": "km",
+                              "inp_max_length": 3,
+                              "controller": minimumDistanceTextController,
+                            },
+                            {
+                              "text": "Maximum Distance",
+                              "unit": "km",
+                              "inp_max_length": 3,
+                              "controller": maximumDistanceTextController,
+                            },
+                            {
+                              "text": "Slowest Avg. Pace",
+                              "unit": "/km",
+                              "inp_max_length": 5,
+                              "controller": slowestAvgPaceTextController,
+                            },
+                            {
+                              "text": "Fastest Avg. Pace",
+                              "unit": "/km",
+                              "inp_max_length": 5,
+                              "controller": fastestAvgPaceTextController,
+                            }
+                          ])...[
+                            Container(
+                              padding: const EdgeInsets.only(
+                                  bottom: 8
+                              ),
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(width: 1, color: TColor.BORDER_COLOR)
+                                  )
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(
+                                    // width: media.width * 0.8,
+                                    child:
+                                    Text(
+                                      x["text"] as String,
+                                      style: TextStyle(
+                                          color: TColor.PRIMARY_TEXT,
+                                          fontSize: FontSize.NORMAL,
+                                          fontWeight: FontWeight.w600
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    const SwitchButton(),
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        right: media.width * 0.03
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      SwitchButton(
+                                        switchState: statsButtonStates[x["text"] as String],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            statsButtonStates[x["text"] as String] = value;
+                                          });
+                                        },
                                       ),
-                                      child: Row(
-                                        children: [
-                                          SizedBox(
-                                            width: media.width * 0.15,
-                                            height: 30,
-                                            child: CustomTextFormField(
-                                              clearIcon: false,
-                                              // controller: x["controller"] as TextEditingController,
-                                              textAlign: TextAlign.center,
-                                              decoration: CustomInputDecoration(
-                                                contentPadding: EdgeInsets.zero,
-                                                borderRadius: BorderRadius.circular(5),
-                                                counterText: ''
-                                              ),
-                                              keyboardType: TextInputType.number,
-                                              // cursorHeight: 15,
-                                              maxLines: 1,
-                                              maxLength: x["inp_max_length"] as int,
-                                            ),
+                                      if(statsButtonStates[x["text" as String]] == true)...[
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                              right: media.width * 0.03
                                           ),
-                                          SizedBox(width: media.width * 0.02),
-                                          Text(
-                                            x["unit"] as String,
-                                            style: TextStyle(
-                                              color: TColor.PRIMARY_TEXT,
-                                              fontSize: FontSize.NORMAL
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
+                                          child: Row(
+                                            children: [
+                                              SizedBox(
+                                                width: media.width * 0.15,
+                                                height: 30,
+                                                child: CustomTextFormField(
+                                                  clearIcon: false,
+                                                  controller: x["controller"] as TextEditingController,
+                                                  textAlign: TextAlign.center,
+                                                  decoration: CustomInputDecoration(
+                                                      contentPadding: EdgeInsets.zero,
+                                                      borderRadius: BorderRadius.circular(5),
+                                                      counterText: ''
+                                                  ),
+                                                  keyboardType: TextInputType.number,
+                                                  // cursorHeight: 15,
+                                                  maxLines: 1,
+                                                  maxLength: x["inp_max_length"] as int,
+                                                ),
+                                              ),
+                                              SizedBox(width: media.width * 0.02),
+                                              Text(
+                                                x["unit"] as String,
+                                                style: TextStyle(
+                                                    color: TColor.PRIMARY_TEXT,
+                                                    fontSize: FontSize.NORMAL
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ]
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
+                          ]
                         ]
                       ],
                     ),
@@ -1016,10 +1183,12 @@ class _EventAdvancedOptionCreateViewState extends State<EventAdvancedOptionCreat
                               {
                                 "type": "Display total accumulated distance",
                                 "desc": "Displays the total distance the members/group have accumulated throughout the event",
+                                "button": "Total Accumulated Distance",
                               },
                               {
                                 "type": "Display total money donated for the event",
-                                "desc": "Displays the total amount of money donated by members/groups based on accumulated distance"
+                                "desc": "Displays the total amount of money donated by members/groups based on accumulated distance",
+                                "button": "Total Money Donated",
                               }
                             ])...[
                               Row(
@@ -1049,12 +1218,20 @@ class _EventAdvancedOptionCreateViewState extends State<EventAdvancedOptionCreat
                                       ],
                                     ),
                                   ),
-                                  const SwitchButton()
+                                  SwitchButton(
+                                    switchState: advancedDisplayButtonStates[x["button"]] as bool,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        advancedDisplayButtonStates[x["button"] as String] = value;
+                                      });
+                                    },
+                                  )
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,),
 
-                              if(x["type"] != "Display total accumulated distance")...[
+                              if(x["type"] != "Display total accumulated distance"
+                              && advancedDisplayButtonStates[x["button"] as String] == true)...[
                                 Container(
                                   width: media.width * 0.85,
                                   padding: const EdgeInsets.symmetric(

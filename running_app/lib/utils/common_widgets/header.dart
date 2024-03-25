@@ -12,6 +12,7 @@ class Header extends StatelessWidget {
   final List? iconButtons;
   final bool backButton;
   final bool noIcon;
+  final VoidCallback? backButtonOnPressed;
 
   const Header({
     this.title,
@@ -20,7 +21,8 @@ class Header extends StatelessWidget {
     this.iconButtons,
     this.backButton = true,
     this.noIcon = false,
-    Key? key, // Adding key parameter
+    this.backButtonOnPressed,
+    Key? key,
   }) : super(key: key);
 
   List defaultIconButtons() {
@@ -60,7 +62,10 @@ class Header extends StatelessWidget {
             Row(
               children: [
                 if (backButton)
-                  CustomBackButton(context: context),
+                  CustomBackButton(
+                    context: context,
+                    onPressed: () => backButtonOnPressed,
+                  ),
                 SizedBox(width: media.width * 0.02,),
                 Text(
                   "$title",
@@ -74,7 +79,7 @@ class Header extends StatelessWidget {
             )]
             else...[
               if(backButton)
-                CustomBackButton(context: context, paddingRight: 0,),
+                CustomBackButton(context: context,),
             Text(
               "$title",
               style: TextStyle(

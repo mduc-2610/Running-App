@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:running_app/utils/constants.dart';
 
 class SwitchButton extends StatefulWidget {
-  const SwitchButton({super.key});
+  final bool? switchState;
+  final ValueChanged<bool>? onChanged;
+  SwitchButton({
+    this.switchState,
+    this.onChanged,
+    super.key
+  });
 
   @override
   State<SwitchButton> createState() => _SwitchButtonState();
 }
 
 class _SwitchButtonState extends State<SwitchButton> {
-  bool light0 = true;
 
   final MaterialStateProperty<Icon?> thumbIcon =
   MaterialStateProperty.resolveWith<Icon?>(
@@ -24,15 +29,9 @@ class _SwitchButtonState extends State<SwitchButton> {
   @override
   Widget build(BuildContext context) {
     return  Switch.adaptive(
-      value: light0,
-      onChanged: (bool value) {
-        setState(() {
-          light0 = value;
-        });
-      },
+      value: widget.switchState!,
+      onChanged: widget.onChanged,
       activeColor: TColor.PRIMARY,
     );
-   {
-
-  }}
+  }
 }

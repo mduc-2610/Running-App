@@ -46,8 +46,8 @@ class _ClubCreateViewState extends State<ClubCreateView> {
 
   void createClub() async {
     final club = CreateClub(
-      avatar: "",
-      cover_photo: "",
+      // avatar: "",
+      // cover_photo: "",
       name: clubNameTextController.text,
       description: clubDescriptionTextController.text,
       sportType: convertChoice(sportChoice),
@@ -56,7 +56,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
     );
     print(club);
     print(token);
-      final x = await callCreateAPI(
+    final data = await callCreateAPI(
         'activity/club',
         club.toJson(),
         token,);
