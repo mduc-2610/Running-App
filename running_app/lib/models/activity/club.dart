@@ -109,6 +109,7 @@ class CreateClub {
   final String? sportType;
   final String? organization;
   final String? privacy;
+  final String? userId;
 
   CreateClub({
     required this.name,
@@ -117,8 +118,20 @@ class CreateClub {
     this.cover_photo,
     required this.sportType,
     required this.organization,
-    required this.privacy
+    required this.privacy,
+    required this.userId,
   });
+
+  CreateClub.fromJson(Map<String, dynamic> json) :
+      name= json['name'],
+      description= json['description'],
+      avatar= json['avatar'],
+      cover_photo= json['cover_photo'],
+      sportType= json['sport_type'],
+      organization= json['organization'],
+      privacy= json['privacy'],
+      userId= json['user_id'];
+
 
   @override
   Map<String, dynamic> toJson() {
@@ -129,7 +142,7 @@ class CreateClub {
       'description': description,
       'sport_type': sportType,
       'organization': organization,
-      'privacy': privacy
+      'privacy': privacy,
     };
   }
 

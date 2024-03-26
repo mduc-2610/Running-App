@@ -139,6 +139,7 @@ class _NotificationBoxState extends State<NotificationBox> {
                                 onPressed: () {
                                   Navigator.pushNamed(context, '/home');
                                 },
+                                background: const Color(0xffFDF2F0),
                                 child: Text(
                                   "Discard activity",
                                   style: TextStyle(
@@ -146,7 +147,6 @@ class _NotificationBoxState extends State<NotificationBox> {
                                       fontSize: FontSize.SMALL,
                                       fontWeight: FontWeight.w700),
                                 ),
-                                background: Color(0xffFDF2F0),
                               ),
                             ),
                             SizedBox(

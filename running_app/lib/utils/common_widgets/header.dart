@@ -79,7 +79,7 @@ class Header extends StatelessWidget {
             )]
             else...[
               if(backButton)
-                CustomBackButton(context: context,),
+                CustomBackButton(context: context, onPressed: backButtonOnPressed),
             Text(
               "$title",
               style: TextStyle(

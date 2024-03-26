@@ -6,7 +6,7 @@ class CustomBackButton extends StatelessWidget {
   final BuildContext context;
   final VoidCallback? onPressed;
 
-  CustomBackButton({
+  const CustomBackButton({
     Key? key,
     required this.context,
     this.onPressed,

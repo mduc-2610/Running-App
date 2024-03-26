@@ -16,7 +16,10 @@ class CustomTextFormField extends StatefulWidget {
   final double? cursorHeight;
   final TextAlign textAlign;
   final bool? clearIcon;
-
+  final FocusNode? focusNode;
+  final ValueChanged? onChanged;
+  final VoidCallback? onClearChanged;
+  final bool? showClearButton;
   const CustomTextFormField({
     Key? key,
     required this.decoration,
@@ -36,6 +39,10 @@ class CustomTextFormField extends StatefulWidget {
     this.cursorHeight,
     this.textAlign = TextAlign.left,
     this.clearIcon = true,
+    this.focusNode,
+    this.onChanged,
+    this.onClearChanged,
+    this.showClearButton
   }) : super(key: key);
 
   @override
@@ -48,7 +55,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   @override
   void initState() {
     super.initState();
-    _showClearButton = widget.controller?.text.isNotEmpty ?? false;
+    _showClearButton = widget.showClearButton ?? widget.controller?.text.isNotEmpty ?? false;
     widget.controller?.addListener(_onTextChanged);
   }
 
@@ -76,7 +83,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               color: TColor.DESCRIPTION,
               size: 20,
           ),
-          onPressed: () {
+          onPressed: widget.onClearChanged ?? () {
             if (widget.controller != null) {
               widget.controller!.clear();
               setState(() {
@@ -98,6 +105,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       maxLines: widget.maxLines ?? 1,
       cursorHeight: widget.cursorHeight,
       textAlign: widget.textAlign,
+      focusNode: widget.focusNode,
+      onChanged: widget.onChanged,
     );
   }
 }

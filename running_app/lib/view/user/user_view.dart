@@ -15,7 +15,6 @@ import 'package:running_app/utils/common_widgets/icon_box.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/search_filter.dart';
-import 'package:running_app/utils/common_widgets/stats_box.dart';
 import 'package:running_app/utils/common_widgets/stats_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
@@ -335,7 +334,7 @@ class _UserViewState extends State<UserView> {
 class InventoryLayout extends StatelessWidget {
   final List<Product>? productList;
 
-  InventoryLayout({required this.productList, super.key});
+  const InventoryLayout({required this.productList, super.key});
 
   @override
   Widget build(BuildContext context) {

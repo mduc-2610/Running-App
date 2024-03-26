@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from activity.models import Club
+from account.serializers import UserSerializer 
 from account.serializers import DetailUserSerializer
 
 class ClubSerializer(serializers.ModelSerializer):
@@ -25,7 +26,7 @@ class DetailClubSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='get_sport_type_display')
     organization = serializers.CharField(source='get_organization_display')
     privacy = serializers.CharField(source='get_privacy_display') 
-
+    
     def get_week_activites(self, instance):
         return instance.week_activities()
     
@@ -45,6 +46,10 @@ class DetailClubSerializer(serializers.ModelSerializer):
         }
     
 class CreateUpdateClubSerializer(serializers.ModelSerializer):
+    user_id = serializers.SerializerMethodField()
+    
+    def get_user_id(self, instance):
+        return instance.id
     
     class Meta:
         model = Club

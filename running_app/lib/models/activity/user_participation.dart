@@ -3,19 +3,19 @@ import '../activity/club.dart';
 import '../activity/event.dart';
 
 abstract class UserParticipation {
-  final User? user;
+  final String? userId;
   final bool? isAdmin;
   final String? participatedAt;
 
   UserParticipation({
-    required this.user,
+    required this.userId,
     required this.isAdmin,
     required this.participatedAt
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'user': user?.toJson(),
+      'user_id': userId,
       'is_admin': isAdmin,
       'participated_at': participatedAt,
     };
@@ -23,71 +23,71 @@ abstract class UserParticipation {
 }
 
 class UserParticipationClub extends UserParticipation {
-  final Club? club;
+  final String? clubId;
 
   UserParticipationClub({
-    User? user,
+    String? userId,
     bool? isAdmin,
     String? participatedAt,
-    required this.club
+    required this.clubId
   }) : super(
-    user: user,
+    userId: userId,
     isAdmin: isAdmin,
     participatedAt: participatedAt
   );
 
-  UserParticipationClub.fromJson(Map<String, dynamic> json)
-      : club = Club.fromJson(json['club']),
-        super(
-          user: User.fromJson(json['user']),
-          isAdmin: json['is_admin'],
-          participatedAt: json['participated_at'],
-        );
+  // UserParticipationClub.fromJson(Map<String, dynamic> json)
+  //     : club = CreateClub.fromJson(json['club']),
+  //       super(
+  //         user: User.fromJson(json['user']),
+  //         isAdmin: json['is_admin'],
+  //         participatedAt: json['participated_at'],
+  //       );
 
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
-    data['club'] = club?.toJson();
+    data['club_id'] = clubId;
     return data;
   }
 
   @override
   String toString() {
-    return 'UserParticipationClub{${super.toString()}, club: $club}';
+    return 'UserParticipationClub{${super.toString()}, club: $clubId}';
   }
 }
 
 class UserParticipationEvent extends UserParticipation {
-  final Event? event;
+  final String? eventId;
 
   UserParticipationEvent({
-    User? user,
+    String? userId,
     bool? isAdmin,
     String? participatedAt,
-    required this.event
+    required this.eventId
   }) : super(
-      user: user,
+      userId: userId,
       isAdmin: isAdmin,
       participatedAt: participatedAt
   );
 
-  UserParticipationEvent.fromJson(Map<String, dynamic> json)
-      : event = Event.fromJson(json['event']),
-        super(
-          user: User.fromJson(json['user']),
-          isAdmin: json['is_admin'],
-          participatedAt: json['participated_at'],
-        );
+  // UserParticipationEvent.fromJson(Map<String, dynamic> json)
+  //     : event = Event.fromJson(json['event']),
+  //       super(
+  //         user: User.fromJson(json['user']),
+  //         isAdmin: json['is_admin'],
+  //         participatedAt: json['participated_at'],
+  //       );
 
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
-    data['event'] = event?.toJson();
+    data['event_id'] = eventId;
     return data;
   }
 
   @override
   String toString() {
-    return 'UserParticipationEvent{${super.toString()}, event: $event}';
+    return 'UserParticipationEvent{${super.toString()}, event: $eventId}';
   }
 }

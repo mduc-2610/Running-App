@@ -4,8 +4,6 @@ import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
-import 'package:running_app/view/community/event/utils/common_widgets/event_box.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -60,7 +58,7 @@ class _EventListViewState extends State<EventListView> {
 
   @override
   Widget build(BuildContext context) {
-    print('Ended: ${events}');
+    print('Ended: $events');
     print(eventType.toLowerCase());
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
@@ -114,7 +112,7 @@ class _EventListViewState extends State<EventListView> {
                                           borderRadius:
                                           BorderRadius.circular(10)))),
                               child: Text(
-                                  '${x}',
+                                  x,
                                   style: TextStyle(
                                     color: TColor.PRIMARY_TEXT,
                                     fontSize: FontSize.NORMAL,

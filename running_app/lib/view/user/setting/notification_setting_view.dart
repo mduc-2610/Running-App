@@ -96,7 +96,7 @@ class NotificationSettingView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  SwitchButton()
+                                  const SwitchButton()
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,)
@@ -168,7 +168,7 @@ class NotificationSettingView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  SwitchButton()
+                                  const SwitchButton()
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,)
@@ -232,7 +232,7 @@ class NotificationSettingView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  SwitchButton()
+                                  const SwitchButton()
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,)

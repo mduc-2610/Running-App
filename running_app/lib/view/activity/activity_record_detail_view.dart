@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
@@ -27,7 +26,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "Activity", noIcon: true),
+        title: const Header(title: "Activity", noIcon: true),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -207,13 +206,13 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                     Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 10
                           ),
                           width: media.width,
                           decoration: BoxDecoration(
                             color: TColor.SECONDARY_BACKGROUND,
-                            borderRadius: BorderRadius.only(
+                            borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(10),
                               topRight: Radius.circular(10),
                             ),
@@ -264,7 +263,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                         "figure": "1.83km",
                                       },
                                     ]) ...[
-                                      Container(
+                                      SizedBox(
                                         width: media.width * 0.45,
                                         // width: (media.width - media.,
                                         child: Column(
@@ -311,7 +310,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                         "figure": "1.83km",
                                       },
                                     ]) ...[
-                                      Container(
+                                      SizedBox(
                                         width: media.width * 0.45,
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.center,
@@ -346,7 +345,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                           width: media.width,
                           decoration: BoxDecoration(
                             color: TColor.SECONDARY_BACKGROUND,
-                            borderRadius: BorderRadius.only(
+                            borderRadius: const BorderRadius.only(
                               bottomLeft: Radius.circular(10),
                               bottomRight: Radius.circular(10),
                             ),
@@ -372,7 +371,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                 },
                               ])...[
                                 Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 10,
                                     horizontal: 12
                                   ),
@@ -422,7 +421,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                         SizedBox(height: media.height * 0.015,),
 
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 0
                           ),
                           decoration: BoxDecoration(
@@ -477,7 +476,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                     CustomTextButton(
                       onPressed: () {},
                       child: Container(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           vertical: 8,
                           horizontal: 12
                         ),

@@ -111,7 +111,7 @@ class _CommunityViewState extends State<CommunityView> {
           Navigator.pushNamed(context, _showView == "Events" ? "/event_feature_create" : "/club_create");
         },
       ) : null,
-      bottomNavigationBar: Menu(),
+      bottomNavigationBar: const Menu(),
       // bottomSheet: Container(
       //   padding: EdgeInsets.only(
       //     bottom: 20,

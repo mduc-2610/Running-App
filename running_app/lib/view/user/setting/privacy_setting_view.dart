@@ -80,7 +80,7 @@ class PrivacySettingView extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              SwitchButton()
+                              const SwitchButton()
                             ],
                           ),
                           SizedBox(height: media.height * 0.01,)
@@ -148,7 +148,7 @@ class PrivacySettingView extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              SwitchButton()
+                              const SwitchButton()
                             ],
                           ),
                           SizedBox(height: media.height * 0.01,)

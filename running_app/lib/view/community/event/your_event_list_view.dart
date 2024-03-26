@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
-import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/view/community/event/utils/common_widgets/event_box.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -73,7 +71,7 @@ class _YourEventListViewState extends State<YourEventListView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    print("${APIEndpoints.BASE_URL}/account/activity/3efff185-0eab-47a9-a260-0be004b277d7/" + "?state=${eventType.toLowerCase()}");
+    print("${APIEndpoints.BASE_URL}/account/activity/3efff185-0eab-47a9-a260-0be004b277d7/" "?state=${eventType.toLowerCase()}");
     print('Length: ${events?.length} ');
     for(var event in events ?? []) {
       print(event.name);
@@ -130,7 +128,7 @@ class _YourEventListViewState extends State<YourEventListView> {
                                             borderRadius:
                                             BorderRadius.circular(10)))),
                                 child: Text(
-                                    '${x} ${(eventType == x) ? ('(${events?.length})') : ""}',
+                                    '$x ${(eventType == x) ? ('(${events?.length})') : ""}',
                                     style: TextStyle(
                                       color: TColor.PRIMARY_TEXT,
                                       fontSize: FontSize.NORMAL,

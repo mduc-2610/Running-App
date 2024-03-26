@@ -17,4 +17,5 @@ from .event import EventSerializer, \
                     CreateUpdateEventSerializer
 
 from .user_participation import UserParticipationClubSerializer, \
+                                CreateUserParticipationClubSerializer, \
                                 UserParticipationEventSerializer

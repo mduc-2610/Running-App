@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/club.dart';
+import 'package:running_app/models/activity/user_participation.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/choice_button.dart';
@@ -15,6 +18,7 @@ import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class ClubCreateView extends StatefulWidget {
   const ClubCreateView({super.key});
@@ -28,6 +32,11 @@ class _ClubCreateViewState extends State<ClubCreateView> {
   String organizationChoice = "Sport Club";
   String privacy = "Public";
   String token = "";
+  DetailUser? user;
+  Activity? userActivity;
+  Color createClubButtonState = TColor.BUTTON_DISABLED;
+  bool clubNameClearButton = false;
+  bool clubDescriptionClearButton = false;
 
   TextEditingController clubNameTextController = TextEditingController();
   TextEditingController clubDescriptionTextController = TextEditingController();
@@ -38,10 +47,24 @@ class _ClubCreateViewState extends State<ClubCreateView> {
     });
   }
 
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+  void initUserActivity() async {
+    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    setState(() {
+      userActivity = data;
+    });
+  }
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     initToken();
+    initUser();
+    initUserActivity();
   }
 
   void createClub() async {
@@ -53,6 +76,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
       sportType: convertChoice(sportChoice),
       organization: convertChoice(organizationChoice),
       privacy: convertChoice(privacy),
+      userId: user?.id,
     );
     print(club);
     final data = await callCreateAPI(
@@ -60,9 +84,32 @@ class _ClubCreateViewState extends State<ClubCreateView> {
         club.toJson(),
         token,
     );
+
+    final userParticipationClub = UserParticipationClub(
+      userId: userActivity?.id,
+      clubId: data["id"],
+      isAdmin: true,
+    );
+    print('Participate ${userParticipationClub.toJson()}');
+    // print(userActivity);
+    final data2 = await callCreateAPI(
+      'activity/user-participation-club',
+      userParticipationClub.toJson(),
+      token,
+    );
+
     Navigator.pop(context);
     Navigator.pushNamed(context, '/club_detail', arguments: {
       "id": data["id"],
+    });
+  }
+
+  void checkFormData() {
+    setState(() {
+      createClubButtonState =
+      (clubNameTextController.text.isNotEmpty &&
+          clubDescriptionTextController.text.isNotEmpty)
+          ? TColor.PRIMARY : TColor.BUTTON_DISABLED;
     });
   }
 
@@ -208,6 +255,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
                         ),
                         SizedBox(height: media.height * 0.01,),
                         CustomTextFormField(
+                          onChanged: (_) => checkFormData(),
                           controller: clubNameTextController,
                           decoration: CustomInputDecoration(
                             label: Text(
@@ -219,9 +267,18 @@ class _ClubCreateViewState extends State<ClubCreateView> {
                             )
                           ),
                           keyboardType: TextInputType.text,
+                          showClearButton: clubNameClearButton,
+                          onClearChanged: () {
+                            clubNameTextController.clear();
+                            setState(() {
+                              clubNameClearButton = false;
+                              createClubButtonState = TColor.BUTTON_DISABLED;
+                            });
+                          }
                         ),
                         SizedBox(height: media.height * 0.01,),
                         CustomTextFormField(
+                          onChanged: (_) => checkFormData(),
                           controller: clubDescriptionTextController,
                           decoration: CustomInputDecoration(
                             hintText: "Club description *",
@@ -235,6 +292,14 @@ class _ClubCreateViewState extends State<ClubCreateView> {
                           ),
                           keyboardType: TextInputType.text,
                           maxLines: 4,
+                          showClearButton: clubDescriptionClearButton,
+                          onClearChanged: () {
+                            clubDescriptionTextController.clear();
+                            setState(() {
+                              clubDescriptionClearButton = false;
+                              createClubButtonState = TColor.BUTTON_DISABLED;
+                            });
+                          }
                         ),
                       ],
                     ),
@@ -406,7 +471,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
             margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
-              onPressed: createClub,
+              onPressed: (createClubButtonState == TColor.BUTTON_DISABLED) ? null : createClub,
               child: Text(
                 "Create club",
                 style: TextStyle(
@@ -415,6 +480,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
                     fontWeight: FontWeight.w800
                 ),
               ),
+              background: createClubButtonState,
             ),
           )
       ),

@@ -25,18 +25,12 @@ class _ClubViewState extends State<ClubView> {
   String token = "";
 
   Future<void> api() async {
-    try {
-      user = Provider.of<UserProvider>(context).user;
-      print('User: _____________________$user');
-      final activity = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
-      setState(() {
-        userClubs = activity.clubs;
-        userActivity = activity;
-      });
-    } catch (e) {
-      print("Error fetching data: $e");
-      // Handle errors here
-    }
+    user = Provider.of<UserProvider>(context).user;
+    final activity = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    setState(() {
+      userClubs = activity.clubs;
+      userActivity = activity;
+    });
   }
   @override
   void initState() {
@@ -56,7 +50,6 @@ class _ClubViewState extends State<ClubView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    print('Club: $token');
     List clubStat = [
       {
         "type": "Members",
@@ -167,7 +160,7 @@ class _ClubViewState extends State<ClubView> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    for(int i = 0; i < userActivity!.clubs.length; i++)...[
+                    for(var club in userClubs ?? [])...[
                       Column(
                         children: [
                           CustomTextButton(
@@ -176,7 +169,7 @@ class _ClubViewState extends State<ClubView> {
                                   context,
                                   '/club_detail',
                                   arguments: {
-                                    "id": userClubs?[i].id,
+                                    "id": club.id,
                                   }
                               );
                             },
@@ -225,17 +218,20 @@ class _ClubViewState extends State<ClubView> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                userClubs?[i].name ?? "",
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    color: TColor.PRIMARY_TEXT,
-                                                    fontSize: FontSize.NORMAL,
-                                                    fontWeight: FontWeight.w800),
+                                              SizedBox(
+                                                width: media.width * 0.7,
+                                                child: Text(
+                                                  club.name ?? "",
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      color: TColor.PRIMARY_TEXT,
+                                                      fontSize: FontSize.NORMAL,
+                                                      fontWeight: FontWeight.w800),
+                                                ),
                                               ),
                                               Text(
-                                                userClubs?[i].sportType,
+                                                club.sportType,
                                                 style: TextStyle(
                                                     color: TColor.DESCRIPTION,
                                                     fontSize: 14,
@@ -268,7 +264,7 @@ class _ClubViewState extends State<ClubView> {
                                                           fontWeight: FontWeight.w500),
                                                     ),
                                                     Text(
-                                                      clubStat[j]["amount"](i),
+                                                      clubStat[j]["amount"](userClubs?.indexOf(club)  ?? 0 + 1),
                                                       style: TextStyle(
                                                           color: TColor.PRIMARY_TEXT,
                                                           fontSize: FontSize.NORMAL,

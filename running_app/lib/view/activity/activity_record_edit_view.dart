@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/bottom_stick_button.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -38,7 +37,7 @@ class _ActivityRecordEditViewState extends State<ActivityRecordEditView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "Edit Activity", noIcon: true,),
+        title: const Header(title: "Edit Activity", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -66,7 +65,7 @@ class _ActivityRecordEditViewState extends State<ActivityRecordEditView> {
                               style: TxtStyle.normalText,
                             ),
                             SizedBox(width: media.width * 0.02,),
-                            Row(
+                            const Row(
                               children: [
                                 Icon(
                                   Icons.directions_run_rounded,
@@ -204,12 +203,12 @@ class _ActivityRecordEditViewState extends State<ActivityRecordEditView> {
                             SizedBox(height: media.height * 0.023,),
                           ],
 
-                          if(imageAssets.length > 0)...[
+                          if(imageAssets.isNotEmpty)...[
                             SingleChildScrollView(
                               child: SizedBox(
                                 height: media.height * ((imageAssets.length > 3) ? 0.42 : 0.17),
                                 child: GridView.builder(
-                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3, // Number of columns in the grid
                                     crossAxisSpacing: 12.0, // Spacing between columns
                                     mainAxisSpacing: 12.0, // Spacing between rows
@@ -240,12 +239,12 @@ class _ActivityRecordEditViewState extends State<ActivityRecordEditView> {
                                               });
                                             },
                                             child: Container(
-                                              padding: EdgeInsets.all(4),
+                                              padding: const EdgeInsets.all(4),
                                               decoration: BoxDecoration(
                                                 color: Colors.black.withOpacity(0.5),
                                                 shape: BoxShape.circle,
                                               ),
-                                              child: Icon(
+                                              child: const Icon(
                                                 Icons.close,
                                                 color: Colors.white,
                                                 size: 16,
@@ -271,7 +270,7 @@ class _ActivityRecordEditViewState extends State<ActivityRecordEditView> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomStickButton(text: "Save"),
+      bottomNavigationBar: const BottomStickButton(text: "Save"),
     );
   }
 }

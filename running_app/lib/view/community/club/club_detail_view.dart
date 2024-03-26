@@ -394,7 +394,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                           parentScrollController: parentScrollController,
                                           child: AthleteTable(participants: club?.participants, tableHeight: media.height - media.height * 0.15, controller: childScrollController,),
                                         )
-                                        : EmptyListNotification(
+                                        : const EmptyListNotification(
                                           title: "No users joined yet!",
                                           description: "Invite your friend for joining the club ranking right away",
                                         )

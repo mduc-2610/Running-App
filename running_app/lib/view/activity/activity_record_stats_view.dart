@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:date_field/date_field.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -26,7 +25,7 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "Statistics", noIcon: true),
+        title: const Header(title: "Statistics", noIcon: true),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: DefaultBackgroundLayout(
@@ -51,7 +50,7 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
                       SizedBox(height: media.height * 0.02,),
 
                       Container(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 10
                         ),
                         decoration: BoxDecoration(
@@ -163,7 +162,7 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
                       ),
                       SizedBox(height: media.height * 0.015,),
 
-                      (_showView == "Running") ? StatsLayout() : StatsLayout(boxNumber: 4)
+                      (_showView == "Running") ? const StatsLayout() : const StatsLayout(boxNumber: 4)
                     ],
                   )
                 ],

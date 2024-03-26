@@ -20,6 +20,7 @@ class TColor {
   static Color get BUTTON => const Color(0xff7b61ff);
   static Color get WARNING => const Color(0xffCD452A);
   static Color get BORDER_COLOR => const Color(0xff444b5e);
+  static Color get BUTTON_DISABLED => const Color(0xff979797);
 }
 
 class TImage {

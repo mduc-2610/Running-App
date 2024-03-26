@@ -5,7 +5,7 @@ class CustomMainButton extends StatelessWidget {
   final double horizontalPadding;
   final double verticalPadding;
   final double borderRadius;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Widget child;
   final Icon? prefixIcon;
   final Icon? suffixIcon;

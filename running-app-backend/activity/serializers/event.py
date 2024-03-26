@@ -71,10 +71,18 @@ class DetailEventSerializer(serializers.ModelSerializer):
 
 
 class CreateUpdateEventSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        validated_data["competition"] = validated_data.get("competition", "").upper()
+        validated_data["sport_type"] = validated_data.get("sport_type", "").upper()
+        validated_data["privacy"] = validated_data.get("privacy", "").upper()
+        validated_data["ranking_type"] = validated_data.get("ranking_type", "").upper()
+
+        return Event.objects.create(**validated_data)
     class Meta:
         model = Event
         fields = "__all__"
         extra_kwargs = {
             "id": {"read_only": True}
         }
+
 

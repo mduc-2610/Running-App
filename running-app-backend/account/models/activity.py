@@ -13,4 +13,4 @@ class Activity(models.Model):
         "product.Product", through="product.UserProduct", related_name="products", blank=True)
     
     def __str__(self):
-        return self.user
+        return f"{self.user}"

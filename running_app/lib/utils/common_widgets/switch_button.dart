@@ -4,7 +4,7 @@ import 'package:running_app/utils/constants.dart';
 class SwitchButton extends StatefulWidget {
   final bool? switchState;
   final ValueChanged<bool>? onChanged;
-  SwitchButton({
+  const SwitchButton({
     this.switchState,
     this.onChanged,
     super.key

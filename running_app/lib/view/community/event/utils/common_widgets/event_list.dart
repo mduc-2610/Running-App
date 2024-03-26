@@ -31,7 +31,7 @@ class EventList extends StatelessWidget {
         if(events?.length == 0)...[
 
           Center(child: EmptyListNotification(
-            title: "No ${eventType} now",
+            title: "No $eventType now",
             description: "Add your own event now ",
             addButton: true,
             addButtonText: "Create an event",

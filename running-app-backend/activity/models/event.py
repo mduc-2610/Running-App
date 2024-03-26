@@ -42,9 +42,10 @@ class Event(models.Model):
     competition = models.CharField(max_length=15, choices=COMPETITION_CHOICES, default="INDIVIDUAL")
     ranking_type = models.CharField(max_length=15, choices=RANKING_CHOICES, default="DISTANCE")
     completion_goal = models.CharField(max_length=12, null=True)
-    total_accumulated_distance = models.BooleanField(default=False)
-    total_money_donated = models.BooleanField(default=False)
-
+    total_accumulated_distance = models.BooleanField(default=False, null=True)
+    total_money_donated = models.BooleanField(default=False, null=True)
+    donated_money_exchange = models.DecimalField(max_digits=5, decimal_places=3, default=0.5)
+    
     def days_remain(self):
         return (self.ended_at.date() - self.started_at.date()).days
     
@@ -63,3 +64,9 @@ class Event(models.Model):
     def __str__(self):
         return self.name
 
+    # def save(self, *args, **kwargs):
+    #     self.competition = self.competition.upper()
+    #     self.sport_type = self.sport_type.upper()
+    #     self.privacy = self.privacy.upper()
+    #     self.ranking_type = self.ranking_type.upper()
+    #     super(Event, self).save(*args, **kwargs)

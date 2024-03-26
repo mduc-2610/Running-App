@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/choice_button.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -8,7 +7,6 @@ import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/notification_box.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/show_modal_bottom_sheet.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
@@ -59,11 +57,11 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
 
   @override
   Widget build(BuildContext context) {
-    titleTextController.text = "$sportChoice";
+    titleTextController.text = sportChoice;
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "Save activity", noIcon: true,),
+        title: const Header(title: "Save activity", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -111,7 +109,7 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                           ],
                         ),
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 5
                           ),
                           width: media.width,
@@ -125,7 +123,7 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                           child: Column(
                             children: [
                               Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   vertical: 14,
                                 ),
                                 decoration: BoxDecoration(
@@ -156,7 +154,7 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     vertical: 14
                                 ),
                                 decoration: BoxDecoration(
@@ -202,7 +200,7 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     vertical: 14
                                 ),
                                 child: Row(
@@ -374,12 +372,12 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                           SizedBox(height: media.height * 0.023,),
                         ],
 
-                        if(imageAssets.length > 0)...[
+                        if(imageAssets.isNotEmpty)...[
                           SingleChildScrollView(
                             child: SizedBox(
                               height: media.height * ((imageAssets.length > 3) ? 0.33 : 0.17),
                               child: GridView.builder(
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3, // Number of columns in the grid
                                   crossAxisSpacing: 12.0, // Spacing between columns
                                   mainAxisSpacing: 12.0, // Spacing between rows
@@ -410,12 +408,12 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                                             });
                                           },
                                           child: Container(
-                                            padding: EdgeInsets.all(4),
+                                            padding: const EdgeInsets.all(4),
                                             decoration: BoxDecoration(
                                               color: Colors.black.withOpacity(0.5),
                                               shape: BoxShape.circle,
                                             ),
-                                            child: Icon(
+                                            child: const Icon(
                                               Icons.close,
                                               color: Colors.white,
                                               size: 16,
@@ -468,11 +466,11 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                         "Are you sure to delete this activity ?"
                       );
                     },
+                    background: const Color(0xffFDF2F0),
                     child: Text(
                         "Discard activity",
                         style: TxtStyle.headSectionWarning,
                     ),
-                    background: Color(0xffFDF2F0),
                   ),
                 ),
                 SizedBox(

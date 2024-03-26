@@ -421,8 +421,8 @@ class _MapPageState extends State<MapPage> {
   int speedCounter = 0;
   late bool loadingStatus;
   late double appendDist;
-  LatLng sourceLocation = LatLng(37.33500926, -122.03272188);
-  LatLng destination = LatLng(37.33429383, -122.06600055);
+  LatLng sourceLocation = const LatLng(37.33500926, -122.03272188);
+  LatLng destination = const LatLng(37.33429383, -122.06600055);
 
   Position? currentPosition;
   final Completer<GoogleMapController?> controller = Completer();
@@ -438,11 +438,11 @@ class _MapPageState extends State<MapPage> {
       PointLatLng(destination.latitude, destination.longitude),
     );
     if (result.points.isNotEmpty) {
-      result.points.forEach(
-            (PointLatLng point) => polylineCoordinates.add(
+      for (var point in result.points) {
+        polylineCoordinates.add(
           LatLng(point.latitude, point.longitude),
-        ),
-      );
+        );
+      }
       setState(() {});
     }
   }
@@ -540,11 +540,11 @@ class _MapPageState extends State<MapPage> {
           GoogleMap(
             markers: {
               Marker(
-                markerId: MarkerId("source"),
+                markerId: const MarkerId("source"),
                 position: sourceLocation,
               ),
               Marker(
-                markerId: MarkerId("destination"),
+                markerId: const MarkerId("destination"),
                 position: destination
               )
             },
