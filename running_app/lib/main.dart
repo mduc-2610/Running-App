@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/view/activity/activity_record_create_view.dart';
 import 'package:running_app/view/activity/activity_record_detail_view.dart';
 import 'package:running_app/view/activity/activity_record_edit_view.dart';
@@ -76,6 +77,7 @@ void main() async {
     homeScreen = const GetStartedView();
 
   }
+
   runApp(
     MultiProvider(
       providers: [
@@ -117,7 +119,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/',
+      initialRoute: '/event_user_detail',
       routes: {
         '/': (context) => homeScreen,
         '/on_board': (context) => const OnBoardingView(),
@@ -142,7 +144,7 @@ class MyApp extends StatelessWidget {
         '/club_detail': (context) => const ClubDetailView(),
         '/club_detail_information': (context) => const ClubDetailInformationView(),
         '/club_create': (context) => const ClubCreateView(),
-        '/member': (context) => const ClubMemberView(),
+        '/club_member': (context) => const ClubMemberView(),
         '/event_list': (context) => const EventListView(),
         '/event_user_detail': (context) => const EventMemberDetailView(),
         '/event_group_detail': (context) => const EventGroupDetailView(),

@@ -10,11 +10,12 @@ class Group(models.Model):
         null=True,
         validators=[MaxLengthValidator(255, 'The field can contain at most 200 characters')]
     )
-    avatar = models.ImageField(upload_to="", default="")
+    avatar = models.ImageField(upload_to="", default="", null=True)
+    banner = models.ImageField(upload_to="", default="", null=True)
     event = models.ForeignKey(
         "activity.Event", related_name="groups", on_delete=models.CASCADE)
     users = models.ManyToManyField(
-        "account.User", through="activity.UserGroup", blank=True)
+        "account.Activity", through="activity.UserParticipationGroup", blank=True)
     
     def total_distance(self):
         return 0
@@ -30,15 +31,4 @@ class Group(models.Model):
     
     def __str__(self):
         return self.name
-
-class UserGroup(models.Model):
-    user = models.OneToOneField(
-    "account.User", related_name="group_membership", on_delete=models.CASCADE, null=True, blank=True)
-    group = models.ForeignKey(
-        "activity.Group", related_name="user_memberships", on_delete=models.CASCADE, null=True, blank=True)
-    participated_at = models.DateTimeField(auto_now_add=True)
-    is_admin = models.BooleanField(default=False) 
-
-    def __str__(self):
-        return f"{self.user} {self.group.name}"
 

@@ -3,12 +3,10 @@ from rest_framework import viewsets, \
                             status, \
                             response
 
-from activity.models import Group, \
-                            UserGroup
+from activity.models import Group
 from activity.serializers import GroupSerializer, \
                                 DetailGroupSerializer, \
-                                CreateUpdateGroupSerializer, \
-                                UserGroupSerializer        
+                                CreateUpdateGroupSerializer
 
 
 class GroupViewSet(
@@ -33,14 +31,3 @@ class GroupViewSet(
         serializer_class = self.get_serializer_class()
         kwargs['context'] = self.get_serializer_context()
         return super().get_serializer(*args, **kwargs)
-
-class UserGroupViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet
-):
-    queryset = UserGroup.objects.all()
-    serializer_class = UserGroupSerializer

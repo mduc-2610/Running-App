@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/activity/group.dart';
+import 'package:running_app/models/activity/user_participation.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -9,6 +15,9 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class GroupCreateView extends StatefulWidget {
   const GroupCreateView({super.key});
@@ -18,9 +27,72 @@ class GroupCreateView extends StatefulWidget {
 }
 
 class _GroupCreateViewState extends State<GroupCreateView> {
+  String token = "";
+  DetailUser? user;
+  String? userActivityId;
   String sportChoice = "Running";
   String organizationChoice = "Sport Club";
   String? privacy = "Public";
+  Color createGroupButtonState = TColor.BUTTON_DISABLED;
+  bool groupNameClearButtonState = false;
+  bool groupDescriptionClearButtonState = false;
+
+  TextEditingController groupNameTextController = TextEditingController();
+  TextEditingController groupDescriptionTextController = TextEditingController();
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+      userActivityId = getUrlId(user?.activity ?? "");
+    });
+  }
+
+  void checkFormData() {
+    setState(() {
+      createGroupButtonState =
+      (groupNameTextController.text.isNotEmpty &&
+          groupDescriptionTextController.text.isNotEmpty)
+          ? TColor.PRIMARY : TColor.BUTTON_DISABLED;
+    });
+  }
+
+  void createGroup() async {
+    final group = CreateGroup(
+      name: groupNameTextController.text,
+      description: groupDescriptionTextController.text,
+      eventId: "1127f7e3-210e-431d-90a7-0788f4070582",
+    );
+    print(group);
+    final data = await callCreateAPI('activity/group', group.toJson(), token);
+
+    final userParticipationGroup = UserParticipationGroup(
+      userId: "65146d6d-b3f3-4e8d-a384-407690406021",
+      groupId: data["id"],
+      isAdmin: true,
+    );
+    print(userParticipationGroup);
+
+    final data2 = await callCreateAPI(
+        'activity/user-participation-group',
+        userParticipationGroup.toJson(),
+        token
+    );
+    print(data2);
+
+    // Navigator.pop(context);
+
+  }
+
+  @override void didChangeDependencies() {
+    initToken();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,13 +220,15 @@ class _GroupCreateViewState extends State<GroupCreateView> {
                         ],
                       ),
                     ),
-                    SizedBox(height: media.height * 0.01,),
+                    SizedBox(height: media.height * 0.02,),
 
                     // Add general information
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomTextFormField(
+                          onChanged: (_) => checkFormData(),
+                          controller: groupNameTextController,
                           decoration: CustomInputDecoration(
                               label: Text(
                                 "Group name *",
@@ -165,9 +239,19 @@ class _GroupCreateViewState extends State<GroupCreateView> {
                               )
                           ),
                           keyboardType: TextInputType.text,
+                          showClearButton: groupNameClearButtonState,
+                          onClearChanged: () {
+                            groupNameTextController.clear();
+                            setState(() {
+                              groupNameClearButtonState = false;
+                              createGroupButtonState = TColor.BUTTON_DISABLED;
+                            });
+                          },
                         ),
                         SizedBox(height: media.height * 0.01,),
                         CustomTextFormField(
+                          onChanged: (_) => checkFormData(),
+                          controller: groupDescriptionTextController,
                           decoration: CustomInputDecoration(
                             hintText: "Describe your group here *",
                             // label: Text(
@@ -180,6 +264,14 @@ class _GroupCreateViewState extends State<GroupCreateView> {
                           ),
                           keyboardType: TextInputType.text,
                           maxLines: 4,
+                          showClearButton: groupDescriptionClearButtonState,
+                          onClearChanged: () {
+                            groupDescriptionTextController.clear();
+                            setState(() {
+                              groupDescriptionClearButtonState = false;
+                              createGroupButtonState = TColor.BUTTON_DISABLED;
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -204,9 +296,7 @@ class _GroupCreateViewState extends State<GroupCreateView> {
             margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
-              onPressed: () {
-                Navigator.pushNamed(context, '/home');
-              },
+              onPressed: (createGroupButtonState == TColor.BUTTON_DISABLED) ? null : createGroup,
               child: Text(
                 "Create a group",
                 style: TextStyle(
@@ -215,6 +305,7 @@ class _GroupCreateViewState extends State<GroupCreateView> {
                     fontWeight: FontWeight.w800
                 ),
               ),
+              background: createGroupButtonState,
             ),
           )
       ),

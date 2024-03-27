@@ -14,10 +14,10 @@ from account.models import User, \
 from activity.models import ActivityRecord, \
                             Club, \
                             Group, \
-                            UserGroup, \
                             Event, \
                             UserParticipationClub, \
-                            UserParticipationEvent
+                            UserParticipationEvent, \
+                            UserParticipationGroup
 
 from product.models import Brand, \
                             Category, \
@@ -43,7 +43,7 @@ fake = Faker()
 def run():
     model_list = [
         User, Performance, Privacy, Profile, Activity,
-        ActivityRecord, Club, Group, UserGroup, 
+        ActivityRecord, Club, Group, UserParticipationGroup, 
         Event, UserParticipationClub, UserParticipationEvent,
         Brand, Category, Product, ProductImage, UserProduct, 
         Token
@@ -213,16 +213,19 @@ def run():
     print("________________________________________________________________")
     print("USER EVENT GROUP:")
     user_event_group_list = []
-    for i in range(MAX_NUMBER_USER_EVENT_GROUPS):
-        data = {
-            "user": user_list[i],
-            "group": random.choice(event_group_list),
-            "participated_at": fake.date_time_this_year(),
-            "is_admin": random.choice([True, False])
-        }
-        user_event_group, _ = UserGroup.objects.get_or_create(**data)
-        user_event_group_list.append(user_event_group)
-        print(f"\tSuccesfully created User Event Group: {user_event_group}")
+    for group in event_group_list:
+        user_tmp = user_activity_list.copy()
+        for i in range(MAX_NUMBER_USER_EVENT_GROUPS):
+            random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
+            data = {
+                "user": random_user,
+                "group": random.choice(event_group_list),
+                "participated_at": fake.date_time_this_year(),
+                "is_admin": random.choice([True, False])
+            }
+            user_event_group, _ = UserParticipationGroup.objects.get_or_create(**data)
+            user_event_group_list.append(user_event_group)
+            print(f"\tSuccesfully created User Event Group: {user_event_group}")
     
     print("________________________________________________________________")
     print("USER PARTICIPATION CLUB:")

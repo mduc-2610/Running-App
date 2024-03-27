@@ -9,7 +9,8 @@ from account.models import User
 from activity.models import Event, \
                             Club, \
                             UserParticipationClub, \
-                            UserParticipationEvent
+                            UserParticipationEvent, \
+                            UserParticipationGroup
                             
 
 from account.serializers import UserSerializer, \
@@ -19,7 +20,9 @@ from activity.serializers import EventSerializer, \
                                 UserParticipationClubSerializer, \
                                 CreateUserParticipationClubSerializer, \
                                 UserParticipationEventSerializer, \
-                                CreateUserParticipationEventSerializer
+                                CreateUserParticipationEventSerializer, \
+                                UserParticipationGroupSerializer, \
+                                CreateUserParticipationGroupSerializer 
                                 
 
 class UserParticipationClubViewSet(
@@ -131,3 +134,24 @@ class UserParticipationEventViewSet(
     #     instance = self.get_queryset()
     #     serializer = self.get_serializer(instance, many=True)
     #     return response.Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserParticipationGroupViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+    # viewsets.ModelViewSet
+):
+    queryset = UserParticipationGroup.objects.all()
+    serializer_class = UserParticipationGroupSerializer
+    
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateUserParticipationGroupSerializer
+        return super().get_serializer_class()
+    
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)

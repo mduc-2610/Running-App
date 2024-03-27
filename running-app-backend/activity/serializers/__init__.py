@@ -9,8 +9,7 @@ from .club import ClubSerializer, \
 
 from .group import GroupSerializer, \
                     DetailGroupSerializer, \
-                    CreateUpdateGroupSerializer, \
-                    UserGroupSerializer
+                    CreateUpdateGroupSerializer
 
 from .event import EventSerializer, \
                     DetailEventSerializer, \
@@ -19,4 +18,6 @@ from .event import EventSerializer, \
 from .user_participation import UserParticipationClubSerializer, \
                                 CreateUserParticipationClubSerializer, \
                                 UserParticipationEventSerializer, \
-                                CreateUserParticipationEventSerializer
+                                CreateUserParticipationEventSerializer, \
+                                UserParticipationGroupSerializer, \
+                                CreateUserParticipationGroupSerializer

@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
-from activity.models import Group, \
-                            UserGroup
+from activity.models import Group, Event
 
 from account.serializers import UserSerializer
 from activity.serializers.event import EventSerializer
@@ -46,19 +45,34 @@ class DetailGroupSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "id": {"read_only": True}
         }
-
 class CreateUpdateGroupSerializer(serializers.ModelSerializer):
+    event_id = serializers.UUIDField()
+    event = serializers.SerializerMethodField()
+
+    def create(self, validated_data):
+        event_id = validated_data.pop('event_id')
+        return Group.objects.create(event_id=event_id, **validated_data)
+
+    def get_event(self, instance):
+        event = Event.objects.get(id=self.instance.event_id)
+        return EventSerializer(event).data
+
+    def to_representation(self, instance):
+        instance = super().to_representation(instance)
+        instance['event'] = self.get_event(instance)
+        return instance
+
     class Meta:
         model = Group
-        fields = "__all__"
+        fields = (
+            "id",
+            "name", 
+            "description",
+            "avatar",
+            "banner",
+            "event_id",
+            "event"
+        )
         extra_kwargs = {
             "id": {"read_only": True}
-        }
-
-class UserGroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserGroup
-        fields = "__all__"
-        extra_kwargs = {
-            "id": {"read_only": True},
         }

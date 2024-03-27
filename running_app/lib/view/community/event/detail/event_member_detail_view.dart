@@ -251,7 +251,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                       SizedBox(height: media.height * 0.02,),
 
                       // Notify certification section
-                      if(certified)...[
+                      if(false)...[
                         Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 12,
@@ -298,6 +298,65 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                                     SizedBox(height: media.height * 0.005,),
                                     Text(
                                       "Congratulations on completing the running event challenge! Your dedication and contribution is truly commendable.",
+                                      style: TextStyle(
+                                          color: TColor.PRIMARY_TEXT,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ] else...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 16
+                          ),
+                          decoration: BoxDecoration(
+                              color: TColor.SECONDARY_BACKGROUND,
+                              border: Border.all(
+                                  width: 1,
+                                  color: TColor.BORDER_COLOR
+                              ),
+                              borderRadius: BorderRadius.circular(12)
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: TColor.PRIMARY,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Icon(
+                                  Icons.clear_rounded,
+                                  color: TColor.PRIMARY_TEXT,
+                                  size: 40,
+                                ),
+                              ),
+                              SizedBox(width: media.width * 0.05,),
+                              SizedBox(
+                                width: media.width * 0.65,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Not completed ",
+                                      style: TextStyle(
+                                          color: TColor.PRIMARY,
+                                          fontSize: FontSize.LARGE,
+                                          fontWeight: FontWeight.w900,
+                                          letterSpacing: 0.9
+                                      ),
+                                    ),
+                                    SizedBox(height: media.height * 0.005,),
+                                    Text(
+                                      "Member hasn't completed this challenge",
                                       style: TextStyle(
                                           color: TColor.PRIMARY_TEXT,
                                           fontSize: 14,

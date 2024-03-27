@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 
 class CustomText extends StatelessWidget {
@@ -126,72 +127,77 @@ class AthleteTable extends StatelessWidget {
               children: [
                 // for(int i = 0; i < 30; i++)
                 for(var participant in participants ?? [])...[
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 12
-                    ),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(width: 1, color: Color(0xff746cb3))
-                      )
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              width: media.width * 0.05,
-                              child: CustomText(text: (participants!.indexOf(participant) + 1).toString())
-                            ),
-                            SizedBox(width: media.width * 0.02,),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              width: media.width * 0.35,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: Image.asset(
-                                      "assets/img/community/ptit_logo.png",
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                  ),
-                                  SizedBox(width: media.width * 0.02,),
-                                  Container(
-                                      alignment: Alignment.centerLeft,
-                                      child: SizedBox(
-                                        width: media.width * 0.25,
-                                        child: CustomText(
-                                          text: participant?.username,
-                                        ),
-                                      )
-                                  ),
-                                ],
+                  CustomTextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/event_user_detail');
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 12
+                      ),
+                      decoration: const BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(width: 1, color: Color(0xff746cb3))
+                          )
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: media.width * 0.05,
+                                  child: CustomText(text: (participants!.indexOf(participant) + 1).toString())
                               ),
-                            )
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              width: media.width * 0.15,
-                              child: CustomText(text: generateRandomDistance())
-                            ),
-                            // SizedBox(width: media.width * 0.1,),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              width: media.width * 0.15,
-                              child: CustomText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m')
-                            )
-                          ],
-                        )
-                      ],
+                              SizedBox(width: media.width * 0.02,),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                width: media.width * 0.35,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: Image.asset(
+                                        "assets/img/community/ptit_logo.png",
+                                        width: 30,
+                                        height: 30,
+                                      ),
+                                    ),
+                                    SizedBox(width: media.width * 0.02,),
+                                    Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: SizedBox(
+                                          width: media.width * 0.25,
+                                          child: CustomText(
+                                            text: participant?.username,
+                                          ),
+                                        )
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: media.width * 0.15,
+                                  child: CustomText(text: generateRandomDistance())
+                              ),
+                              // SizedBox(width: media.width * 0.1,),
+                              Container(
+                                  alignment: Alignment.centerLeft,
+                                  width: media.width * 0.15,
+                                  child: CustomText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m')
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   )
                 ]

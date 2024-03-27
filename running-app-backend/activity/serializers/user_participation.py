@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from activity.models import UserParticipationClub, \
-                            UserParticipationEvent
+                            UserParticipationEvent, \
+                            UserParticipationGroup  
 
 from account.serializers import UserSerializer
 from activity.serializers import ClubSerializer, \
@@ -15,7 +16,7 @@ class UserParticipationClubSerializer(serializers.Serializer):
     user = UserSerializer()
 
     class Meta:
-        moddel = UserParticipationClub
+        model = UserParticipationClub
         fields = "__all__"
 
 class CreateUserParticipationClubSerializer(serializers.Serializer):
@@ -57,6 +58,28 @@ class CreateUserParticipationEventSerializer(serializers.Serializer):
         user_id = validated_data.pop('user_id')
         event_id = validated_data.pop('event_id')
         return UserParticipationEvent.objects.create(user_id=user_id, event_id=event_id, **validated_data)
+    
     class Meta:
         model = UserParticipationEvent
+        fields = "__all__"
+
+class UserParticipationGroupSerializer(serializers.Serializer):
+    group = GroupSerializer()
+    user = UserSerializer()
+
+    class Meta:
+        model = UserParticipationGroup
+        fields = "__all__"
+
+class CreateUserParticipationGroupSerializer(serializers.Serializer):
+    user_id = serializers.UUIDField()
+    group_id = serializers.UUIDField()
+
+    def create(self, validated_data):
+        user_id = validated_data.pop('user_id')
+        group_id = validated_data.pop('group_id')
+        return UserParticipationGroup.objects.create(user_id=user_id, group_id=group_id, **validated_data)
+
+    class Meta:
+        model = UserParticipationGroup
         fields = "__all__"

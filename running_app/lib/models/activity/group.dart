@@ -95,3 +95,34 @@ class DetailGroup extends Group {
     return 'DetailGroup{${super.toString()}, numberOfParticipants: $numberOfParticipants, rank: $rank, event: $event, users: $users, description: $description}';
   }
 }
+
+class CreateGroup {
+  final String? name;
+  final String? description;
+  final String? avatar;
+  final String? banner;
+  final String? eventId;
+
+  CreateGroup({
+    required this.name,
+    required this.description,
+    required this.eventId,
+    this.avatar,
+    this.banner,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'avatar': avatar,
+      'banner': banner,
+      'event_id': eventId,
+    };
+  }
+
+  @override
+  String toString() {
+    return '${toJson()}';
+  }
+}
