@@ -17,13 +17,15 @@ from account.serializers import UserSerializer, \
 from activity.serializers import EventSerializer, \
                                 ClubSerializer, \
                                 UserParticipationClubSerializer, \
+                                CreateUserParticipationClubSerializer, \
                                 UserParticipationEventSerializer, \
-                                CreateUserParticipationClubSerializer
+                                CreateUserParticipationEventSerializer
                                 
 
 class UserParticipationClubViewSet(
     mixins.ListModelMixin,
     mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
     # viewsets.ModelViewSet
 ):
@@ -33,7 +35,7 @@ class UserParticipationClubViewSet(
     def get_serializer_class(self):
         if self.action == "create":
             return CreateUserParticipationClubSerializer
-        return UserParticipationClubSerializer
+        return super().get_serializer_class()
     
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.get_serializer_class()
@@ -75,11 +77,27 @@ class UserParticipationClubViewSet(
     #     return response.Response(serializer.data, status=status.HTTP_200_OK)
     
 class UserParticipationEventViewSet(
-    viewsets.ModelViewSet
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
 ):
     queryset = UserParticipationEvent.objects.all()
     serializer_class = UserParticipationEventSerializer
     
+    def get_serializer_class(self):
+        return super().get_serializer_class()
+    
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateUserParticipationEventSerializer
+        return super().get_serializer_class()
+    
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
+        
     # def get_queryset(self):
     #     user_id = self.kwargs.get('user_id', None)
     #     event_id = self.kwargs.get('event_id', None)

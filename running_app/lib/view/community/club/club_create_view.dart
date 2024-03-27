@@ -472,6 +472,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
             child: CustomMainButton(
               horizontalPadding: 0,
               onPressed: (createClubButtonState == TColor.BUTTON_DISABLED) ? null : createClub,
+              background: createClubButtonState,
               child: Text(
                 "Create club",
                 style: TextStyle(
@@ -480,7 +481,6 @@ class _ClubCreateViewState extends State<ClubCreateView> {
                     fontWeight: FontWeight.w800
                 ),
               ),
-              background: createClubButtonState,
             ),
           )
       ),

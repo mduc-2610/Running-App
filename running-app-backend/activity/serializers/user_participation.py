@@ -39,11 +39,6 @@ class UserParticipationEventSerializer(serializers.Serializer):
     is_superadmin = serializers.BooleanField()
     participated_at = serializers.DateTimeField()
 
-    # def get_is_admin(self, instance):
-    #     return instance.is_admin
-    
-
-
     class Meta:
         model = UserParticipationEvent
         fields = (
@@ -53,3 +48,15 @@ class UserParticipationEventSerializer(serializers.Serializer):
             "user",
             "event"
         )
+
+class CreateUserParticipationEventSerializer(serializers.Serializer):
+    user_id = serializers.UUIDField()
+    event_id = serializers.UUIDField()
+
+    def create(self, validated_data):
+        user_id = validated_data.pop('user_id')
+        event_id = validated_data.pop('event_id')
+        return UserParticipationEvent.objects.create(user_id=user_id, event_id=event_id, **validated_data)
+    class Meta:
+        model = UserParticipationEvent
+        fields = "__all__"

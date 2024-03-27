@@ -1,6 +1,3 @@
-import '../account/user.dart';
-import '../activity/club.dart';
-import '../activity/event.dart';
 
 abstract class UserParticipation {
   final String? userId;
@@ -59,11 +56,13 @@ class UserParticipationClub extends UserParticipation {
 
 class UserParticipationEvent extends UserParticipation {
   final String? eventId;
+  final bool? isSuperAdmin;
 
   UserParticipationEvent({
     String? userId,
     bool? isAdmin,
     String? participatedAt,
+    required this.isSuperAdmin,
     required this.eventId
   }) : super(
       userId: userId,
@@ -83,11 +82,12 @@ class UserParticipationEvent extends UserParticipation {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
     data['event_id'] = eventId;
+    data['is_superadmin'] = isSuperAdmin;
     return data;
   }
 
   @override
   String toString() {
-    return 'UserParticipationEvent{${super.toString()}, event: $eventId}';
+    return '${super.toJson()} ${toJson()}';
   }
 }

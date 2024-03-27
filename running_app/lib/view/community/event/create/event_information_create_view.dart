@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/event.dart';
+import 'package:running_app/models/activity/user_participation.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:running_app/utils/common_widgets/app_bar.dart';
-import 'package:running_app/utils/common_widgets/bottom_stick_button.dart';
-import 'package:running_app/utils/common_widgets/choice_button.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
@@ -33,7 +35,9 @@ class EventInformationCreateView extends StatefulWidget {
 
 class _EventInformationCreateViewState extends State<EventInformationCreateView> {
   String token = "";
-  Color createChallengeButtonState = Color(0xff979797);
+  DetailUser? user;
+  Activity? userActivity;
+  Color createChallengeButtonState = const Color(0xff979797);
   bool eventNameClearButtonState = false;
   bool eventDescriptionClearButtonState = false;
 
@@ -77,7 +81,7 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
         ? distanceCompletionTextController.text
         : '${hoursTextController.text}:${minutesTextController.text}';
 
-    print('Completion goal: ${completionGoal}');
+    print('Completion goal: $completionGoal');
   }
 
   void createChallenge() async {
@@ -103,6 +107,20 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
     print(event);
 
     final data = await callCreateAPI('activity/event', event.toJson(), token);
+
+    final userParticipationEvent = UserParticipationEvent(
+      userId: userActivity?.id,
+      eventId: data["id"],
+      isSuperAdmin: true,
+      isAdmin: false,
+    );
+    print('Participate ${userParticipationEvent.toJson()}');
+    final data2 = await callCreateAPI(
+      'activity/user-participation-event',
+      userParticipationEvent.toJson(),
+      token,
+    );
+
     await deleteAllPreferences();
     Navigator.pop(context);
     Navigator.pop(context);
@@ -185,11 +203,26 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
     });
   }
 
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+  void initUserActivity() async {
+    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    setState(() {
+      userActivity = data;
+    });
+  }
+
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     getProvider();
     initToken();
-    super.didChangeDependencies();
+    initUser();
+    initUserActivity();
   }
   FocusNode distanceFocusNode = FocusNode();
   FocusNode hoursFocusNode = FocusNode();
@@ -728,6 +761,7 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
             child: CustomMainButton(
               horizontalPadding: 0,
               onPressed: (createChallengeButtonState == TColor.BUTTON_DISABLED) ? null : createChallenge,
+              background: createChallengeButtonState,
               child: Text(
                 "Create challenge",
                 style: TextStyle(
@@ -736,7 +770,6 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                     fontWeight: FontWeight.w800
                 ),
               ),
-              background: createChallengeButtonState,
             ),
           )
       ),
