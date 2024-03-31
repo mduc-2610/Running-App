@@ -176,11 +176,7 @@ class _StoreViewState extends State<StoreView> {
                                     children: [
                                       Text(
                                           "Popular",
-                                          style: TextStyle(
-                                            color: TColor.PRIMARY_TEXT,
-                                            fontSize: FontSize.NORMAL,
-                                            fontWeight: FontWeight.w600,
-                                          )
+                                          style: TxtStyle.headSection
                                       ),
                                       CustomTextButton(
                                         onPressed: () {
@@ -198,7 +194,7 @@ class _StoreViewState extends State<StoreView> {
                                     ]
                                 ),
                                 SizedBox(
-                                  height: media.height, // Set a specific height
+                                  height: media.height * 0.7, // Set a specific height
                                   child: GridView.count(
                                       padding: const EdgeInsets.all(0),
                                       crossAxisCount: 2,

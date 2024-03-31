@@ -47,6 +47,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
         ),
       ),
       child: Checkbox(
+
         value: widget.value,
         onChanged: widget.onChanged,
       ),

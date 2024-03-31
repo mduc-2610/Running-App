@@ -7,9 +7,16 @@ import 'package:running_app/utils/common_widgets/default_background_layout.dart'
 import 'package:running_app/utils/common_widgets/switch_button.dart';
 import 'package:running_app/utils/constants.dart';
 
-class PrivacySettingView extends StatelessWidget {
+class PrivacySettingView extends StatefulWidget {
   const PrivacySettingView({super.key});
 
+  @override
+  State<PrivacySettingView> createState() => _PrivacySettingViewState();
+}
+
+class _PrivacySettingViewState extends State<PrivacySettingView> {
+  String userPrivacy = "Free to follow";
+  String activityPrivacy = "Public";
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -31,11 +38,7 @@ class PrivacySettingView extends StatelessWidget {
                       children: [
                         Text(
                           "User Privacy",
-                          style: TextStyle(
-                              color: TColor.PRIMARY_TEXT,
-                              fontSize: FontSize.LARGE,
-                              fontWeight: FontWeight.w900
-                          ),
+                          style: TxtStyle.headSection,
                         ),
                         SizedBox(height: media.height * 0.01,),
                         for(var x in [
@@ -80,7 +83,19 @@ class PrivacySettingView extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              const SwitchButton()
+                              Radio(
+                                visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                                value: x["type"] as String,
+                                groupValue: userPrivacy,
+                                onChanged: (value) {
+                                  setState(() {
+                                    userPrivacy = value!;
+                                  });
+                                },
+                                fillColor: MaterialStateProperty.all<Color>(
+                                    TColor.PRIMARY
+                                ),
+                              )
                             ],
                           ),
                           SizedBox(height: media.height * 0.01,)
@@ -95,11 +110,7 @@ class PrivacySettingView extends StatelessWidget {
                       children: [
                         Text(
                           "Activity Privacy",
-                          style: TextStyle(
-                              color: TColor.PRIMARY_TEXT,
-                              fontSize: FontSize.LARGE,
-                              fontWeight: FontWeight.w900
-                          ),
+                          style: TxtStyle.headSection,
                         ),
                         SizedBox(height: media.height * 0.01,),
                         for(var x in [
@@ -118,7 +129,7 @@ class PrivacySettingView extends StatelessWidget {
                         ])...[
 
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
@@ -148,7 +159,19 @@ class PrivacySettingView extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              const SwitchButton()
+                              Radio(
+                                visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+                                value: x["type"] as String,
+                                groupValue: activityPrivacy,
+                                onChanged: (value) {
+                                  setState(() {
+                                    activityPrivacy = value!;
+                                  });
+                                },
+                                fillColor: MaterialStateProperty.all<Color>(
+                                    TColor.PRIMARY
+                                ),
+                              )
                             ],
                           ),
                           SizedBox(height: media.height * 0.01,)

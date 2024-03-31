@@ -73,7 +73,7 @@ class _SignInViewState extends State<SignInView> {
         List<dynamic> users = await callListAPI('account/user', User.fromJson, token);
         final userId = users.firstWhere((element) => element.username == usernameController.text).id;
         DetailUser user = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
-        Provider.of<UserProvider>(context, listen: false).setUser(user);
+        Provider.of<UserProvider>(context, listen: false).setUser(user, token: token);
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);

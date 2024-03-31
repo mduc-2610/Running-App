@@ -11,7 +11,7 @@ class Menu extends StatelessWidget {
     List menuIcons = [
       {"icon": Icons.home_rounded, "url": "/home"},
       {"icon": Icons.people_alt_rounded, "url": "/community"},
-      {"icon": Icons.run_circle_rounded, "url": "/running"},
+      {"icon": Icons.run_circle_rounded, "url": "/activity_record"},
       {"icon": Icons.emoji_events_rounded, "url": "/rank"},
       {"icon": Icons.shopping_bag_rounded, "url": "/store"},
     ];

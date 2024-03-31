@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/choice_button.dart';
@@ -12,6 +14,7 @@ import 'package:running_app/utils/common_widgets/show_modal_bottom_sheet.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 
 class ActivityRecordCreateView extends StatefulWidget {
   const ActivityRecordCreateView({super.key});
@@ -21,6 +24,11 @@ class ActivityRecordCreateView extends StatefulWidget {
 }
 
 class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
+  late double totalDistance;
+  late int totalTime;
+  late Uint8List image;
+  late String pace;
+
   String selectedValue = "Anyone";
   String sportChoice = "Running";
 
@@ -55,6 +63,28 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
     'assets/img/community/ptit_background.jpg',
   ];
 
+  void getArguments() {
+    setState(() {
+      final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      totalDistance = arguments["totalDistance"] / 1000;
+      totalTime = arguments["totalTime"];
+      image = arguments["mapImage"];
+      pace = arguments["pace"];
+    });
+  }
+
+  @override
+  void initState() {
+    // getArguments();
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getArguments();
+  }
+
   @override
   Widget build(BuildContext context) {
     titleTextController.text = sportChoice;
@@ -68,6 +98,12 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
         child: DefaultBackgroundLayout(
           child: Stack(
             children: [
+              Image.memory(
+                image,
+                width: media.width,
+                height: media.height * 0.4,
+                fit: BoxFit.cover,
+              ),
               MainWrapper(
                 topMargin: media.height * 0.02,
                 child: Column(
@@ -79,6 +115,7 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(height: media.height * 0.4,),
                             Text(
                                 "Sport",
                                 style: TxtStyle.headSection
@@ -137,7 +174,7 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                                     Column(
                                       children: [
                                         Text(
-                                          "0.00 km",
+                                          '${totalDistance.toStringAsFixed(2)}',
                                           style: TextStyle(
                                             color: TColor.PRIMARY_TEXT,
                                             fontSize: FontSize.LARGE,
@@ -167,11 +204,11 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                                   children: [
                                     for(var x in [
                                       {
-                                        "figure": "00:00:03",
+                                        "figure": durationRepresentation(totalTime),
                                         "type": "Total time"
                                       },
                                       {
-                                        "figure": "1:20:26",
+                                        "figure": pace,
                                         "type": "Avg. Pace(/km)",
                                       }
                                     ])...[

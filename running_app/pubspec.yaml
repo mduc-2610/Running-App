@@ -60,6 +60,7 @@ dev_dependencies:
   sqflite: ^2.3.2
   intl: ^0.18.0
   location: ^5.0.0
+
   #  permission: ^0.1.7
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

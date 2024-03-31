@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
+import 'package:running_app/utils/common_widgets/checkbox.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -8,9 +9,15 @@ import 'package:running_app/utils/common_widgets/switch_button.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 
-class NotificationSettingView extends StatelessWidget {
+class NotificationSettingView extends StatefulWidget {
   const NotificationSettingView({super.key});
 
+  @override
+  State<NotificationSettingView> createState() => _NotificationSettingViewState();
+}
+
+class _NotificationSettingViewState extends State<NotificationSettingView> {
+  bool _isChecked = false;
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -96,7 +103,14 @@ class NotificationSettingView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  const SwitchButton()
+                                  CustomCheckbox(
+                                      value: _isChecked,
+                                      onChanged: (bool? newValue) {
+                                        setState(() {
+                                          _isChecked = newValue ?? false;
+                                        });
+                                      }
+                                  ),
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,)
@@ -168,7 +182,14 @@ class NotificationSettingView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  const SwitchButton()
+                                  CustomCheckbox(
+                                      value: _isChecked,
+                                      onChanged: (bool? newValue) {
+                                        setState(() {
+                                          _isChecked = newValue ?? false;
+                                        });
+                                      }
+                                  ),
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,)
@@ -232,7 +253,14 @@ class NotificationSettingView extends StatelessWidget {
                                       ],
                                     ),
                                   ),
-                                  const SwitchButton()
+                                  CustomCheckbox(
+                                      value: _isChecked,
+                                      onChanged: (bool? newValue) {
+                                        setState(() {
+                                          _isChecked = newValue ?? false;
+                                        });
+                                      }
+                                  ),
                                 ],
                               ),
                               SizedBox(height: media.height * 0.01,)

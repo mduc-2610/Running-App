@@ -392,7 +392,7 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
                 Navigator.pushNamed(context, '/home');
               },
               child: Text(
-                "Create club",
+                "Create your profile",
                 style: TextStyle(
                     color: TColor.PRIMARY_TEXT,
                     fontSize: FontSize.LARGE,

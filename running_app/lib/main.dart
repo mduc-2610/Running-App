@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
-import 'package:running_app/utils/function.dart';
 import 'package:running_app/view/activity/activity_record_create_view.dart';
 import 'package:running_app/view/activity/activity_record_detail_view.dart';
 import 'package:running_app/view/activity/activity_record_edit_view.dart';
 import 'package:running_app/view/activity/activity_record_stats_view.dart';
+import 'package:running_app/view/activity/activity_record_view.dart';
 import 'package:running_app/view/community/club/club_create_view.dart';
 import 'package:running_app/view/community/club/club_detail_information_view.dart';
 import 'package:running_app/view/community/event/create/event_advanced_option_create_view.dart';
@@ -52,7 +52,7 @@ import 'package:running_app/view/rank/rank_view.dart';
 import 'package:running_app/view/store/product_view.dart';
 import 'package:running_app/view/store/store_view.dart';
 import 'package:running_app/view/user/setting/account_information_setting_view.dart';
-import 'package:running_app/view/user/user_discovery_view.dart';
+import 'package:running_app/view/home/user_discovery_view.dart';
 import 'package:running_app/view/user/follow_view.dart';
 import 'package:running_app/view/user/setting/notification_setting_view.dart';
 import 'package:running_app/view/user/setting/privacy_setting_view.dart';
@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/event_user_detail',
+      initialRoute: '/',
       routes: {
         '/': (context) => homeScreen,
         '/on_board': (context) => const OnBoardingView(),
@@ -127,6 +127,7 @@ class MyApp extends StatelessWidget {
         '/sign_up': (context) => const SignUpView(),
         '/profile_create': (context) => const ProfileCreateView(),
         '/home': (context) => const HomeView(),
+        '/activity_record': (context) =>  ActivityRecordView(),
         '/activity_record_list': (context) => const ActivityRecordListView(),
         '/activity_record_detail': (context) => const ActivityRecordDetailView(),
         '/activity_record_edit': (context) => const ActivityRecordEditView(),
@@ -167,7 +168,6 @@ class MyApp extends StatelessWidget {
         '/follow': (context) => const FollowView(),
         '/notification': (context) => const NotificationView(),
         // '/verify': (context) => VerifyCodeForm(),
-        // '/running': (context) => const MapStats(),
       },
     );
   }

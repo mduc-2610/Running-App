@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/group.dart';
 import 'package:running_app/models/activity/user_participation.dart';
@@ -297,6 +296,7 @@ class _GroupCreateViewState extends State<GroupCreateView> {
             child: CustomMainButton(
               horizontalPadding: 0,
               onPressed: (createGroupButtonState == TColor.BUTTON_DISABLED) ? null : createGroup,
+              background: createGroupButtonState,
               child: Text(
                 "Create a group",
                 style: TextStyle(
@@ -305,7 +305,6 @@ class _GroupCreateViewState extends State<GroupCreateView> {
                     fontWeight: FontWeight.w800
                 ),
               ),
-              background: createGroupButtonState,
             ),
           )
       ),
