@@ -128,7 +128,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                         ),
                                         onPressed: () {},
                                         child: Text(
-                                          "Joins",
+                                          "Join",
                                           style: TextStyle(
                                               color: TColor.PRIMARY_TEXT,
                                               fontSize: FontSize.LARGE,
@@ -375,7 +375,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                           ),
                                           CustomTextButton(
                                             onPressed: () {
-                                              Navigator.pushNamed(context, '/rank');
+                                              // Navigator.pushNamed(context, '/rank');
                                             },
                                             child: Text(
                                                 "View more",

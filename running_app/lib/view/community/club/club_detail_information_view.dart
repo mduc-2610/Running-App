@@ -257,7 +257,7 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                       ),
                                       CustomTextButton(
                                         onPressed: () {
-                                          Navigator.pushNamed(context, '/member');
+                                          Navigator.pushNamed(context, '/member_management_public');
                                         },
                                         child: Text(
                                             "View more",

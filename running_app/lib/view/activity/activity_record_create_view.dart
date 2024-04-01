@@ -174,7 +174,7 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                                     Column(
                                       children: [
                                         Text(
-                                          '${totalDistance.toStringAsFixed(2)}',
+                                          totalDistance.toStringAsFixed(2),
                                           style: TextStyle(
                                             color: TColor.PRIMARY_TEXT,
                                             fontSize: FontSize.LARGE,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/activity/club.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -30,23 +30,19 @@ class _ClubListViewState extends State<ClubListView> {
   }
 
   void initClubs() async {
-    try {
-      final data = await callListAPI("activity/club", Activity.fromJson, token);
-      print('data $data');
-      setState(() {
-        clubs = data;
-      });
-    }
-    catch (e) {
-      print("Error fetching data: $e");
-    }
+    print("ok");
+    final data = await callListAPI("activity/club", Club.fromJson, token);
+    print('data $data');
+    setState(() {
+      clubs = data;
+    });
   }
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     initToken();
     initClubs();
-    super.didChangeDependencies();
   }
 
   @override
@@ -80,9 +76,13 @@ class _ClubListViewState extends State<ClubListView> {
                           crossAxisSpacing: media.width * 0.035,
                           mainAxisSpacing: media.height * 0.01,
                           children: [
-                            for(int i = 0; i < 4; i++)
+                            for(var club in clubs ?? [])
                               CustomTextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/club_detail', arguments: {
+                                    "id": club?.id
+                                  });
+                                },
                                 child: IntrinsicHeight(
                                   child: Column(
                                     children: [
@@ -116,7 +116,7 @@ class _ClubListViewState extends State<ClubListView> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "PTIT",
+                                                  club?.name ?? "",
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   style: TextStyle(
@@ -127,7 +127,7 @@ class _ClubListViewState extends State<ClubListView> {
                                                 ),
                                                 // SizedBox(height: media.height * 0.01),
                                                 Text(
-                                                  "Running",
+                                                  club?.sportType ?? "",
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   style: TextStyle(
@@ -138,7 +138,7 @@ class _ClubListViewState extends State<ClubListView> {
                                                 ),
                                                 // SizedBox(height: media.height * 0.005,),
                                                 Text(
-                                                  "Member: 123123",
+                                                  "Member: ${club?.numberOfParticipants}",
                                                   overflow: TextOverflow.ellipsis,
                                                   maxLines: 1,
                                                   style: TextStyle(

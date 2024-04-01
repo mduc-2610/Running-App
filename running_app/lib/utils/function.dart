@@ -26,5 +26,16 @@ String paceRepresentation(int duration, double distance) {
   int paceMinutes = pace.floor();
   int paceSeconds = ((pace - paceMinutes.toDouble()) * 60).round();
 
-  return '${paceMinutes}:${paceSeconds.toString().padLeft(2, '0')}';
+  return '$paceMinutes:${paceSeconds.toString().padLeft(2, '0')}';
+}
+
+int countTextLines(String text) {
+  int count = 0;
+  List<String> textLines = text.split('\n');
+  for(String line in textLines) {
+    List<String> words = line.split(' ');
+    print(words.length);
+    count += (words.length / 9).ceil();
+  }
+  return count;
 }

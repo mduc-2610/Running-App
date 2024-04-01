@@ -28,6 +28,7 @@ class TImage {
 }
 
 class FontSize {
+  static const EXTRA_SMALL = 14.0;
   static const SMALL = 16.0;
   static const NORMAL = 18.0;
   static const LARGE = 20.0;
@@ -85,7 +86,11 @@ class TxtStyle {
 
   static TextStyle get descSection => TextStyle(
       color: TColor.DESCRIPTION,
-      fontSize: 14,
+      fontSize: FontSize.EXTRA_SMALL,
+  );
+  static TextStyle get descSectionNormal => TextStyle(
+    color: TColor.DESCRIPTION,
+    fontSize: FontSize.SMALL,
   );
 }
 

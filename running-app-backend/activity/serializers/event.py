@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from activity.models import Event
 from account.serializers import DetailUserSerializer
+from activity.serializers.group import GroupSerializer
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
@@ -21,13 +22,14 @@ class DetailEventSerializer(serializers.ModelSerializer):
     days_remain = serializers.SerializerMethodField()
     number_of_participants = serializers.SerializerMethodField()
     participants = serializers.SerializerMethodField()
+    groups = GroupSerializer(many=True)
     privacy = serializers.CharField(source='get_privacy_display')
     competition = serializers.CharField(source='get_competition_display')
     sport_type = serializers.CharField(source='get_sport_type_display')
     started_at = serializers.SerializerMethodField()
     ended_at = serializers.SerializerMethodField()
     regulations = serializers.SerializerMethodField()
-
+    
     def get_days_remain(self, instance):
         return instance.days_remain()
     

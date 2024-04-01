@@ -4,12 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
+import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/scroll_synchronized.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
@@ -80,7 +82,7 @@ class _RankViewState extends State<RankView> {
         child: DefaultBackgroundLayout(
           child: Stack(
             children: [
-              const BackgroundContainer(borderRadius: 0,),
+              const BackgroundContainer(),
               MainWrapper(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -328,10 +330,10 @@ class _RankViewState extends State<RankView> {
                       ],
                     ),
                     SizedBox(height: media.height * 0.04,),
-                    // ScrollSynchronized(
-                    //   parentScrollController: parentScrollController,
-                    //   child: AthleteTable(participants: userList, tableHeight: media.height - media.height * 0.26, controller: childScrollController),
-                    // )
+                    ScrollSynchronized(
+                      parentScrollController: parentScrollController,
+                      child: AthleteTable(participants: userList, tableHeight: media.height - media.height * 0.26, controller: childScrollController),
+                    )
                   ],
                 ),
               ),

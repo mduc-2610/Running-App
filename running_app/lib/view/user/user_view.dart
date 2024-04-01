@@ -121,7 +121,7 @@ class _UserViewState extends State<UserView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              user?.username ?? "",
+                              user?.name ?? "",
                               style: TextStyle(
                                   color: TColor.PRIMARY_TEXT,
                                   fontSize: FontSize.LARGE,

@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    name = models.CharField(max_length=150, default="", null=True)
     email = models.EmailField(unique=True)
     is_verified_email = models.BooleanField(default=False, db_index=True)
     username_validator = UnicodeUsernameValidator()

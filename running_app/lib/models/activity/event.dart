@@ -1,11 +1,12 @@
 import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/activity/group.dart';
 
 class Event {
   final String? id;
   final String? name;
   final int? numberOfParticipants;
   final String? banner;
-  final String? daysRemain;
+  final int? daysRemain;
 
   Event({
     required this.id,
@@ -48,13 +49,14 @@ class DetailEvent extends Event {
   final String? privacy;
   final String? competition;
   final List<DetailUser>? participants;
+  final List<Group>? groups;
 
   DetailEvent({
     String? id,
     String? name,
     int? numberOfParticipants,
     String? banner,
-    String? daysRemain,
+    int? daysRemain,
     required this.startedAt,
     required this.endedAt,
     required this.regulations,
@@ -64,6 +66,7 @@ class DetailEvent extends Event {
     required this.privacy,
     required this.competition,
     required this.participants,
+    required this.groups,
   }) : super(
     id: id,
     name: name,
@@ -84,6 +87,7 @@ class DetailEvent extends Event {
     data['privacy'] = privacy;
     data['competition'] = competition;
     data['participants'] = participants;
+    data['groups'] = groups;
     return data;
   }
 
@@ -97,6 +101,7 @@ class DetailEvent extends Event {
         privacy = json['privacy'],
         competition = json['competition'],
         participants = (json['participants'] as List<dynamic>).map((e) => DetailUser.fromJson(e)).toList(),
+        groups = (json['groups'] as List<dynamic>).map((e) => Group.fromJson(e)).toList(),
         super(
           id: json['id'],
           name: json['name'],

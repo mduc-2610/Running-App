@@ -174,7 +174,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          event?.daysRemain ?? "0",
+                                          '${event?.daysRemain ?? "0"}',
                                           style: TextStyle(
                                               color: TColor.DESCRIPTION,
                                               fontSize: FontSize.SMALL,

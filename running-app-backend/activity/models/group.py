@@ -12,6 +12,11 @@ class Group(models.Model):
     )
     avatar = models.ImageField(upload_to="", default="", null=True)
     banner = models.ImageField(upload_to="", default="", null=True)
+    PRIVACY_CHOICES = (
+        ("PUBLIC", "Public"),
+        ("PRIVATE", "Private"),
+    )
+    privacy = models.CharField(max_length=15, choices=PRIVACY_CHOICES, default="PUBLIC")
     event = models.ForeignKey(
         "activity.Event", related_name="groups", on_delete=models.CASCADE)
     users = models.ManyToManyField(
@@ -24,7 +29,7 @@ class Group(models.Model):
         return ""
     
     def number_of_participants(self):
-        return 0
+        return self.users.count()
     
     def rank(self):
         return 0

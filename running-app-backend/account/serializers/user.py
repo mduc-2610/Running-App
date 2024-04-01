@@ -16,7 +16,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = (
             "id", 
             "email", 
-            "username", 
+            "username",
+            "name", 
             "phone_number"
         )
         extra_kwargs = {
@@ -46,7 +47,8 @@ class DetailUserSerializer(serializers.ModelSerializer):
             "id", 
             "email", 
             "is_verified_email", 
-            "username", 
+            "username",
+            "name", 
             "phone_number", 
             "is_verified_phone",
             "profile",

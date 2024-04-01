@@ -17,8 +17,8 @@ import 'package:running_app/view/community/event/create/event_feature_create_vie
 import 'package:running_app/view/community/event/create/event_information_create_view.dart';
 import 'package:running_app/view/community/event/create/group_create_view.dart';
 import 'package:running_app/view/community/event/management/group_management_view.dart';
-import 'package:running_app/view/community/event/management/member_management_private_view.dart';
-import 'package:running_app/view/community/event/management/member_management_public_view.dart';
+import 'package:running_app/view/community/utils/common_widgets/member_management_private_view.dart';
+import 'package:running_app/view/community/utils/common_widgets/member_management_public_view.dart';
 import 'package:running_app/view/community/club/club_member_view.dart';
 import 'package:running_app/view/community/event/utils/provider/event_advanced_option_create_provider.dart';
 import 'package:running_app/view/community/event/utils/provider/event_feature_create_provider.dart';
@@ -122,31 +122,49 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => homeScreen,
+        // Login
         '/on_board': (context) => const OnBoardingView(),
         '/sign_in': (context) => const SignInView(),
         '/sign_up': (context) => const SignUpView(),
         '/profile_create': (context) => const ProfileCreateView(),
+
+        // Home
         '/home': (context) => const HomeView(),
-        '/activity_record': (context) =>  ActivityRecordView(),
+        '/notification': (context) => const NotificationView(),
+        '/athlete_discovery': (context) => const UserDiscoveryView(),
+
+        // Activity Record
+        '/activity_record': (context) =>  const ActivityRecordView(),
         '/activity_record_list': (context) => const ActivityRecordListView(),
         '/activity_record_detail': (context) => const ActivityRecordDetailView(),
         '/activity_record_edit': (context) => const ActivityRecordEditView(),
         '/activity_record_create': (context) => const ActivityRecordCreateView(),
         '/activity_record_stats': (context) => const ActivityRecordStatsView(),
+
+        // Store
         '/store': (context) => const StoreView(),
         '/product': (context) => const ProductView(),
+
+        // Rank
         '/rank': (context) => const RankView(),
+
+        // Other
         '/box': (context) => const NotificationBox(),
         '/address': (context) => const AddressView(),
         '/wallet': (context) => const WalletView(),
         '/email_verification': (context) => const EmailVerification(),
+
+        // Community
         '/community': (context) => const CommunityView(),
+        // Club
         '/club_list': (context) => const ClubListView(),
         '/club_detail': (context) => const ClubDetailView(),
         '/club_detail_information': (context) => const ClubDetailInformationView(),
         '/club_create': (context) => const ClubCreateView(),
         '/club_member': (context) => const ClubMemberView(),
+        // Event
         '/event_list': (context) => const EventListView(),
+        '/event_detail': (context) => const EventDetailView(),
         '/event_user_detail': (context) => const EventMemberDetailView(),
         '/event_group_detail': (context) => const EventGroupDetailView(),
         '/group_create': (context) => const GroupCreateView(),
@@ -157,16 +175,15 @@ class MyApp extends StatelessWidget {
         '/group_management': (context) => const GroupManagementView(),
         '/member_management_private': (context) => const MemberManagementPrivateView(),
         '/member_management_public': (context) => const MemberManagementPublicView(),
+
+        // User
         '/user': (context) => const UserView(),
         '/other_user': (context) => const OtherUserView(),
+        '/follow': (context) => const FollowView(),
         '/setting': (context) => const SettingView(),
-        '/event_detail': (context) => const EventDetailView(),
         '/privacy_setting': (context) => const PrivacySettingView(),
         '/account_information_setting': (context) => const AccountInformationSettingView(),
         '/notification_setting': (context) => const NotificationSettingView(),
-        '/athlete_discovery': (context) => const UserDiscoveryView(),
-        '/follow': (context) => const FollowView(),
-        '/notification': (context) => const NotificationView(),
         // '/verify': (context) => VerifyCodeForm(),
       },
     );

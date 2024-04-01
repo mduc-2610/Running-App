@@ -126,6 +126,10 @@ class _ClubCreateViewState extends State<ClubCreateView> {
         "text": "Cycling"
       },
       {
+        "icon": Icons.directions_walk_rounded,
+        "text": "Walking"
+      },
+      {
         "icon": Icons.pool_rounded,
         "text": "Swimming"
       },

@@ -31,8 +31,7 @@ class DetailProfileSerializer(serializers.ModelSerializer):
         }
 
 class CreateProfileSerializer(serializers.ModelSerializer):
-    first_name = serializers.CharField(write_only=True)
-    last_name = serializers.CharField(write_only=True)
+    name = serializers.CharField(write_only=True)
     
     class Meta:
         model = Profile
@@ -48,16 +47,17 @@ class CreateProfileSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        first_name = validated_data.pop('first_name')
-        last_name = validated_data.pop('last_name')
-        user_data = {'first_name': first_name, 'last_name': last_name}
-        user = self.context['request'].user
-        profile = Profile.objects.create(user=user, **validated_data)
+        user_data = validated_data.pop('name', None)
+        profile = Profile.objects.create(**validated_data)
+        profile.user.name = user_data
+        profile.user.save()
+        
         return profile
     
+    
+    
 class UpdateProfileSerializer(serializers.ModelSerializer):
-    first_name = serializers.CharField(write_only=True)
-    last_name = serializers.CharField(write_only=True)
+    name = serializers.CharField(write_only=True)
 
     class Meta:
         model = Profile
@@ -68,17 +68,13 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['first_name'] = instance.user.first_name if instance.user.first_name else ""
-        data['last_name'] = instance.user.last_name if instance.user.last_name else ""
+        data['name'] = instance.user.first_name if instance.user.first_name else ""
         return data
     
     def update(self, instance, validated_data):
-        first_name = validated_data.pop('first_name', '')
-        last_name = validated_data.pop('last_name', '')
-        user = self.context['request'].user
-        instance.user.first_name = first_name
-        instance.user.last_name = last_name
-        instance.user.save()
-        instance = super().update(instance, validated_data)
-        return instance
+        user_data = validated_data.pop('name', None)
+        if user_data:
+            instance.user.name = user_data
+            instance.user.save()
+        return super().update(instance, validated_data)
 

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/activity/activity_record.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -7,10 +12,51 @@ import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
+import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
-class ActivityRecordListView extends StatelessWidget {
+class ActivityRecordListView extends StatefulWidget {
   const ActivityRecordListView({super.key});
+
+  @override
+  State<ActivityRecordListView> createState() => _ActivityRecordListViewState();
+}
+
+class _ActivityRecordListViewState extends State<ActivityRecordListView> {
+  String token = "";
+  DetailUser? user;
+  Activity? userActivity;
+  List<ActivityRecord>? activityRecords;
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+  void initUserActivity() async {
+    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    setState(() {
+      userActivity = data;
+      activityRecords = userActivity?.activityRecords;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    initToken();
+    initUser();
+    initUserActivity();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,77 +152,84 @@ class ActivityRecordListView extends StatelessWidget {
                     SizedBox(height: media.height * 0.02,),
                     Column(
                       children: [
-                        for(int i = 0; i < 7; i++)
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, media.height * 0.01),
-                            padding: EdgeInsets.symmetric(
-                              vertical: media.height * 0.015,
-                              horizontal: media.width * 0.05,
-                            ),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12.0),
-                                border: Border.all(
-                                    color: const Color(0xff3f4252),
-                                    width: 2
-                                )
-                            ),
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                          "27 May",
-                                          style: TextStyle(
-                                            color: TColor.PRIMARY,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          )
-                                      ),
-                                      SizedBox(height: media.height * 0.005),
-                                      RichText(
-                                          text: TextSpan(
-                                              style: TextStyle(
-                                                color: TColor.DESCRIPTION,
-                                                fontSize: 12,
-                                              ),
-                                              children: const <TextSpan>[
-                                                TextSpan(
-                                                  text: "100 pt",
-                                                  style: TextStyle(
-                                                    color: Color(0xffda477e),
-                                                  ),
-                                                ),
-                                                TextSpan(text: "  •  12,4 km  •  1222 kcal"),
-                                              ]
-                                          )
-                                      )
-                                    ],
-                                  ),
-
-                                  RichText(
-                                    text: TextSpan(
-                                        style: TextStyle(
-                                            color: TColor.DESCRIPTION,
-                                            fontSize: FontSize.SMALL,
-                                            fontWeight: FontWeight.w400
-                                        ),
-                                        children: <TextSpan> [
-                                          TextSpan(
-                                              text: "10,120 ",
-                                              style: TextStyle(
-                                                  color: TColor.DESCRIPTION,
-                                                  fontSize: FontSize.NORMAL,
-                                                  fontWeight: FontWeight.w900
-                                              )
-                                          ),
-                                          const TextSpan(text: "steps")
-                                        ]
-                                    ),
+                        for(var activity in activityRecords ?? [])
+                          CustomTextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/activity_record_detail', arguments: {
+                                "id": activity?.id,
+                              });
+                            },
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(0, 0, 0, media.height * 0.01),
+                              padding: EdgeInsets.symmetric(
+                                vertical: media.height * 0.015,
+                                horizontal: media.width * 0.05,
+                              ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  border: Border.all(
+                                      color: const Color(0xff3f4252),
+                                      width: 2
                                   )
-                                ]
+                              ),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            activity?.completedAt ?? "",
+                                            style: TextStyle(
+                                              color: TColor.PRIMARY,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            )
+                                        ),
+                                        SizedBox(height: media.height * 0.005),
+                                        RichText(
+                                            text: TextSpan(
+                                                style: TextStyle(
+                                                  color: TColor.DESCRIPTION,
+                                                  fontSize: 12,
+                                                ),
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                    text: '${activity?.pointsEarned}',
+                                                    style: TextStyle(
+                                                      color: Color(0xffda477e),
+                                                    ),
+                                                  ),
+                                                  TextSpan(text: "  •  ${activity?.distance} km •  ${activity?.kcal} kcal"),
+                                                ]
+                                            )
+                                        )
+                                      ],
+                                    ),
+
+                                    RichText(
+                                      text: TextSpan(
+                                          style: TextStyle(
+                                              color: TColor.DESCRIPTION,
+                                              fontSize: FontSize.SMALL,
+                                              fontWeight: FontWeight.w400
+                                          ),
+                                          children: <TextSpan> [
+                                            TextSpan(
+                                                text: "10,120 ",
+                                                style: TextStyle(
+                                                    color: TColor.DESCRIPTION,
+                                                    fontSize: FontSize.NORMAL,
+                                                    fontWeight: FontWeight.w900
+                                                )
+                                            ),
+                                            const TextSpan(text: "steps")
+                                          ]
+                                      ),
+                                    )
+                                  ]
+                              ),
                             ),
                           ),
                       ],

@@ -40,7 +40,7 @@ class EventList extends StatelessWidget {
         ]
         else...[
           SizedBox(
-            height: media.height * 0.67,
+            height: media.height * 0.65,
             child: SingleChildScrollView(
               child: Column(
                 children: [

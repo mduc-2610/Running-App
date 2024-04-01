@@ -79,6 +79,7 @@ class AthleteTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print(participants);
     var media = MediaQuery.sizeOf(context);
     return Column(
       children: [
@@ -172,7 +173,7 @@ class AthleteTable extends StatelessWidget {
                                         child: SizedBox(
                                           width: media.width * 0.25,
                                           child: CustomText(
-                                            text: participant?.username,
+                                            text: participant?.name,
                                           ),
                                         )
                                     ),

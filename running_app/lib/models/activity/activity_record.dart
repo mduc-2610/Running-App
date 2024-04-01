@@ -4,75 +4,87 @@ class ActivityRecord {
   final String? id;
   final String? sportType;
   final double? distance;
-  final int? step;
-  final User? user;
-  final double? kcal;
+  final int? pointsEarned;
+  final int? steps;
+  final int? kcal;
   final String? completedAt;
+  final String? avgMovingPace;
 
   ActivityRecord({
      required this.id,
      required this.sportType,
      required this.distance,
-     required this.step,
-     required this.user,
+     required this.steps,
+     required this.pointsEarned,
      required this.kcal,
      required this.completedAt,
+     required this.avgMovingPace,
   });
 
   ActivityRecord.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       sportType = json['sport_type'],
       distance = double.parse(json['distance']),
-      step = json['step'],
-      user = User.fromJson(json['user']),
+      steps = json['steps'],
+      pointsEarned = json['points_earned'],
       kcal = json['kcal'],
-      completedAt = json['completed_at'];
+      completedAt = json['completed_at'],
+      avgMovingPace = json['avg_moving_pace'];
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'sport_type': sportType,
       'distance': distance,
-      'step': step,
-      'user': user?.toJson(),
+      'steps': steps,
+      'points_earned': pointsEarned,
       'kcal': kcal,
       'completed_at': completedAt,
+      'avgMovingPace': avgMovingPace,
     };
   }
 
   @override
   String toString() {
-    return 'ActivityRecord{id: $id, sportType: $sportType, distance: $distance, step: $step, user: $user, kcal: $kcal, completedAt: $completedAt}';
+    return 'ActivityRecord{id: $id, sportType: $sportType, distance: $distance, steps: $steps, kcal: $kcal, completedAt: $completedAt}';
   }
 }
 
 class DetailActivityRecord extends ActivityRecord {
   final String? duration;
   final String? description;
+  final User? user;
+  final int? descriptionLines;
 
   DetailActivityRecord({
     String? id,
     String? sportType,
     double? distance,
-    int? step,
-    User? user,
-    double? kcal,
+    int? steps,
+    int? pointsEarned,
+    int? kcal,
     String? completedAt,
+    String? avgMovingPace,
     required this.duration,
     required this.description,
+    required this.user,
+    required this.descriptionLines,
   }) : super(
     id: id,
     sportType: sportType,
     distance: distance,
-    step: step,
-    user: user,
+    steps: steps,
+    pointsEarned: pointsEarned,
     kcal: kcal,
     completedAt: completedAt,
+    avgMovingPace: avgMovingPace
   );
 
   DetailActivityRecord.fromJson(Map<String, dynamic> json)
     : duration = json['duration'],
       description = json['description'],
+      descriptionLines = json['description_lines'],
+      user = User.fromJson(json['user']),
       super.fromJson(json);
 
   @override
@@ -80,12 +92,14 @@ class DetailActivityRecord extends ActivityRecord {
     final Map<String, dynamic> data = super.toJson();
     data['duration'] = duration;
     data['description'] = description;
+    data['description_lines'] = descriptionLines;
+    data['user'] = user?.toJson();
     return data;
   }
 
   @override
   String toString() {
-    return 'DetailActivityRecord{${super.toString()}, duration: $duration, description: $description}';
+    return 'DetailActivityRecord{${super.toString()}, duration: $duration, description: $description, descriptionLines: $descriptionLines, user: $user}';
   }
 }
 

@@ -177,7 +177,7 @@ class _EventViewState extends State<EventView> {
         SizedBox(height: media.height * 0.03,),
 
         SizedBox(
-          height: media.height * 0.4,
+          height: media.height * 0.42,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -191,11 +191,13 @@ class _EventViewState extends State<EventView> {
                     ),
                     SizedBox(height: media.height * 0.01,),
                     SizedBox(
-                      height: media.height * 0.43,
+                      height: media.height * 0.42,
                       child: CarouselSlider(
                         options: CarouselOptions(
+                            autoPlay: true,
+                            autoPlayInterval: const Duration(seconds: 4),
+                            autoPlayAnimationDuration: const Duration(milliseconds: 1000),
                             viewportFraction: 0.9,
-                            autoPlayAnimationDuration: const Duration(milliseconds: 100),
                             initialPage: 0,
                             aspectRatio: 1.2,
                             enlargeCenterPage: true,

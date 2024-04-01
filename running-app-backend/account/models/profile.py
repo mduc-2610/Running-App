@@ -31,17 +31,9 @@ class Profile(models.Model):
     trouser_size = models.CharField(max_length=10, choices=SIZE_CHOICES)
     shoe_size = models.IntegerField()
 
-    def first_name(self):
-        return self.user.first_name
     
-    def last_name(self):
-        return self.user.last_name
-    
-    def full_name(self):
-        first_name = self.user.first_name or ''
-        last_name = self.user.last_name or ''
-        
-        return first_name + ' ' + last_name if first_name else last_name
+    def name(self):
+        return self.user.name
     
     def __str__(self):
-        return f"{self.full_name()} {self.gender}"
+        return f"{self.name()} {self.gender}"

@@ -1,29 +1,20 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart' as loc;
-import 'package:running_app/models/activity/activity_record.dart';
-import 'package:running_app/models/activity/activity_record.dart';
-import 'package:running_app/models/activity/activity_record.dart';
-import 'package:running_app/models/activity/activity_record.dart';
-import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:running_app/models/activity/entry.dart';
 
 class ActivityRecordView extends StatefulWidget {
+  const ActivityRecordView({super.key});
+
   @override
   _ActivityRecordViewState createState() => _ActivityRecordViewState();
 }
@@ -31,14 +22,14 @@ class ActivityRecordView extends StatefulWidget {
 class _ActivityRecordViewState extends State<ActivityRecordView> {
   IconData _showCalculateButtonState = Icons.arrow_forward_ios_rounded;
   GoogleMapController? _controller;
-  loc.Location _location = loc.Location();
-  Set<Marker> _markers = {};
-  Polyline _polyline = Polyline(polylineId: PolylineId("poly"));
+  final loc.Location _location = loc.Location();
+  final Set<Marker> _markers = {};
+  Polyline _polyline = const Polyline(polylineId: PolylineId("poly"));
 
   IconData playButtonState = Icons.play_arrow_rounded;
   bool firstTime = true;
-  LatLng _sourceLocation = LatLng(21.0245, 105.84117);
-  LatLng _currentLocation = LatLng(21.0245, 105.84117);
+  LatLng _sourceLocation = const LatLng(21.0245, 105.84117);
+  LatLng _currentLocation = const LatLng(21.0245, 105.84117);
 
   Timer? _timer;
   double _distance = 0.0;
@@ -61,7 +52,7 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
     setState(() {
       // _sourceLocation = ;
       // _currentLocation = _sourceLocation;
-      _markers.add(Marker(markerId: MarkerId("source"), position: _currentLocation));
+      _markers.add(Marker(markerId: const MarkerId("source"), position: _currentLocation));
       _controller?.animateCamera(CameraUpdate.newLatLngZoom(_currentLocation, 20));
     });
   }
@@ -88,9 +79,9 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
 
     setState(() {
       _currentLocation = newPosition;
-      _markers.add(Marker(markerId: MarkerId("destination"), position: _currentLocation));
+      _markers.add(Marker(markerId: const MarkerId("destination"), position: _currentLocation));
       _polyline = Polyline(
-        polylineId: PolylineId("poly"),
+        polylineId: const PolylineId("poly"),
         points: newPolylinePoints.toList(),
         color: Colors.blue,
         width: 5,
@@ -120,7 +111,7 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
   void _startTracking() {
     if(playButtonState == Icons.play_arrow_rounded) {
       const int updateInterval = 1; // in seconds
-      _timer = Timer.periodic(Duration(seconds: updateInterval), (timer) {
+      _timer = Timer.periodic(const Duration(seconds: updateInterval), (timer) {
         setState(() {
           _timeInSeconds += updateInterval;
         });
@@ -155,7 +146,7 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "Activity Record", noIcon: true),
+        title: const Header(title: "Activity Record", noIcon: true),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: Stack(
@@ -163,7 +154,7 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
           GoogleMap(
             zoomControlsEnabled: false,
             markers: _markers,
-            polylines: Set.of([_polyline]),
+            polylines: {_polyline},
             initialCameraPosition: CameraPosition(
               target: _sourceLocation,
               zoom: 18,
@@ -279,7 +270,7 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
                         ),
                       ),
                     ],
-                    Container(
+                    SizedBox(
                       width: media.width,
                       height: 35,
                       child: CustomTextButton(
@@ -312,7 +303,7 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if(firstTime)...[
-            Container(
+            SizedBox(
               width: 80,
               height: 80,
               child: FloatingActionButton(
@@ -347,7 +338,7 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
                 child: FloatingActionButton(
                   backgroundColor: TColor.WARNING,
                   onPressed: _stopTracking,
-                  child: Icon(
+                  child: const Icon(
                     Icons.stop_rounded,
                     size: 35,
                   ),

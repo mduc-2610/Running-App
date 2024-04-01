@@ -8,6 +8,7 @@ from account.serializers import UserSerializer
 from activity.models import UserParticipationEvent
 from activity.serializers.event import EventSerializer
 from activity.serializers.club import ClubSerializer
+from activity.serializers.activity_record import ActivityRecordSerializer
 from product.serializers.product import ProductSerializer
 
 class ActivitySerializer(serializers.ModelSerializer):
@@ -15,7 +16,7 @@ class ActivitySerializer(serializers.ModelSerializer):
     products = ProductSerializer(many=True, read_only=True)
     events = EventSerializer(many=True, read_only=True)
     clubs = ClubSerializer(many=True, read_only=True)
-
+    activity_records = ActivityRecordSerializer(many=True, read_only=True)
     def to_representation(self, instance):
         state = self.context.get('state', None)
         data = super().to_representation(instance)

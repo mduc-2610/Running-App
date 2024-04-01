@@ -7,7 +7,9 @@ from django.db.models import Sum
 class UserParticipation(models.Model):
     user = models.ForeignKey(
         "account.Activity", on_delete=models.CASCADE, null=True)
+    is_superadmin = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    is_approved = models.BooleanField(default=True)
     participated_at = models.DateTimeField(auto_now_add=True)
 
     def week_stats(self, col):
@@ -27,7 +29,6 @@ class UserParticipationClub(UserParticipation):
         "activity.Club", on_delete=models.CASCADE)
     
 class UserParticipationEvent(UserParticipation):
-    is_superadmin = models.BooleanField(default=False)
     event = models.ForeignKey(
         "activity.Event", on_delete=models.CASCADE)
     

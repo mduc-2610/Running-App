@@ -26,7 +26,9 @@ class Menu extends StatelessWidget {
           for (var icon in menuIcons)
             IconButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, icon["url"]);
+                (icon["url"] != "/activity_record")
+                    ? Navigator.pushReplacementNamed(context, icon["url"])
+                    : Navigator.pushNamed(context, icon["url"]);
               },
               icon: Icon(icon["icon"]),
               color: TColor.DESCRIPTION,

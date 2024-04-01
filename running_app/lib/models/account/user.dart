@@ -3,34 +3,36 @@ class User {
   final String? email;
   final String? username;
   final String? phoneNumber;
+  final String? name;
 
   User({
     required this.id,
     required this.email,
     required this.username,
     required this.phoneNumber,
+    required this.name,
   });
 
   User.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         email = json['email'],
         username = json['username'],
+        name = json['name'],
         phoneNumber = json['phone_number'];
-
-
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'email': email,
       'username': username,
+      'name': name,
       'phone_number': phoneNumber,
     };
   }
 
   @override
   String toString() {
-    return 'User{id: $id, email: $email, username: $username, phoneNumber: $phoneNumber}';
+    return 'User{id: $id, email: $email, username: $username, name: $name, phoneNumber: $phoneNumber}';
   }
 }
 
@@ -47,6 +49,7 @@ class DetailUser extends User {
     String? email,
     String? username,
     String? phoneNumber,
+    String? name,
     required this.isVerifiedEmail,
     required this.isVerifiedPhone,
     required this.activity,
@@ -58,6 +61,7 @@ class DetailUser extends User {
     id: id,
     email: email,
     username: username,
+    name: name,
     phoneNumber: phoneNumber,
   );
 
@@ -88,6 +92,7 @@ class DetailUser extends User {
         'id: $id,\n\t '
         'email: $email,\n\t '
         'username: $username,\n\t '
+        'name: $name,\n\t '
         'phoneNumber: $phoneNumber,\n\t '
         'isVerifiedEmail: ${isVerifiedEmail.toString()},\n\t '
         'isVerifiedPhone: ${isVerifiedPhone.toString()},\n\t '

@@ -69,11 +69,7 @@ class Header extends StatelessWidget {
                 SizedBox(width: media.width * 0.02,),
                 Text(
                   "$title",
-                  style: TextStyle(
-                    color: TColor.PRIMARY_TEXT,
-                    fontSize: fontSize ?? FontSize.LARGE,
-                    fontWeight: FontWeight.w900,
-                  ),
+                  style: TxtStyle.headSectionExtra
                 ),
               ],
             )]
@@ -82,11 +78,7 @@ class Header extends StatelessWidget {
                 CustomBackButton(context: context, onPressed: backButtonOnPressed),
             Text(
               "$title",
-              style: TextStyle(
-                color: TColor.PRIMARY_TEXT,
-                fontSize: fontSize ?? 22,
-                fontWeight: FontWeight.w900,
-              ),
+              style: TxtStyle.headSectionExtra
             )],
           ] else ...[
             CustomTextButton(
@@ -121,12 +113,17 @@ class Header extends StatelessWidget {
                           fontWeight: FontWeight.w300,
                         ),
                       ),
-                      Text(
-                        '$username',
-                        style: TextStyle(
-                          color: TColor.PRIMARY_TEXT,
-                          fontSize: FontSize.LARGE,
-                          fontWeight: FontWeight.w900,
+                      SizedBox(
+                        width: media.width * 0.6,
+                        child: Text(
+                          '$username',
+                          style: TextStyle(
+                            color: TColor.PRIMARY_TEXT,
+                            fontSize: FontSize.LARGE,
+                            fontWeight: FontWeight.w900,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       )
                     ],

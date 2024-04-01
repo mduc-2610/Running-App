@@ -75,6 +75,7 @@ def run():
         data = {
             "email": "".join([fake.email().split("@")[0] for x in range(2)]) + "@gmail.com",
             "username": "".join([fake.email().split("@")[0] for x in range(2)]),
+            "name": fake.name(),
             "phone_number": generate_phone_number(),
             "password": make_password("Duckkucd.123")
         }
@@ -124,6 +125,7 @@ def run():
     for i in range(MAX_NUMBER_USERS):
         data = {
             "user": user_list[i],
+            "activity": user_activity_list[i],
         }
         performance = Performance.objects.create(**data)
         performance_list.append(performance)
@@ -137,9 +139,9 @@ def run():
             "distance": random.uniform(0, 10),
             "duration": timedelta(hours=random.randint(0, 3), minutes=random.randint(0, 59), seconds=random.randint(0, 59)),
             "completed_at": fake.date_time_this_year(),
-            "sport_type": random.choice(["RUNNING", "CYCLING", "SWIMMING", "JOGGING"]),
+            "sport_type": random.choice(["RUNNING", "CYCLING", "SWIMMING", "WALKING"]),
             "description": fake.text(max_nb_chars=250),
-            "user": random.choice(user_list),
+            "user": random.choice(user_activity_list),
         }
         activity_record = ActivityRecord.objects.create(**data)
         activity_record_list.append(activity_record)
@@ -219,9 +221,11 @@ def run():
             random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
             data = {
                 "user": random_user,
-                "group": random.choice(event_group_list),
+                "group": group,
+                "is_superadmin": True if i == 0 else False,
+                "is_admin": random.choice([True, False]),
+                "is_approved": random.choice([True, False]) if group.privacy == "PRIVATE" else True,
                 "participated_at": fake.date_time_this_year(),
-                "is_admin": random.choice([True, False])
             }
             user_event_group, _ = UserParticipationGroup.objects.get_or_create(**data)
             user_event_group_list.append(user_event_group)
@@ -237,7 +241,9 @@ def run():
             data = {
                 "user": random_user,
                 "club": club,
+                "is_superadmin": True if i == 0 else False,
                 "is_admin": random.choice([True, False]),
+                "is_approved": random.choice([True, False]) if club.privacy == "PRIVATE" else True,
                 "participated_at": fake.date_time_this_year(),
             }
             user_participation_club, _ = UserParticipationClub.objects.get_or_create(**data)
@@ -253,9 +259,11 @@ def run():
             random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
             data = {
                 "user": random_user,
-                "participated_at": fake.date_time_this_year(),
                 "event": event,
-                "is_superadmin": True if i == 0 else False
+                "is_superadmin": True if i == 0 else False,
+                "is_admin": random.choice([True, False]),
+                "is_approved": random.choice([True, False]) if event.privacy == "PRIVATE" else True,
+                "participated_at": fake.date_time_this_year(),
             }
             user_participation_event = UserParticipationEvent.objects.create(**data)
             user_participation_event_list.append(user_participation_event)

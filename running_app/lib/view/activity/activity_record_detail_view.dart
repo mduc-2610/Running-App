@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/activity/activity_record.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -10,6 +15,8 @@ import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/show_modal_bottom_sheet.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
 
 class ActivityRecordDetailView extends StatefulWidget {
   const ActivityRecordDetailView({super.key});
@@ -20,9 +27,58 @@ class ActivityRecordDetailView extends StatefulWidget {
 
 class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
   int currentSlide = 0;
+  String token = "";
+  String? activityRecordId;
+  DetailActivityRecord? activityRecord;
+  bool showFullText = false;
+  bool showViewMoreButton = false;
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initActivityRecordId() {
+    setState(() {
+      activityRecordId = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>)["id"];
+    });
+  }
+
+  void initActivityRecord() async {
+    final data = await callRetrieveAPI(
+        'activity/activity-record',
+        activityRecordId,
+        null,
+        DetailActivityRecord.fromJson,
+        token);
+
+    setState(() {
+      activityRecord = data;
+    });
+  }
+
+  Map<String, dynamic> sportTypeIcon = {
+    "Running": Icons.directions_run_rounded,
+    "Walking": Icons.directions_walk_rounded,
+    "Cycling": Icons.directions_bike_rounded,
+    "Swimming": Icons.pool_rounded
+  };
+
+  @override
+  void didChangeDependencies() {
+    initToken();
+    initActivityRecordId();
+    initActivityRecord();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
+    int descriptionLines = activityRecord?.descriptionLines ?? 0;
+    if(descriptionLines > 2) {
+      showViewMoreButton = true;
+    }
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -50,31 +106,33 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                 borderRadius: BorderRadius.circular(50),
                                 child: Image.asset(
                                   "assets/img/community/ptit_logo.png",
-                                  width: 40,
-                                  height: 40,
+                                  width: 45,
+                                  height: 45,
                                 ),
                               ),
                               SizedBox(width: media.width * 0.02,),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Dang Minh Duc",
-                                    style: TextStyle(
-                                        color: TColor.PRIMARY_TEXT,
-                                        fontSize: FontSize.NORMAL,
-                                        fontWeight: FontWeight.w600
+                                  SizedBox(
+                                    width: media.width * 0.75,
+                                    child: Text(
+                                      '${activityRecord?.user?.name ?? ""}',
+                                      style: TxtStyle.headSection,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                     ),
                                   ),
                                   Row(
                                     children: [
                                       Icon(
-                                        Icons.run_circle_rounded,
+                                        sportTypeIcon['${activityRecord?.sportType ?? "Running"}'],
                                         color: TColor.DESCRIPTION,
                                         size: 20,
                                       ),
+                                      SizedBox(width: media.width * 0.02,),
                                       Text(
-                                        " Feb 12, 2024 at 1:36 PM",
+                                        '${activityRecord?.completedAt ?? ""}',
                                         style: TxtStyle.descSection,
                                       )
                                     ],
@@ -122,14 +180,33 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                           "Afternoon Run",
                           style: TextStyle(
                               color: TColor.PRIMARY_TEXT,
-                              fontSize: FontSize.NORMAL,
+                              fontSize: FontSize.LARGE,
                               fontWeight: FontWeight.w600
                           ),
                         ),
                         Text(
-                          "Lorem ",
-                          style: TxtStyle.descSection,
-                        )
+                          "${activityRecord?.description ?? ""}",
+                          style: TxtStyle.descSectionNormal,
+                          maxLines: showFullText ? null : 2,
+                        ),
+                        if(showViewMoreButton)... [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                showFullText = (showFullText) ? false : true;
+                              });
+                            },
+                            child: Text(
+                              showFullText ? "Hide" : "View more",
+                              style: TextStyle(
+                                color: TColor.PRIMARY,
+                                fontSize: FontSize.NORMAL,
+                                fontWeight: FontWeight.w600,
+                                decoration: TextDecoration.underline
+                              ),
+                            ),
+                          )
+                        ]
                       ],
                     ),
                     SizedBox(height: media.height * 0.01,),
@@ -178,13 +255,18 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                           height: media.height * 0.27,
                           child: CarouselSlider(
                             options: CarouselOptions(
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 3),
                               scrollDirection: Axis.horizontal,
                               viewportFraction: 1
                             ),
                             items: [
-                              Image.asset(
-                                "assets/img/community/ptit_background.jpg",
-                                fit: BoxFit.contain,
+                              ClipRRect(
+                                // borderRadius: BorderRadius.circular(15),
+                                child: Image.asset(
+                                  "assets/img/community/ptit_background.jpg",
+                                  fit: BoxFit.contain,
+                                ),
                               )
                             ],
                           ),
@@ -232,7 +314,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                 ),
                               ),
                               Text(
-                                "1.83 km",
+                                '${activityRecord?.distance} km',
                                 style: TxtStyle.headSection,
                               )
                             ],
@@ -256,11 +338,11 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                     for (var x in [
                                       {
                                         "type": "Moving Time",
-                                        "figure": "1.83km",
+                                        "figure": '${activityRecord?.duration}',
                                       },
                                       {
                                         "type": "Avg. Moving Pace",
-                                        "figure": "1.83km",
+                                        "figure": "${activityRecord?.avgMovingPace}",
                                       },
                                     ]) ...[
                                       SizedBox(
@@ -303,11 +385,11 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                     for (var x in [
                                       {
                                         "type": "Elapsed Time",
-                                        "figure": "1.83km",
+                                        "figure": '${activityRecord?.duration}',
                                       },
                                       {
                                         "type": "Avg. Elapsed Pace",
-                                        "figure": "1.83km",
+                                        "figure": "${activityRecord?.avgMovingPace}",
                                       },
                                     ]) ...[
                                       SizedBox(
@@ -359,15 +441,15 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                               for(var x in [
                                 {
                                   "stats": "Elevation Gain",
-                                  "figure": "4m"
+                                  "figure": "___"
                                 },
                                 {
                                   "stats": "Calories",
-                                  "figure": "128 Cal"
+                                  "figure": "${activityRecord?.kcal}"
                                 },
                                 {
                                   "stats": "Avg. Cadence",
-                                  "figure": "161 spm"
+                                  "figure": "___"
                                 },
                               ])...[
                                 Container(
@@ -415,7 +497,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          "2 comments",
+                          "0 comment",
                           style: TxtStyle.normalTextDesc,
                         ),
                         SizedBox(height: media.height * 0.015,),

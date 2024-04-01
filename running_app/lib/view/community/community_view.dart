@@ -103,6 +103,11 @@ class _CommunityViewState extends State<CommunityView> {
           ],
         ),
       ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      //   child: Icon(Icons.add),
+      // ),
       bottomSheet: (_showView == "Events" || _showView == "Clubs") ? AddButton(
         text: (_showView == "Events")
             ? "Create your own event"

@@ -4,7 +4,6 @@ import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/switch_button.dart';
 import 'package:running_app/utils/constants.dart';
 
 class PrivacySettingView extends StatefulWidget {

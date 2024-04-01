@@ -5,6 +5,7 @@ from account.serializers import UserSerializer
 from account.serializers import DetailUserSerializer
 
 class ClubSerializer(serializers.ModelSerializer):
+    sport_type = serializers.CharField(source='get_sport_type_display')
     class Meta:
         model = Club
         fields = (
