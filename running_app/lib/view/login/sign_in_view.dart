@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/performance.dart';
+import 'package:running_app/models/account/privacy.dart';
+import 'package:running_app/models/account/profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:running_app/models/account/user.dart';
@@ -73,11 +77,24 @@ class _SignInViewState extends State<SignInView> {
         List<dynamic> users = await callListAPI('account/user', User.fromJson, token);
         final userId = users.firstWhere((element) => element.username == usernameController.text).id;
         DetailUser user = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
-        Provider.of<UserProvider>(context, listen: false).setUser(user);
+        Performance userPerformance = await callRetrieveAPI(null, null, user.performance, Performance.fromJson, token);
+        DetailProfile userProfile = await callRetrieveAPI(null, null, user.profile, DetailProfile.fromJson, token);
+        Privacy userPrivacy = await callRetrieveAPI(null, null, user.privacy, Privacy.fromJson, token);
+        Activity userActivity = await callRetrieveAPI(null, null, user.activity, Activity.fromJson, token);
+
+        Provider.of<UserProvider>(context, listen: false).setUser(user,);
+        Provider.of<UserProvider>(context, listen: false).userActivity = userActivity;
+        Provider.of<UserProvider>(context, listen: false).userPerformance = userPerformance;
+        Provider.of<UserProvider>(context, listen: false).userProfile = userProfile;
+        Provider.of<UserProvider>(context, listen: false).userPrivacy = userPrivacy;
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
         await prefs.setString('user', jsonEncode(user.toJson()));
+        await prefs.setString('userActivity', jsonEncode(userActivity.toJson()));
+        await prefs.setString('userPerformance', jsonEncode(userPerformance.toJson()));
+        await prefs.setString('userProfile', jsonEncode(userProfile.toJson()));
+        await prefs.setString('userPrivacy', jsonEncode(userPrivacy.toJson()));
         print(user);
 
         Navigator.pushNamed(context, '/home', arguments: {

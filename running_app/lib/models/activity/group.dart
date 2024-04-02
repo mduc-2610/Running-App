@@ -7,19 +7,22 @@ class Group {
   final String? avatar;
   final int? totalDistance;
   final String? totalDuration;
+  final int? numberOfParticipants;
 
   Group({
     required this.id,
     required this.name,
     required this.avatar,
     required this.totalDistance,
-    required this.totalDuration
+    required this.totalDuration,
+    required this.numberOfParticipants,
   });
 
   Group.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
         avatar = json['avatar'],
+        numberOfParticipants = json['number_of_participants'],
         totalDistance = json['total_distance'],
         totalDuration = json['total_duration'];
 
@@ -28,6 +31,7 @@ class Group {
       'id': id,
       'name': name,
       'avatar': avatar,
+      'number_of_participants': numberOfParticipants,
       'total_distance': totalDistance,
       'total_duration': totalDuration,
     };
@@ -35,14 +39,13 @@ class Group {
 
   @override
   String toString() {
-    return 'Group{id: $id, name: $name, avatar: $avatar, totalDistance: $totalDistance, totalDuration: $totalDuration}';
+    return 'Group{id: $id, name: $name, avatar: $avatar, numberOfParticipants: $numberOfParticipants, totalDistance: $totalDistance, totalDuration: $totalDuration}';
   }
 }
 
 class DetailGroup extends Group {
-  final int? numberOfParticipants;
   final int? rank;
-  final Event? event;
+  // final Event? event;
   final List<User>? users;
   final String? description;
 
@@ -52,39 +55,32 @@ class DetailGroup extends Group {
     String? avatar,
     int? totalDistance,
     String? totalDuration,
-    required this.numberOfParticipants,
+    int? numberOfParticipants,
     required this.rank,
-    required this.event,
+    // required this.event,
     required this.users,
     required this.description
   }) : super(
     id: id,
     name: name,
     avatar: avatar,
+    numberOfParticipants: numberOfParticipants,
     totalDistance: totalDistance,
     totalDuration: totalDuration,
   );
 
   DetailGroup.fromJson(Map<String, dynamic> json)
-      : numberOfParticipants = json['number_of_participants'],
-        rank = json['rank'],
-        event = Event.fromJson(json['event']),
+      : rank = json['rank'],
+        // event = Event.fromJson(json['event']),
           users = (json['users'] as List<dynamic>).map((user) => User.fromJson(user)).toList(),
         description = json['description'],
-        super(
-          id: json['id'],
-          name: json['name'],
-          avatar: json['avatar'],
-          totalDistance: json['total_distance'],
-          totalDuration: json['total_duration'],
-        );
+        super.fromJson(json);
 
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
-    data['number_of_participants'] = numberOfParticipants;
     data['rank'] = rank;
-    data['event'] = event?.toJson();
+    // data['event'] = event?.toJson();
     data['users'] = users?.map((user) => user.toJson()).toList();
     data['description'] = description;
     return data;
@@ -92,7 +88,7 @@ class DetailGroup extends Group {
 
   @override
   String toString() {
-    return 'DetailGroup{${super.toString()}, numberOfParticipants: $numberOfParticipants, rank: $rank, event: $event, users: $users, description: $description}';
+    return 'DetailGroup{${super.toString()}, rank: $rank, event: , users: $users, description: $description}';
   }
 }
 

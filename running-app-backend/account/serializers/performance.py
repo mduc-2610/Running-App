@@ -8,7 +8,8 @@ class PerformanceSerializer(serializers.ModelSerializer):
     point=  serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
     total_steps = serializers.SerializerMethodField()
-    steps_remaining = serializers.SerializerMethodField()
+    steps_done_this_level = serializers.SerializerMethodField()
+    total_steps_this_level = serializers.SerializerMethodField()
 
     def get_point(self, instance):
         return instance.point()
@@ -19,9 +20,12 @@ class PerformanceSerializer(serializers.ModelSerializer):
     def get_total_steps(self, instance):
         return instance.total_steps()
 
-    def get_steps_remaining(self, instance):
-        return instance.steps_remaining()
+    def get_steps_done_this_level(self, instance):
+        return instance.steps_done_this_level()
     
+    def get_total_steps_this_level(self, instance):
+        return instance.total_steps_this_level()
+
     class Meta:
         model = Performance
         fields = "__all__"

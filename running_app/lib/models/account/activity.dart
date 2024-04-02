@@ -31,6 +31,17 @@ class Activity {
         clubs = (json['clubs'] as List<dynamic>).map((e) => Club.fromJson(e)).toList(),
         activityRecords = (json['activity_records'] as List<dynamic>).map((e) => ActivityRecord.fromJson(e)).toList();
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user': user?.toJson(), // Convert User object to JSON
+      'products': products.map((product) => product.toJson()).toList(), // Convert List<Product> to JSON
+      'events': events.map((event) => event.toJson()).toList(), // Convert List<Event> to JSON
+      'clubs': clubs.map((club) => club.toJson()).toList(), // Convert List<Club> to JSON
+      'activity_records': activityRecords.map((record) => record.toJson()).toList(), // Convert List<ActivityRecord> to JSON
+    };
+  }
+
   @override
   String toString() {
     return 'Activity{id: $id, user: $user, point: $products, level: $events, total_steps: $clubs, activityRecords: $activityRecords}';

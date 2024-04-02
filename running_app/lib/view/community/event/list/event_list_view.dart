@@ -32,21 +32,15 @@ class _EventListViewState extends State<EventListView> {
   }
 
   void initEvents() async{
-    try {
-      final data = await callListAPI(
-          'activity/event',
-          Event.fromJson,
-          token,
-          queryParams: "?state=${eventType.toLowerCase()}"
-      );
-      print("ok");
-      print(data);
-      setState(() {
-        events = data;
-      });
-    } catch(e) {
-      print("Error fetching data: $e");
-    }
+    final data = await callListAPI(
+        'activity/event',
+        Event.fromJson,
+        token,
+        queryParams: "?state=${eventType.toLowerCase()}"
+    );
+    setState(() {
+      events = data;
+    });
   }
 
   @override
@@ -58,8 +52,6 @@ class _EventListViewState extends State<EventListView> {
 
   @override
   Widget build(BuildContext context) {
-    print('Ended: $events');
-    print(eventType.toLowerCase());
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(

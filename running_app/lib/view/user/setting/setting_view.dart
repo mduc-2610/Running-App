@@ -16,9 +16,17 @@ void signOut(BuildContext context) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.remove('token');
   await prefs.remove('user');
+  await prefs.remove('userPerformance');
+  await prefs.remove('userPrivacy');
+  await prefs.remove('userProfile');
+  await prefs.remove('userActivity');
 
   Provider.of<TokenProvider>(context, listen: false).setToken('');
   Provider.of<UserProvider>(context, listen: false).setUser(null);
+  Provider.of<UserProvider>(context, listen: false).userActivity = null;
+  Provider.of<UserProvider>(context, listen: false).userProfile = null;
+  Provider.of<UserProvider>(context, listen: false).userPerformance = null;
+  Provider.of<UserProvider>(context, listen: false).userProfile = null;
 
   Navigator.pushReplacementNamed(context, '/sign_in');
 }

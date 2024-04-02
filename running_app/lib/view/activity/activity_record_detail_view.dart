@@ -8,11 +8,12 @@ import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/description_text.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
-import 'package:running_app/utils/common_widgets/show_modal_bottom_sheet.dart';
+import 'package:running_app/utils/common_widgets/show_action_list.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
@@ -75,10 +76,6 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
 
   @override
   Widget build(BuildContext context) {
-    int descriptionLines = activityRecord?.descriptionLines ?? 0;
-    if(descriptionLines > 2) {
-      showViewMoreButton = true;
-    }
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -184,29 +181,16 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                               fontWeight: FontWeight.w600
                           ),
                         ),
-                        Text(
-                          "${activityRecord?.description ?? ""}",
-                          style: TxtStyle.descSectionNormal,
-                          maxLines: showFullText ? null : 2,
-                        ),
-                        if(showViewMoreButton)... [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                showFullText = (showFullText) ? false : true;
-                              });
-                            },
-                            child: Text(
-                              showFullText ? "Hide" : "View more",
-                              style: TextStyle(
-                                color: TColor.PRIMARY,
-                                fontSize: FontSize.NORMAL,
-                                fontWeight: FontWeight.w600,
-                                decoration: TextDecoration.underline
-                              ),
-                            ),
-                          )
-                        ]
+                        DescriptionText(
+                          showFullText: showFullText,
+                          showViewMoreButton: showViewMoreButton,
+                          description: "${activityRecord?.description ?? ""}",
+                          onTap: () {
+                            setState(() {
+                              showFullText = (showFullText) ? false : true;
+                            });
+                          },
+                        )
                       ],
                     ),
                     SizedBox(height: media.height * 0.01,),

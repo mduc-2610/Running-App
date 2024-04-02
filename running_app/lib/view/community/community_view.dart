@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/add_button.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
@@ -8,6 +12,8 @@ import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/club/club_view.dart';
 import 'package:running_app/view/community/event/event_view.dart';
 import 'package:running_app/view/community/social_view.dart';
@@ -23,7 +29,38 @@ class CommunityView extends StatefulWidget {
 
 class _CommunityViewState extends State<CommunityView> {
   String _showView = "Events";
-  
+  String token = "";
+  DetailUser? user;
+  Activity? userActivity;
+  bool userInEvent = false;
+
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+  void initUserActivity() async {
+    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    setState(() {
+      userActivity = data;
+    });
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initToken();
+    initUser();
+    initUserActivity();
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);

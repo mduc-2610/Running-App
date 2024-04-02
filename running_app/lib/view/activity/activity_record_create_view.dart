@@ -10,7 +10,7 @@ import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
-import 'package:running_app/utils/common_widgets/show_modal_bottom_sheet.dart';
+import 'package:running_app/utils/common_widgets/show_action_list.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';

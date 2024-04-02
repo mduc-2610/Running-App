@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
@@ -14,10 +16,12 @@ import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/progress_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/scroll_synchronized.dart';
-import 'package:running_app/utils/common_widgets/show_modal_bottom_sheet.dart';
+import 'package:running_app/utils/common_widgets/show_action_list.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
+import 'package:running_app/view/community/event/utils/common_widgets/event_leaderboard.dart';
 
 class EventDetailView extends StatefulWidget {
   const EventDetailView({super.key});
@@ -32,6 +36,11 @@ class _EventDetailViewState extends State<EventDetailView> {
   String eventId = "";
   DetailEvent? event;
   int currentSlide = 0;
+  DetailUser? user;
+  Activity? userActivity;
+  bool showMilestone = false;
+  bool showChooseGroup = false;
+  bool userInEvent = false;
 
   void initToken() {
     setState(() {
@@ -52,20 +61,33 @@ class _EventDetailViewState extends State<EventDetailView> {
     });
   }
 
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+      userActivity = Provider.of<UserProvider>(context).userActivity;
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     initToken();
     initEventId();
     initDetailEvent();
+    initUser();
+    setState(() {
+      userInEvent = checkUserInEvent();
+    });
+  }
+
+  bool checkUserInEvent() {
+    return (userActivity?.events ?? []).where((e) => e.id == event?.id).toList().length != 0;
   }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     ScrollController parentScrollController = ScrollController();
-    print('Event id: $eventId');
-    print('Event: $event');
     return Scaffold(
       body: SingleChildScrollView(
         controller: parentScrollController,
@@ -89,11 +111,35 @@ class _EventDetailViewState extends State<EventDetailView> {
                   children: [
                     SizedBox(height: media.height * 0.05,),
                     // Header
-                    const Header(
+                    Header(
                       title: "",
                       iconButtons: [
                         {
                           "icon": Icons.more_vert_rounded,
+                          "onPressed": () {
+                            showActionList(
+                                context,
+                                [
+                                  {
+                                    "text": "Edit event",
+                                    "onPressed": () {
+                                      // Navigator.pushNamed(
+                                      //     context,
+                                      //     '/'
+                                      // );
+                                    }
+                                  },
+                                  {
+                                    "text": "Delete event",
+                                    "onPressed": () {
+
+                                    },
+                                    "textColor": TColor.WARNING
+                                  }
+                                ],
+                                "Options"
+                            );
+                          },
                         }
                       ],
                     ),
@@ -104,11 +150,12 @@ class _EventDetailViewState extends State<EventDetailView> {
                     // Event target
                     Column(
                       children: [
-                        SizedBox(
-                          height: media.height * 0.16,
-                          width: media.width,
-                          child: CarouselSlider(
-                            options: CarouselOptions(
+                        if(checkUserInEvent() || showMilestone)...[
+                          SizedBox(
+                            height: media.height * 0.16,
+                            width: media.width,
+                            child: CarouselSlider(
+                              options: CarouselOptions(
                                 viewportFraction: 1,
                                 autoPlayAnimationDuration: const Duration(milliseconds: 100),
                                 initialPage: 0,
@@ -118,40 +165,261 @@ class _EventDetailViewState extends State<EventDetailView> {
                                     currentSlide = index;
                                   });
                                 },
-                            ),
+                              ),
 
-                            items: [
-                              Container(
-                                margin: const EdgeInsets.only(
-                                  // right: media.width * 0.03
+                              items: [
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    // right: media.width * 0.03
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+                                  decoration: BoxDecoration(
+                                    color: TColor.PRIMARY,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.flag_circle_rounded,
+                                            color: TColor.PRIMARY_TEXT,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            "Target: ",
+                                            style: TextStyle(
+                                                color: TColor.DESCRIPTION,
+                                                fontSize: FontSize.SMALL,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          Text(
+                                            "25000.0 km",
+                                            style: TextStyle(
+                                                color: TColor.PRIMARY_TEXT,
+                                                fontSize: FontSize.LARGE,
+                                                fontWeight: FontWeight.w800),
+                                          )
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: media.height * 0.01,
+                                      ),
+                                      ProgressBar(
+                                        totalSteps: 10,
+                                        currentStep: 0,
+                                        width: media.width,
+                                      ),
+                                      SizedBox(
+                                        height: media.height * 0.01,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '${event?.daysRemain ?? "0"}',
+                                            style: TextStyle(
+                                                color: TColor.DESCRIPTION,
+                                                fontSize: FontSize.SMALL,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          RichText(
+                                            text: TextSpan(
+                                                style: TextStyle(
+                                                    color: TColor.PRIMARY_TEXT,
+                                                    fontSize: FontSize.SMALL,
+                                                    fontWeight: FontWeight.w500),
+                                                children: const [
+                                                  TextSpan(
+                                                    text: "0",
+                                                    style: TextStyle(
+                                                      color: Color(0xff6cb64f),
+                                                    ),
+                                                  ),
+                                                  TextSpan(text: "/25000.0km")
+                                                ]),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
-                                decoration: BoxDecoration(
-                                  color: TColor.PRIMARY,
-                                  borderRadius: BorderRadius.circular(12),
+                                Container(
+                                  margin: EdgeInsets.only(left: media.width * 0.03),
+                                  decoration: BoxDecoration(
+                                    color: TColor.PRIMARY,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius: const BorderRadius.only(
+                                              topRight: Radius.circular(12),
+                                              bottomRight: Radius.circular(12),
+                                              topLeft: Radius.circular(200),
+                                            ),
+                                            child: Image.asset(
+                                              "assets/img/community/keep_running.jpg",
+                                              // width: media.width,
+                                              height: media.height * 0.16,
+                                              width: media.width * 0.46,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                                "Total event distance:",
+                                                style: TextStyle(
+                                                    color: TColor.PRIMARY_TEXT,
+                                                    fontSize: FontSize.NORMAL,
+                                                    fontWeight: FontWeight.w600
+                                                )
+                                            ),
+                                            const Text(
+                                                "197,390 km",
+                                                style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontSize: FontSize.TITLE,
+                                                  fontWeight: FontWeight.w900,
+                                                )
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
+                                Container(
+                                  margin: EdgeInsets.only(left: media.width * 0.03),
+                                  decoration: BoxDecoration(
+                                    color: TColor.PRIMARY,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            height: media.height * 0.16,
+                                            width: media.width * 0.48,
+                                            decoration: BoxDecoration(
+                                              color: TColor.PRIMARY_TEXT,
+                                              borderRadius: const BorderRadius.only(
+                                                topRight: Radius.circular(12),
+                                                bottomRight: Radius.circular(12),
+                                                topLeft: Radius.circular(100),
+                                                // bottomLeft: Radius.circular(10),
+                                              ),
+                                            ),
+                                            child: ClipRRect(
+                                              child: SvgPicture.asset(
+                                                "assets/img/community/donation.svg",
+                                                // width: media.width,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                                "Donation amount:",
+                                                style: TextStyle(
+                                                    color: TColor.PRIMARY_TEXT,
+                                                    fontSize: FontSize.NORMAL,
+                                                    fontWeight: FontWeight.w600
+                                                )
+                                            ),
+                                            const Text(
+                                                "3,125 USD",
+                                                style: TextStyle(
+                                                  color: Colors.green,
+                                                  fontSize: FontSize.TITLE,
+                                                  fontWeight: FontWeight.w900,
+                                                )
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: media.height * 0.01,),
+                          DotsIndicator(
+                            dotsCount: 3,
+                            position: currentSlide,
+                            decorator: DotsDecorator(
+                              activeColor: TColor.PRIMARY,
+                              spacing: const EdgeInsets.only(left: 8),
+                            ),
+                          )
+                        ]
+                        else...[
+                          if(event?.competition == "Group" && showChooseGroup)...[
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                              decoration: BoxDecoration(
+                                color: TColor.PRIMARY,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  for(var x in [
+                                    {
+                                      "icon": Icons.flag_circle_rounded,
+                                      "text1": "Target: ",
+                                      "text2": "25000.0 km",
+                                      "iconColor": Color(0xfff3af3d)
+                                    },
+                                    {
+                                      "icon": Icons.people_alt,
+                                      "text1": "Competition: ",
+                                      "text2": "${event?.competition}",
+                                      "iconColor": TColor.ACCEPTED
+                                    }
+                                  ])...[
+
                                     Row(
                                       children: [
                                         Icon(
-                                          Icons.flag_circle_rounded,
-                                          color: TColor.PRIMARY_TEXT,
+                                          x["icon"] as IconData,
+                                          color: x["iconColor"] as Color,
                                         ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
+                                        SizedBox(width: media.width * 0.02 ,),
                                         Text(
-                                          "Target: ",
+                                          x["text1"] as String,
                                           style: TextStyle(
                                               color: TColor.DESCRIPTION,
                                               fontSize: FontSize.SMALL,
                                               fontWeight: FontWeight.w500),
                                         ),
                                         Text(
-                                          "25000.0 km",
+                                          x["text2"] as String,
                                           style: TextStyle(
                                               color: TColor.PRIMARY_TEXT,
                                               fontSize: FontSize.LARGE,
@@ -162,178 +430,139 @@ class _EventDetailViewState extends State<EventDetailView> {
                                     SizedBox(
                                       height: media.height * 0.01,
                                     ),
-                                    ProgressBar(
-                                      totalSteps: 10,
-                                      currentStep: 8,
-                                      width: media.width,
+                                  ],
+                                  SizedBox(
+                                    width: media.width,
+                                    child: CustomMainButton(
+                                      background: TColor.WARNING,
+                                      horizontalPadding: 0,
+                                      verticalPadding: 14,
+                                      onPressed: () {
+                                        setState(() {
+                                          showMilestone = true;
+                                        });
+                                      },
+                                      child: Text(
+                                        "Choose group",
+                                        style: TextStyle(
+                                            color: TColor.PRIMARY_TEXT,
+                                            fontSize: FontSize.SMALL,
+                                            fontWeight: FontWeight.w900
+                                        ),
+                                      ),
                                     ),
-                                    SizedBox(
-                                      height: media.height * 0.01,
-                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: media.height * 0.03,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.info_rounded,
+                                        color: TColor.PRIMARY_TEXT,
+                                      ),
+                                      SizedBox(width: media.width * 0.02,),
+                                      Text(
+                                        'Choosing a group to participate this event',
+                                        style: TextStyle(
+                                            color: TColor.PRIMARY_TEXT,
+                                            fontSize: FontSize.SMALL,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ]
+                          else...[
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                              decoration: BoxDecoration(
+                                color: TColor.PRIMARY,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  for(var x in [
+                                    {
+                                      "icon": Icons.flag_circle_rounded,
+                                      "text1": "Target: ",
+                                      "text2": "25000.0 km",
+                                      "iconColor": Color(0xfff3af3d)
+                                    },
+                                    {
+                                      "icon": Icons.people_alt,
+                                      "text1": "Competition: ",
+                                      "text2": "${event?.competition}",
+                                      "iconColor": TColor.ACCEPTED
+                                    }
+                                  ])...[
+
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
+                                        Icon(
+                                          x["icon"] as IconData,
+                                          color: x["iconColor"] as Color,
+                                        ),
+                                        SizedBox(width: media.width * 0.02 ,),
                                         Text(
-                                          '${event?.daysRemain ?? "0"}',
+                                          x["text1"] as String,
                                           style: TextStyle(
                                               color: TColor.DESCRIPTION,
                                               fontSize: FontSize.SMALL,
                                               fontWeight: FontWeight.w500),
                                         ),
-                                        RichText(
-                                          text: TextSpan(
-                                              style: TextStyle(
-                                                  color: TColor.PRIMARY_TEXT,
-                                                  fontSize: FontSize.SMALL,
-                                                  fontWeight: FontWeight.w500),
-                                              children: const [
-                                                TextSpan(
-                                                  text: "208416.86",
-                                                  style: TextStyle(
-                                                    color: Color(0xff6cb64f),
-                                                  ),
-                                                ),
-                                                TextSpan(text: "/25000.0km")
-                                              ]),
+                                        Text(
+                                          x["text2"] as String,
+                                          style: TextStyle(
+                                              color: TColor.PRIMARY_TEXT,
+                                              fontSize: FontSize.LARGE,
+                                              fontWeight: FontWeight.w800),
                                         )
                                       ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: media.width * 0.03),
-                                decoration: BoxDecoration(
-                                  color: TColor.PRIMARY,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: const BorderRadius.only(
-                                            topRight: Radius.circular(12),
-                                            bottomRight: Radius.circular(12),
-                                            topLeft: Radius.circular(200),
-                                          ),
-                                          child: Image.asset(
-                                            "assets/img/community/keep_running.jpg",
-                                            // width: media.width,
-                                            height: media.height * 0.16,
-                                            width: media.width * 0.46,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ],
                                     ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                              "Total event distance:",
-                                              style: TextStyle(
-                                                  color: TColor.PRIMARY_TEXT,
-                                                  fontSize: FontSize.NORMAL,
-                                                  fontWeight: FontWeight.w600
-                                              )
-                                          ),
-                                          const Text(
-                                              "197,390 km",
-                                              style: TextStyle(
-                                                color: Colors.green,
-                                                fontSize: FontSize.TITLE,
-                                                fontWeight: FontWeight.w900,
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: media.width * 0.03),
-                                decoration: BoxDecoration(
-                                  color: TColor.PRIMARY,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          height: media.height * 0.16,
-                                          width: media.width * 0.48,
-                                          decoration: BoxDecoration(
-                                          color: TColor.PRIMARY_TEXT,
-                                            borderRadius: const BorderRadius.only(
-                                              topRight: Radius.circular(12),
-                                              bottomRight: Radius.circular(12),
-                                              topLeft: Radius.circular(100),
-                                              // bottomLeft: Radius.circular(10),
-                                            ),
-                                          ),
-                                          child: ClipRRect(
-                                            child: SvgPicture.asset(
-                                              "assets/img/community/donation.svg",
-                                              // width: media.width,
-                                              fit: BoxFit.contain,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                    SizedBox(
+                                      height: media.height * 0.01,
                                     ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                              "Donation amount:",
-                                              style: TextStyle(
-                                                color: TColor.PRIMARY_TEXT,
-                                                fontSize: FontSize.NORMAL,
-                                                fontWeight: FontWeight.w600
-                                              )
-                                          ),
-                                          const Text(
-                                              "3,125 USD",
-                                              style: TextStyle(
-                                                color: Colors.green,
-                                                fontSize: FontSize.TITLE,
-                                                fontWeight: FontWeight.w900,
-                                              )
-                                          ),
-                                        ],
-                                      ),
-                                    )
                                   ],
-                                ),
+                                  SizedBox(
+                                    width: media.width,
+                                    child: CustomMainButton(
+                                      background: TColor.ACCEPTED,
+                                      horizontalPadding: 0,
+                                      verticalPadding: 14,
+                                      onPressed: () {
+                                        setState(() {
+                                          if(event?.competition  == "Group") {
+                                            showChooseGroup = true;
+                                          } else {
+                                            showMilestone = true;
+                                          }
+                                        });
+                                      },
+                                      child: Text(
+                                        "Join now",
+                                        style: TextStyle(
+                                            color: TColor.PRIMARY_TEXT,
+                                            fontSize: FontSize.SMALL,
+                                            fontWeight: FontWeight.w900
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: media.height * 0.01,),
-                        DotsIndicator(
-                          dotsCount: 3,
-                          position: currentSlide,
-                          decorator: DotsDecorator(
-                            activeColor: TColor.PRIMARY,
-                            spacing: const EdgeInsets.only(left: 8),
-                          ),
-                        )
+                            ),
+                          ]
+                        ]
                       ],
                     ),
 
                     SizedBox(
-                      height: media.height * 0.01,
+                      height: media.height * 0.02,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -485,7 +714,14 @@ class LeaderBoardLayout extends StatelessWidget {
 
     return ScrollSynchronized(
       parentScrollController: parentScrollController,
-      child: AthleteTable(participants: event?.participants ?? [], tableHeight: media.height - media.height * 0.16, controller: childScrollController,),
+      child: EventLeaderboard(
+        event: event,
+        participants: event?.participants ?? [],
+        groups: event?.groups ?? [],
+        tableHeight: media.height - media.height * 0.19,
+        controller: childScrollController,
+        secondColumnName: (event?.competition == "Individual") ? "Athlete name" : "Group name",
+      ),
     );
   }
 }
@@ -642,16 +878,32 @@ class GeneralInformationLayout extends StatelessWidget {
                           context,
                         [
                           {
-                            "text": "Member management",
+                            "text": "Event member management",
                             "onPressed": () {
-                              Navigator.pushNamed(context, '/member_management_private');
+                              Navigator.pushNamed(
+                                context,
+                                '${event?.privacy == "Private"
+                                    ? '/member_management_private'
+                                    : '/member_management_public'
+                                }',
+                                arguments: {
+                                  "participants": event?.participants ?? []
+                                }
+                              );
                             }
                           },
-                          {
-                            "text": "Group management",
+                          (event?.competition == "Group") ? {
+                            "text": "Event group management",
                             "onPressed": () {
                               Navigator.pushNamed(context, '/group_management');
                             }
+                          } : null,
+                          {
+                            "text": "Delete event",
+                            "onPressed": () {
+
+                            },
+                            "textColor": TColor.WARNING
                           }
                         ],
                         "Admin privileges"
@@ -672,9 +924,111 @@ class GeneralInformationLayout extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(
-              height: media.height * 0.02,
-            ),
+            SizedBox(height: media.height * 0.02,),
+
+            if(event?.competition == "Group")...[
+              Column(
+                children: [
+                  CustomTextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/group_list', arguments: {
+                        "groups": event?.groups ?? [],
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Challenge's group",
+                          style: TxtStyle.headSection,
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: TColor.PRIMARY_TEXT,
+                          size: 20,
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: media.height * 0.02,),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        for(var group in event?.groups ?? [])...[
+                          CustomTextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/event_group_detail', arguments: {
+                                "id": group?.id,
+                                "rank": event?.groups?.indexOf(group),
+
+                              });
+                            },
+                            child: Container(
+                              height: media.height * 0.21,
+                              width: media.width * 0.3,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12,
+                                  horizontal: 15
+                              ),
+                              decoration: BoxDecoration(
+                                  color: TColor.SECONDARY_BACKGROUND,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                      width: 1,
+                                      color: TColor.BORDER_COLOR
+                                  )
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: Image.asset(
+                                          'assets/img/community/ptit_logo.png',
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      SizedBox(height: media.height * 0.01,),
+                                      Text(
+                                        '${group?.name ?? ""}',
+                                        style: TxtStyle.normalText,
+                                        textAlign: TextAlign.center,
+                                        maxLines: 3,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "${group?.numberOfParticipants}",
+                                        style: TxtStyle.normalText,
+                                      ),
+                                      Text(
+                                        " join",
+                                        style: TxtStyle.descSectionNormal,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: media.width * 0.02,),
+                        ]
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: media.height * 0.03,),
+            ],
 
             // Rules section
             Column(

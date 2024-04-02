@@ -36,22 +36,17 @@ class _YourEventListViewState extends State<YourEventListView> {
   }
 
   void initActivity() async {
-    try {
-      final activity = await callRetrieveAPI(
-          null, null,
-          user?.activity,
-          Activity.fromJson,
-          token,
-          queryParams: "?state=${eventType.toLowerCase()}"
-      );
-      setState(() {
-        userActivity = activity;
-        events = userActivity?.events;
-      });
-    } catch (e) {
-      print("Error fetching data: $e");
-      // Handle errors here
-    }
+    final activity = await callRetrieveAPI(
+        null, null,
+        user?.activity,
+        Activity.fromJson,
+        token,
+        queryParams: "?state=${eventType.toLowerCase()}"
+    );
+    setState(() {
+      userActivity = activity;
+      events = userActivity?.events;
+    });
   }
 
   void initUser() {

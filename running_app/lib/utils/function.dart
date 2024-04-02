@@ -33,9 +33,12 @@ int countTextLines(String text) {
   int count = 0;
   List<String> textLines = text.split('\n');
   for(String line in textLines) {
-    List<String> words = line.split(' ');
-    print(words.length);
-    count += (words.length / 9).ceil();
+    count += (line.length / 47).ceil();
   }
   return count;
+}
+
+String idSubstring(String id) {
+  List idList = id.split('-');
+  return '${idList[idList.length - 1].substring(0, 6).toUpperCase()}';
 }

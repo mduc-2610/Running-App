@@ -217,14 +217,14 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
                                           ),
                                           children: <TextSpan> [
                                             TextSpan(
-                                                text: "10,120 ",
+                                                text: '${activity?.steps ?? ""} ',
                                                 style: TextStyle(
                                                     color: TColor.DESCRIPTION,
                                                     fontSize: FontSize.NORMAL,
                                                     fontWeight: FontWeight.w900
                                                 )
                                             ),
-                                            const TextSpan(text: "steps")
+                                            TextSpan(text: "steps")
                                           ]
                                       ),
                                     )

@@ -20,35 +20,67 @@ class UserProvider with ChangeNotifier {
   Privacy? get userPrivacy => _userPrivacy;
   Performance? get userPerformance => _userPerformance;
 
-  Future<Activity> initUserActivity(String token) async {
-    return await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
-  }
-
-  Future<Profile> initUserProfile(String token) async {
-    return await callRetrieveAPI(null, null, user?.profile, DetailProfile.fromJson, token);
-  }
-
-  Future<Privacy> initUserPrivacy(String token) async {
-    return await callRetrieveAPI(null, null, user?.privacy, Privacy.fromJson, token);
-  }
-
-  Future<Performance> initUserPerformance(String token) async {
-    return await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
-  }
-
-  void setUser(DetailUser? user, { String token = ""}) async {
-    _user = user;
-    // if(token != "") {
-    //   await setUserSide(token);
-    // }
+  set userActivity(Activity? activity) {
+    _userActivity = activity;
     notifyListeners();
   }
 
-  // Future<void> setUserSide(String token) async {
-  //   _userActivity = await initUserActivity(token);
-  //   _userProfile = await initUserProfile(token);
-  //   _userPrivacy = await initUserPrivacy(token);
-  //   _userPerformance = await initUserPerformance(token);
-  //   print(_userActivity);
+  set userProfile(Profile? profile) {
+    _userProfile = profile;
+    notifyListeners();
+  }
+
+  set userPrivacy(Privacy? privacy) {
+    _userPrivacy = privacy;
+    notifyListeners();
+  }
+
+  set userPerformance(Performance? performance) {
+    _userPerformance = performance;
+    notifyListeners();
+  }
+
+  void setUser(
+      DetailUser? user,
+      {
+        Activity? userActivity,
+        Profile? userProfile,
+        Privacy? userPrivacy,
+        Performance? userPerformance
+      }) async {
+    _user = user;
+    notifyListeners();
+    _userActivity = userActivity;
+    notifyListeners();
+    _userProfile = userProfile;
+    notifyListeners();
+    _userPrivacy = userPrivacy;
+    notifyListeners();
+    _userPerformance = userPerformance;
+    notifyListeners();
+  }
+
+  //
+  // Future<Activity> initUserActivity(String token) async {
+  //   return await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+  // }
+  //
+  // Future<Profile> initUserProfile(String token) async {
+  //   return await callRetrieveAPI(null, null, user?.profile, DetailProfile.fromJson, token);
+  // }
+  //
+  // Future<Privacy> initUserPrivacy(String token) async {
+  //   return await callRetrieveAPI(null, null, user?.privacy, Privacy.fromJson, token);
+  // }
+  //
+  // Future<Performance> initUserPerformance(String token) async {
+  //   return await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
+  // }
+  // void setUserSide({Activity? userActivity, Profile? userProfile, Privacy? userPrivacy, Performance? userPerformance}) async {
+  //   _userActivity = userActivity;
+  //   _userProfile = userProfile;
+  //   _userPrivacy = userPrivacy;
+  //   _userPerformance = userPerformance;
+  //   notifyListeners();
   // }
 }

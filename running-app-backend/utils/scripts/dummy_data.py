@@ -52,11 +52,11 @@ def run():
     for model in model_list:
         model.objects.all().delete()
 
-    MAX_NUMBER_USERS = 30
+    MAX_NUMBER_USERS = 100
     MAX_ACTIVITY_RECORDS = 100
     MAX_NUMBER_EVENTS = 30
     MAX_NUMBER_CLUBS = 50
-    MAX_NUMBER_EVENT_GROUPS = 35
+    MAX_NUMBER_EVENT_GROUPS = 200
     MAX_NUMBER_USER_EVENT_GROUPS = 30
     MAX_NUMBER_USER_PARTICIPATION_CLUBS = 30
     MAX_NUMBER_USER_PARTICIPATION_EVENTS = 20
@@ -207,6 +207,8 @@ def run():
             "description": fake.text(max_nb_chars=250),
             "avatar": "",
             "event": random.choice(event_list),
+            "is_approved": True,
+            # "is_approved": random.choice([True, False])
         }
         event_group = Group.objects.create(**data)
         event_group_list.append(event_group)
@@ -217,7 +219,7 @@ def run():
     user_event_group_list = []
     for group in event_group_list:
         user_tmp = user_activity_list.copy()
-        for i in range(MAX_NUMBER_USER_EVENT_GROUPS):
+        for i in range(random.randint(0, max(MAX_NUMBER_USER_EVENT_GROUPS, MAX_NUMBER_USERS))):
             random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
             data = {
                 "user": random_user,

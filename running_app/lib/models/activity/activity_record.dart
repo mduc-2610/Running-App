@@ -3,7 +3,7 @@ import '../account/user.dart';
 class ActivityRecord {
   final String? id;
   final String? sportType;
-  final double? distance;
+  final String? distance;
   final int? pointsEarned;
   final int? steps;
   final int? kcal;
@@ -24,7 +24,7 @@ class ActivityRecord {
   ActivityRecord.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       sportType = json['sport_type'],
-      distance = double.parse(json['distance']),
+      distance = json['distance'].toString(),
       steps = json['steps'],
       pointsEarned = json['points_earned'],
       kcal = json['kcal'],
@@ -54,12 +54,10 @@ class DetailActivityRecord extends ActivityRecord {
   final String? duration;
   final String? description;
   final User? user;
-  final int? descriptionLines;
-
   DetailActivityRecord({
     String? id,
     String? sportType,
-    double? distance,
+    String? distance,
     int? steps,
     int? pointsEarned,
     int? kcal,
@@ -68,7 +66,6 @@ class DetailActivityRecord extends ActivityRecord {
     required this.duration,
     required this.description,
     required this.user,
-    required this.descriptionLines,
   }) : super(
     id: id,
     sportType: sportType,
@@ -83,7 +80,6 @@ class DetailActivityRecord extends ActivityRecord {
   DetailActivityRecord.fromJson(Map<String, dynamic> json)
     : duration = json['duration'],
       description = json['description'],
-      descriptionLines = json['description_lines'],
       user = User.fromJson(json['user']),
       super.fromJson(json);
 
@@ -92,14 +88,13 @@ class DetailActivityRecord extends ActivityRecord {
     final Map<String, dynamic> data = super.toJson();
     data['duration'] = duration;
     data['description'] = description;
-    data['description_lines'] = descriptionLines;
     data['user'] = user?.toJson();
     return data;
   }
 
   @override
   String toString() {
-    return 'DetailActivityRecord{${super.toString()}, duration: $duration, description: $description, descriptionLines: $descriptionLines, user: $user}';
+    return 'DetailActivityRecord{${super.toString()}, duration: $duration, description: $description, user: $user}';
   }
 }
 

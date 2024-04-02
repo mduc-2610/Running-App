@@ -6,20 +6,20 @@ import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/show_modal_bottom_sheet.dart';
+import 'package:running_app/utils/common_widgets/show_action_list.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
-class GroupManagementView extends StatefulWidget {
-  const GroupManagementView({super.key});
+class EventGroupManagementView extends StatefulWidget {
+  const EventGroupManagementView({super.key});
 
   @override
-  State<GroupManagementView> createState() => GroupManagementViewState();
+  State<EventGroupManagementView> createState() => EventGroupManagementViewState();
 }
 
-class GroupManagementViewState extends State<GroupManagementView> {
-  String _showLayout = "Waiting for approval";
+class EventGroupManagementViewState extends State<EventGroupManagementView> {
+  String _showLayout = "Approval";
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class GroupManagementViewState extends State<GroupManagementView> {
                       height: 50,
                       child: CustomTextFormField(
                         decoration: CustomInputDecoration(
-                            hintText: _showLayout == "Waiting for approval" ? "Search groups" : "Search athletes",
+                            hintText: _showLayout == "Approval" ? "Search groups" : "Search athletes",
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 20
                             ),
@@ -57,10 +57,9 @@ class GroupManagementViewState extends State<GroupManagementView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        for (var x in ["Waiting for approval", "Joined"])...[
+                        for (var x in ["Approval", "Joined"])...[
                           SizedBox(
                             width: media.width * 0.46,
-                            height: media.height * 0.07,
                             child: CustomTextButton(
                               onPressed: () {
                                 setState(() {
@@ -94,7 +93,7 @@ class GroupManagementViewState extends State<GroupManagementView> {
                       ],
                     ),
                     SizedBox(height: media.height * 0.015,),
-                    (_showLayout == "Waiting for approval")
+                    (_showLayout == "Approval")
                         ? const GroupApproveLayout()
                         : const GroupLayout(layout: "Joined", amount: [1, 2, 10])
                   ],

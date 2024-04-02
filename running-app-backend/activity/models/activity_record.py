@@ -24,13 +24,6 @@ class ActivityRecord(models.Model):
     user = models.ForeignKey(
             "account.Activity", related_name="activity_records", on_delete=models.CASCADE)
 
-    def description_lines(self):
-        count = 0
-        lines = self.description.split("\n")
-        for line in lines:
-            count += len(line) // 47 + 1
-        return count
-
     def avg_moving_pace(self):
         if self.duration.total_seconds() > 0 and self.distance > 0:
             pace = (self.duration.total_seconds() / 60) / float(self.distance)

@@ -5,7 +5,8 @@ class Performance {
   final int? point;
   final int? level;
   final int? totalSteps;
-  final int? stepsRemaining;
+  final int? totalStepsThisLevel;
+  final int? stepsDoneThisLevel;
 
   Performance({
     required this.id,
@@ -13,7 +14,8 @@ class Performance {
     required this.point,
     required this.level,
     required this.totalSteps,
-    required this.stepsRemaining,
+    required this.stepsDoneThisLevel,
+    required this.totalStepsThisLevel,
   });
 
   Performance.fromJson(Map<String, dynamic> json)
@@ -22,11 +24,24 @@ class Performance {
         point = json['point'],
         level = json['level'],
         totalSteps = json['total_steps'],
-        stepsRemaining = json['steps_remaining'];
+        stepsDoneThisLevel = json['steps_done_this_level'],
+        totalStepsThisLevel = json['total_steps_this_level'];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'user': user?.toJson(),
+      'point': point,
+      'level': level,
+      'total_steps': totalSteps,
+      'steps_done_this_level': stepsDoneThisLevel,
+      'total_steps_this_level': totalStepsThisLevel,
+    };
+  }
 
   @override
   String toString() {
-    return 'Performance{id: $id, user: $user, point: $point, level: $level, total_steps: $totalSteps, steps_remaining: $stepsRemaining}';
+    return 'Performance{id: $id, user: $user, point: $point, level: $level, total_steps: $totalSteps, steps_remaining: $stepsDoneThisLevel}';
   }
 }
 

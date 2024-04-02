@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -16,13 +17,31 @@ class EventMemberDetailView extends StatefulWidget {
 
 class _EventMemberDetailViewState extends State<EventMemberDetailView> {
   bool certified = true;
+  String token = "";
+  DetailUser? user;
 
+  void initUser() {
+    setState(() {
+      Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String,dynamic>;
+      user = arguments["participant"];
+    });
+  }
+
+  void initUserPerformance() {
+
+  }
+
+  @override
+  void didChangeDependencies() {
+    initUser();
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
-        appBar: const CustomAppBar(
-          title: Header(title: "Dang Minh Duc", noIcon: true,),
+        appBar: CustomAppBar(
+          title: Header(title: "${user?.name}", noIcon: true,),
         ),
         body: DefaultBackgroundLayout(
           child: Stack(
@@ -32,7 +51,11 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                     children: [
                       // User section
                       CustomTextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/user', arguments: {
+                            "id": user?.id,
+                          });
+                        },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             vertical: 12,
@@ -58,7 +81,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                                   ),
                                   SizedBox(width: media.width * 0.03,),
                                   Text(
-                                    "Dang Minh Duc",
+                                    "${user?.name}",
                                     style: TextStyle(
                                       color: TColor.PRIMARY_TEXT,
                                       fontSize: FontSize.NORMAL,
@@ -154,7 +177,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                               "figure": "464"
                             },
                             {
-                              "icon": const Stack(
+                              "icon": Stack(
                                 children: [
                                   Icon(
                                     Icons.calendar_today_rounded,
@@ -193,7 +216,7 @@ class _EventMemberDetailViewState extends State<EventMemberDetailView> {
                                     x["icon"] as Widget,
                                     SizedBox(width: media.width * 0.03,),
                                     Text(
-                                      "Dang Minh Duc",
+                                      x["text"] as String,
                                       style: TextStyle(
                                           color: TColor.PRIMARY_TEXT,
                                           fontSize: FontSize.NORMAL,

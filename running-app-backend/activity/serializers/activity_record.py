@@ -32,8 +32,6 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='get_sport_type_display')
     avg_moving_pace = serializers.SerializerMethodField()
     kcal = serializers.SerializerMethodField()
-    description_lines = serializers.SerializerMethodField()
-
     def get_completed_at(self, instance):
         return instance.get_readable_date_time('completed_at')
 
@@ -46,8 +44,6 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
     def get_kcal(self, instance):
         return instance.kcal()
     
-    def get_description_lines(self, instance):
-        return instance.description_lines()
     class Meta:
         model = ActivityRecord
         fields = "__all__"

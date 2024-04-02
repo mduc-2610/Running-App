@@ -6,6 +6,7 @@ void showActionList(
     List action,
     String title
     ) {
+  action = action.where((element) => element != null).toList();
   var itemCount = action.length;
   var media = MediaQuery.sizeOf(context);
   showModalBottomSheet(
@@ -25,6 +26,7 @@ void showActionList(
           )
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             if(title != "")...[
               Container(
@@ -67,15 +69,13 @@ void showActionList(
                         )
                     ),
                     child: ListTile(
-                      title: Center(
-                          child: Text(
-                            action[index]["text"],
-                            style: TextStyle(
-                              color: action[index]["textColor"] ?? TColor.PRIMARY_TEXT,
-                              fontSize: FontSize.NORMAL
-                            ),
-                          )
+                      title: Text(
+                        action[index]["text"],
+                        style: TextStyle(
+                          color: action[index]["textColor"] ?? TColor.PRIMARY_TEXT,
+                          fontSize: FontSize.NORMAL
                         ),
+                      ),
                         onTap: () {
                           action[index]["onPressed"]();
                           // Navigator.pop(context);

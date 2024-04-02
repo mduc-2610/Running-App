@@ -9,7 +9,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "user",
-            "full_name",            
+            "name",            
         )
         extra_kwargs = {
             "id" : {"read_only": True},
@@ -17,10 +17,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         }
 
 class DetailProfileSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
 
-    def get_full_name(self, instance):
-        return instance.full_name()
+    def get_name(self, instance):
+        return instance.name()
     
     class Meta:
         model = Profile

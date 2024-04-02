@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/activity/club.dart';
+import 'package:running_app/models/activity/group.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/description_text.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/progress_bar.dart';
 import 'package:running_app/utils/common_widgets/scroll_synchronized.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
+import 'package:running_app/utils/common_widgets/show_action_list.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
@@ -24,8 +27,37 @@ class EventGroupDetailView extends StatefulWidget {
 
 class _EventGroupDetailViewState extends State<EventGroupDetailView> {
   DetailClub? club;
-  String clubId = "c97fbc66-6b4a-4e02-95a3-9dc1f554a595";
   String token = "";
+  String? groupId;
+  DetailGroup? group;
+  int? rank;
+  String clubId = "c97fbc66-6b4a-4e02-95a3-9dc1f554a595";
+  ScrollController childScrollController = ScrollController();
+  ScrollController parentScrollController = ScrollController();
+  bool showFullText = false;
+  bool showViewMoreButton = false;
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initGroupId() {
+    setState(() {
+      Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      groupId = arguments["id"];
+      rank = arguments["rank"] + 1;
+    });
+  }
+
+  void initGroup() async {
+    final data = await callRetrieveAPI(
+        'activity/group', groupId, null, DetailGroup.fromJson, token);
+    setState(() {
+      group = data;
+    });
+  }
 
   @override
   void initState() {
@@ -34,32 +66,14 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
 
   @override
   void didChangeDependencies() {
-    setState(() {
-      token = Provider.of<TokenProvider>(context).token;
-    });
-    api();
+    initToken();
+    initGroupId();
+    initGroup();
     super.didChangeDependencies();
   }
 
-  Future<void> api() async {
-    try {
-      final data = await callRetrieveAPI(
-          'activity/club', "c97fbc66-6b4a-4e02-95a3-9dc1f554a595", null, DetailClub.fromJson, token);
-      setState(() {
-        club = data;
-      });
-    }
-    catch(e) {
-      print('Error: $e');
-    }
-  }
-
-
   @override
   Widget build(BuildContext context) {
-    ScrollController childScrollController = ScrollController();
-    ScrollController parentScrollController = ScrollController();
-    print('$club $clubId $token');
     List statsList = [
       {
         "icon": "assets/img/activity/distance_icon.svg",
@@ -68,15 +82,16 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
       },
       {
         "icon": "assets/img/community/people.svg",
-        "figure": '178',
+        "figure": group?.numberOfParticipants ?? 0,
         "type": "Members"
       },
       {
         "icon": "assets/img/community/ranking.svg",
-        "figure": '1',
+        "figure": rank,
         "type": "Rank"
       }
     ];
+    print("Group: _____ ${group}");
 
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
@@ -120,97 +135,156 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
                     topMargin: media.height * 0.05,
                     leftMargin: 0,
                     rightMargin: 0,
-                    child: const Header(title: "", iconButtons: [
+                    child: Header(title: "", iconButtons: [
                       {
                         "icon": Icons.more_vert_rounded,
+                        "onPressed": () {
+                          showActionList(
+                              context,
+                              [
+                                {
+                                  "text": "Group member management",
+                                  "onPressed": () {
+                                    Navigator.pushNamed(
+                                        context,
+                                        '/member_management_public',
+                                        arguments: {
+                                          "participants": group?.users ?? []
+                                        }
+                                    );
+                                  }
+                                },
+                                (true) ?{
+                                  "text": "Edit group information management",
+                                  "onPressed": () {
+                                    // Navigator.pushNamed(
+                                    //     context,
+                                    //     '/'
+                                    // );
+                                  }
+                                } : null,
+                                {
+                                  "text": "Leave group",
+                                  "onPressed": () {
+                                    // Navigator.pushNamed(
+                                    //     context,
+                                    //     '/'
+                                    // );
+                                  }
+                                },
+                                {
+                                  "text": "Delete event",
+                                  "onPressed": () {
+
+                                  },
+                                  "textColor": TColor.WARNING
+                                }
+                              ],
+                              "Options"
+                          );
+                        },
                       }
                     ],),
                   ),
                   MainWrapper(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(height: media.height * 0.2,),
 
                         // Main section
                         Container(
                           margin: EdgeInsets.only(left: media.width * 0.25),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.flag_circle_rounded,
-                                    color: TColor.PRIMARY_TEXT,
-                                  ),
-                                  SizedBox(width: media.width * 0.01,),
-                                  Text(
-                                    "Running group",
-                                    style: TextStyle(
-                                        color: TColor.PRIMARY_TEXT,
-                                        fontSize: FontSize.NORMAL,
-                                        fontWeight: FontWeight.w800
+                          child: SizedBox(
+                            width: media.width * 0.7,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.flag_circle_rounded,
+                                      color: Color(0xfff3af3d),
                                     ),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: media.height * 0.01,),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.shield_outlined,
-                                    color: TColor.PRIMARY_TEXT,
-                                  ),
-                                  SizedBox(width: media.width * 0.01,),
-                                  Text(
-                                    "Dang Minh Duc",
-                                    style: TextStyle(
-                                        color: TColor.DESCRIPTION,
-                                        fontSize: FontSize.NORMAL,
-                                        fontWeight: FontWeight.w800
-                                    ),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: media.height * 0.005,),
-                              CustomTextButton(
-                                onPressed: () {},
-                                child: Container(
-                                  width: media.width * 0.33,
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: TColor.SECONDARY_BACKGROUND,
-                                    borderRadius: BorderRadius.circular(10),
-                                    border: Border.all(
-                                        color: TColor.BORDER_COLOR,
-                                        width: 2
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Icon(
-                                        Icons.people_alt_rounded,
-                                        color: TColor.PRIMARY_TEXT,
-                                      ),
-                                      Text(
-                                        "Joined",
+                                    SizedBox(width: media.width * 0.02,),
+                                    SizedBox(
+                                      width: media.width * 0.6,
+                                      child: Text(
+                                        '${group?.name ?? ""}',
                                         style: TextStyle(
                                             color: TColor.PRIMARY_TEXT,
                                             fontSize: FontSize.NORMAL,
                                             fontWeight: FontWeight.w800
                                         ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                      Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        color: TColor.PRIMARY_TEXT,
-                                        size: 20,
-                                      )
-                                    ],
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: media.height * 0.01,),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.shield_outlined,
+                                      color: TColor.PRIMARY_TEXT,
+                                    ),
+                                    SizedBox(width: media.width * 0.02,),
+                                    SizedBox(
+                                      width: media.width * 0.6,
+                                      child: Text(
+                                        "Dang Minh Duc",
+                                        style: TextStyle(
+                                            color: TColor.DESCRIPTION,
+                                            fontSize: FontSize.NORMAL,
+                                            fontWeight: FontWeight.w800
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: media.height * 0.005,),
+                                CustomTextButton(
+                                  onPressed: () {},
+                                  child: Container(
+                                    width: media.width * 0.33,
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: TColor.SECONDARY,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                          color: TColor.BORDER_COLOR,
+                                          width: 2
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.people_alt_rounded,
+                                          color: TColor.PRIMARY_TEXT,
+                                        ),
+                                        Text(
+                                          "Joined",
+                                          style: TextStyle(
+                                              color: TColor.PRIMARY_TEXT,
+                                              fontSize: FontSize.NORMAL,
+                                              fontWeight: FontWeight.w800
+                                          ),
+                                        ),
+                                        Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: TColor.PRIMARY_TEXT,
+                                          size: 20,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         SizedBox(height: media.height * 0.02,),
@@ -235,7 +309,7 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
                                     Icons.flag_circle_rounded,
                                     color: TColor.PRIMARY_TEXT,
                                   ),
-                                  const SizedBox(
+                                  SizedBox(
                                     width: 10,
                                   ),
                                   Text(
@@ -346,10 +420,19 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
                               style: TxtStyle.headSection,
                             ),
                             SizedBox(height: media.height * 0.01,),
-                            Text(
-                              "DescriptionDescription DescriptionDescriptionDescriptionDescription",
-                              style: TxtStyle.descSection,
+                            DescriptionText(
+                              showFullText: showFullText,
+                              showViewMoreButton: showViewMoreButton,
+                              onTap: () {
+                                setState(() {
+                                  showFullText = (showFullText) ? false : true;
+                                });
+                              },
+                              description: '${group?.description ?? ""}',
                             )
+                            // Text(
+                            //
+                            // )
                           ],
                         ),
                         SizedBox(height: media.height * 0.02,),
@@ -361,7 +444,7 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                      "Weekly statistics",
+                                      "Group ranking",
                                       style: TxtStyle.headSection
                                   ),
                                   CustomIconButton(
@@ -376,7 +459,7 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
                             SizedBox(height: media.height * 0.01,),
                             ScrollSynchronized(
                               parentScrollController: parentScrollController,
-                              child: AthleteTable(participants: club?.participants, tableHeight: media.height - media.height * 0.15, controller: childScrollController,),
+                              child: AthleteTable(participants: group?.users, tableHeight: media.height - media.height * 0.15, controller: childScrollController,),
                             ),
                           ],
                         )

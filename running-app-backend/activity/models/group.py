@@ -16,6 +16,7 @@ class Group(models.Model):
         ("PUBLIC", "Public"),
         ("PRIVATE", "Private"),
     )
+    is_approved = models.BooleanField(default=True)
     privacy = models.CharField(max_length=15, choices=PRIVACY_CHOICES, default="PUBLIC")
     event = models.ForeignKey(
         "activity.Event", related_name="groups", on_delete=models.CASCADE)

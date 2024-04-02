@@ -18,6 +18,7 @@ import 'package:running_app/utils/common_widgets/search_filter.dart';
 import 'package:running_app/utils/common_widgets/stats_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 
@@ -120,14 +121,28 @@ class _UserViewState extends State<UserView> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              user?.name ?? "",
-                              style: TextStyle(
-                                  color: TColor.PRIMARY_TEXT,
-                                  fontSize: FontSize.LARGE,
-                                  fontWeight: FontWeight.w900),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  user?.name ?? "",
+                                  style: TextStyle(
+                                      color: TColor.PRIMARY_TEXT,
+                                      fontSize: FontSize.LARGE,
+                                      fontWeight: FontWeight.w900),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(width: media.width * 0.02,),
+                                Text(
+                                  '#${idSubstring(user?.id ?? "")}',
+                                  style: TextStyle(
+                                    color: TColor.DESCRIPTION,
+                                    fontSize: FontSize.SMALL,
+                                    fontWeight: FontWeight.w700
+                                  )
+                                )
+                              ],
                             ),
                             SizedBox(
                               height: media.height * 0.005,

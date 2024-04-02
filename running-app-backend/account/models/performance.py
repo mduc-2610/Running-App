@@ -15,31 +15,39 @@ class Performance(models.Model):
     def total_steps(self):
         return sum([act.steps() for act in self.activity.activity_records.all()])   
 
+    def total_distance(self):
+        return sum([act.distance() for act in self.activity.activity_records.all()])
+    
     def step_to_level_up(self):
         base_step = 1000
         return base_step + self.level * 1000 + (self.level // 5 * 10000)
 
     def level_up(self):
         cnt = 1
-        step = self.total_steps()
-        steps_remaining = 0
+        steps = self.total_steps()
         base_step = 1000
+        steps_done_this_level = 0
+        total_steps_this_level = 0
         while True:
-            total_steps = base_step + cnt * 1000 + (cnt // 5 * 10000)
-            if step >= total_steps:
-                step -= total_steps
+            total_steps_this_level = base_step + cnt * 1000 + (cnt // 5 * 10000)
+            if steps >= total_steps_this_level:
+                steps -= total_steps_this_level
             else:
-                steps_remaining = total_steps - step
+                # steps_done_this_level = steps - total_steps_this_level
+                steps_done_this_level = steps
                 break
             cnt += 1
-        return cnt, steps_remaining
+        return cnt, steps_done_this_level, total_steps_this_level
     
     def level(self):
         return self.level_up()[0]
     
-    def steps_remaining(self):
+    def steps_done_this_level(self):
         return self.level_up()[1]
     
+    def total_steps_this_level(self):
+        return self.level_up()[2]
+
     def point(self):
         return self.total_steps() // 100
 

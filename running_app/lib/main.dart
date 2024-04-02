@@ -3,6 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/performance.dart';
+import 'package:running_app/models/account/privacy.dart';
+import 'package:running_app/models/account/profile.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/view/activity/activity_record_create_view.dart';
@@ -15,8 +19,9 @@ import 'package:running_app/view/community/club/club_detail_information_view.dar
 import 'package:running_app/view/community/event/create/event_advanced_option_create_view.dart';
 import 'package:running_app/view/community/event/create/event_feature_create_view.dart';
 import 'package:running_app/view/community/event/create/event_information_create_view.dart';
-import 'package:running_app/view/community/event/create/group_create_view.dart';
-import 'package:running_app/view/community/event/management/group_management_view.dart';
+import 'package:running_app/view/community/event/create/event_group_create_view.dart';
+import 'package:running_app/view/community/event/list/event_group_list_view.dart';
+import 'package:running_app/view/community/event/management/event_group_management_view.dart';
 import 'package:running_app/view/community/utils/common_widgets/member_management_private_view.dart';
 import 'package:running_app/view/community/utils/common_widgets/member_management_public_view.dart';
 import 'package:running_app/view/community/club/club_member_view.dart';
@@ -39,8 +44,8 @@ import 'package:running_app/view/community/community_view.dart';
 import 'package:running_app/view/community/event/detail/event_detail_view.dart';
 import 'package:running_app/view/community/event/detail/event_member_detail_view.dart';
 import 'package:running_app/view/community/event/detail/event_group_detail_view.dart';
-import 'package:running_app/view/community/event/event_list_view.dart';
-import 'package:running_app/view/community/event/your_event_list_view.dart';
+import 'package:running_app/view/community/event/list/event_list_view.dart';
+import 'package:running_app/view/community/event/list/your_event_list_view.dart';
 import 'package:running_app/view/home/home_view.dart';
 import 'package:running_app/view/home/notification_view.dart';
 import 'package:running_app/view/login/get_started_view.dart';
@@ -67,8 +72,18 @@ void main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? '';
   String userPref = prefs.getString('user') ?? '';
+  String userPerformancePref = prefs.getString('userPerformance') ?? '';
+  String userActivityPref = prefs.getString('userActivity') ?? '';
+  String userProfilePref = prefs.getString('userProfile') ?? '';
+  String userPrivacyPref = prefs.getString('userPrivacy') ?? '';
   bool logged = prefs.getBool('logged') ?? false;
   DetailUser? user = userPref != "" ? DetailUser.fromJson(json.decode(userPref) ?? "") : null ;
+  Performance? userPerformance = userPerformancePref != "" ? Performance.fromJson(json.decode(userPerformancePref) ?? "") : null ;
+  Profile? userProfile = userProfilePref != "" ? DetailProfile.fromJson(json.decode(userProfilePref) ?? "") : null ;
+  Privacy? userPrivacy = userPrivacyPref != "" ? Privacy.fromJson(json.decode(userPrivacyPref) ?? "") : null ;
+  Activity? userActivity = userActivityPref != "" ? Activity.fromJson(json.decode(userActivityPref) ?? "") : null ;
+
+
   Widget homeScreen = token != "" ? const HomeView() : (logged == false) ? const GetStartedView() : const SignInView();
   try {
     final data = await callRetrieveAPI('account/user', user?.id, null, DetailUser.fromJson, token);
@@ -82,7 +97,12 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider<UserProvider>(
-          create: (_) => UserProvider()..setUser(user),
+          create: (_) => UserProvider()..setUser(user,
+               userPerformance: userPerformance,
+               userProfile: userProfile,
+           userPrivacy: userPrivacy,
+           userActivity: userActivity,
+        ),
         ),
         ChangeNotifierProvider<TokenProvider>(
           create: (_) => TokenProvider()..setToken(token),
@@ -164,15 +184,16 @@ class MyApp extends StatelessWidget {
         '/club_member': (context) => const ClubMemberView(),
         // Event
         '/event_list': (context) => const EventListView(),
+        '/your_event_list': (context) => const YourEventListView(),
+        '/group_list': (context) => const EventGroupListView(),
         '/event_detail': (context) => const EventDetailView(),
-        '/event_user_detail': (context) => const EventMemberDetailView(),
+        '/event_member_detail': (context) => const EventMemberDetailView(),
         '/event_group_detail': (context) => const EventGroupDetailView(),
-        '/group_create': (context) => const GroupCreateView(),
+        '/group_create': (context) => const EventGroupCreateView(),
         '/event_feature_create': (context) => const EventFeatureCreateView(),
         '/event_information_create': (context) => const EventInformationCreateView(),
         '/event_advanced_option_create': (context) => const EventAdvancedOptionCreateView(),
-        '/your_event_list': (context) => const YourEventListView(),
-        '/group_management': (context) => const GroupManagementView(),
+        '/group_management': (context) => const EventGroupManagementView(),
         '/member_management_private': (context) => const MemberManagementPrivateView(),
         '/member_management_public': (context) => const MemberManagementPublicView(),
 

@@ -11,6 +11,7 @@ class APIEndpoints {
 
 class TColor {
   static Color get PRIMARY => const Color(0xff7b61ff);
+  static Color get SECONDARY => const Color(0xff3362f5);
   // static Color get PRIMARY => Colors.green;
   static Color get PRIMARY_TEXT => const Color(0xffffffff);
   static Color get SECONDARY_TEXT => const Color(0xff7b61ff);
@@ -21,6 +22,7 @@ class TColor {
   static Color get WARNING => const Color(0xffCD452A);
   static Color get BORDER_COLOR => const Color(0xff444b5e);
   static Color get BUTTON_DISABLED => const Color(0xff979797);
+  static Color get ACCEPTED => const Color(0xff6cb64f);
 }
 
 class TImage {

@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/activity/event.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
-class EventBox extends StatelessWidget {
+class EventBox extends StatefulWidget {
   final EdgeInsets? buttonMargin;
   final double? width;
   final String? buttonText;
@@ -18,16 +24,51 @@ class EventBox extends StatelessWidget {
   });
 
   @override
+  State<EventBox> createState() => _EventBoxState();
+}
+
+class _EventBoxState extends State<EventBox> {
+  String token = "";
+  DetailUser? user;
+  Activity? userActivity;
+  bool userInEvent = false;
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+      userActivity = Provider.of<UserProvider>(context).userActivity;
+      userInEvent = checkUserInEvent();
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initToken();
+    initUser();
+  }
+
+  bool checkUserInEvent() {
+    return (userActivity?.events ?? []).where((e) => e.id == widget.event?.id).toList().length != 0;
+  }
+
+  @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return CustomTextButton(
       onPressed: () {
         Navigator.pushNamed(context, '/event_detail', arguments: {
-          "id": event?.id
+          "id": widget.event?.id
         });
       },
       child: Container(
-        width: width,
+        width: widget.width,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           color: TColor.SECONDARY_BACKGROUND,
@@ -60,7 +101,7 @@ class EventBox extends StatelessWidget {
                     horizontal: 12,
                   ),
                   child: Text(
-                    event?.name ?? "",
+                    widget.event?.name ?? "",
                     style: TextStyle(
                         color: TColor.PRIMARY_TEXT,
                         fontSize: FontSize.NORMAL,
@@ -85,11 +126,11 @@ class EventBox extends StatelessWidget {
                     for(var x in [
                       {
                         "icon": Icons.calendar_today_rounded,
-                        "text": "Ends in: ${event?.daysRemain}",
+                        "text": "Ends in: ${widget.event?.daysRemain}",
                       },
                       {
                         "icon": Icons.people_alt_outlined,
-                        "text": "Join: ${event?.numberOfParticipants}"
+                        "text": "Join: ${widget.event?.numberOfParticipants}"
                       }
                     ])...[
                       Row(
@@ -115,13 +156,18 @@ class EventBox extends StatelessWidget {
             ),
             Container(
               width: media.width,
-              margin: buttonMargin ?? const EdgeInsets.fromLTRB(12, 0, 12, 20),
+              margin: widget.buttonMargin ?? const EdgeInsets.fromLTRB(12, 0, 12, 20),
               child: CustomMainButton(
+                background: userInEvent ? TColor.BUTTON_DISABLED : TColor.PRIMARY,
                 horizontalPadding: 0,
                 verticalPadding: 12,
-                onPressed: () {},
+                onPressed: userInEvent ? null : () {
+                  Navigator.pushNamed(context, '/event_detail', arguments: {
+                    "id": widget.event?.id,
+                  });
+                },
                 child: Text(
-                  buttonText ?? "Join now",
+                  widget.buttonText ?? (userInEvent ? "Joined" : "Join now"),
                   style: TextStyle(
                       color: TColor.PRIMARY_TEXT,
                       fontSize: FontSize.LARGE,

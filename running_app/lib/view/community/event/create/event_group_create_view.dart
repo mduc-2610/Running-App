@@ -18,14 +18,14 @@ import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 
-class GroupCreateView extends StatefulWidget {
-  const GroupCreateView({super.key});
+class EventGroupCreateView extends StatefulWidget {
+  const EventGroupCreateView({super.key});
 
   @override
-  State<GroupCreateView> createState() => _GroupCreateViewState();
+  State<EventGroupCreateView> createState() => _EventGroupCreateViewState();
 }
 
-class _GroupCreateViewState extends State<GroupCreateView> {
+class _EventGroupCreateViewState extends State<EventGroupCreateView> {
   String token = "";
   DetailUser? user;
   String? userActivityId;

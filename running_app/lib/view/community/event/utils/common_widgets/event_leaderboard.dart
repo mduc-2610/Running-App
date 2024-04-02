@@ -1,39 +1,34 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/view/community/event/utils/common_widgets/event_leaderboard_text.dart';
 
-class CustomText extends StatelessWidget {
-  final String text;
-  final double? fontSize;
-  final fontWeight;
-
-  const CustomText({this.fontSize, this.fontWeight, required this.text, Key? key})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-          color: TColor.PRIMARY_TEXT,
-          fontSize: fontSize ?? 14,
-          fontWeight: fontWeight),
-      // overflow: TextOverflow.ellipsis,
-      textAlign: TextAlign.start,
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
-    );
-  }
-}
-class AthleteTable extends StatelessWidget {
+class EventLeaderboard extends StatelessWidget {
   final Random random = Random();
+  final DetailEvent? event;
+  final String? firstColumnName;
+  final String? secondColumnName;
+  final String? thirdColumnName;
+  final String? fourthColumnName;
   final double? tableHeight;
   final List<dynamic>? participants;
+  final List<dynamic>? groups;
   final ScrollController? controller;
 
-  AthleteTable({this.controller, this.tableHeight, this.participants, super.key});
+  EventLeaderboard({
+    this.event,
+    this.firstColumnName,
+    this.secondColumnName,
+    this.thirdColumnName,
+    this.fourthColumnName,
+    this.controller,
+    this.tableHeight,
+    this.participants,
+    this.groups,
+    super.key});
 
   // Generate random data for demonstration
   String generateRandomName() {
@@ -79,42 +74,41 @@ class AthleteTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print(participants);
     var media = MediaQuery.sizeOf(context);
     return Column(
       children: [
         Container(
           padding: const EdgeInsets.only(
-            bottom: 8
+              bottom: 8
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
-                children: [
-                  Container(
+                  children: [
+                    Container(
                       alignment: Alignment.centerLeft,
                       width: media.width * 0.1,
-                      child: const CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Rank'),
-                  ),
-                  SizedBox(width: media.width * 0.02,),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    width: media.width * 0.35,
-                    child: const CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Athlete name'),
-                  )
-              ]),
+                      child: EventLeaderboardText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Rank'),
+                    ),
+                    SizedBox(width: media.width * 0.02,),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      width: media.width * 0.35,
+                      child: EventLeaderboardText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: secondColumnName ?? "Athlete name"),
+                    )
+                  ]),
               Row(
                 children: [
                   Container(
-                      alignment: Alignment.centerLeft,
-                      width: media.width * 0.2,
-                      child: const CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Total (km)'),
+                    alignment: Alignment.centerLeft,
+                    width: media.width * 0.2,
+                    child: EventLeaderboardText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Total (km)'),
                   ),
                   Container(
-                      alignment: Alignment.centerLeft,
-                      width: media.width * 0.15,
-                      child: const CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Time'),
+                    alignment: Alignment.centerLeft,
+                    width: media.width * 0.15,
+                    child: EventLeaderboardText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Time'),
                   )
                 ],
               )
@@ -126,21 +120,31 @@ class AthleteTable extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // for(int i = 0; i < 30; i++)
-                for(var participant in participants ?? [])...[
+                for(var entity in
+                ((event?.competition == "Group")
+                    ? groups
+                    : participants) ?? [])...[
                   CustomTextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/event_member_detail', arguments: {
-                        "id": participant?.id,
-                        "participant": participant
-                      });
+                      Navigator.pushNamed
+                        (context,
+                          '${(event?.competition == "Individual")
+                          ? '/event_member_detail'
+                          : '/event_group_detail'
+                          }',
+                        arguments: {
+                          "id": entity?.id, // Group id
+                          "participant": event?.competition == "Individual" ? entity : null,
+                          "rank": groups?.indexOf(entity),
+                        }
+                      );
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
+                      padding: EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 12
                       ),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                           border: Border(
                               bottom: BorderSide(width: 1, color: Color(0xff746cb3))
                           )
@@ -153,12 +157,17 @@ class AthleteTable extends StatelessWidget {
                               Container(
                                   alignment: Alignment.centerLeft,
                                   width: media.width * 0.05,
-                                  child: CustomText(text: (participants!.indexOf(participant) + 1).toString())
+                                  child: EventLeaderboardText(
+                                      text: (( ((event?.competition == "Group")
+                                          ? groups
+                                          : participants) ?? []).indexOf(entity) + 1).toString()
+
+                                  )
                               ),
                               SizedBox(width: media.width * 0.02,),
                               Container(
                                 alignment: Alignment.centerLeft,
-                                width: media.width * 0.35,
+                                width: media.width * 0.4,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
@@ -166,18 +175,59 @@ class AthleteTable extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(50),
                                       child: Image.asset(
                                         "assets/img/community/ptit_logo.png",
-                                        width: 30,
-                                        height: 30,
+                                        width: 35,
+                                        height: 35,
                                       ),
                                     ),
                                     SizedBox(width: media.width * 0.02,),
                                     Container(
                                         alignment: Alignment.centerLeft,
-                                        child: SizedBox(
-                                          width: media.width * 0.25,
-                                          child: CustomText(
-                                            text: participant?.name,
-                                          ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              width: media.width * 0.29,
+                                              child: EventLeaderboardText(
+                                                text: entity?.name,
+                                              ),
+                                            ),
+                                            SizedBox(height: 5,),
+                                            Row(
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "-  ",
+                                                  style: TxtStyle.descSection,
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      width: 17,
+                                                      height: 17,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(30),
+                                                        color: TColor.ACCEPTED
+                                                      ),
+                                                      child: Icon(
+                                                        Icons.check,
+                                                        color: TColor.PRIMARY_TEXT,
+                                                        size: 15
+                                                      )
+                                                    ),
+                                                    SizedBox(width: media.width * 0.01,),
+                                                    Text(
+                                                      "Completed",
+                                                      style: TextStyle(
+                                                        color: TColor.ACCEPTED,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          ],
                                         )
                                     ),
                                   ],
@@ -190,13 +240,13 @@ class AthleteTable extends StatelessWidget {
                               Container(
                                   alignment: Alignment.centerLeft,
                                   width: media.width * 0.15,
-                                  child: CustomText(text: generateRandomDistance())
+                                  child: EventLeaderboardText(text: generateRandomDistance())
                               ),
                               // SizedBox(width: media.width * 0.1,),
                               Container(
                                   alignment: Alignment.centerLeft,
                                   width: media.width * 0.15,
-                                  child: CustomText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m')
+                                  child: EventLeaderboardText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m')
                               )
                             ],
                           )
@@ -214,7 +264,7 @@ class AthleteTable extends StatelessWidget {
                 //       DataColumn(
                 //     label: Container(
                 //       alignment: Alignment.centerLeft,
-                //       child: const CustomText(text: '1'),
+                //       child: const EventLeaderboardText(text: '1'),
                 //     ),
                 //     numeric: true,
                 //     tooltip: 'Athlete Rank',
@@ -238,7 +288,7 @@ class AthleteTable extends StatelessWidget {
                 //             alignment: Alignment.centerLeft,
                 //             child: SizedBox(
                 //               width: media.width * 0.25,
-                //               child: CustomText(
+                //               child: EventLeaderboardText(
                 //                 text: "adadadadadasd",
                 //               ),
                 //             )
@@ -250,14 +300,14 @@ class AthleteTable extends StatelessWidget {
                 //   ),
                 //   DataColumn(
                 //     label: Center(
-                //       child: CustomText(text: '6.32'),
+                //       child: EventLeaderboardText(text: '6.32'),
                 //     ),
                 //     numeric: true,
                 //     tooltip: 'Total Distance',
                 //   ),
                 //   DataColumn(
                 //     label: Center(
-                //       child: CustomText(text: '4h11m'),
+                //       child: EventLeaderboardText(text: '4h11m'),
                 //     ),
                 //     numeric: true,
                 //     tooltip: 'Athlete Time',
@@ -272,7 +322,7 @@ class AthleteTable extends StatelessWidget {
                 //             Center(
                 //               child: Container(
                 //                   alignment: Alignment.center,
-                //                   child: CustomText(text: (participants!.indexOf(participant) + 1).toString())),
+                //                   child: EventLeaderboardText(text: (participants!.indexOf(participant) + 1).toString())),
                 //             ),
                 //           ),
                 //           DataCell(
@@ -292,7 +342,7 @@ class AthleteTable extends StatelessWidget {
                 //                     alignment: Alignment.centerLeft,
                 //                     child: SizedBox(
                 //                       width: media.width * 0.25,
-                //                       child: CustomText(
+                //                       child: EventLeaderboardText(
                 //                           text: participant?.username,
                 //                       ),
                 //                     )),
@@ -303,13 +353,13 @@ class AthleteTable extends StatelessWidget {
                 //             Center(
                 //                 child: Container(
                 //                   alignment: Alignment.centerLeft,
-                //                   child: CustomText(text: generateRandomDistance()),
+                //                   child: EventLeaderboardText(text: generateRandomDistance()),
                 //                 )),
                 //           ),
                 //           DataCell(Center(
                 //               child: Container(
                 //                 alignment: Alignment.centerLeft,
-                //                 child: CustomText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m'),
+                //                 child: EventLeaderboardText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m'),
                 //               ))),
                 //         ]),
                 //   ]

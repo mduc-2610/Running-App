@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
@@ -9,6 +11,12 @@ import 'package:running_app/utils/common_widgets/default_background_layout.dart'
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/common_widgets/show_action_list.dart';
+import 'package:running_app/view/community/utils/common_widgets/member_approval_layout.dart';
+import 'package:running_app/view/community/utils/common_widgets/member_layout.dart';
+
 
 class MemberManagementPrivateView extends StatefulWidget {
   const MemberManagementPrivateView({super.key});
@@ -18,7 +26,29 @@ class MemberManagementPrivateView extends StatefulWidget {
 }
 
 class MemberManagementPrivateViewState extends State<MemberManagementPrivateView> {
-  String _showLayout = "Waiting for approval";
+  String _showLayout = "Approval";
+  String token = "";
+  List<User>? participants;
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void getParticipants() {
+    setState(() {
+      Map<String, dynamic> arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      participants = arguments["participants"];
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    initToken();
+    getParticipants();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,523 +58,79 @@ class MemberManagementPrivateViewState extends State<MemberManagementPrivateView
         title: const Header(title: "Member management", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
-      body: SingleChildScrollView(
-        child: DefaultBackgroundLayout(
-          child: Stack(
-            children: [
-              MainWrapper(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 50,
-                      child: CustomTextFormField(
-                        decoration: CustomInputDecoration(
-                            hintText: "Search athletes",
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20
-                            ),
-                            prefixIcon: Icon(
-                                Icons.search_rounded,
-                                color: TColor.DESCRIPTION
-                            )
-                        ),
-                        keyboardType: TextInputType.text,
-                      ),
-                    ),
-
-                    SizedBox(height: media.height * 0.015,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        for (var x in ["Waiting for approval", "Joined"])...[
-                          SizedBox(
-                            width: media.width * 0.46,
-                            height: media.height * 0.07,
-                            child: CustomTextButton(
-                              onPressed: () {
-                                setState(() {
-                                  _showLayout = x;
-                                });
-                              },
-                              style: ButtonStyle(
-                                  padding: MaterialStateProperty.all<EdgeInsets>(
-                                      EdgeInsets.symmetric(
-                                          vertical: 5,
-                                          horizontal: media.width * 0.07)),
-                                  backgroundColor: MaterialStateProperty.all<
-                                      Color?>(
-                                      _showLayout == x ? TColor.PRIMARY : null),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10)))),
-                              child: Text(x,
-                                  style: TextStyle(
-                                    color: TColor.PRIMARY_TEXT,
-                                    fontSize: FontSize.NORMAL,
-                                    fontWeight: FontWeight.w600,
-                                  )
-                                ,textAlign: TextAlign.center,
-                              ),
-                            ),
-                          )
-                        ],
-                      ],
-                    ),
-                    SizedBox(height: media.height * 0.015,),
-                    (_showLayout == "Waiting for approval")
-                        ? const MemberApproveLayout()
-                        : const MemberLayout(layout: "Joined", amount: [1, 2, 10])
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class MemberApproveLayout extends StatelessWidget {
-  const MemberApproveLayout({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var media = MediaQuery.sizeOf(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(
-              bottom: 8
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Pending join requests",
-                style: TxtStyle.headSection
-              ),
-              Text(
-                "0",
-                style: TxtStyle.headSection
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: media.height,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for(int i = 0; i < 30; i++)...[
-                  CustomTextButton(
-                    onPressed: () {},
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.asset(
-                                  "assets/img/community/ptit_logo.png",
-                                  width: 40,
-                                  height: 40,
-                                ),
-                              ),
-                              SizedBox(width: media.width * 0.02,),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Dang Minh Duc",
-                                    style: TextStyle(
-                                        color: TColor.PRIMARY_TEXT,
-                                        fontSize: FontSize.SMALL,
-                                        fontWeight: FontWeight.w800
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: media.height * 0.01,),
-                          Row(
-                            children: [
-                              SizedBox(
-                                  width: media.width * 0.46,
-                                  child: CustomMainButton(
-                                    horizontalPadding: 0,
-                                    verticalPadding: 6,
-                                    borderRadius: 10,
-                                    onPressed: () {},
-                                    background: Colors.transparent,
-                                    borderWidth: 2,
-                                    borderWidthColor: TColor.PRIMARY,
-                                    child: Text(
-                                      "Reject",
-                                      style: TextStyle(
-                                          color: TColor.PRIMARY,
-                                          fontSize: FontSize.NORMAL,
-                                          fontWeight: FontWeight.w800
-                                      ),
-                                    ),
-                                  )
-                              ),
-                              SizedBox(width: media.width * 0.02,),
-                              SizedBox(
-                                  width: media.width * 0.46,
-                                  child: CustomMainButton(
-                                    horizontalPadding: 0,
-                                    verticalPadding: 6,
-                                    borderRadius: 10,
-                                    onPressed: () {},
-                                    child: Text(
-                                      "Approve",
-                                      style: TextStyle(
-                                          color: TColor.PRIMARY_TEXT,
-                                          fontSize: FontSize.NORMAL,
-                                          fontWeight: FontWeight.w800
-                                      ),
-                                    ),
-                                  )
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ]
-              ],
-            ),
-          )
-        )
-      ],
-    );
-  }
-}
-
-class MemberLayout extends StatelessWidget {
-  final String layout;
-  final List amount ;
-  const MemberLayout({super.key, required this.layout, required this.amount});
-
-  @override
-  Widget build(BuildContext context) {
-    var media = MediaQuery.sizeOf(context);
-    return SizedBox(
-      height: media.height,
-      child: SingleChildScrollView(
-        child: Column(
+      body: DefaultBackgroundLayout(
+        child: Stack(
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: 8
+            MainWrapper(
+              bottomMargin: 0,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 50,
+                    child: CustomTextFormField(
+                      decoration: CustomInputDecoration(
+                          hintText: "Search athlete name or tag name",
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20
+                          ),
+                          prefixIcon: Icon(
+                              Icons.search_rounded,
+                              color: TColor.DESCRIPTION
+                          )
+                      ),
+                      keyboardType: TextInputType.text,
+                    ),
                   ),
-                  child: Row(
+
+                  SizedBox(height: media.height * 0.015,),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "Admin",
-                        style: TxtStyle.headSection,
-                      ),
-                      Text(
-                        amount[0].toString(),
-                        style: TxtStyle.headSection,
-                      ),
-                    ],
-                  ),
-                ),
-                if(amount[0] == 0)...[
-                  SizedBox(height: media.height * 0.01,),
-                  Center(
-                    child: Text(
-                      "Empty list",
-                      style: TextStyle(
-                        color: TColor.PRIMARY_TEXT,
-                        fontSize: FontSize.NORMAL,
-                      ),
-                    ),
-                  )
-                ],
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for(int i = 0; i < amount[0]; i++)...[
-                      CustomTextButton(
-                        onPressed: () {},
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
+                      for (var x in ["Approval", "Joined"])...[
+                        SizedBox(
+                          width: media.width * 0.46,
+                          // height: media.height * 0.07,
+                          child: CustomTextButton(
+                            onPressed: () {
+                              setState(() {
+                                _showLayout = x;
+                              });
+                            },
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all<EdgeInsets>(
+                                    EdgeInsets.symmetric(
+                                        vertical: 5,
+                                        horizontal: media.width * 0.07)),
+                                backgroundColor: MaterialStateProperty.all<
+                                    Color?>(
+                                    _showLayout == x ? TColor.PRIMARY : null),
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(10)))),
+                            child: Text(x,
+                                style: TextStyle(
+                                  color: TColor.PRIMARY_TEXT,
+                                  fontSize: FontSize.SMALL,
+                                  fontWeight: FontWeight.w600,
+                                )
+                              ,textAlign: TextAlign.center,
                             ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: Image.asset(
-                                      "assets/img/community/ptit_logo.png",
-                                      width: 35,
-                                      height: 35,
-                                    ),
-                                  ),
-                                  SizedBox(width: media.width * 0.02,),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        layout == "Following" ? "Minh Duc" : "Dang Minh Duc",
-                                        style: TextStyle(
-                                            color: TColor.PRIMARY_TEXT,
-                                            fontSize: FontSize.SMALL,
-                                            fontWeight: FontWeight.w800
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              CustomIconButton(
-                                  icon: Icon(
-                                    Icons.more_horiz_rounded,
-                                    color: TColor.PRIMARY_TEXT,
-                                  ),
-                                  onPressed: () {}
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ]
-                  ],
-                )
-              ],
-            ),
-            SizedBox(height: media.height * 0.02,),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: 8
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                          "Administrator",
-                          style: TxtStyle.headSection
-                      ),
-                      Text(
-                          amount[1].toString(),
-                          style: TxtStyle.headSection
-                      ),
+                        )
+                      ],
                     ],
                   ),
-                ),
-                if(amount[1] == 0)...[
-                  SizedBox(height: media.height * 0.01,),
-                  Center(
-                    child: Text(
-                      "Empty list",
-                      style: TextStyle(
-                          color: TColor.PRIMARY_TEXT,
-                          fontSize: FontSize.NORMAL,
-                          fontWeight: FontWeight.w600
-                      ),
-                    ),
-                  )
+                  SizedBox(height: media.height * 0.015,),
+                  (_showLayout == "Approval")
+                      ? MemberApprovalLayout(participants: participants,)
+                      : SizedBox(
+                      height: media.height * 0.72,
+                      child: MemberLayout(layout: "Joined", participants: participants,))
                 ],
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for(int i = 0; i < amount[1]; i++)...[
-                      CustomTextButton(
-                        onPressed: () {},
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: Image.asset(
-                                      "assets/img/community/ptit_logo.png",
-                                      width: 35,
-                                      height: 35,
-                                    ),
-                                  ),
-                                  SizedBox(width: media.width * 0.02,),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        layout == "Following" ? "Minh Duc" : "Dang Minh Duc",
-                                        style: TextStyle(
-                                            color: TColor.PRIMARY_TEXT,
-                                            fontSize: FontSize.SMALL,
-                                            fontWeight: FontWeight.w800
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    child: CustomIconButton(
-                                        icon: Icon(
-                                          Icons.more_horiz_rounded,
-                                          color: TColor.PRIMARY_TEXT,
-                                        ),
-                                        onPressed: () {}
-                                    )
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ]
-                  ],
-                )
-              ],
-            ),
-            SizedBox(height: media.height * 0.02,),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: 8
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                          "Members",
-                          style: TxtStyle.headSection
-                      ),
-                      Text(
-                          amount[2].toString(),
-                          style: TxtStyle.headSection
-                      ),
-                    ],
-                  ),
-                ),
-                if(amount[2] == 0)...[
-                  SizedBox(height: media.height * 0.01,),
-                  Center(
-                    child: Text(
-                      "Empty list",
-                      style: TextStyle(
-                          color: TColor.PRIMARY_TEXT,
-                          fontSize: FontSize.NORMAL,
-                          fontWeight: FontWeight.w600
-                      ),
-                    ),
-                  )
-                ],
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for(int i = 0; i < amount[2]; i++)...[
-                      CustomTextButton(
-                        onPressed: () {},
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: Image.asset(
-                                      "assets/img/community/ptit_logo.png",
-                                      width: 35,
-                                      height: 35,
-                                    ),
-                                  ),
-                                  SizedBox(width: media.width * 0.02,),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        layout == "Following" ? "Minh Duc" : "Dang Minh Duc",
-                                        style: TextStyle(
-                                            color: TColor.PRIMARY_TEXT,
-                                            fontSize: FontSize.SMALL,
-                                            fontWeight: FontWeight.w800
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    child: CustomIconButton(
-                                        icon: Icon(
-                                          Icons.more_horiz_rounded,
-                                          color: TColor.PRIMARY_TEXT,
-                                        ),
-                                        onPressed: () {}
-                                    )
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ]
-                  ],
-                )
-              ],
-            ),
+              ),
+            )
           ],
         ),
       ),

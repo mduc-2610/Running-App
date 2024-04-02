@@ -1,8 +1,12 @@
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/performance.dart';
+import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
@@ -31,6 +35,8 @@ class _HomeViewState extends State<HomeView> {
   String token = "";
   DetailUser? user;
   Performance? userPerformance;
+  Activity? userActivity;
+  List<ActivityRecord>? activityRecords;
 
   void initToken() {
     setState(() {
@@ -51,6 +57,14 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
+  void initUserActivity() async {
+    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    setState(() {
+      userActivity = data;
+      activityRecords = userActivity?.activityRecords;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +73,10 @@ class _HomeViewState extends State<HomeView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    initToken();
     initUser();
+    initUserPerformance();
+    initUserActivity();
   }
 
   @override
@@ -96,25 +113,25 @@ class _HomeViewState extends State<HomeView> {
                                         fontWeight: FontWeight.w300,
                                       ),
                                       children: [
-                                        const TextSpan(
-                                          text: "14000 / ",
+                                        TextSpan(
+                                          text: "${userPerformance?.stepsDoneThisLevel} / ",
                                         ),
                                         TextSpan(
-                                          text: "15000 ",
+                                          text: "${userPerformance?.totalStepsThisLevel} ",
                                           style: TextStyle(
                                             color: TColor.PRIMARY_TEXT,
                                             fontSize: FontSize.LARGE,
                                             fontWeight: FontWeight.w800,
                                           ),
                                         ),
-                                        const TextSpan(
+                                        TextSpan(
                                           text: "steps",
                                         ),
                                       ],
                                     ),
                                   ),
-                                  const Text(
-                                    "Level 5",
+                                  Text(
+                                    "Level ${userPerformance?.level ?? 1}",
                                     style: TextStyle(
                                       color: Color(0xffffc932),
                                       fontSize: FontSize.LARGE,
@@ -126,9 +143,9 @@ class _HomeViewState extends State<HomeView> {
                               ),
                             ),
                             SizedBox(height: media.height * 0.005,),
-                            const ProgressBar(
-                              totalSteps: 10, // Total steps
-                              currentStep: 9, // Current step
+                            ProgressBar(
+                              totalSteps: userPerformance?.totalStepsThisLevel ?? 1, // Total steps
+                              currentStep: userPerformance?.stepsDoneThisLevel ?? 0, // Current step
                             ),
                           ],
                         ),
@@ -147,10 +164,10 @@ class _HomeViewState extends State<HomeView> {
                         horizontal: media.width * 0.05,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xff6b60bd),
+                        color: Color(0xff6b60bd),
                         borderRadius: BorderRadius.circular(18.0),
                         border: Border.all(
-                          color: const Color(0xff746cb3),
+                          color: Color(0xff746cb3),
                           width: 2
                         )
                       ),
@@ -174,8 +191,8 @@ class _HomeViewState extends State<HomeView> {
                                       fontSize: 12,
                                     ),
                                   ),
-                                  const SizedBox(height: 2),
-                                  const Text(
+                                  SizedBox(height: 2),
+                                  Text(
                                     "Today",
                                     style: TextStyle(
                                       color: Color(0xff43c465),
@@ -183,7 +200,7 @@ class _HomeViewState extends State<HomeView> {
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  const SizedBox(height: 2),
+                                  SizedBox(height: 2),
                                   Text(
                                     "01:09:44",
                                     style: TextStyle(
@@ -213,12 +230,12 @@ class _HomeViewState extends State<HomeView> {
                                       fontSize: 12,
                                     ),
                                   ),
-                                  const SizedBox(height: 2),
+                                  SizedBox(height: 2),
         
-                                  const SeparateBar(width: 27, height: 1,),
+                                  SeparateBar(width: 27, height: 1,),
         
-                                  const SizedBox(height: 2),
-                                  const Text(
+                                  SizedBox(height: 2),
+                                  Text(
                                     "5000",
                                     style: TextStyle(
                                       color: Color(0xff43c465),
@@ -260,10 +277,10 @@ class _HomeViewState extends State<HomeView> {
                             // ),
         
                             decoration: BoxDecoration(
-                                color: const Color(0xff6b60bd),
+                                color: Color(0xff6b60bd),
                                 borderRadius: BorderRadius.circular(18.0),
                                 border: Border.all(
-                                    color: const Color(0xff746cb3),
+                                    color: Color(0xff746cb3),
                                     width: 2
                                 )
                             ),
@@ -343,86 +360,91 @@ class _HomeViewState extends State<HomeView> {
                             )
                           ]
                         ),
-                        for(int i = 0; i < 5; i++)
-                          CustomTextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/activity_record_detail', arguments: {
-                                "id": "",
-                              });
-                            },
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(0, 0, 0, media.height * 0.01),
-                              padding: EdgeInsets.symmetric(
-                                vertical: media.height * 0.015,
-                                horizontal: media.width * 0.05,
-                              ),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  border: Border.all(
-                                      color: const Color(0xff3f4252),
-                                      width: 2
-                                  )
-                              ),
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                        Column(
+                          children: [
+                            for(int i = 0; i < min(activityRecords?.length ?? 0, 5); i++)...[
+                              CustomTextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/activity_record_detail', arguments: {
+                                    "id": activityRecords?[i].id,
+                                  });
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, media.height * 0.01),
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: media.height * 0.015,
+                                    horizontal: media.width * 0.05,
+                                  ),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      border: Border.all(
+                                          color: Color(0xff3f4252),
+                                          width: 2
+                                      )
+                                  ),
+                                  child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Text(
-                                            "27 May",
-                                            style: TextStyle(
-                                              color: TColor.PRIMARY,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                            )
-                                        ),
-                                        SizedBox(height: media.height * 0.005),
-                                        RichText(
-                                            text: TextSpan(
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                activityRecords?[i].completedAt ?? "",
                                                 style: TextStyle(
-                                                  color: TColor.DESCRIPTION,
-                                                  fontSize: 12,
-                                                ),
-                                                children: const <TextSpan>[
-                                                  TextSpan(
-                                                    text: "100 pt",
-                                                    style: TextStyle(
-                                                      color: Color(0xffda477e),
-                                                    ),
-                                                  ),
-                                                  TextSpan(text: "  •  12,4 km  •  1222 kcal"),
-                                                ]
-                                            )
-                                        )
-                                      ],
-                                    ),
-
-                                    RichText(
-                                      text: TextSpan(
-                                          style: TextStyle(
-                                              color: TColor.DESCRIPTION,
-                                              fontSize: FontSize.SMALL,
-                                              fontWeight: FontWeight.w400
-                                          ),
-                                          children: <TextSpan> [
-                                            TextSpan(
-                                                text: "10,120 ",
-                                                style: TextStyle(
-                                                    color: TColor.DESCRIPTION,
-                                                    fontSize: FontSize.NORMAL,
-                                                    fontWeight: FontWeight.w900
+                                                  color: TColor.PRIMARY,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
                                                 )
                                             ),
-                                            const TextSpan(text: "steps")
-                                          ]
-                                      ),
-                                    )
-                                  ]
+                                            SizedBox(height: media.height * 0.005),
+                                            RichText(
+                                                text: TextSpan(
+                                                    style: TextStyle(
+                                                      color: TColor.DESCRIPTION,
+                                                      fontSize: 12,
+                                                    ),
+                                                    children: <TextSpan>[
+                                                      TextSpan(
+                                                        text: '${activityRecords?[i].pointsEarned}',
+                                                        style: TextStyle(
+                                                          color: Color(0xffda477e),
+                                                        ),
+                                                      ),
+                                                      TextSpan(text: "  •  ${activityRecords?[i].distance} km •  ${activityRecords?[i].kcal} kcal"),
+                                                    ]
+                                                )
+                                            )
+                                          ],
+                                        ),
+
+                                        RichText(
+                                          text: TextSpan(
+                                              style: TextStyle(
+                                                  color: TColor.DESCRIPTION,
+                                                  fontSize: FontSize.SMALL,
+                                                  fontWeight: FontWeight.w400
+                                              ),
+                                              children: <TextSpan> [
+                                                TextSpan(
+                                                    text: '${activityRecords?[i].steps ?? ""} ',
+                                                    style: TextStyle(
+                                                        color: TColor.DESCRIPTION,
+                                                        fontSize: FontSize.NORMAL,
+                                                        fontWeight: FontWeight.w900
+                                                    )
+                                                ),
+                                                TextSpan(text: "steps")
+                                              ]
+                                          ),
+                                        )
+                                      ]
+                                  ),
+                                ),
                               ),
-                            ),
-                          )
+                            ]
+                          ],
+                        ),
                       ],
                     )
                   ]
@@ -433,7 +455,7 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       ),
-      bottomNavigationBar: const Menu(),
+      bottomNavigationBar: Menu(),
     );
   }
 }
