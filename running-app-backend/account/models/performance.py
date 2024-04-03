@@ -26,10 +26,14 @@ class Performance(models.Model):
 
     def avg_total_cadence(self):
         length = self.activity.activity_records.count()
-        return sum([act.avg_cadence() for act in self.activity.activity_records.all()]) if length != 0 else 0
+        return round(sum([act.avg_cadence() for act in self.activity.activity_records.all()]) / (length if length != 0 else 1))
     
     def avg_total_heart_rate(self):
-        return self.total_stats('avg_heart_rate')
+        length = self.activity.activity_records.count()
+        return round(self.total_stats('avg_heart_rate') / (length if length != 0 else 1))
+
+    def total_active_days(self):
+        return self.activity.activity_records.values('completed_at__date').distinct().count()
 
     def total_stats(self, col):
         return self.activity.activity_records.aggregate(total=Sum(col))['total'] or 0
@@ -61,7 +65,6 @@ class Performance(models.Model):
         return self.level_up()[2]
 
     def star(self):
-        # root_url = "static/images/stars/star_"
         return int(self.level / 5);
 
     def get_activities_in_range(self, start_date, end_date):
@@ -71,7 +74,7 @@ class Performance(models.Model):
         total_distance = activities.aggregate(total_distance=Sum('distance'))['total_distance'] or 0
         total_steps = sum([act.steps() for act in activities])
         total_points = sum([act.points() for act in activities])
-        total_duration = activities.aggregate(total_duration=Sum('duration'))['total_duration'] or 0
+        total_duration = format(activities.aggregate(total_duration=Sum('duration'))['total_duration'] or 0)
         avg_total_cadence = sum([act.avg_cadence() for act in activities]) / (len(activities) if len(activities) != 0 else 1)
         avg_total_heart_rate = sum([act.avg_heart_rate for act in activities]) / (len(activities) if len(activities) != 0 else 1)
         active_days = activities.values('completed_at__date').distinct().count()
@@ -117,7 +120,7 @@ class Performance(models.Model):
         yearly_activities = self.get_activities_in_range(start_of_year, end_of_year)
         return self.calculate_stats(yearly_activities)
 
-    def option_stats(self, start_date, end_date):
+    def range_stats(self, start_date, end_date):
         activities = self.get_activities_in_range(start_date, end_date)
         return self.calculate_stats(activities)
 

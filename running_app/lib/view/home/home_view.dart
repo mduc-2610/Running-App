@@ -47,20 +47,8 @@ class _HomeViewState extends State<HomeView> {
   void initUser() {
     setState(() {
       user = Provider.of<UserProvider>(context).user;
-    });
-  }
-
-  void initUserPerformance() async {
-    final data = await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
-    setState(() {
-      userPerformance = data;
-    });
-  }
-
-  void initUserActivity() async {
-    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
-    setState(() {
-      userActivity = data;
+      userPerformance = Provider.of<UserProvider>(context).userPerformance;
+      userActivity = Provider.of<UserProvider>(context).userActivity;
       activityRecords = userActivity?.activityRecords;
     });
   }
@@ -75,12 +63,12 @@ class _HomeViewState extends State<HomeView> {
     super.didChangeDependencies();
     initToken();
     initUser();
-    initUserPerformance();
-    initUserActivity();
   }
 
   @override
   Widget build(BuildContext context) {
+    print(userPerformance);
+    print(userActivity);
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -258,7 +246,7 @@ class _HomeViewState extends State<HomeView> {
                       children: [
                         for(var x in [
                           {
-                            "amount": userPerformance?.totalSteps ?? 0,
+                            "amount": userPerformance?.periodSteps ?? 0,
                             "iconSvg": "assets/img/home/step_icon.svg",
                             "text": "Steps",
                           },

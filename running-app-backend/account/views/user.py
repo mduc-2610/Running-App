@@ -32,6 +32,7 @@ class UserViewSet(
         queryset = super().get_queryset()
         username = self.request.query_params.get('username', None)
         email = self.request.query_params.get('email', None)
+        print({'username': username, 'email': email})
         if username or email:
             queryset = queryset.filter(
                 Q(username__icontains=username) if username else Q()
@@ -49,10 +50,10 @@ class UserViewSet(
             return CreateUserSerializer
         return super().get_serializer_class()
     
-    def get_serializer(self, *args, **kwargs):
-        serializer_class = self.get_serializer_class()
-        kwargs["context"] = self.get_serializer_context()
-        return serializer_class(*args, **kwargs)
+    # def get_serializer(self, *args, **kwargs):
+    #     serializer_class = self.get_serializer_class()
+    #     kwargs["context"] = self.get_serializer_context()
+    #     return serializer_class(*args, **kwargs)
         
 class LoginViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()

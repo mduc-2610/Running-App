@@ -11,34 +11,42 @@ class PerformanceViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
     viewsets.GenericViewSet
 ):
     queryset = Performance.objects.all()
     serializer_class = PerformanceSerializer
-
-    # def get_queryset(self, ):
-    #     queryset = super().get_queryset()
-    #     start_date = self.request.query_params.get('start_date')
-    #     end_date = self.request.query_params.get('end_date')
-
-    #     return queryset
-    
 
     def get_serializer_class(self):
         if self.action == "create":
             return CreatePerformanceSerializer
         return super().get_serializer_class()
     
-    def get_serializer(self, *args, **kwargs):
-        serializer_class = self.get_serializer_class()
-        kwargs["context"] = self.get_serializer_context()
-        return serializer_class(*args, **kwargs)
+    # def get_serializer(self, *args, **kwargs):
+    #     serializer_class = self.get_serializer_class()
+    #     kwargs["context"] = self.get_serializer_context()
+    #     return serializer_class(*args, **kwargs)
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        start_date = self.request.query_params.get('start_date', None)
+        end_date = self.request.query_params.get('end_date', None)
+        period = self.request.query_params.get('period', None)
+        
+        serializer = self.get_serializer(
+            instance, 
+            context={
+                'start_date': start_date, 
+                'end_date': end_date,
+                'period': period
+            }
+        )
+
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request, *args, **kwargs):
-        serializer_ = self.get_serializer(data=request.data)
-        serializer_.is_valid(raise_exception=True)
-        serializer_.save()
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         
-        return response.Response(serializer_.data, status=status.HTTP_200_OK)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)
     

@@ -53,7 +53,7 @@ def run():
         model.objects.all().delete()
 
     MAX_NUMBER_USERS = 100
-    MAX_ACTIVITY_RECORDS = 100
+    MAX_ACTIVITY_RECORDS = 350
     MAX_NUMBER_EVENTS = 30
     MAX_NUMBER_CLUBS = 50
     MAX_NUMBER_EVENT_GROUPS = 200
@@ -131,14 +131,24 @@ def run():
         performance_list.append(performance)
         print(f"\tSuccesfully created Performance: {performance}")
     
+    from datetime import datetime
+
+    current_year = datetime.now().year
+    current_datetime = datetime.now()
+
     print("________________________________________________________________")
     print("ACTIVITY RECORD:")
     activity_record_list = []
     for i in range(MAX_ACTIVITY_RECORDS):
+        # start_date = current_datetime - timedelta(days=3*365)
+        start_date = datetime(current_year, 1, 1)
+        end_date = current_datetime
+        completed_at = fake.date_time_between_dates(datetime_start=start_date, datetime_end=end_date)
+
         data = {
             "distance": random.uniform(0, 10),
             "duration": timedelta(hours=random.randint(0, 3), minutes=random.randint(0, 59), seconds=random.randint(0, 59)),
-            "completed_at": fake.date_time_this_year(),
+            "completed_at": completed_at,
             "sport_type": random.choice(["RUNNING", "CYCLING", "SWIMMING", "WALKING"]),
             "description": fake.text(max_nb_chars=250),
             "user": random.choice(user_activity_list),
