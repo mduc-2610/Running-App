@@ -13,6 +13,7 @@ import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/progress_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/scroll_synchronized.dart';
@@ -76,12 +77,8 @@ class _EventDetailViewState extends State<EventDetailView> {
     initDetailEvent();
     initUser();
     setState(() {
-      userInEvent = checkUserInEvent();
+      userInEvent = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>)["userInEvent"];
     });
-  }
-
-  bool checkUserInEvent() {
-    return (userActivity?.events ?? []).where((e) => e.id == event?.id).toList().length != 0;
   }
 
   @override
@@ -150,7 +147,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                     // Event target
                     Column(
                       children: [
-                        if(checkUserInEvent() || showMilestone)...[
+                        if(userInEvent || showMilestone)...[
                           SizedBox(
                             height: media.height * 0.16,
                             width: media.width,
@@ -172,7 +169,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                   margin: const EdgeInsets.only(
                                     // right: media.width * 0.03
                                   ),
-                                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+                                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 18),
                                   decoration: BoxDecoration(
                                     color: TColor.PRIMARY,
                                     borderRadius: BorderRadius.circular(12),
@@ -185,9 +182,9 @@ class _EventDetailViewState extends State<EventDetailView> {
                                         children: [
                                           Icon(
                                             Icons.flag_circle_rounded,
-                                            color: TColor.PRIMARY_TEXT,
+                                            color: Color(0xfff3af3d),
                                           ),
-                                          const SizedBox(
+                                          SizedBox(
                                             width: 10,
                                           ),
                                           Text(
@@ -221,7 +218,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            '${event?.daysRemain ?? "0"}',
+                                            '${event?.daysRemain ?? "0"} days left',
                                             style: TextStyle(
                                                 color: TColor.DESCRIPTION,
                                                 fontSize: FontSize.SMALL,
@@ -233,11 +230,11 @@ class _EventDetailViewState extends State<EventDetailView> {
                                                     color: TColor.PRIMARY_TEXT,
                                                     fontSize: FontSize.SMALL,
                                                     fontWeight: FontWeight.w500),
-                                                children: const [
+                                                children: [
                                                   TextSpan(
                                                     text: "0",
                                                     style: TextStyle(
-                                                      color: Color(0xff6cb64f),
+                                                      color: TColor.ACCEPTED,
                                                     ),
                                                   ),
                                                   TextSpan(text: "/25000.0km")

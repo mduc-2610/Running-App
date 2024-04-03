@@ -30,29 +30,25 @@ class _EventViewState extends State<EventView> {
   int endedEvent = 0;
 
   void initActivity() async {
-    try {
-      final activity = await callRetrieveAPI(
-          null, null,
-          user?.activity,
-          Activity.fromJson,
-          token,
-          queryParams: "?state=joined"
-      );
-      final activity2 = await callRetrieveAPI(
-          null, null,
-          user?.activity,
-          Activity.fromJson,
-          token,
-          queryParams: "?state=ended"
-      );
-      setState(() {
-        upcomingEvent = activity?.events.length;
-        endedEvent = activity2?.events.length;
-      });
-    } catch (e) {
-      print("Error fetching data: $e");
-      // Handle errors here
-    }
+    final activity = await callRetrieveAPI(
+        null, null,
+        user?.activity,
+        Activity.fromJson,
+        token,
+        queryParams: "?state=joined"
+    );
+    final activity2 = await callRetrieveAPI(
+        null, null,
+        user?.activity,
+        Activity.fromJson,
+        token,
+        queryParams: "?state=ended"
+    );
+    setState(() {
+      upcomingEvent = activity?.events.length;
+      endedEvent = activity2?.events.length;
+    });
+
   }
 
   void initUser() {
@@ -177,7 +173,7 @@ class _EventViewState extends State<EventView> {
         SizedBox(height: media.height * 0.03,),
 
         SizedBox(
-          height: media.height * 0.42,
+          height: media.height * 0.5,
           child: SingleChildScrollView(
             child: Column(
               children: [

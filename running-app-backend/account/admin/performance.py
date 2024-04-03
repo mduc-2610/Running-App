@@ -77,7 +77,7 @@ from account.models import Performance
 class PerformanceAdmin(admin.ModelAdmin):
     list_display = (
         "get_username", "total_steps", "level", 
-        "steps_done_this_level", "point", 
+        "steps_done_this_level", "total_points", 
         "get_week_stats", "get_month_stats", "get_year_stats"
     )
 

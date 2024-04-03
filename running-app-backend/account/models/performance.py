@@ -12,16 +12,28 @@ class Performance(models.Model):
     def get_username(self):
         return self.user.username
     
+    def total_distance(self):
+        return self.total_stats('distance')
+    
     def total_steps(self):
         return sum([act.steps() for act in self.activity.activity_records.all()])   
 
-    def total_distance(self):
-        return sum([act.distance() for act in self.activity.activity_records.all()])
+    def total_points(self):
+        return sum([act.points() for act in self.activity.activity_records.all()]) 
     
-    def step_to_level_up(self):
-        base_step = 1000
-        return base_step + self.level * 1000 + (self.level // 5 * 10000)
+    def total_duration(self):
+        return format(self.total_stats('duration'))
 
+    def avg_total_cadence(self):
+        length = self.activity.activity_records.count()
+        return sum([act.avg_cadence() for act in self.activity.activity_records.all()]) if length != 0 else 0
+    
+    def avg_total_heart_rate(self):
+        return self.total_stats('avg_heart_rate')
+
+    def total_stats(self, col):
+        return self.activity.activity_records.aggregate(total=Sum(col))['total'] or 0
+    
     def level_up(self):
         cnt = 1
         steps = self.total_steps()
@@ -48,46 +60,66 @@ class Performance(models.Model):
     def total_steps_this_level(self):
         return self.level_up()[2]
 
-    def point(self):
-        return self.total_steps() // 100
-
     def star(self):
         # root_url = "static/images/stars/star_"
         return int(self.level / 5);
 
-    def total_stats(self, col):
-        return self.activity.activity_records.aggregate(total=Sum(col))['total'] or 0
+    def get_activities_in_range(self, start_date, end_date):
+        return self.activity.activity_records.filter(completed_at__date__range=[start_date, end_date])
 
-    def week_stats(self, col):
+    def calculate_stats(self, activities):
+        total_distance = activities.aggregate(total_distance=Sum('distance'))['total_distance'] or 0
+        total_steps = sum([act.steps() for act in activities])
+        total_points = sum([act.points() for act in activities])
+        total_duration = activities.aggregate(total_duration=Sum('duration'))['total_duration'] or 0
+        avg_total_cadence = sum([act.avg_cadence() for act in activities]) / (len(activities) if len(activities) != 0 else 1)
+        avg_total_heart_rate = sum([act.avg_heart_rate for act in activities]) / (len(activities) if len(activities) != 0 else 1)
+        active_days = activities.values('completed_at__date').distinct().count()
+
+        return total_distance, \
+                total_steps, \
+                total_points, \
+                total_duration, \
+                round(avg_total_cadence), \
+                round(avg_total_heart_rate), \
+                active_days
+
+    def daily_stats(self):
+        today = datetime.now().date()
+        start_of_day = datetime.combine(today, datetime.min.time())
+        end_of_day = datetime.combine(today, datetime.max.time())
+
+        daily_activities = self.get_activities_in_range(start_of_day, end_of_day)
+        return self.calculate_stats(daily_activities)
+
+    def weekly_stats(self):
         today = datetime.now().date()
         start_of_week = today - timedelta(days=today.weekday())
         end_of_week = start_of_week + timedelta(days=6)
 
-        week_distance = self.activity.activity_records \
-                            .filter(completed_at__date__range=[start_of_week, end_of_week]) \
-                            .aggregate(total=Sum(col))['total'] or 0
-        return week_distance
+        weekly_activities = self.get_activities_in_range(start_of_week, end_of_week)
+        return self.calculate_stats(weekly_activities)
 
-    def month_stats(self, col):
+    def monthly_stats(self):
         today = datetime.now().date()
         start_of_month = today.replace(day=1)
         next_month = today.replace(day=28) + timedelta(days=4)
         end_of_month = next_month - timedelta(days=next_month.day)
 
-        month_distance = self.activity.activity_records \
-                            .filter(completed_at__date__range=[start_of_month, end_of_month]) \
-                            .aggregate(total=Sum(col))['total'] or 0
-        return month_distance
+        monthly_activities = self.get_activities_in_range(start_of_month, end_of_month)
+        return self.calculate_stats(monthly_activities)
 
-    def year_stats(self, col):
+    def yearly_stats(self):
         today = datetime.now().date()
         start_of_year = today.replace(month=1, day=1)
         end_of_year = today.replace(month=12, day=31)
 
-        year_distance = self.activity.activity_records \
-                            .filter(completed_at__date__range=[start_of_year, end_of_year]) \
-                            .aggregate(total=Sum(col))['total'] or 0
-        return year_distance
-    
+        yearly_activities = self.get_activities_in_range(start_of_year, end_of_year)
+        return self.calculate_stats(yearly_activities)
+
+    def option_stats(self, start_date, end_date):
+        activities = self.get_activities_in_range(start_date, end_date)
+        return self.calculate_stats(activities)
+
     def __str__(self):
-        return f"{self.user} {self.point()}"
+        return f"{self.user} {self.total_points()}"

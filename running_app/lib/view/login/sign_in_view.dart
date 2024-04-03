@@ -76,6 +76,7 @@ class _SignInViewState extends State<SignInView> {
 
         List<dynamic> users = await callListAPI('account/user', User.fromJson, token);
         final userId = users.firstWhere((element) => element.username == usernameController.text).id;
+
         DetailUser user = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
         Performance userPerformance = await callRetrieveAPI(null, null, user.performance, Performance.fromJson, token);
         DetailProfile userProfile = await callRetrieveAPI(null, null, user.profile, DetailProfile.fromJson, token);
@@ -95,7 +96,6 @@ class _SignInViewState extends State<SignInView> {
         await prefs.setString('userPerformance', jsonEncode(userPerformance.toJson()));
         await prefs.setString('userProfile', jsonEncode(userProfile.toJson()));
         await prefs.setString('userPrivacy', jsonEncode(userPrivacy.toJson()));
-        print(user);
 
         Navigator.pushNamed(context, '/home', arguments: {
           'token': token

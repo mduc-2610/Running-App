@@ -17,6 +17,14 @@ class PerformanceViewSet(
     queryset = Performance.objects.all()
     serializer_class = PerformanceSerializer
 
+    # def get_queryset(self, ):
+    #     queryset = super().get_queryset()
+    #     start_date = self.request.query_params.get('start_date')
+    #     end_date = self.request.query_params.get('end_date')
+
+    #     return queryset
+    
+
     def get_serializer_class(self):
         if self.action == "create":
             return CreatePerformanceSerializer

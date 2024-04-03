@@ -156,7 +156,7 @@ class _ClubViewState extends State<ClubView> {
             ),
             SizedBox(height: media.height * 0.015,),
             SizedBox(
-              height: media.height * 0.4,
+              height: media.height,
               child: SingleChildScrollView(
                 child: Column(
                   children: [

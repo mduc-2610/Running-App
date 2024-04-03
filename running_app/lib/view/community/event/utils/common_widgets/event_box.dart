@@ -64,7 +64,8 @@ class _EventBoxState extends State<EventBox> {
     return CustomTextButton(
       onPressed: () {
         Navigator.pushNamed(context, '/event_detail', arguments: {
-          "id": widget.event?.id
+          "id": widget.event?.id,
+          "userInEvent": userInEvent,
         });
       },
       child: Container(

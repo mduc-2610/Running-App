@@ -263,7 +263,7 @@ class _HomeViewState extends State<HomeView> {
                             "text": "Steps",
                           },
                           {
-                            "amount": userPerformance?.point ?? 0,
+                            "amount": userPerformance?.totalPoints ?? 0,
                             "iconSvg": "assets/img/home/coin_icon.svg",
                             "text": "Points",
                           }

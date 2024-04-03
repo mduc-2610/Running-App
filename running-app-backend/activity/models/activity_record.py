@@ -1,5 +1,5 @@
 import uuid
-
+import random
 from django.db import models
 from django.core.validators import MaxLengthValidator
 
@@ -8,6 +8,7 @@ class ActivityRecord(models.Model):
     image = models.ImageField(upload_to="", null=True, blank=True)
     distance = models.DecimalField(max_digits=6, decimal_places=3)
     duration = models.DurationField()
+    avg_heart_rate = models.IntegerField(null=True, default=random.randint(100, 160))
     completed_at = models.DateTimeField(auto_now_add=True)
     SPORT_CHOICES = (
         ("RUNNING", "Running"),
@@ -23,7 +24,7 @@ class ActivityRecord(models.Model):
     )
     user = models.ForeignKey(
             "account.Activity", related_name="activity_records", on_delete=models.CASCADE)
-
+    
     def avg_moving_pace(self):
         if self.duration.total_seconds() > 0 and self.distance > 0:
             pace = (self.duration.total_seconds() / 60) / float(self.distance)
@@ -32,8 +33,22 @@ class ActivityRecord(models.Model):
             return f"{pace_minutes:02d}:{pace_seconds:02d}/km"
         else:
             return "N/A"
+    
+    def avg_cadence(self):
+        if self.duration.total_seconds() > 0 and self.distance > 0:
+            cadence_adjustment = {
+                "SWIMMING": 250,
+                "RUNNING": 160,
+                "WALKING": 120,
+                "CYCLING": 90,
+            }
+            pace = (self.duration.total_seconds() / 60) / float(self.distance)
+            estimated_cadence = cadence_adjustment.get(self.sport_type, 0) + int(60 / (pace * 2))
+            return estimated_cadence if estimated_cadence > 0 else 0
+        else:
+            return 0
         
-    def points_earned(self):
+    def points(self):
         points_per_100_steps = 1
         points = self.steps() // 100 * points_per_100_steps
         return points

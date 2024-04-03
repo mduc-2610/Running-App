@@ -2,7 +2,7 @@ import 'user.dart';
 class Performance {
   final String? id;
   final User? user;
-  final int? point;
+  final int? totalPoints;
   final int? level;
   final int? totalSteps;
   final int? totalStepsThisLevel;
@@ -11,7 +11,7 @@ class Performance {
   Performance({
     required this.id,
     required this.user,
-    required this.point,
+    required this.totalPoints,
     required this.level,
     required this.totalSteps,
     required this.stepsDoneThisLevel,
@@ -21,7 +21,7 @@ class Performance {
   Performance.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         user = User.fromJson(json['user']),
-        point = json['point'],
+        totalPoints = json['total_points'],
         level = json['level'],
         totalSteps = json['total_steps'],
         stepsDoneThisLevel = json['steps_done_this_level'],
@@ -31,7 +31,7 @@ class Performance {
     return {
       'id': id,
       'user': user?.toJson(),
-      'point': point,
+      'total_points': totalPoints,
       'level': level,
       'total_steps': totalSteps,
       'steps_done_this_level': stepsDoneThisLevel,
@@ -41,7 +41,7 @@ class Performance {
 
   @override
   String toString() {
-    return 'Performance{id: $id, user: $user, point: $point, level: $level, total_steps: $totalSteps, steps_remaining: $stepsDoneThisLevel}';
+    return 'Performance{id: $id, user: $user, totalPoints: $totalPoints, level: $level, total_steps: $totalSteps, steps_remaining: $stepsDoneThisLevel}';
   }
 }
 
