@@ -34,11 +34,11 @@ class Activity {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user': user?.toJson(), // Convert User object to JSON
-      'products': products.map((product) => product.toJson()).toList(), // Convert List<Product> to JSON
-      'events': events.map((event) => event.toJson()).toList(), // Convert List<Event> to JSON
-      'clubs': clubs.map((club) => club.toJson()).toList(), // Convert List<Club> to JSON
-      'activity_records': activityRecords.map((record) => record.toJson()).toList(), // Convert List<ActivityRecord> to JSON
+      'user': user?.toJson(),
+      'products': products.map((product) => product.toJson()).toList(),
+      'events': events.map((event) => event.toJson()).toList(),
+      'clubs': clubs.map((club) => club.toJson()).toList(),
+      'activity_records': activityRecords.map((record) => record.toJson()).toList(),
     };
   }
 

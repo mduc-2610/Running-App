@@ -1,6 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/activity/activity_record.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/choice_button.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -15,6 +20,8 @@ import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class ActivityRecordCreateView extends StatefulWidget {
   const ActivityRecordCreateView({super.key});
@@ -28,8 +35,11 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
   late int totalTime;
   late Uint8List image;
   late String pace;
+  String token = "";
+  DetailUser? user;
+  Activity? userActivity;
 
-  String selectedValue = "Anyone";
+  String privacy = "Anyone";
   String sportChoice = "Running";
 
   TextEditingController titleTextController = TextEditingController();
@@ -63,6 +73,21 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
     'assets/img/community/ptit_background.jpg',
   ];
 
+  void getProviderData() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
+      // userActivity = Provider.of<UserProvider>(context).userActivity;
+    });
+  }
+
+  void initUserActivity() async {
+    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    setState(() {
+      userActivity = data;
+    });
+  }
+
   void getArguments() {
     setState(() {
       final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
@@ -73,9 +98,35 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
     });
   }
 
+  void saveActivityRecord() async {
+    final activity = CreateActivityRecord(
+        privacy: convertChoice(privacy),
+        distance: double.parse(totalDistance.toStringAsFixed(3)),
+        duration: totalTime.toString(),
+        sportType: convertChoice(sportChoice),
+        title: titleTextController.text,
+        description: descriptionTextController.text,
+        userId: userActivity?.id,
+        completedAt: DateTime.now().toString(),
+    );
+
+    print(activity);
+
+    final data = await callCreateAPI(
+        'activity/activity-record',
+        activity.toJson(),
+        token
+    );
+
+    Navigator.pushReplacementNamed(context, '/home');
+
+    print("Success: $data");
+  }
+
   @override
   void initState() {
     // getArguments();
+    titleTextController.text = '${sportChoice} activity';
     super.initState();
   }
 
@@ -83,11 +134,12 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     getArguments();
+    getProviderData();
+    initUserActivity();
   }
 
   @override
   Widget build(BuildContext context) {
-    titleTextController.text = sportChoice;
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -355,7 +407,7 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                               isExpanded: true,
                               onChanged: (newValue) {
                                 setState(() {
-                                  selectedValue = newValue!;
+                                  privacy = newValue!;
                                 });
                               },
                               items: [
@@ -520,11 +572,14 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                           [
                             {
                               "text": "Save",
-                              "onPressed": () {}
+                              "onPressed": () {
+                                saveActivityRecord();
+                              },
                             },
                             {
                               "text": "Close",
-                              "onPressed": () {}
+                              "onPressed": () {},
+                              "textColor": TColor.WARNING,
                             }
                           ],
                           "Are you sure to save this activity ?"

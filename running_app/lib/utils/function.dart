@@ -42,3 +42,16 @@ String idSubstring(String id) {
   List idList = id.split('-');
   return '${idList[idList.length - 1].substring(0, 6).toUpperCase()}';
 }
+
+String formatTimeDuration(String timeDuration) {
+  List<String> parts = timeDuration.split(':');
+  int hours = int.parse(parts[0]);
+  int minutes = int.parse(parts[1]);
+  int seconds = int.parse(parts[2]);
+
+  double totalHours = hours + (minutes / 60) + (seconds / 3600);
+  String formattedHours = totalHours.toStringAsFixed(1);
+  formattedHours = formattedHours.replaceAll('.', ',');
+
+  return '$formattedHours H';
+}

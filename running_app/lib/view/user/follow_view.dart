@@ -27,6 +27,7 @@ class _FollowViewState extends State<FollowView> {
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
         child: DefaultBackgroundLayout(
           child: Stack(
             children: [

@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/performance.dart';
 import 'package:running_app/models/activity/activity_record.dart';
@@ -47,8 +48,30 @@ class _HomeViewState extends State<HomeView> {
   void initUser() {
     setState(() {
       user = Provider.of<UserProvider>(context).user;
-      userPerformance = Provider.of<UserProvider>(context).userPerformance;
-      userActivity = Provider.of<UserProvider>(context).userActivity;
+      // userPerformance = Provider.of<UserProvider>(context).userPerformance;
+      // userActivity = Provider.of<UserProvider>(context).userActivity;
+      // activityRecords = userActivity?.activityRecords;
+    });
+  }
+
+  void initUserPerformance() async {
+    final data = await callRetrieveAPI(
+        null,
+        null,
+        user?.performance,
+        Performance.fromJson,
+        token,
+        queryParams: "?period=weekly"
+    );
+    setState(() {
+      userPerformance = data;
+    });
+  }
+
+  void initUserActivity() async {
+    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    setState(() {
+      userActivity = data;
       activityRecords = userActivity?.activityRecords;
     });
   }
@@ -63,12 +86,12 @@ class _HomeViewState extends State<HomeView> {
     super.didChangeDependencies();
     initToken();
     initUser();
+    initUserPerformance();
+    initUserActivity();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(userPerformance);
-    print(userActivity);
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -163,6 +186,7 @@ class _HomeViewState extends State<HomeView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SvgPicture.asset(
                                 "assets/img/home/running_avt.svg",
@@ -173,62 +197,56 @@ class _HomeViewState extends State<HomeView> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "26 May",
-                                    style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: 12,
-                                    ),
+                                    "${DateFormat('dd MMM').format(DateTime.now())}",
+                                    style: TxtStyle.normalText
                                   ),
-                                  SizedBox(height: 2),
+                                  // SizedBox(height: 2),
                                   Text(
                                     "Today",
                                     style: TextStyle(
-                                      color: Color(0xff43c465),
-                                      fontSize: 14,
+                                      color: TColor.ACCEPTED,
+                                      fontSize: FontSize.NORMAL,
                                       fontWeight: FontWeight.w700,
                                     ),
                                   ),
                                   SizedBox(height: 2),
-                                  Text(
-                                    "01:09:44",
-                                    style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: 12,
-                                    ),
-                                  )
-        
                                 ],
                               )
                             ],
                           ),
                           Row(
+                            // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SvgPicture.asset(
-                                "assets/img/home/step_icon.svg",
-                                fit: BoxFit.contain,
+                              Icon(
+                                  Icons.timer_sharp,
+                                  color: TColor.DESCRIPTION
                               ),
                               SizedBox(width: media.width * 0.01,),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "2345",
-                                    style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: 12,
-                                    ),
+                                  Row(
+                                    children: [
+                                      // Icon(
+                                      //   Icons.timer_sharp,
+                                      //   color: TColor.DESCRIPTION
+                                      // ),
+                                      // SizedBox(width: media.width * 0.01,),
+                                      Text(
+                                        "Total time",
+                                        style: TextStyle(
+                                          color: TColor.DESCRIPTION,
+                                          fontSize: FontSize.SMALL,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(height: 2),
-        
-                                  SeparateBar(width: 27, height: 1,),
-        
-                                  SizedBox(height: 2),
+                                  // SizedBox(height: 10,),
                                   Text(
-                                    "5000",
-                                    style: TextStyle(
-                                      color: Color(0xff43c465),
-                                      fontSize: 12,
-                                    ),
+                                    "${userPerformance?.periodDuration}",
+                                    style: TxtStyle.headSection,
+                                    textAlign: TextAlign.center,
                                   )
                                 ],
                               )
@@ -251,7 +269,7 @@ class _HomeViewState extends State<HomeView> {
                             "text": "Steps",
                           },
                           {
-                            "amount": userPerformance?.totalPoints ?? 0,
+                            "amount": userPerformance?.periodPoints ?? 0,
                             "iconSvg": "assets/img/home/coin_icon.svg",
                             "text": "Points",
                           }
@@ -330,7 +348,7 @@ class _HomeViewState extends State<HomeView> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              "History",
+                              "Latest activity",
                               style: TxtStyle.headSection
                             ),
                             CustomTextButton(
@@ -394,7 +412,7 @@ class _HomeViewState extends State<HomeView> {
                                                     ),
                                                     children: <TextSpan>[
                                                       TextSpan(
-                                                        text: '${activityRecords?[i].pointsEarned}',
+                                                        text: '${activityRecords?[i].points}',
                                                         style: TextStyle(
                                                           color: Color(0xffda477e),
                                                         ),

@@ -78,24 +78,24 @@ class _SignInViewState extends State<SignInView> {
         final userId = users.firstWhere((element) => element.username == usernameController.text).id;
 
         DetailUser user = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
-        Performance userPerformance = await callRetrieveAPI(null, null, user.performance, Performance.fromJson, token);
-        DetailProfile userProfile = await callRetrieveAPI(null, null, user.profile, DetailProfile.fromJson, token);
-        Privacy userPrivacy = await callRetrieveAPI(null, null, user.privacy, Privacy.fromJson, token);
-        Activity userActivity = await callRetrieveAPI(null, null, user.activity, Activity.fromJson, token);
+        // Performance userPerformance = await callRetrieveAPI(null, null, user.performance, Performance.fromJson, token);
+        // DetailProfile userProfile = await callRetrieveAPI(null, null, user.profile, DetailProfile.fromJson, token);
+        // Privacy userPrivacy = await callRetrieveAPI(null, null, user.privacy, Privacy.fromJson, token);
+        // Activity userActivity = await callRetrieveAPI(null, null, user.activity, Activity.fromJson, token);
 
         Provider.of<UserProvider>(context, listen: false).setUser(user,);
-        Provider.of<UserProvider>(context, listen: false).userActivity = userActivity;
-        Provider.of<UserProvider>(context, listen: false).userPerformance = userPerformance;
-        Provider.of<UserProvider>(context, listen: false).userProfile = userProfile;
-        Provider.of<UserProvider>(context, listen: false).userPrivacy = userPrivacy;
+        // Provider.of<UserProvider>(context, listen: false).userActivity = userActivity;
+        // Provider.of<UserProvider>(context, listen: false).userPerformance = userPerformance;
+        // Provider.of<UserProvider>(context, listen: false).userProfile = userProfile;
+        // Provider.of<UserProvider>(context, listen: false).userPrivacy = userPrivacy;
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
         await prefs.setString('user', jsonEncode(user.toJson()));
-        await prefs.setString('userActivity', jsonEncode(userActivity.toJson()));
-        await prefs.setString('userPerformance', jsonEncode(userPerformance.toJson()));
-        await prefs.setString('userProfile', jsonEncode(userProfile.toJson()));
-        await prefs.setString('userPrivacy', jsonEncode(userPrivacy.toJson()));
+        // await prefs.setString('userActivity', jsonEncode(userActivity.toJson()));
+        // await prefs.setString('userPerformance', jsonEncode(userPerformance.toJson()));
+        // await prefs.setString('userProfile', jsonEncode(userProfile.toJson()));
+        // await prefs.setString('userPrivacy', jsonEncode(userPrivacy.toJson()));
 
         Navigator.pushNamed(context, '/home', arguments: {
           'token': token

@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/account/performance.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
@@ -14,6 +16,7 @@ import 'package:running_app/utils/common_widgets/default_background_layout.dart'
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 
@@ -28,6 +31,7 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
   String token = "";
   DetailUser? user;
   Activity? userActivity;
+  Performance? userPerformance;
   List<ActivityRecord>? activityRecords;
 
   void initToken() {
@@ -50,32 +54,39 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
     });
   }
 
+  void initUserPerformance() async {
+    final data = await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
+    setState(() {
+      userPerformance = data;
+    });
+  }
+
   @override
   void didChangeDependencies() {
     initToken();
     initUser();
     initUserActivity();
+    initUserPerformance();
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-
     List statsList = [
       {
         "icon": "assets/img/activity/timer_icon.svg",
-        "figure": '18,3 H',
+        "figure": '${formatTimeDuration('${userPerformance?.periodDuration ?? "00:00:00"}')}',
         "type": "Time"
       },
       {
         "icon": "assets/img/activity/distance_icon.svg",
-        "figure": '48,7 KM',
+        "figure": '${userPerformance?.periodDistance?.toStringAsFixed(1)} KM',
         "type": "Distance"
       },
       {
         "icon": "assets/img/activity/heartbeat_icon.svg",
-        "figure": '123 BPM',
+        "figure": '${userPerformance?.periodAvgTotalHeartRate} BPM',
         "type": "Heart Beat"
       }
     ];
@@ -196,7 +207,7 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
                                                 ),
                                                 children: <TextSpan>[
                                                   TextSpan(
-                                                    text: '${activity?.pointsEarned}',
+                                                    text: '${activity?.points}',
                                                     style: TextStyle(
                                                       color: Color(0xffda477e),
                                                     ),
@@ -241,7 +252,7 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
           ),
         ),
       ),
-      bottomNavigationBar: const Menu(),
+      // bottomNavigationBar: const Menu(),
     );
   }
 }

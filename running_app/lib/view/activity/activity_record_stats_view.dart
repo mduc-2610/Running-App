@@ -1,5 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/account/performance.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -8,6 +14,8 @@ import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/stats_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class ActivityRecordStatsView extends StatefulWidget {
   const ActivityRecordStatsView({super.key});
@@ -19,6 +27,46 @@ class ActivityRecordStatsView extends StatefulWidget {
 class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
   String _showView = "Running";
   DateTime? selectedDate;
+  String token = "";
+  DetailUser? user;
+  Performance? userPerformance;
+  // Activity? userActivity;
+
+  void initToken() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+    });
+  }
+
+  void initUser() {
+    setState(() {
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+
+  void initUserPerformance() async {
+    final data = await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
+    setState(() {
+      userPerformance = data;
+    });
+  }
+
+  // void initUserActivity() async {
+  //   final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+  //   setState(() {
+  //     userActivity = data;
+  //   });
+  // }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initUser();
+    initToken();
+    initUserPerformance();
+    // initUserActivity();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +210,15 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
                       ),
                       SizedBox(height: media.height * 0.015,),
 
-                      (_showView == "Running") ? const StatsLayout() : const StatsLayout(boxNumber: 4)
+                      StatsLayout(
+                        totalDistance: "${userPerformance?.periodDistance}",
+                        totalActiveDays: "${userPerformance?.periodActiveDays}",
+                        totalAvgPace: "${0}",
+                        totalTime: "${userPerformance?.periodDuration}",
+                        totalAvgHeartBeat: "${userPerformance?.periodAvgTotalHeartRate}",
+                        totalAvgCadence: "${userPerformance?.periodAvgTotalCadence}",
+                        boxNumber: 6,
+                      )
                     ],
                   )
                 ],

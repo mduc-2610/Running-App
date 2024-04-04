@@ -62,7 +62,8 @@ class StatsBoxLayout extends IconBox {
                   style: TextStyle(
                       color: firstTextColor,
                       fontSize: 24,
-                      fontWeight: FontWeight.w800
+                      fontWeight: FontWeight.w900,
+                    letterSpacing: 0.9
                   )
               ),
               SizedBox(height: media.height * 0.01,),
@@ -76,7 +77,8 @@ class StatsBoxLayout extends IconBox {
                       style: TextStyle(
                           color: firstTextColor,
                           fontSize: 24,
-                          fontWeight: FontWeight.w800
+                          fontWeight: FontWeight.w900,
+                        letterSpacing: 0.9
                       )
                   ),
                   IconBox(

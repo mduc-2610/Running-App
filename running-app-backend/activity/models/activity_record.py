@@ -4,6 +4,9 @@ from django.db import models
 from django.core.validators import MaxLengthValidator
 
 class ActivityRecord(models.Model):
+    class Meta:
+        ordering = ['-completed_at']
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     image = models.ImageField(upload_to="", null=True, blank=True)
     distance = models.DecimalField(max_digits=6, decimal_places=3)
@@ -17,7 +20,15 @@ class ActivityRecord(models.Model):
         ("CYCLING", "Cycling"),
         ("SWIMMING", "Swimming"),
     )
+    PRIVACY_CHOICES = (
+        ("ANYONE", "Anyone"),
+        ("FOLLOWERS", "Followers"),
+        ("ONLY_ME", "Only me"),
+    )
+    
+    privacy = models.CharField(max_length=15, choices=PRIVACY_CHOICES, default="ANYONE")
     sport_type = models.CharField(max_length=15, choices=SPORT_CHOICES, default="RUNNING")
+    title = models.CharField(max_length=100, default="")
     description = models.TextField(
         blank=True, 
         null=True,
@@ -27,13 +38,17 @@ class ActivityRecord(models.Model):
             "account.Activity", related_name="activity_records", on_delete=models.CASCADE)
     
     def avg_moving_pace(self):
-        if self.duration.total_seconds() > 0 and self.distance > 0:
-            pace = (self.duration.total_seconds() / 60) / float(self.distance)
-            pace_minutes = int(pace)
-            pace_seconds = round((pace - pace_minutes) * 60)
-            return f"{pace_minutes:02d}:{pace_seconds:02d}/km"
-        else:
-            return "N/A"
+        total_seconds = self.duration.total_seconds()
+        distance = self.distance
+
+        return (total_seconds / 60) / float(distance) if total_seconds > 0 and distance > 0 else 0
+        
+    def avg_moving_pace_readable(self):
+        avg_moving_pace = self.avg_moving_pace()
+        if avg_moving_pace == 0: return "00:00"
+        pace_minutes = int(avg_moving_pace)
+        pace_seconds = round((avg_moving_pace - pace_minutes) * 60)
+        return f"{pace_minutes:02d}:{pace_seconds:02d}"
     
     def avg_cadence(self):
         if self.duration.total_seconds() > 0 and self.distance > 0:
@@ -45,7 +60,7 @@ class ActivityRecord(models.Model):
             }
             pace = (self.duration.total_seconds() / 60) / float(self.distance)
             estimated_cadence = cadence_adjustment.get(self.sport_type, 0) + int(60 / (pace * 2))
-            return estimated_cadence if estimated_cadence > 0 else 0
+            return round(estimated_cadence) if estimated_cadence > 0 else 0
         else:
             return 0
         
@@ -61,7 +76,7 @@ class ActivityRecord(models.Model):
             "WALKING": 1300,
             "SWIMMING": 1900,
         }
-        return int(self.distance * conversion_data[self.sport_type])
+        return round(self.distance * conversion_data[self.sport_type])
 
     def kcal(self):
         kcal_per_unit_distance = {
@@ -85,3 +100,8 @@ class ActivityRecord(models.Model):
             return getattr(self, key)
         else:
             raise KeyError(f"{key} attribute not found")
+    
+class ActivityRecordImage(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
+    activity_record = models.ForeignKey('activity.ActivityRecord', related_name='activity_record_images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='')

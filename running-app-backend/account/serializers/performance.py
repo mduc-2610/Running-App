@@ -15,143 +15,53 @@ class PerformanceSerializer(serializers.ModelSerializer):
     period_steps = serializers.SerializerMethodField()
     period_points = serializers.SerializerMethodField()
     period_duration = serializers.SerializerMethodField()
+    period_avg_moving_pace = serializers.SerializerMethodField()
     period_avg_total_cadence = serializers.SerializerMethodField()
     period_avg_total_heart_rate = serializers.SerializerMethodField()
     period_active_days = serializers.SerializerMethodField()
     
+    def get_period_stats(self, instance, index):
+        period = self.context.get('period', None)
+        start_date = self.context.get('start_date', None)
+        end_date = self.context.get('end_date', None)
+
+        if period:
+            if period == 'daily':
+                return instance.daily_stats()[index]
+            elif period == 'weekly':
+                return instance.weekly_stats()[index]
+            elif period == 'monthly':
+                return instance.monthly_stats()[index]
+            elif period == 'yearly':
+                return instance.yearly_stats()[index]
+        elif start_date and end_date:
+            return instance.range_stats(start_date, end_date)[index]
+        
+        return instance.total_stats()[index]
+
     def get_period_distance(self, instance):
-        period = self.context.get('period', None)
-        start_date = self.context.get('start_date', None)
-        end_date = self.context.get('end_date', None)
-        
-        if period:
-            if period == 'daily':
-                return instance.daily_stats()[0]
-            elif period == 'weekly':
-                return instance.weekly_stats()[0]
-            elif period == 'monthly':
-                return instance.monthly_stats()[0]
-            elif period == 'yearly':
-                return instance.yearly_stats()[0]
-        elif start_date and end_date:
-            return instance.range_stats(start_date, end_date)[0]
+        return self.get_period_stats(instance, 0)
 
-        return instance.total_distance()
-        
-    
     def get_period_steps(self, instance):
-        period = self.context.get('period', None)
-        start_date = self.context.get('start_date', None)
-        end_date = self.context.get('end_date', None)
-
-        if period:
-            if period == 'daily':
-                return instance.daily_stats()[1]
-            elif period == 'weekly':
-                return instance.weekly_stats()[1]
-            elif period == 'monthly':
-                return instance.monthly_stats()[1]
-            elif period == 'yearly':
-                return instance.yearly_stats()[1]
-        elif start_date and end_date:
-            return instance.range_stats(start_date, end_date)[1]        
-            
-        return instance.total_steps()
+        return self.get_period_stats(instance, 1)
 
     def get_period_points(self, instance):
-        period = self.context.get('period', None)
-        start_date = self.context.get('start_date', None)
-        end_date = self.context.get('end_date', None)
-
-        if period:
-            if period == 'daily':
-                return instance.daily_stats()[2]
-            elif period == 'weekly':
-                return instance.weekly_stats()[2]
-            elif period == 'monthly':
-                return instance.monthly_stats()[2]
-            elif period == 'yearly':
-                return instance.yearly_stats()[2]
-        elif start_date and end_date:
-            return instance.range_stats(start_date, end_date)[2]
-
-        return instance.total_points()
+        return self.get_period_stats(instance, 2)
 
     def get_period_duration(self, instance):
-        period = self.context.get('period', None)
-        start_date = self.context.get('start_date', None)
-        end_date = self.context.get('end_date', None)
+        return self.get_period_stats(instance, 3)
 
-        if period:
-            if period == 'daily':
-                return instance.daily_stats()[3]
-            elif period == 'weekly':
-                return instance.weekly_stats()[3]
-            elif period == 'monthly':
-                return instance.monthly_stats()[3]
-            elif period == 'yearly':
-                return instance.yearly_stats()[3]
-        elif start_date and end_date:
-            return instance.range_stats(start_date, end_date)[3]
-
-        return instance.total_duration()
+    def get_period_avg_moving_pace(self, instance):
+        return self.get_period_stats(instance, 4)
 
     def get_period_avg_total_cadence(self, instance):
-        period = self.context.get('period', None)
-        start_date = self.context.get('start_date', None)
-        end_date = self.context.get('end_date', None)
-
-        if period:
-            if period == 'daily':
-                return instance.daily_stats()[4]
-            elif period == 'weekly':
-                return instance.weekly_stats()[4]
-            elif period == 'monthly':
-                return instance.monthly_stats()[4]
-            elif period == 'yearly':
-                return instance.yearly_stats()[4]
-        elif start_date and end_date:
-            return instance.range_stats(start_date, end_date)[4]
-
-        return instance.avg_total_cadence()
+        return round(self.get_period_stats(instance, 5)) if self.get_period_stats(instance, 5) else None
 
     def get_period_avg_total_heart_rate(self, instance):
-        period = self.context.get('period', None)
-        start_date = self.context.get('start_date', None)
-        end_date = self.context.get('end_date', None)
-
-        if period:
-            if period == 'daily':
-                return instance.daily_stats()[5]
-            elif period == 'weekly':
-                return instance.weekly_stats()[5]
-            elif period == 'monthly':
-                return instance.monthly_stats()[5]
-            elif period == 'yearly':
-                return instance.yearly_stats()[5]
-        elif start_date and end_date:
-            return instance.range_stats(start_date, end_date)[5]
-    
-        return instance.avg_total_heart_rate()
+        return round(self.get_period_stats(instance, 6)) if self.get_period_stats(instance, 6) else None
 
     def get_period_active_days(self, instance):
-        period = self.context.get('period', None)
-        start_date = self.context.get('start_date', None)
-        end_date = self.context.get('end_date', None)
-
-        if period:
-            if period == 'daily':
-                return instance.daily_stats()[6]
-            elif period == 'weekly':
-                return instance.weekly_stats()[6]
-            elif period == 'monthly':
-                return instance.monthly_stats()[6]
-            elif period == 'yearly':
-                return instance.yearly_stats()[6]
-        elif start_date and end_date:
-            return instance.range_stats(start_date, end_date)[6]
-
-        return instance.total_active_days()
+        return self.get_period_stats(instance, 7)
         
     def get_level(self, instance):
         return instance.level()
@@ -169,7 +79,140 @@ class PerformanceSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "id": {"read_only": True},
         }
+
+    # def get_period_distance(self, instance):
+    #     period = self.context.get('period', None)
+    #     start_date = self.context.get('start_date', None)
+    #     end_date = self.context.get('end_date', None)
+        
+    #     if period:
+    #         if period == 'daily':
+    #             return instance.daily_stats()[0]
+    #         elif period == 'weekly':
+    #             return instance.weekly_stats()[0]
+    #         elif period == 'monthly':
+    #             return instance.monthly_stats()[0]
+    #         elif period == 'yearly':
+    #             return instance.yearly_stats()[0]
+    #     elif start_date and end_date:
+    #         return instance.range_stats(start_date, end_date)[0]
+
+    #     return instance.total_distance()
+        
     
+    # def get_period_steps(self, instance):
+    #     period = self.context.get('period', None)
+    #     start_date = self.context.get('start_date', None)
+    #     end_date = self.context.get('end_date', None)
+
+    #     if period:
+    #         if period == 'daily':
+    #             return instance.daily_stats()[1]
+    #         elif period == 'weekly':
+    #             return instance.weekly_stats()[1]
+    #         elif period == 'monthly':
+    #             return instance.monthly_stats()[1]
+    #         elif period == 'yearly':
+    #             return instance.yearly_stats()[1]
+    #     elif start_date and end_date:
+    #         return instance.range_stats(start_date, end_date)[1]        
+            
+    #     return instance.total_steps()
+
+    # def get_period_points(self, instance):
+    #     period = self.context.get('period', None)
+    #     start_date = self.context.get('start_date', None)
+    #     end_date = self.context.get('end_date', None)
+    #     print({'period': period, 'start_date': start_date})
+    #     if period:
+    #         if period == 'daily':
+    #             return instance.daily_stats()[2]
+    #         elif period == 'weekly':
+    #             return instance.weekly_stats()[2]
+    #         elif period == 'monthly':
+    #             return instance.monthly_stats()[2]
+    #         elif period == 'yearly':
+    #             return instance.yearly_stats()[2]
+    #     elif start_date and end_date:
+    #         return instance.range_stats(start_date, end_date)[2]
+
+    #     return instance.total_points()
+
+    # def get_period_duration(self, instance):
+    #     period = self.context.get('period', None)
+    #     start_date = self.context.get('start_date', None)
+    #     end_date = self.context.get('end_date', None)
+
+    #     if period:
+    #         if period == 'daily':
+    #             return instance.daily_stats()[3]
+    #         elif period == 'weekly':
+    #             return instance.weekly_stats()[3]
+    #         elif period == 'monthly':
+    #             return instance.monthly_stats()[3]
+    #         elif period == 'yearly':
+    #             return instance.yearly_stats()[3]
+    #     elif start_date and end_date:
+    #         return instance.range_stats(start_date, end_date)[3]
+
+    #     return instance.total_duration()
+
+    # def get_period_avg_total_cadence(self, instance):
+    #     period = self.context.get('period', None)
+    #     start_date = self.context.get('start_date', None)
+    #     end_date = self.context.get('end_date', None)
+
+    #     if period:
+    #         if period == 'daily':
+    #             return instance.daily_stats()[4]
+    #         elif period == 'weekly':
+    #             return instance.weekly_stats()[4]
+    #         elif period == 'monthly':
+    #             return instance.monthly_stats()[4]
+    #         elif period == 'yearly':
+    #             return instance.yearly_stats()[4]
+    #     elif start_date and end_date:
+    #         return instance.range_stats(start_date, end_date)[4]
+
+    #     return instance.avg_total_cadence()
+
+    # def get_period_avg_total_heart_rate(self, instance):
+    #     period = self.context.get('period', None)
+    #     start_date = self.context.get('start_date', None)
+    #     end_date = self.context.get('end_date', None)
+
+    #     if period:
+    #         if period == 'daily':
+    #             return instance.daily_stats()[5]
+    #         elif period == 'weekly':
+    #             return instance.weekly_stats()[5]
+    #         elif period == 'monthly':
+    #             return instance.monthly_stats()[5]
+    #         elif period == 'yearly':
+    #             return instance.yearly_stats()[5]
+    #     elif start_date and end_date:
+    #         return instance.range_stats(start_date, end_date)[5]
+    
+    #     return instance.avg_total_heart_rate()
+
+    # def get_period_active_days(self, instance):
+    #     period = self.context.get('period', None)
+    #     start_date = self.context.get('start_date', None)
+    #     end_date = self.context.get('end_date', None)
+
+    #     if period:
+    #         if period == 'daily':
+    #             return instance.daily_stats()[6]
+    #         elif period == 'weekly':
+    #             return instance.weekly_stats()[6]
+    #         elif period == 'monthly':
+    #             return instance.monthly_stats()[6]
+    #         elif period == 'yearly':
+    #             return instance.yearly_stats()[6]
+    #     elif start_date and end_date:
+    #         return instance.range_stats(start_date, end_date)[6]
+
+    #     return instance.total_active_days()
     
     # def get_range_distance(self, instance):
     #     start_date = self.context.get('start_date', None)

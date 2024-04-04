@@ -12,6 +12,7 @@ import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_box.dart';
+import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/search_filter.dart';
@@ -31,10 +32,12 @@ class UserView extends StatefulWidget {
 
 class _UserViewState extends State<UserView> {
   String _showLayout = "Total stats";
+  String _showStatsType = "All time";
   String token = "";
   DetailUser? user;
   Performance? userPerformance;
   Activity? userActivity;
+  int? points;
 
   void initToken() {
     setState(() {
@@ -48,11 +51,15 @@ class _UserViewState extends State<UserView> {
     });
   }
 
-
   void initUserPerformance() async {
-    final data = await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
-    print(user?.performance);
-
+    final data = await callRetrieveAPI(
+        null,
+        null,
+        user?.performance,
+        Performance.fromJson,
+        token,
+        queryParams: "?period=${_showStatsType.toLowerCase()}ly"
+    );
     setState(() {
       userPerformance = data;
     });
@@ -76,10 +83,11 @@ class _UserViewState extends State<UserView> {
   
   @override
   Widget build(BuildContext context) {
+    if(points == null) {
+      points = userPerformance?.periodPoints;
+    }
     var media = MediaQuery.of(context).size;
     List<Product>? productList = userActivity?.products;
-    print(userPerformance);
-    // print(userActivity);
     return Scaffold(
       appBar: CustomAppBar(
         title: Header(
@@ -105,76 +113,75 @@ class _UserViewState extends State<UserView> {
                 child: Column(
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Image.asset(
-                            "assets/img/home/avatar.png",
-                            width: 90,
-                            height: 90,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        SizedBox(
-                          width: media.width * 0.02,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  user?.name ?? "",
-                                  style: TextStyle(
-                                      color: TColor.PRIMARY_TEXT,
-                                      fontSize: FontSize.LARGE,
-                                      fontWeight: FontWeight.w900),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(width: media.width * 0.02,),
-                                Text(
-                                  '#${idSubstring(user?.id ?? "")}',
-                                  style: TextStyle(
-                                    color: TColor.DESCRIPTION,
-                                    fontSize: FontSize.SMALL,
-                                    fontWeight: FontWeight.w700
-                                  )
-                                )
-                              ],
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.asset(
+                                "assets/img/home/avatar.png",
+                                width: 90,
+                                height: 90,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                             SizedBox(
-                              height: media.height * 0.005,
+                              width: media.width * 0.02,
                             ),
-                            Row(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                SizedBox(
+                                  width: media.width * 0.5,
+                                  child: Text(
+                                    '${user?.name ?? ""}',
+                                    style: TxtStyle.headSection,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: media.height * 0.005,
+                                ),
                                 Row(
                                   children: [
-                                    SvgPicture.asset(
-                                      "assets/img/home/coin_icon.svg",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    Text(
-                                      "1200 points",
-                                      style: TextStyle(
-                                          color: TColor.PRIMARY_TEXT,
-                                          fontSize: FontSize.NORMAL,
-                                          fontWeight: FontWeight.w600),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '${idSubstring(user?.id ?? "")} ',
+                                          style: TextStyle(
+                                              color: TColor.PRIMARY_TEXT,
+                                              fontSize: FontSize.SMALL,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          "• ${points} points",
+                                          style: TextStyle(
+                                              color: TColor.PRIMARY_TEXT,
+                                              fontSize: FontSize.SMALL,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ],
                                     ),
                                   ],
-                                ),
-                                Text(
-                                  " - Starter 7",
-                                  style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: FontSize.SMALL,
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                )
                               ],
                             )
                           ],
+                        ),
+                        SizedBox(
+                          width: media.width * 0.21,
+                          child: CustomMainButton(
+                            horizontalPadding: 0,
+                            verticalPadding: 10,
+                            onPressed: () {},
+                            background: TColor.SECONDARY,
+                            child: Text(
+                              "Follow",
+                              style: TxtStyle.normalText,
+                            ),
+                          ),
                         )
                       ],
                     ),
@@ -237,7 +244,7 @@ class _UserViewState extends State<UserView> {
                                 "icon": Icons.local_activity_outlined,
                                 "color": const Color(0xff2c50f0),
                                 "text": "Activities",
-                                "url": "/activity",
+                                "url": "/activity_record_list",
                               },
                               {
                                 "icon": Icons.people_outline,
@@ -259,7 +266,7 @@ class _UserViewState extends State<UserView> {
                                             borderRadius:
                                             BorderRadius.circular(12)))),
                                 onPressed: () {
-                                  Navigator.pushReplacementNamed(context, x["url"] as String);
+                                  Navigator.pushNamed(context, x["url"] as String);
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -328,12 +335,68 @@ class _UserViewState extends State<UserView> {
                             )
                         ],
                       ),
-
-                      SizedBox(
-                        height: media.height * 0.01,
-                      ),
+                      if(_showLayout == "Total stats")...[
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 0,
+                                horizontal: 8
+                            ),
+                            decoration: BoxDecoration(
+                                color: TColor.SECONDARY_BACKGROUND,
+                                borderRadius: BorderRadius.circular(8)
+                            ),
+                            child: Row(
+                              children: [
+                                for (var x in ["All time", "Week", "Month", "Year"])...[
+                                  SizedBox(
+                                    // width: media.width * 0.25,
+                                    child: CustomTextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _showStatsType = x;
+                                          initUserPerformance();
+                                        });
+                                      },
+                                      style: ButtonStyle(
+                                          padding: MaterialStateProperty.all<EdgeInsets>(
+                                              EdgeInsets.symmetric(
+                                                  vertical: 5,
+                                                  horizontal: media.width * 0.07)),
+                                          backgroundColor: MaterialStateProperty.all<
+                                              Color?>(
+                                              _showStatsType == x ? TColor.PRIMARY : null),
+                                          shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(10)))),
+                                      child: Text(x,
+                                          style: TextStyle(
+                                            color: TColor.PRIMARY_TEXT,
+                                            fontSize: FontSize.NORMAL,
+                                            fontWeight: FontWeight.w600,
+                                          )),
+                                    ),
+                                  )
+                                ]
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: media.height * 0.01,),
+                      ],
+                      SizedBox(height: media.height * 0.01,),
                       // Best performance
-                      _showLayout == "Total stats" ? const StatsLayout() : InventoryLayout(productList: productList),
+                      _showLayout == "Total stats" ? StatsLayout(
+                        totalDistance: "${userPerformance?.periodDistance}",
+                        totalActiveDays: "${userPerformance?.periodActiveDays}",
+                        totalAvgPace: "${userPerformance?.periodAvgMovingPace}",
+                        totalTime: "${userPerformance?.periodDuration}",
+                        totalAvgHeartBeat: "${userPerformance?.periodAvgTotalHeartRate}",
+                        totalAvgCadence: "${userPerformance?.periodAvgTotalCadence}",
+                      ) : InventoryLayout(productList: productList),
                     ])
                   ],
                 ),

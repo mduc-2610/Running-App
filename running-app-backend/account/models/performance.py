@@ -12,32 +12,18 @@ class Performance(models.Model):
     def get_username(self):
         return self.user.username
     
+    def pace_readable(self, avg_moving_pace):
+        if avg_moving_pace == 0: return "00:00"
+        pace_minutes = int(avg_moving_pace)
+        pace_seconds = round((avg_moving_pace - pace_minutes) * 60)
+        return f"{pace_minutes:02d}:{pace_seconds:02d}"
+    
     def total_distance(self):
-        return self.total_stats('distance')
+        return float(self.total_stats('distance'))
     
     def total_steps(self):
         return sum([act.steps() for act in self.activity.activity_records.all()])   
 
-    def total_points(self):
-        return sum([act.points() for act in self.activity.activity_records.all()]) 
-    
-    def total_duration(self):
-        return format(self.total_stats('duration'))
-
-    def avg_total_cadence(self):
-        length = self.activity.activity_records.count()
-        return round(sum([act.avg_cadence() for act in self.activity.activity_records.all()]) / (length if length != 0 else 1))
-    
-    def avg_total_heart_rate(self):
-        length = self.activity.activity_records.count()
-        return round(self.total_stats('avg_heart_rate') / (length if length != 0 else 1))
-
-    def total_active_days(self):
-        return self.activity.activity_records.values('completed_at__date').distinct().count()
-
-    def total_stats(self, col):
-        return self.activity.activity_records.aggregate(total=Sum(col))['total'] or 0
-    
     def level_up(self):
         cnt = 1
         steps = self.total_steps()
@@ -75,14 +61,16 @@ class Performance(models.Model):
         total_steps = sum([act.steps() for act in activities])
         total_points = sum([act.points() for act in activities])
         total_duration = format(activities.aggregate(total_duration=Sum('duration'))['total_duration'] or 0)
+        avg_total_moving_pace = self.pace_readable(sum([act.avg_moving_pace() for act in activities]) / (len(activities) if len(activities) != 0 else 1))
         avg_total_cadence = sum([act.avg_cadence() for act in activities]) / (len(activities) if len(activities) != 0 else 1)
         avg_total_heart_rate = sum([act.avg_heart_rate for act in activities]) / (len(activities) if len(activities) != 0 else 1)
         active_days = activities.values('completed_at__date').distinct().count()
-
-        return total_distance, \
+        
+        return float(total_distance), \
                 total_steps, \
                 total_points, \
                 total_duration, \
+                avg_total_moving_pace, \
                 round(avg_total_cadence), \
                 round(avg_total_heart_rate), \
                 active_days
@@ -124,5 +112,38 @@ class Performance(models.Model):
         activities = self.get_activities_in_range(start_date, end_date)
         return self.calculate_stats(activities)
 
+    def total_stats(self):
+        activities = self.activity.activity_records.all()
+        return self.calculate_stats(activities)
+
     def __str__(self):
         return f"{self.user} {self.total_points()}"
+    
+
+
+
+
+    # def total_points(self):
+    #     return sum([act.points() for act in self.activity.activity_records.all()]) 
+    
+    # def total_duration(self):
+    #     return format(self.total_stats('duration'))
+
+    # def avg_total_moving_pace(self):
+    #     length = self.activity.activity_records.count()
+    #     return self.pace_readable(sum([act.avg_moving_pace() for act in self.activity.activity_records.all()]) / (length if length != 0 else 1))
+    
+    # def avg_total_cadence(self):
+    #     length = self.activity.activity_records.count()
+    #     return round(sum([act.avg_cadence() for act in self.activity.activity_records.all()]) / (length if length != 0 else 1))
+    
+    # def avg_total_heart_rate(self):
+    #     length = self.activity.activity_records.count()
+    #     return round(self.total_stats('avg_heart_rate') / (length if length != 0 else 1))
+
+    # def total_active_days(self):
+    #     return self.activity.activity_records.values('completed_at__date').distinct().count()
+    
+
+    # def total_stats(self, col):
+    #     return self.activity.activity_records.aggregate(total=Sum(col))['total'] or 0
