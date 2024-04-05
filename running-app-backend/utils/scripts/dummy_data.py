@@ -53,7 +53,7 @@ def run():
         model.objects.all().delete()
 
     MAX_NUMBER_USERS = 100
-    MAX_ACTIVITY_RECORDS = 350
+    MAX_ACTIVITY_RECORDS = 500
     MAX_NUMBER_EVENTS = 30
     MAX_NUMBER_CLUBS = 50
     MAX_NUMBER_EVENT_GROUPS = 200
@@ -150,6 +150,7 @@ def run():
             "duration": timedelta(hours=random.randint(0, 3), minutes=random.randint(0, 59), seconds=random.randint(0, 59)),
             "completed_at": completed_at,
             "sport_type": random.choice(["RUNNING", "CYCLING", "SWIMMING", "WALKING"]),
+            'avg_heart_rate': random.randint(100, 160),
             "description": fake.text(max_nb_chars=250),
             "user": random.choice(user_activity_list),
         }

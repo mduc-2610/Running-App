@@ -61,7 +61,7 @@ class _HomeViewState extends State<HomeView> {
         user?.performance,
         Performance.fromJson,
         token,
-        queryParams: "?period=weekly"
+        queryParams: "?period=daily"
     );
     setState(() {
       userPerformance = data;

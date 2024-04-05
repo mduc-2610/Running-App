@@ -14,7 +14,7 @@ class Privacy(models.Model):
     ACTIVITY_CHOICES = (
         ("EVERYONE", "Everyone"),
         ("FOLLOWER", "Follower"),
-        ("ONLY ME", "Only me"),
+        ("ONLY_ME", "Only me"),
     )
     
     activity_privacy = models.CharField(max_length=20, choices=ACTIVITY_CHOICES)

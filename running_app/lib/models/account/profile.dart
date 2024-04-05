@@ -98,3 +98,47 @@ class DetailProfile extends Profile {
         '${height ?? ''} ${weight ?? ''} ${shirtSize ?? ''} ${trouserSize ?? ''} ${shoeSize ?? ''}';
   }
 }
+
+class UpdateProfile {
+  final String? name;
+  final String? avatar;
+  final String? country;
+  final String? city;
+  final String? gender;
+  final String? dateOfBirth;
+  final int? height;
+  final int? weight;
+  final String? shirtSize;
+  final String? trouserSize;
+  final int? shoeSize;
+
+  UpdateProfile({
+    required this.name,
+    this.avatar,
+    required this.country,
+    required this.city,
+    required this.gender,
+    required this.dateOfBirth,
+    required this.height,
+    required this.weight,
+    required this.shirtSize,
+    required this.trouserSize,
+    required this.shoeSize,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'avatar': avatar,
+      'country': country,
+      'city': city,
+      'gender': gender,
+      'date_of_birth': dateOfBirth,
+      'height': height,
+      'weight': weight,
+      'shirt_size': shirtSize,
+      'trouser_size': trouserSize,
+      'shoe_size': shoeSize,
+    };
+  }
+}

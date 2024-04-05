@@ -56,9 +56,9 @@ class APIService {
     }
   }
 
-  Future<void> update(String id, Map<String, dynamic> data) async {
+  Future<void> update(String? id, Map<String, dynamic> data) async {
     final response = await http.put(
-      Uri.parse(url(id: id)),
+      Uri.parse(url(id: id!)),
       headers: _getHeaders(),
       body: json.encode(data),
     );
@@ -130,8 +130,8 @@ Future<dynamic> callCreateAPI(
 }
 
 Future<void> callUpdateAPI(
-    String endpoint,
-    String id,
+    String? endpoint,
+    String? id,
     modelToJson,
     String token
     ) async {

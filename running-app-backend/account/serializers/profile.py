@@ -68,7 +68,7 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['name'] = instance.user.first_name if instance.user.first_name else ""
+        data['name'] = instance.user.name if instance.user.name else ""
         return data
     
     def update(self, instance, validated_data):

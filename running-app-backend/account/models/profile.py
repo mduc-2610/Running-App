@@ -7,7 +7,7 @@ class Profile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     user = models.OneToOneField(
         "account.User", related_name="profile", on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to="", default="")
+    avatar = models.ImageField(upload_to="", default="", null=True)
     updated_at = models.DateTimeField(auto_now=True)
     country = models.CharField(max_length=150, null=True, blank=True, db_index=True)
     city = models.CharField(max_length=150, null=True, blank=True, db_index=True)

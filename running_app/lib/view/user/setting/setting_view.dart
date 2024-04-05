@@ -60,6 +60,11 @@ class _SettingViewState extends State<SettingView> {
       "text": "Notification",
       "url": "/notification_setting",
     },
+    {
+      "icon": Icons.lock_outline_rounded,
+      "text": "Change password",
+      "url": "/",
+    },
     // {
     //   "icon": Icons.policy_outlined,
     //   "text": "Policies",

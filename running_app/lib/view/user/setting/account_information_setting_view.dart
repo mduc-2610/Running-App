@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:running_app/models/account/profile.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
@@ -25,38 +26,47 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
     {
       "hintText": "Name",
       "initialValue": "Dang Minh Duc",
+      'controller': TextEditingController() // Name controller
     },
     {
       "hintText": "Email",
       "initialValue": "duc@gmail.com",
+      'controller': TextEditingController() // Email controller
     },
     {
       "hintText": "Nation",
       "initialValue": "Viet Nam",
+      // 'controller': TextEditingController(),
     },
     {
       "hintText": "City",
       "initialValue": "Ninh Binh",
+      // 'controller': TextEditingController(),
     },
     {
       "hintText": "Birthday",
       "initialValue": "26/10/2003",
+      'controller': TextEditingController(), // Birthday controller
     },
     {
       "hintText": "Height (cm)",
       "initialValue": "168",
+      'controller': TextEditingController(), // Height controller
     },
     {
       "hintText": "Weight (kg)",
       "initialValue": "67",
+      'controller': TextEditingController(), // Weight controller
     },
     {
       "hintText": "Phone number",
       "initialValue": "0858189821",
+      'controller': TextEditingController(), // Phone number controller
     },
     {
       "hintText": "Shoe size",
       "initialValue": "42",
+      'controller': TextEditingController(), // Shoe size controller
     },
     {
       "hintText": "Shirt size",
@@ -68,6 +78,12 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
     },
   ];
 
+  void updateAccountInformation() async {
+    // final profile = UpdateProfile(
+    //   name: fields[0]['controller'].text,
+    //
+    // );
+  }
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -411,9 +427,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
             margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
-              onPressed: () {
-                Navigator.pushNamed(context, '/home');
-              },
+              onPressed: updateAccountInformation,
               child: Text(
                 "Save",
                 style: TextStyle(

@@ -116,6 +116,17 @@ class Month {
       MapEntry(value, key));
 }
 
+class PrivacyConvert {
+  static final Map<String, String> CONVERT = {
+    "Free to follow": "NO_APPROVAL",
+    "Request to follow": "APPROVAL",
+    "Public": "EVERYONE",
+    "Followers Only": "FOLLOWER",
+    "Only me": "ONLY_ME",
+  };
+
+  static final Map<String, String> REVERSED_CONVERT = CONVERT.map((key, value) => MapEntry(value, key));
+}
 
 class BtnState {
   static Map<String, dynamic> get buttonStateClicked => {

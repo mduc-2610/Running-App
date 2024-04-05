@@ -120,7 +120,7 @@ class Performance(models.Model):
         return self.calculate_stats(activities, sport_type)
 
     def __str__(self):
-        return f"{self.user} {self.total_points()}"
+        return f"{self.user}"
     
 
 

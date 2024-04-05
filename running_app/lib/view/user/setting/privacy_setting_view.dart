@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/privacy.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class PrivacySettingView extends StatefulWidget {
   const PrivacySettingView({super.key});
@@ -14,10 +20,54 @@ class PrivacySettingView extends StatefulWidget {
 }
 
 class _PrivacySettingViewState extends State<PrivacySettingView> {
-  String userPrivacy = "Free to follow";
-  String activityPrivacy = "Public";
+  String userPrivacyChoice = "";
+  String activityPrivacyChoice = "";
+  String token = "";
+  DetailUser? user;
+  Privacy? userPrivacy;
+
+
+  void initProviderData() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+  void initUserPrivacy() async {
+    final data = await callRetrieveAPI(null, null, user?.privacy, Privacy.fromJson, token);
+    setState(() {
+      userPrivacy = data;
+      userPrivacyChoice = PrivacyConvert.REVERSED_CONVERT[userPrivacy?.followPrivacy] ?? "";
+      activityPrivacyChoice = PrivacyConvert.REVERSED_CONVERT[userPrivacy?.activityPrivacy] ?? "";
+    });
+  }
+
+  void updateUserPrivacy() {
+    final privacy = UpdatePrivacy(
+      followPrivacy: PrivacyConvert.CONVERT[userPrivacyChoice],
+      activityPrivacy: PrivacyConvert.CONVERT[activityPrivacyChoice],
+    );
+    print(privacy);
+
+    final data = callUpdateAPI('account/privacy', userPrivacy?.id, privacy.toJson(), token);
+  }
+
+  @override
+  void didChangeDependencies() {
+    initProviderData();
+    initUserPrivacy();
+    super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    print(userPrivacyChoice);
+    print(activityPrivacyChoice);
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -85,10 +135,10 @@ class _PrivacySettingViewState extends State<PrivacySettingView> {
                               Radio(
                                 visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                                 value: x["type"] as String,
-                                groupValue: userPrivacy,
+                                groupValue: userPrivacyChoice,
                                 onChanged: (value) {
                                   setState(() {
-                                    userPrivacy = value!;
+                                    userPrivacyChoice = value!;
                                   });
                                 },
                                 fillColor: MaterialStateProperty.all<Color>(
@@ -161,10 +211,10 @@ class _PrivacySettingViewState extends State<PrivacySettingView> {
                               Radio(
                                 visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                                 value: x["type"] as String,
-                                groupValue: activityPrivacy,
+                                groupValue: activityPrivacyChoice,
                                 onChanged: (value) {
                                   setState(() {
-                                    activityPrivacy = value!;
+                                    activityPrivacyChoice = value!;
                                   });
                                 },
                                 fillColor: MaterialStateProperty.all<Color>(
@@ -189,9 +239,7 @@ class _PrivacySettingViewState extends State<PrivacySettingView> {
                 width: media.width,
                 child: CustomMainButton(
                     horizontalPadding: 0,
-                    onPressed: () {
-
-                    },
+                    onPressed: updateUserPrivacy,
                     child: Text(
                       "Save",
                       style: TextStyle(
