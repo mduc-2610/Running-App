@@ -43,6 +43,7 @@ class DetailUser extends User {
   final String performance;
   final String profile;
   final String privacy;
+  final String? notificationSetting;
 
   DetailUser({
     String? id,
@@ -56,7 +57,7 @@ class DetailUser extends User {
     required this.profile,
     required this.performance,
     required this.privacy,
-
+    required this.notificationSetting
   }) : super(
     id: id,
     email: email,
@@ -72,6 +73,7 @@ class DetailUser extends User {
         performance = json['performance'] ?? "" ,
         privacy = json['privacy'] ?? "" ,
         isVerifiedPhone = json['is_verified_phone'],
+        notificationSetting = json['notification_setting'],
         super.fromJson(json);
 
   @override
@@ -83,6 +85,7 @@ class DetailUser extends User {
     data['performance'] = performance;
     data['privacy'] = privacy;
     data['profile'] = profile;
+    data['notification_setting'] = notificationSetting;
     return data;
   }
 

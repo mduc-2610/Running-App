@@ -133,7 +133,7 @@ class _UserViewState extends State<UserView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
-                                  width: media.width * 0.5,
+                                  width: media.width * 0.49,
                                   child: Text(
                                     '${user?.name ?? ""}',
                                     style: TxtStyle.headSection,

@@ -27,7 +27,7 @@ class _PrivacySettingViewState extends State<PrivacySettingView> {
   Privacy? userPrivacy;
 
 
-  void initProviderData() {
+  void getProviderData() {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
       user = Provider.of<UserProvider>(context).user;
@@ -51,11 +51,12 @@ class _PrivacySettingViewState extends State<PrivacySettingView> {
     print(privacy);
 
     final data = callUpdateAPI('account/privacy', userPrivacy?.id, privacy.toJson(), token);
+    Navigator.pop(context);
   }
 
   @override
   void didChangeDependencies() {
-    initProviderData();
+    getProviderData();
     initUserPrivacy();
     super.didChangeDependencies();
   }

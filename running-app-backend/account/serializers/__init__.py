@@ -15,3 +15,5 @@ from .profile import ProfileSerializer, \
                     UpdateProfileSerializer 
 
 from .activity import ActivitySerializer
+
+from .notification_setting import NotificationSettingSerializer

@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from account.models import User, \
                             Profile
+from account.serializers.notification_setting import NotificationSettingSerializer
 
 class LoginSerializer(serializers.Serializer):
     class Meta:
@@ -41,6 +42,11 @@ class DetailUserSerializer(serializers.ModelSerializer):
         view_name="activity-detail",
         read_only=True,
     )
+    notification_setting = serializers.HyperlinkedRelatedField(
+        view_name="notificationsetting-detail",
+        read_only=True,
+    )
+    
     class Meta:
         model = User
         fields = (
@@ -55,6 +61,7 @@ class DetailUserSerializer(serializers.ModelSerializer):
             "performance",
             "activity",
             "privacy",
+            "notification_setting",
         )
         extra_kwargs = {
             "id": {"read_only": True},

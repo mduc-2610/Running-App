@@ -9,7 +9,8 @@ from account.models import User, \
                         Performance, \
                         Privacy, \
                         Profile, \
-                        Activity
+                        Activity, \
+                        NotificationSetting
 
 from activity.models import ActivityRecord, \
                             Club, \
@@ -43,10 +44,10 @@ fake = Faker()
 def run():
     model_list = [
         User, Performance, Privacy, Profile, Activity,
-        ActivityRecord, Club, Group, UserParticipationGroup, 
-        Event, UserParticipationClub, UserParticipationEvent,
-        Brand, Category, Product, ProductImage, UserProduct, 
-        Token
+        NotificationSetting, ActivityRecord, Club, Group, 
+        UserParticipationGroup, Event, UserParticipationClub, 
+        UserParticipationEvent, Brand, Category, Product, 
+        ProductImage, UserProduct, Token
     ]
 
     for model in model_list:
@@ -120,7 +121,7 @@ def run():
         print(f"\tSuccesfully created Privacy: {privacy}")
         
     print("________________________________________________________________")
-    print("PERFORMANCE")
+    print("PERFORMANCE:")
     performance_list = []
     for i in range(MAX_NUMBER_USERS):
         data = {
@@ -135,6 +136,28 @@ def run():
 
     current_year = datetime.now().year
     current_datetime = datetime.now()
+
+    print("________________________________________________________________")
+    print("NOTIFICATION SETTING:")
+    notification_setting_list = []
+    for i in range(MAX_NUMBER_USERS):
+        data = {
+            "user": user_list[i],
+            "finished_workout": random.choice([True, False]),
+            "comment": random.choice([True, False]),
+            "like": random.choice([True, False]),
+            "mentions_on_activities": random.choice([True, False]),
+            "respond_to_comments": random.choice([True, False]),
+            "new_follower": random.choice([True, False]),
+            "following_activity": random.choice([True, False]),
+            "request_to_follow": random.choice([True, False]),
+            "approved_follow_request": random.choice([True, False]),
+            "pending_join_requests": random.choice([True, False]),
+            "invited_to_club": random.choice([True, False]),
+        }
+        notification_setting = NotificationSetting.objects.create(**data)
+        notification_setting_list.append(notification_setting)
+        print(f"Succesfully created NotificationSetting for user {user}")
 
     print("________________________________________________________________")
     print("ACTIVITY RECORD:")

@@ -6,7 +6,8 @@ from account.views import UserViewSet, \
                         PrivacyViewSet, \
                         PerformanceViewSet, \
                         ActivityViewSet, \
-                        LoginViewSet
+                        LoginViewSet, \
+                        NotificationSettingViewSet
 
 router = routers.DefaultRouter()
 router.register(r"user", UserViewSet)
@@ -15,6 +16,7 @@ router.register(r"profile", ProfileViewSet)
 router.register(r"privacy", PrivacyViewSet)
 router.register(r"performance", PerformanceViewSet)
 router.register(r"activity", ActivityViewSet)
+router.register(r"notification-setting", NotificationSettingViewSet)
 
 
 urlpatterns = [
