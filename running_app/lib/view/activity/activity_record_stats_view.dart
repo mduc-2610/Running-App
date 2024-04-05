@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/account/performance.dart';
@@ -10,7 +11,9 @@ import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
+import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/show_month_year.dart';
 import 'package:running_app/utils/common_widgets/stats_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
@@ -31,6 +34,10 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
   DetailUser? user;
   Performance? userPerformance;
   // Activity? userActivity;
+  Map<String, int> monthYearFilter = {
+    'month': DateTime.now().month,
+    'year': DateTime.now().year,
+  };
 
   void initToken() {
     setState(() {
@@ -46,7 +53,20 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
 
 
   void initUserPerformance() async {
-    final data = await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
+    final startDate = DateTime(monthYearFilter['year'] ?? 0, monthYearFilter['month'] ?? 0, 1);
+    final endDate = DateTime(monthYearFilter['year'] ?? 0, (monthYearFilter['month'] ?? 0) + 1, 0);
+
+    final formattedStartDate = DateFormat('yyyy-MM-dd').format(startDate);
+    final formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
+    final data = await callRetrieveAPI(
+        null,
+        null,
+        user?.performance,
+        Performance.fromJson,
+        token,
+        queryParams: "?start_date=${formattedStartDate}"
+            "&end_date=${formattedEndDate}"
+    );
     setState(() {
       userPerformance = data;
     });
@@ -168,55 +188,89 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
                   // Stats section
                   Column(
                     children: [
-                      Container(
-                        alignment: Alignment.center,
-                        width: media.width,
-                        child: DateTimeFormField(
-                          style: TextStyle(
-                            color: TColor.DESCRIPTION,
-                            fontSize: FontSize.SMALL,
-                          ),
-                          decoration: CustomInputDecoration(
-                            suffixIcon: Icon(
-                              Icons.calendar_today_rounded,
-                              color: TColor.DESCRIPTION,
-                            ),
-                            //   hintText: "${DateTime.now().toString().split(' ')[0]} 00:00",
-                            //   hintStyle: TextStyle(
-                            //   color: TColor.DESCRIPTION,
-                            //   fontSize: FontSize.SMALL,
-                            // ),
-                            label: Text(
-                              "${DateTime.now().toString().split(' ')[0]} 00:00",
-                              style: TextStyle(
-                                color: TColor.DESCRIPTION,
-                                fontSize: FontSize.SMALL,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20
-                            ),
-                          ),
+                      // Container(
+                      //   alignment: Alignment.center,
+                      //   width: media.width,
+                      //   child:
+                      //   DateTimeFormField(
+                      //     style: TextStyle(
+                      //       color: TColor.DESCRIPTION,
+                      //       fontSize: FontSize.SMALL,
+                      //     ),
+                      //     decoration: CustomInputDecoration(
+                      //       suffixIcon: Icon(
+                      //         Icons.calendar_today_rounded,
+                      //         color: TColor.DESCRIPTION,
+                      //       ),
+                      //       //   hintText: "${DateTime.now().toString().split(' ')[0]} 00:00",
+                      //       //   hintStyle: TextStyle(
+                      //       //   color: TColor.DESCRIPTION,
+                      //       //   fontSize: FontSize.SMALL,
+                      //       // ),
+                      //       label: Text(
+                      //         "${DateTime.now().toString().split(' ')[0]} 00:00",
+                      //         style: TextStyle(
+                      //           color: TColor.DESCRIPTION,
+                      //           fontSize: FontSize.SMALL,
+                      //         ),
+                      //         textAlign: TextAlign.center,
+                      //       ),
+                      //       contentPadding: const EdgeInsets.symmetric(
+                      //           horizontal: 20
+                      //       ),
+                      //     ),
+                      //
+                      //     materialDatePickerOptions: const MaterialDatePickerOptions(),
+                      //     firstDate: DateTime.now().add(const Duration(days: 10)),
+                      //     lastDate: DateTime.now().add(const Duration(days: 365)),
+                      //     initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
+                      //     onChanged: (DateTime? value) {
+                      //       selectedDate = value;
+                      //     },
+                      //   ),
+                      // ),
+                      CustomMainButton(
+                        borderWidth: 2,
+                        borderWidthColor: TColor.BORDER_COLOR,
+                        background: Colors.transparent,
+                        horizontalPadding: 25,
+                        onPressed: () async {
+                          int selectedMonth = await showMonth(context);
+                          int selectedYear = (await showYear(context)) ?? monthYearFilter['year'] ?? DateTime.now().year;
 
-                          materialDatePickerOptions: const MaterialDatePickerOptions(),
-                          firstDate: DateTime.now().add(const Duration(days: 10)),
-                          lastDate: DateTime.now().add(const Duration(days: 365)),
-                          initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
-                          onChanged: (DateTime? value) {
-                            selectedDate = value;
-                          },
+                          setState(() {
+                            monthYearFilter = {
+                              'month': selectedMonth,
+                              'year': selectedYear,
+                            };
+                          });
+
+                          print(monthYearFilter);
+                          initUserPerformance();
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "${Month.REVERSED_MONTH_MAP[monthYearFilter['month']]}, ${monthYearFilter['year']}",
+                              style: TxtStyle.normalText,
+                            ),
+                            Icon(
+                              Icons.calendar_today_rounded,
+                              color: TColor.PRIMARY_TEXT,
+                            )
+                          ],
                         ),
                       ),
                       SizedBox(height: media.height * 0.015,),
 
                       StatsLayout(
-                        totalDistance: "${userPerformance?.periodDistance}",
-                        totalActiveDays: "${userPerformance?.periodActiveDays}",
-                        totalAvgPace: "${0}",
-                        totalTime: "${userPerformance?.periodDuration}",
-                        totalAvgHeartBeat: "${userPerformance?.periodAvgTotalHeartRate}",
-                        totalAvgCadence: "${userPerformance?.periodAvgTotalCadence}",
+                        totalDistance: "${userPerformance?.periodDistance ?? 0}",
+                        totalActiveDays: "${userPerformance?.periodActiveDays ?? 00}",
+                        totalAvgPace: "${userPerformance?.periodAvgMovingPace ?? "00:00"}",
+                        totalTime: "${userPerformance?.periodDuration ?? "00:00:00"}",
+                        totalAvgHeartBeat: "${userPerformance?.periodAvgTotalHeartRate ?? 0}",
+                        totalAvgCadence: "${userPerformance?.periodAvgTotalCadence ?? 0}",
                         boxNumber: 6,
                       )
                     ],

@@ -24,7 +24,7 @@ class PerformanceSerializer(serializers.ModelSerializer):
         period = self.context.get('period', None)
         start_date = self.context.get('start_date', None)
         end_date = self.context.get('end_date', None)
-
+        print({'start_date': start_date, 'end_date': end_date})
         if period:
             if period == 'daily':
                 return instance.daily_stats()[index]

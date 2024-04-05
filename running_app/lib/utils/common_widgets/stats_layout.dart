@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/stats_box.dart';
 
 class StatsLayout extends StatelessWidget {
-  final String? totalDistance;
-  final String? totalActiveDays;
-  final String? totalAvgPace;
-  final String? totalTime;
-  final String? totalAvgHeartBeat;
-  final String? totalAvgCadence;
+  final String totalDistance;
+  final String totalActiveDays;
+  final String totalAvgPace;
+  final String totalTime;
+  final String totalAvgHeartBeat;
+  final String totalAvgCadence;
   final int boxNumber;
 
   StatsLayout({
@@ -36,7 +36,7 @@ class StatsLayout extends StatelessWidget {
                 iconColor: Color(0xff000000),
                 iconBackgroundColor: Color(0xffffffff),
                 backgroundColor: Color(0xff232b35),
-                firstText: totalDistance ?? "-:--",
+                firstText: totalDistance == "0.0" ? "0" : totalDistance,
                 secondText: "Total Distance",
                 thirdText: " (km)",
                 firstTextColor: Color(0xffffffff),
@@ -53,7 +53,7 @@ class StatsLayout extends StatelessWidget {
                 iconColor: Color(0xffffffff),
                 iconBackgroundColor: Color(0xff6c6cf2),
                 backgroundColor: Color(0xffe1e3fd),
-                firstText: '${totalAvgPace}' ?? "-:--",
+                firstText: '${totalAvgPace}',
                 secondText: "Avg. Pace",
                 thirdText: " (min/km)",
                 firstTextColor: Color(0xff000000),
@@ -70,7 +70,7 @@ class StatsLayout extends StatelessWidget {
                 iconColor: Color(0xffffffff),
                 iconBackgroundColor: Color(0xfff3af9b),
                 backgroundColor: Color(0xfffcefeb),
-                firstText: totalAvgHeartBeat ?? "-:--",
+                firstText: totalAvgHeartBeat,
                 secondText: "Avg. Heartbeat",
                 thirdText: " (bpm)",
                 firstTextColor: Color(0xff000000),
@@ -88,7 +88,7 @@ class StatsLayout extends StatelessWidget {
                 iconColor: Color(0xffffffff),
                 iconBackgroundColor: Color(0xfff5c343),
                 backgroundColor: Color(0xfffdf3d3),
-                firstText: totalActiveDays?.padLeft(2, '0') ?? "-:--",
+                firstText: totalActiveDays.padLeft(2, '0'),
                 secondText: "Active Days",
                 firstTextColor: Color(0xff000000),
                 secondTextColor: Color(0xff344152),
@@ -104,7 +104,7 @@ class StatsLayout extends StatelessWidget {
                 iconColor: Color(0xffffffff),
                 iconBackgroundColor: Color(0xff232b35),
                 backgroundColor: Color(0xfff4f6f8),
-                firstText: totalTime ?? "-:--",
+                firstText: totalTime,
                 secondText: "Total Time",
                 firstTextColor: Color(0xff000000),
                 secondTextColor: Color(0xff344152),
@@ -120,7 +120,7 @@ class StatsLayout extends StatelessWidget {
                 iconColor: Color(0xffffffff),
                 iconBackgroundColor: Color(0xff316ff6),
                 backgroundColor: Color(0xff6098f8),
-                firstText: totalAvgCadence ?? "-:--",
+                firstText: totalAvgCadence,
                 secondText: "Avg. Cadence",
                 thirdText: " (spm)",
                 firstTextColor: Color(0xffffffff),

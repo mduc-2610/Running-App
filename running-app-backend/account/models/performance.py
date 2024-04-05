@@ -60,7 +60,7 @@ class Performance(models.Model):
         total_distance = activities.aggregate(total_distance=Sum('distance'))['total_distance'] or 0
         total_steps = sum([act.steps() for act in activities])
         total_points = sum([act.points() for act in activities])
-        total_duration = format(activities.aggregate(total_duration=Sum('duration'))['total_duration'] or 0)
+        total_duration = format(activities.aggregate(total_duration=Sum('duration'))['total_duration'] or "00:00:00")
         avg_total_moving_pace = self.pace_readable(sum([act.avg_moving_pace() for act in activities]) / (len(activities) if len(activities) != 0 else 1))
         avg_total_cadence = sum([act.avg_cadence() for act in activities]) / (len(activities) if len(activities) != 0 else 1)
         avg_total_heart_rate = sum([act.avg_heart_rate for act in activities]) / (len(activities) if len(activities) != 0 else 1)

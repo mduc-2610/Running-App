@@ -96,6 +96,27 @@ class TxtStyle {
   );
 }
 
+class Month {
+  static final Map<String, int> MONTH_MAP = {
+    'January': 1,
+    'February': 2,
+    'March': 3,
+    'April': 4,
+    'May': 5,
+    'June': 6,
+    'July': 7,
+    'August': 8,
+    'September': 9,
+    'October': 10,
+    'November': 11,
+    'December': 12,
+  };
+
+  static final Map<int, String>  REVERSED_MONTH_MAP = MONTH_MAP.map((key, value) =>
+      MapEntry(value, key));
+}
+
+
 class BtnState {
   static Map<String, dynamic> get buttonStateClicked => {
     "iconColor": TColor.PRIMARY,
