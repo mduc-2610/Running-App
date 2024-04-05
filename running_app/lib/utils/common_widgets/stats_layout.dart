@@ -15,8 +15,8 @@ class StatsLayout extends StatelessWidget {
     required this.totalActiveDays,
     required this.totalAvgPace,
     required this.totalTime,
-    required this.totalAvgHeartBeat,
-    required this.totalAvgCadence,
+    this.totalAvgHeartBeat = "",
+    this.totalAvgCadence = "",
     this.boxNumber = 6,
     Key? key,
   }) : super(key: key);

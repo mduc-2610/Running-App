@@ -24,20 +24,23 @@ class PerformanceSerializer(serializers.ModelSerializer):
         period = self.context.get('period', None)
         start_date = self.context.get('start_date', None)
         end_date = self.context.get('end_date', None)
+        sport_type = self.context.get('sport_type', None)
+        print(sport_type)
+        
         print({'start_date': start_date, 'end_date': end_date})
         if period:
             if period == 'daily':
-                return instance.daily_stats()[index]
+                return instance.daily_stats(sport_type)[index]
             elif period == 'weekly':
-                return instance.weekly_stats()[index]
+                return instance.weekly_stats(sport_type)[index]
             elif period == 'monthly':
-                return instance.monthly_stats()[index]
+                return instance.monthly_stats(sport_type)[index]
             elif period == 'yearly':
-                return instance.yearly_stats()[index]
+                return instance.yearly_stats(sport_type)[index]
         elif start_date and end_date:
-            return instance.range_stats(start_date, end_date)[index]
+            return instance.range_stats(start_date, end_date, sport_type)[index]
         
-        return instance.total_stats()[index]
+        return instance.total_stats(sport_type)[index]
 
     def get_period_distance(self, instance):
         return self.get_period_stats(instance, 0)

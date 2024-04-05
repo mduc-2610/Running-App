@@ -28,6 +28,7 @@ class PerformanceViewSet(
     
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
+        sport_type = self.request.query_params.get('sport_type', None)
         start_date = self.request.query_params.get('start_date', None)
         end_date = self.request.query_params.get('end_date', None)
         period = self.request.query_params.get('period', None)
@@ -35,6 +36,7 @@ class PerformanceViewSet(
         serializer = self.get_serializer(
             instance, 
             context={
+                'sport_type': sport_type,
                 'start_date': start_date, 
                 'end_date': end_date,
                 'period': period

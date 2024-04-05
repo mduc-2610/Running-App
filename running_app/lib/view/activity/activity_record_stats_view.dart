@@ -17,6 +17,7 @@ import 'package:running_app/utils/common_widgets/show_month_year.dart';
 import 'package:running_app/utils/common_widgets/stats_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 
@@ -28,7 +29,7 @@ class ActivityRecordStatsView extends StatefulWidget {
 }
 
 class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
-  String _showView = "Running";
+  String sportType = "Running";
   DateTime? selectedDate;
   String token = "";
   DetailUser? user;
@@ -66,6 +67,7 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
         token,
         queryParams: "?start_date=${formattedStartDate}"
             "&end_date=${formattedEndDate}"
+            "&sport_type=${convertChoice(sportType)}"
     );
     setState(() {
       userPerformance = data;
@@ -153,7 +155,8 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
                               CustomTextButton(
                                   onPressed: () {
                                     setState(() {
-                                      _showView = x["type"] as String;
+                                      sportType = x["type"] as String;
+                                      initUserPerformance();
                                     });
                                   },
                                   style: ButtonStyle(
@@ -164,7 +167,7 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
                                           )
                                       ),
                                       backgroundColor: MaterialStateProperty.all<Color?>(
-                                          _showView == x["type"] ? TColor.PRIMARY : null
+                                          sportType == x["type"] ? TColor.PRIMARY : null
                                       ),
                                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
@@ -263,8 +266,8 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
                         ),
                       ),
                       SizedBox(height: media.height * 0.015,),
-
-                      StatsLayout(
+                      (sportType == "Running" || sportType == "Walking")
+                      ? StatsLayout(
                         totalDistance: "${userPerformance?.periodDistance ?? 0}",
                         totalActiveDays: "${userPerformance?.periodActiveDays ?? 00}",
                         totalAvgPace: "${userPerformance?.periodAvgMovingPace ?? "00:00"}",
@@ -272,6 +275,12 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
                         totalAvgHeartBeat: "${userPerformance?.periodAvgTotalHeartRate ?? 0}",
                         totalAvgCadence: "${userPerformance?.periodAvgTotalCadence ?? 0}",
                         boxNumber: 6,
+                      ) : StatsLayout(
+                        totalDistance: "${userPerformance?.periodDistance ?? 0}",
+                        totalActiveDays: "${userPerformance?.periodActiveDays ?? 00}",
+                        totalAvgPace: "${userPerformance?.periodAvgMovingPace ?? "00:00"}",
+                        totalTime: "${userPerformance?.periodDuration ?? "00:00:00"}",
+                        boxNumber: 4,
                       )
                     ],
                   )

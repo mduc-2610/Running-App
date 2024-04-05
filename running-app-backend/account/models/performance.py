@@ -56,7 +56,10 @@ class Performance(models.Model):
     def get_activities_in_range(self, start_date, end_date):
         return self.activity.activity_records.filter(completed_at__date__range=[start_date, end_date])
 
-    def calculate_stats(self, activities):
+    def calculate_stats(self, activities, sport_type=None):
+        if sport_type:
+            activities = activities.filter(sport_type=sport_type)
+
         total_distance = activities.aggregate(total_distance=Sum('distance'))['total_distance'] or 0
         total_steps = sum([act.steps() for act in activities])
         total_points = sum([act.points() for act in activities])
@@ -75,46 +78,46 @@ class Performance(models.Model):
                 round(avg_total_heart_rate), \
                 active_days
 
-    def daily_stats(self):
+    def daily_stats(self, sport_type=None):
         today = datetime.now().date()
         start_of_day = datetime.combine(today, datetime.min.time())
         end_of_day = datetime.combine(today, datetime.max.time())
 
         daily_activities = self.get_activities_in_range(start_of_day, end_of_day)
-        return self.calculate_stats(daily_activities)
+        return self.calculate_stats(daily_activities, sport_type)
 
-    def weekly_stats(self):
+    def weekly_stats(self, sport_type=None):
         today = datetime.now().date()
         start_of_week = today - timedelta(days=today.weekday())
         end_of_week = start_of_week + timedelta(days=6)
 
         weekly_activities = self.get_activities_in_range(start_of_week, end_of_week)
-        return self.calculate_stats(weekly_activities)
+        return self.calculate_stats(weekly_activities, sport_type)
 
-    def monthly_stats(self):
+    def monthly_stats(self, sport_type=None):
         today = datetime.now().date()
         start_of_month = today.replace(day=1)
         next_month = today.replace(day=28) + timedelta(days=4)
         end_of_month = next_month - timedelta(days=next_month.day)
 
         monthly_activities = self.get_activities_in_range(start_of_month, end_of_month)
-        return self.calculate_stats(monthly_activities)
+        return self.calculate_stats(monthly_activities, sport_type)
 
-    def yearly_stats(self):
+    def yearly_stats(self, sport_type=None):
         today = datetime.now().date()
         start_of_year = today.replace(month=1, day=1)
         end_of_year = today.replace(month=12, day=31)
 
         yearly_activities = self.get_activities_in_range(start_of_year, end_of_year)
-        return self.calculate_stats(yearly_activities)
+        return self.calculate_stats(yearly_activities, sport_type)
 
-    def range_stats(self, start_date, end_date):
+    def range_stats(self, start_date, end_date, sport_type=None):
         activities = self.get_activities_in_range(start_date, end_date)
-        return self.calculate_stats(activities)
+        return self.calculate_stats(activities, sport_type)
 
-    def total_stats(self):
+    def total_stats(self, sport_type=None):
         activities = self.activity.activity_records.all()
-        return self.calculate_stats(activities)
+        return self.calculate_stats(activities, sport_type)
 
     def __str__(self):
         return f"{self.user} {self.total_points()}"
