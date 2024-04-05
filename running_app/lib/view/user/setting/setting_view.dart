@@ -63,7 +63,7 @@ class _SettingViewState extends State<SettingView> {
     {
       "icon": Icons.lock_outline_rounded,
       "text": "Change password",
-      "url": "/",
+      "url": "/change_password_setting",
     },
     // {
     //   "icon": Icons.policy_outlined,

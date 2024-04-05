@@ -28,6 +28,7 @@ import 'package:running_app/view/community/club/club_member_view.dart';
 import 'package:running_app/view/community/event/utils/provider/event_advanced_option_create_provider.dart';
 import 'package:running_app/view/community/event/utils/provider/event_feature_create_provider.dart';
 import 'package:running_app/view/user/other_user_view.dart';
+import 'package:running_app/view/user/setting/change_password_setting_view.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
 
@@ -205,6 +206,7 @@ class MyApp extends StatelessWidget {
         '/privacy_setting': (context) => const PrivacySettingView(),
         '/account_information_setting': (context) => const AccountInformationSettingView(),
         '/notification_setting': (context) => const NotificationSettingView(),
+        '/change_password_setting': (context) => const ChangePasswordSettingView(),
         // '/verify': (context) => VerifyCodeForm(),
       },
     );
