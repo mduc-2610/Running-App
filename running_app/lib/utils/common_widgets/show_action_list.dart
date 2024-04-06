@@ -73,7 +73,8 @@ void showActionList(
                         action[index]["text"],
                         style: TextStyle(
                           color: action[index]["textColor"] ?? TColor.PRIMARY_TEXT,
-                          fontSize: FontSize.NORMAL
+                          fontSize: FontSize.NORMAL,
+                          fontWeight: FontWeight.w600
                         ),
                       ),
                         onTap: () {

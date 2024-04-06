@@ -389,14 +389,57 @@ class _UserViewState extends State<UserView> {
                       ],
                       SizedBox(height: media.height * 0.01,),
                       // Best performance
-                      _showLayout == "Total stats" ? StatsLayout(
-                        totalDistance: "${userPerformance?.periodDistance}",
-                        totalActiveDays: "${userPerformance?.periodActiveDays}",
-                        totalAvgPace: "${userPerformance?.periodAvgMovingPace}",
-                        totalTime: "${userPerformance?.periodDuration}",
-                        totalAvgHeartBeat: "${userPerformance?.periodAvgTotalHeartRate}",
-                        totalAvgCadence: "${userPerformance?.periodAvgTotalCadence}",
+                      _showLayout == "Total stats"
+                          ?
+                      Column(
+                        children: [
+                          StatsLayout(
+                            totalDistance: "${userPerformance?.periodDistance}",
+                            totalActiveDays: "${userPerformance?.periodActiveDays}",
+                            totalAvgPace: "${userPerformance?.periodAvgMovingPace}",
+                            totalTime: "${userPerformance?.periodDuration}",
+                            totalAvgHeartBeat: "${userPerformance?.periodAvgTotalHeartRate ?? 0}",
+                            totalAvgCadence: "${userPerformance?.periodAvgTotalCadence ?? 0}",
+                          ),
+                          SizedBox(height: media.height * 0.02,),
+                          RichText(
+                            text: TextSpan(
+                              style: TxtStyle.normalTextDesc,
+                              children: [
+                                TextSpan(
+                                  text: "Avg. Heartbeat",
+                                  style: TxtStyle.normalText
+                                ),
+                                TextSpan(
+                                  text: " and ",
+                                ),
+                                TextSpan(
+                                  text: "Avg. Cadence",
+                                  style: TxtStyle.normalText
+                                ),
+                                TextSpan(
+                                  text: " are calculated based on "
+                                ),
+                                TextSpan(
+                                  text: "Running",
+                                  style: TxtStyle.normalText
+                                ),
+                                TextSpan(
+                                  text: " and "
+                                ),
+                                TextSpan(
+                                  text: "Walking",
+                                  style: TxtStyle.normalText
+                                ),
+                                TextSpan(
+                                  text: " activities",
+                                )
+                              ]
+                            ),
+                          )
+                        ],
                       ) : InventoryLayout(productList: productList),
+
                     ])
                   ],
                 ),

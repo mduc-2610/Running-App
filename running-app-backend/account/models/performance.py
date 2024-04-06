@@ -57,16 +57,18 @@ class Performance(models.Model):
         return self.activity.activity_records.filter(completed_at__date__range=[start_date, end_date])
 
     def calculate_stats(self, activities, sport_type=None):
+        activities_run_walk = activities.filter(sport_type__in=['RUNNING', 'WALKING'])
         if sport_type:
             activities = activities.filter(sport_type=sport_type)
-
+            activities_run_walk = activities
+            
         total_distance = activities.aggregate(total_distance=Sum('distance'))['total_distance'] or 0
         total_steps = sum([act.steps() for act in activities])
         total_points = sum([act.points() for act in activities])
         total_duration = format(activities.aggregate(total_duration=Sum('duration'))['total_duration'] or "00:00:00")
         avg_total_moving_pace = self.pace_readable(sum([act.avg_moving_pace() for act in activities]) / (len(activities) if len(activities) != 0 else 1))
-        avg_total_cadence = sum([act.avg_cadence() for act in activities]) / (len(activities) if len(activities) != 0 else 1)
-        avg_total_heart_rate = sum([act.avg_heart_rate for act in activities]) / (len(activities) if len(activities) != 0 else 1)
+        avg_total_cadence = sum([act.avg_cadence() for act in activities_run_walk]) / (len(activities_run_walk) if len(activities_run_walk) != 0 else 1)
+        avg_total_heart_rate = sum([act.avg_heart_rate for act in activities_run_walk]) / (len(activities_run_walk) if len(activities_run_walk) != 0 else 1)
         active_days = activities.values('completed_at__date').distinct().count()
         
         return float(total_distance), \

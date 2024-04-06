@@ -6,6 +6,9 @@ import 'package:location/location.dart' as loc;
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
+import 'package:running_app/utils/common_widgets/show_action_list.dart';
+import 'package:running_app/utils/common_widgets/show_month_year.dart';
+import 'package:running_app/utils/common_widgets/show_notification.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
@@ -146,7 +149,31 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Header(title: "Activity Record", noIcon: true),
+        title: Header(
+            title: "Activity Record",
+            noIcon: true,
+            backButton: (playButtonState == Icons.play_arrow_rounded) ? true : false,
+            backButtonOnPressed: () {
+              if(firstTime == false) {
+                showActionList(context, [
+                  {
+                    "text": "Yes",
+                    "onPressed": () {
+                      Navigator.pushReplacementNamed(context, '/home');
+                    },
+                  },
+                  {
+                    "text": "No",
+                    "onPressed": () {
+                      Navigator.pop(context);
+                    },
+                    "textColor": TColor.WARNING,
+                  }
+                ], "Are you sure to delete this activity?");
+                showModalBottomSheet(context: context, builder: (context) => Container(),);
+              }
+            },
+        ),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: Stack(

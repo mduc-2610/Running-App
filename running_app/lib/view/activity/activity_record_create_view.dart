@@ -544,12 +544,16 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                         [
                           {
                             "text": "Yes",
-                            "onPressed": () {}
+                            "onPressed": () {
+                              Navigator.pushReplacementNamed(context, '/home');
+                            }
                           },
                           {
                             "text": "No",
                             "textColor": TColor.WARNING,
-                            "onPressed": () {}
+                            "onPressed": () {
+                              Navigator.pop(context);
+                            }
                           }
                         ],
                         "Are you sure to delete this activity ?"
