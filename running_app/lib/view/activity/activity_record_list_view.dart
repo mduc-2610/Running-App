@@ -30,23 +30,33 @@ class ActivityRecordListView extends StatefulWidget {
 class _ActivityRecordListViewState extends State<ActivityRecordListView> {
   String token = "";
   DetailUser? user;
+  String? requestUserId;
   Activity? userActivity;
   Performance? userPerformance;
   List<ActivityRecord>? activityRecords;
 
-  void initToken() {
+  void getProviderData() {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
-    });
-  }
-
-  void initUser() {
-    setState(() {
       user = Provider.of<UserProvider>(context).user;
+      requestUserId = user?.id;
     });
   }
 
-  void initUserActivity() async {
+  Future<void> initUser() async {
+    Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    print(arguments?["id"]);
+    String? userId = arguments?["id"];
+    print(userId);
+    if(userId != null) {
+      final data = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
+      setState(() {
+        user = data;
+      });
+    }
+  }
+
+  Future<void> initUserActivity() async {
     final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
     setState(() {
       userActivity = data;
@@ -54,7 +64,7 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
     });
   }
 
-  void initUserPerformance() async {
+  Future<void> initUserPerformance() async {
     final data = await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
     setState(() {
       userPerformance = data;
@@ -62,11 +72,11 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
   }
 
   @override
-  void didChangeDependencies() {
-    initToken();
-    initUser();
-    initUserActivity();
-    initUserPerformance();
+  void didChangeDependencies() async {
+    getProviderData();
+    await initUser();
+    await initUserActivity();
+    await initUserPerformance();
     super.didChangeDependencies();
   }
 
@@ -98,7 +108,11 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
               {
                 "icon": Icons.query_stats_rounded,
                 "onPressed": () {
-                  Navigator.pushNamed(context, '/activity_record_stats');
+                  Navigator.pushNamed(
+                    context,
+                    '/activity_record_stats',
+                    arguments: requestUserId == user?.id ? null : {"id": user?.id},
+                  );
                 },
               }
             ],

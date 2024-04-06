@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomIconButton extends StatelessWidget {
   final Widget icon;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final Color? color;
   final double? iconSize;
   final ButtonStyle? style;

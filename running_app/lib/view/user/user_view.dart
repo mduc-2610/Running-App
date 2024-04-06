@@ -35,23 +35,33 @@ class _UserViewState extends State<UserView> {
   String _showStatsType = "All time";
   String token = "";
   DetailUser? user;
+  String? requestUserId;
   Performance? userPerformance;
   Activity? userActivity;
   int? points;
 
-  void initToken() {
+  void getProviderData() {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
-    });
-  }
-
-  void initUser() {
-    setState(() {
       user = Provider.of<UserProvider>(context).user;
+      requestUserId = user?.id;
     });
   }
 
-  void initUserPerformance() async {
+  Future<void> initUser() async {
+    Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    print(arguments?["id"]);
+    String? userId = arguments?["id"];
+    print(userId);
+    if(userId != null) {
+      final data = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
+      setState(() {
+        user = data;
+      });
+    }
+  }
+
+  Future<void> initUserPerformance() async {
     final data = await callRetrieveAPI(
         null,
         null,
@@ -65,7 +75,7 @@ class _UserViewState extends State<UserView> {
     });
   }
 
-  void initUserActivity() async {
+  Future<void> initUserActivity() async {
     final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
     setState(() {
       userActivity = data;
@@ -73,12 +83,12 @@ class _UserViewState extends State<UserView> {
   }
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async{
     super.didChangeDependencies();
-    initUser();
-    initToken();
-    initUserPerformance();
-    initUserActivity();
+    getProviderData();
+    await initUser();
+    await initUserPerformance();
+    await initUserActivity();
   }
   
   @override
@@ -92,14 +102,14 @@ class _UserViewState extends State<UserView> {
       appBar: CustomAppBar(
         title: Header(
           title: "",
-          iconButtons: [
+          iconButtons: (user?.id == requestUserId) ? [
             {
               "icon": Icons.settings_outlined,
               "onPressed": () {
                 Navigator.pushNamed(context, '/setting');
               }
             }
-          ],
+          ] : [],
         ),
       ),
       body: SingleChildScrollView(
@@ -170,19 +180,21 @@ class _UserViewState extends State<UserView> {
                             )
                           ],
                         ),
-                        SizedBox(
-                          width: media.width * 0.21,
-                          child: CustomMainButton(
-                            horizontalPadding: 0,
-                            verticalPadding: 10,
-                            onPressed: () {},
-                            background: TColor.SECONDARY,
-                            child: Text(
-                              "Follow",
-                              style: TxtStyle.normalText,
+                        if((user?.id != requestUserId))...[
+                          SizedBox(
+                            width: media.width * 0.21,
+                            child: CustomMainButton(
+                              horizontalPadding: 0,
+                              verticalPadding: 10,
+                              onPressed: () {},
+                              background: TColor.SECONDARY,
+                              child: Text(
+                                "Follow",
+                                style: TxtStyle.normalText,
+                              ),
                             ),
-                          ),
-                        )
+                          )
+                        ]
                       ],
                     ),
                     SizedBox(
@@ -266,7 +278,11 @@ class _UserViewState extends State<UserView> {
                                             borderRadius:
                                             BorderRadius.circular(12)))),
                                 onPressed: () {
-                                  Navigator.pushNamed(context, x["url"] as String);
+                                  Navigator.pushNamed(
+                                    context,
+                                    x["url"] as String,
+                                    arguments: requestUserId == user?.id ? null : {"id": user?.id},
+                                  );
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -406,19 +422,19 @@ class _UserViewState extends State<UserView> {
                             text: TextSpan(
                               style: TxtStyle.normalTextDesc,
                               children: [
-                                TextSpan(
-                                  text: "Avg. Heartbeat",
-                                  style: TxtStyle.normalText
-                                ),
-                                TextSpan(
-                                  text: " and ",
-                                ),
+                                // TextSpan(
+                                //   text: "Avg. Heartbeat",
+                                //   style: TxtStyle.normalText
+                                // ),
+                                // TextSpan(
+                                //   text: " and ",
+                                // ),
                                 TextSpan(
                                   text: "Avg. Cadence",
                                   style: TxtStyle.normalText
                                 ),
                                 TextSpan(
-                                  text: " are calculated based on "
+                                  text: " is calculated based on "
                                 ),
                                 TextSpan(
                                   text: "Running",

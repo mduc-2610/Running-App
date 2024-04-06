@@ -5,6 +5,50 @@ from rest_framework import serializers
 from account.models import Performance
 from account.serializers.user import UserSerializer
 
+
+class LeaderboardSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    user_id = serializers.SerializerMethodField()
+    gender = serializers.SerializerMethodField()
+    total_distance = serializers.SerializerMethodField()
+    total_duration = serializers.SerializerMethodField()
+
+    def get_user_id(self, instance):
+        return instance.user.id
+
+    def get_name(self, instance):
+        return instance.user.name
+
+    def get_gender(self, instance):
+        return instance.user.profile.gender
+    
+    def get_period_stats(self, instance, index):
+        start_date = self.context.get('start_date', None)
+        end_date = self.context.get('end_date', None)
+        print({'start_date': start_date, 'end_date': end_date})
+        return instance.range_stats(start_date, end_date, sport_type="RUNNING")[index]
+        
+    def get_total_distance(self, instance):
+        return self.get_period_stats(instance, 0)
+    
+    def get_total_duration(self, instance):
+        return instance.format_duration(self.get_period_stats(instance, 3))
+
+    class Meta:
+        model = Performance
+        fields = (
+            "id", 
+            "user_id",
+            "name",
+            "gender",
+            "total_duration",
+            "total_distance",
+        )
+        extra_kwargs = {
+            "id": {"read_only": True},
+        }
+        ordering = ("total_distance")
+
 class PerformanceSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     level = serializers.SerializerMethodField()
@@ -52,7 +96,7 @@ class PerformanceSerializer(serializers.ModelSerializer):
         return self.get_period_stats(instance, 2)
 
     def get_period_duration(self, instance):
-        return self.get_period_stats(instance, 3)
+        return instance.format_duration(self.get_period_stats(instance, 3))
 
     def get_period_avg_moving_pace(self, instance):
         return self.get_period_stats(instance, 4)

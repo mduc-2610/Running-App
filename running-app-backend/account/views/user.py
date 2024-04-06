@@ -19,7 +19,8 @@ from account.serializers import UserSerializer, \
                                 CreateUserSerializer, \
                                 UpdateUserSerializer, \
                                 LoginSerializer, \
-                                ChangePasswordSerializer
+                                ChangePasswordSerializer, \
+                                LeaderboardSerializer
 
 
 class UserViewSet(
@@ -55,7 +56,8 @@ class UserViewSet(
             return ChangePasswordSerializer
         return super().get_serializer_class()
     
-    @action(detail=False, methods=['post'], url_path='change-password')
+
+    @action(detail=False, methods=['post'], url_path='change-password', name='change_password')
     def change_password(self, request):
         serializer = ChangePasswordSerializer(data=request.data)
         if serializer.is_valid():

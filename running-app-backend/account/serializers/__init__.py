@@ -1,5 +1,7 @@
 from .performance import PerformanceSerializer,\
-                        CreatePerformanceSerializer
+                        CreatePerformanceSerializer, \
+                        LeaderboardSerializer
+
 from .privacy import PrivacySerializer, \
                     CreatePrivacySerializer
 

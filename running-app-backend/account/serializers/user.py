@@ -1,8 +1,11 @@
 from rest_framework import serializers
 
 from account.models import User, \
+                            Performance, \
                             Profile
+
 from account.serializers.notification_setting import NotificationSettingSerializer
+
 
 class LoginSerializer(serializers.Serializer):
     class Meta:
@@ -26,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             "email", 
             "username",
             "name", 
-            "phone_number"
+            "phone_number",
         )
         extra_kwargs = {
             "id": {"read_only": True},

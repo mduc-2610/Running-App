@@ -12,13 +12,16 @@ import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_box.dart';
+import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/search_filter.dart';
-import 'package:running_app/utils/common_widgets/stats_box.dart';
+import 'package:running_app/utils/common_widgets/stats_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class OtherUserView extends StatefulWidget {
   const OtherUserView({Key? key}) : super(key: key);
@@ -29,11 +32,13 @@ class OtherUserView extends StatefulWidget {
 
 class _OtherUserViewState extends State<OtherUserView> {
   String _showLayout = "Total stats";
+  String _showStatsType = "All time";
   String token = "";
   String? userId;
   DetailUser? user;
   Performance? userPerformance;
   Activity? userActivity;
+  int? points;
 
   void initToken() {
     setState(() {
@@ -48,16 +53,21 @@ class _OtherUserViewState extends State<OtherUserView> {
   }
 
   void initUser() async {
-    final data = await callRetrieveAPI('account/user', userId, "", DetailUser.fromJson, token);
+    final data = await callRetrieveAPI('account', userId, null, DetailUser.fromJson, token);
     setState(() {
       user = data;
     });
   }
 
   void initUserPerformance() async {
-    final data = await callRetrieveAPI(null, null, user?.performance, Performance.fromJson, token);
-    print(user?.performance);
-
+    final data = await callRetrieveAPI(
+        null,
+        null,
+        user?.performance,
+        Performance.fromJson,
+        token,
+        queryParams: "?period=${_showStatsType.toLowerCase()}ly"
+    );
     setState(() {
       userPerformance = data;
     });
@@ -73,34 +83,32 @@ class _OtherUserViewState extends State<OtherUserView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    initToken();
-    initUserId();
-    initUser();
-    initUserPerformance();
-    initUserActivity();
+    // initToken();
+    // initUserId();
+    // initUser();
+    // initUserPerformance();
+    // initUserActivity();
   }
 
   @override
   Widget build(BuildContext context) {
+    if(points == null) {
+      points = userPerformance?.periodPoints;
+    }
     var media = MediaQuery.of(context).size;
-    List<Product>? productList = userActivity?.products ?? [];
-    print(user);
-    // print(userPerformance);
-    // print(userActivity);
-    print("Other user: $user");
+    List<Product>? productList = userActivity?.products;
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         title: Header(
           title: "",
-          // iconButtons: [
-          //   {
-          //     "icon": Icons.settings_outlined,
-          //     "onPressed": () {
-          //       Navigator.pushNamed(context, '/setting');
-          //     }
-          //   }
-          // ],
-          noIcon: true,
+          iconButtons: [
+            {
+              "icon": Icons.settings_outlined,
+              "onPressed": () {
+                Navigator.pushNamed(context, '/setting');
+              }
+            }
+          ],
         ),
       ),
       body: SingleChildScrollView(
@@ -114,65 +122,75 @@ class _OtherUserViewState extends State<OtherUserView> {
                 child: Column(
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Image.asset(
-                            "assets/img/home/avatar.png",
-                            width: 90,
-                            height: 90,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                        SizedBox(
-                          width: media.width * 0.02,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
                           children: [
-                            SizedBox(
-                              width: media.width * 0.7,
-                              child: Text(
-                                '${user?.username}' ?? "",
-                                style: TextStyle(
-                                    color: TColor.PRIMARY_TEXT,
-                                    fontSize: FontSize.LARGE,
-                                    fontWeight: FontWeight.w900),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.asset(
+                                "assets/img/home/avatar.png",
+                                width: 90,
+                                height: 90,
+                                fit: BoxFit.contain,
                               ),
                             ),
                             SizedBox(
-                              height: media.height * 0.005,
+                              width: media.width * 0.02,
                             ),
-                            Row(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                SizedBox(
+                                  width: media.width * 0.49,
+                                  child: Text(
+                                    '${user?.name ?? ""}',
+                                    style: TxtStyle.headSection,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: media.height * 0.005,
+                                ),
                                 Row(
                                   children: [
-                                    SvgPicture.asset(
-                                      "assets/img/home/coin_icon.svg",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    Text(
-                                      "1200 points",
-                                      style: TextStyle(
-                                          color: TColor.PRIMARY_TEXT,
-                                          fontSize: FontSize.NORMAL,
-                                          fontWeight: FontWeight.w600),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          '${idSubstring(user?.id ?? "")} ',
+                                          style: TextStyle(
+                                              color: TColor.PRIMARY_TEXT,
+                                              fontSize: FontSize.SMALL,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Text(
+                                          "• ${points} points",
+                                          style: TextStyle(
+                                              color: TColor.PRIMARY_TEXT,
+                                              fontSize: FontSize.SMALL,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ],
                                     ),
                                   ],
-                                ),
-                                Text(
-                                  " - Starter 7",
-                                  style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: FontSize.SMALL,
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                )
                               ],
                             )
                           ],
+                        ),
+                        SizedBox(
+                          width: media.width * 0.21,
+                          child: CustomMainButton(
+                            horizontalPadding: 0,
+                            verticalPadding: 10,
+                            onPressed: () {},
+                            background: TColor.SECONDARY,
+                            child: Text(
+                              "Follow",
+                              style: TxtStyle.normalText,
+                            ),
+                          ),
                         )
                       ],
                     ),
@@ -235,7 +253,7 @@ class _OtherUserViewState extends State<OtherUserView> {
                                 "icon": Icons.local_activity_outlined,
                                 "color": const Color(0xff2c50f0),
                                 "text": "Activities",
-                                "url": "/activity",
+                                "url": "/activity_record_list",
                               },
                               {
                                 "icon": Icons.people_outline,
@@ -257,7 +275,7 @@ class _OtherUserViewState extends State<OtherUserView> {
                                             borderRadius:
                                             BorderRadius.circular(12)))),
                                 onPressed: () {
-                                  Navigator.pushReplacementNamed(context, x["url"] as String);
+                                  Navigator.pushNamed(context, x["url"] as String);
                                 },
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -294,7 +312,7 @@ class _OtherUserViewState extends State<OtherUserView> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          for (var x in ["Total stats", "Backpack"])
+                          for (var x in ["Total stats", "Inventory"])
                             SizedBox(
                               width: media.width * 0.46,
                               child: CustomTextButton(
@@ -326,12 +344,111 @@ class _OtherUserViewState extends State<OtherUserView> {
                             )
                         ],
                       ),
-
-                      SizedBox(
-                        height: media.height * 0.01,
-                      ),
+                      if(_showLayout == "Total stats")...[
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 0,
+                                horizontal: 8
+                            ),
+                            decoration: BoxDecoration(
+                                color: TColor.SECONDARY_BACKGROUND,
+                                borderRadius: BorderRadius.circular(8)
+                            ),
+                            child: Row(
+                              children: [
+                                for (var x in ["All time", "Week", "Month", "Year"])...[
+                                  SizedBox(
+                                    // width: media.width * 0.25,
+                                    child: CustomTextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _showStatsType = x;
+                                          initUserPerformance();
+                                        });
+                                      },
+                                      style: ButtonStyle(
+                                          padding: MaterialStateProperty.all<EdgeInsets>(
+                                              EdgeInsets.symmetric(
+                                                  vertical: 5,
+                                                  horizontal: media.width * 0.07)),
+                                          backgroundColor: MaterialStateProperty.all<
+                                              Color?>(
+                                              _showStatsType == x ? TColor.PRIMARY : null),
+                                          shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(10)))),
+                                      child: Text(x,
+                                          style: TextStyle(
+                                            color: TColor.PRIMARY_TEXT,
+                                            fontSize: FontSize.NORMAL,
+                                            fontWeight: FontWeight.w600,
+                                          )),
+                                    ),
+                                  )
+                                ]
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: media.height * 0.01,),
+                      ],
+                      SizedBox(height: media.height * 0.01,),
                       // Best performance
-                      _showLayout == "Total stats" ? const StatsLayout() : BackpackLayout(productList: productList),
+                      _showLayout == "Total stats"
+                          ?
+                      Column(
+                        children: [
+                          StatsLayout(
+                            totalDistance: "${userPerformance?.periodDistance}",
+                            totalActiveDays: "${userPerformance?.periodActiveDays}",
+                            totalAvgPace: "${userPerformance?.periodAvgMovingPace}",
+                            totalTime: "${userPerformance?.periodDuration}",
+                            totalAvgHeartBeat: "${userPerformance?.periodAvgTotalHeartRate ?? 0}",
+                            totalAvgCadence: "${userPerformance?.periodAvgTotalCadence ?? 0}",
+                          ),
+                          SizedBox(height: media.height * 0.02,),
+                          RichText(
+                            text: TextSpan(
+                                style: TxtStyle.normalTextDesc,
+                                children: [
+                                  // TextSpan(
+                                  //   text: "Avg. Heartbeat",
+                                  //   style: TxtStyle.normalText
+                                  // ),
+                                  // TextSpan(
+                                  //   text: " and ",
+                                  // ),
+                                  TextSpan(
+                                      text: "Avg. Cadence",
+                                      style: TxtStyle.normalText
+                                  ),
+                                  TextSpan(
+                                      text: " is calculated based on "
+                                  ),
+                                  TextSpan(
+                                      text: "Running",
+                                      style: TxtStyle.normalText
+                                  ),
+                                  TextSpan(
+                                      text: " and "
+                                  ),
+                                  TextSpan(
+                                      text: "Walking",
+                                      style: TxtStyle.normalText
+                                  ),
+                                  TextSpan(
+                                    text: " activities",
+                                  )
+                                ]
+                            ),
+                          )
+                        ],
+                      ) : InventoryLayout(productList: productList),
+
                     ])
                   ],
                 ),
@@ -344,114 +461,10 @@ class _OtherUserViewState extends State<OtherUserView> {
   }
 }
 
-class StatsLayout extends StatelessWidget {
-  const StatsLayout({super.key});
+class InventoryLayout extends StatelessWidget {
+  final List<Product>? productList;
 
-  @override
-  Widget build(BuildContext context) {
-    var media = MediaQuery.sizeOf(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          children: [
-            const StatsBoxLayout(
-              icon: Icons.social_distance,
-              iconColor: Color(0xff000000),
-              iconBackgroundColor: Color(0xffffffff),
-              backgroundColor: Color(0xff232b35),
-              firstText: "0",
-              secondText: "Total Distance",
-              thirdText: " (km)",
-              firstTextColor: Color(0xffffffff),
-              secondTextColor: Color(0xffcdcdcd),
-              layout: 1,
-            ),
-            SizedBox(
-              height: media.height * 0.01,
-            ),
-            const StatsBoxLayout(
-              icon: Icons.speed_rounded,
-              iconColor: Color(0xffffffff),
-              iconBackgroundColor: Color(0xff6c6cf2),
-              backgroundColor: Color(0xffe1e3fd),
-              firstText: "0",
-              secondText: "Avg. Pace",
-              thirdText: " (min/km)",
-              firstTextColor: Color(0xff000000),
-              secondTextColor: Color(0xff344152),
-              layout: 2,
-            ),
-            SizedBox(
-              height: media.height * 0.01,
-            ),
-            const StatsBoxLayout(
-              icon: Icons.monitor_heart_outlined,
-              iconColor: Color(0xffffffff),
-              iconBackgroundColor: Color(0xfff3af9b),
-              backgroundColor: Color(0xfffcefeb),
-              firstText: "0",
-              secondText: "Avg. Heartbeat",
-              thirdText: " (bpm)",
-              firstTextColor: Color(0xff000000),
-              secondTextColor: Color(0xff344152),
-              layout: 2,
-            ),
-          ],
-        ),
-        Column(
-          children: [
-            const StatsBoxLayout(
-              icon: Icons.calendar_today_rounded,
-              iconColor: Color(0xffffffff),
-              iconBackgroundColor: Color(0xfff5c343),
-              backgroundColor: Color(0xfffdf3d3),
-              firstText: "00",
-              secondText: "Active Days",
-              firstTextColor: Color(0xff000000),
-              secondTextColor: Color(0xff344152),
-              layout: 2,
-            ),
-            SizedBox(
-              height: media.height * 0.01,
-            ),
-            const StatsBoxLayout(
-              icon: Icons.access_time_rounded,
-              iconColor: Color(0xffffffff),
-              iconBackgroundColor: Color(0xff232b35),
-              backgroundColor: Color(0xfff4f6f8),
-              firstText: "0",
-              secondText: "Total Time",
-              firstTextColor: Color(0xff000000),
-              secondTextColor: Color(0xff344152),
-              layout: 1,
-            ),
-            SizedBox(
-              height: media.height * 0.01,
-            ),
-            const StatsBoxLayout(
-              icon: Icons.directions_run_rounded,
-              iconColor: Color(0xffffffff),
-              iconBackgroundColor: Color(0xff316ff6),
-              backgroundColor: Color(0xff6098f8),
-              firstText: "0",
-              secondText: "Avg. Cadence",
-              thirdText: " (spm)",
-              firstTextColor: Color(0xffffffff),
-              secondTextColor: Color(0xffffffff),
-              layout: 2,
-            ),
-          ],
-        )
-      ],
-    );
-  }
-}
-
-class BackpackLayout extends StatelessWidget {
-  List<Product>? productList;
-
-  BackpackLayout({required this.productList, super.key});
+  const InventoryLayout({required this.productList, super.key});
 
   @override
   Widget build(BuildContext context) {

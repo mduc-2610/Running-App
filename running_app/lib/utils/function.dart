@@ -43,7 +43,7 @@ String idSubstring(String id) {
   return '${idList[idList.length - 1].substring(0, 6).toUpperCase()}';
 }
 
-String formatTimeDuration(String timeDuration) {
+String formatTimeDuration(String timeDuration, {int type = 1}) {
   List<String> parts = timeDuration.split(':');
   int hours = int.parse(parts[0]);
   int minutes = int.parse(parts[1]);
@@ -52,6 +52,8 @@ String formatTimeDuration(String timeDuration) {
   double totalHours = hours + (minutes / 60) + (seconds / 3600);
   String formattedHours = totalHours.toStringAsFixed(1);
   formattedHours = formattedHours.replaceAll('.', ',');
-
+  if(type == 2) {
+    return '${parts[0]}h${parts[1]}m';
+  }
   return '$formattedHours H';
 }

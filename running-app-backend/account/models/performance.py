@@ -8,21 +8,30 @@ class Performance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     user = models.OneToOneField("account.User", related_name="performance", on_delete=models.CASCADE)
     activity = models.OneToOneField("account.Activity", related_name="activity_performances", on_delete=models.CASCADE)
-    
+
     def get_username(self):
         return self.user.username
     
+    def format_duration(self, seconds):
+        hours = seconds // 3600
+        minutes = (seconds % 3600) // 60
+        seconds = seconds % 60
+        return "{:02d}:{:02d}:{:02d}".format(round(hours), round(minutes), round(seconds))
+
     def pace_readable(self, avg_moving_pace):
         if avg_moving_pace == 0: return "00:00"
         pace_minutes = int(avg_moving_pace)
         pace_seconds = round((avg_moving_pace - pace_minutes) * 60)
         return f"{pace_minutes:02d}:{pace_seconds:02d}"
     
-    def total_distance(self):
-        return float(self.total_stats('distance'))
-    
     def total_steps(self):
-        return sum([act.steps() for act in self.activity.activity_records.all()])   
+        return sum([act.steps() for act in self.activity.activity_records.all()]) 
+    
+    def total_distance(self):
+        return self.total_stats()[0]
+    
+    def total_duration(self):
+        return self.total_stats()[3]
 
     def level_up(self):
         cnt = 1
@@ -65,17 +74,17 @@ class Performance(models.Model):
         total_distance = activities.aggregate(total_distance=Sum('distance'))['total_distance'] or 0
         total_steps = sum([act.steps() for act in activities])
         total_points = sum([act.points() for act in activities])
-        total_duration = format(activities.aggregate(total_duration=Sum('duration'))['total_duration'] or "00:00:00")
-        avg_total_moving_pace = self.pace_readable(sum([act.avg_moving_pace() for act in activities]) / (len(activities) if len(activities) != 0 else 1))
+        total_duration = activities.aggregate(total_duration=Sum('duration'))['total_duration'] or timedelta(seconds=0)
+        avg_total_moving_pace = sum([act.avg_moving_pace() for act in activities]) / (len(activities) if len(activities) != 0 else 1)
         avg_total_cadence = sum([act.avg_cadence() for act in activities_run_walk]) / (len(activities_run_walk) if len(activities_run_walk) != 0 else 1)
-        avg_total_heart_rate = sum([act.avg_heart_rate for act in activities_run_walk]) / (len(activities_run_walk) if len(activities_run_walk) != 0 else 1)
+        avg_total_heart_rate = sum([act.avg_heart_rate for act in activities]) / (len(activities) if len(activities) != 0 else 1)
         active_days = activities.values('completed_at__date').distinct().count()
         
         return float(total_distance), \
                 total_steps, \
                 total_points, \
-                total_duration, \
-                avg_total_moving_pace, \
+                total_duration.total_seconds(), \
+                self.pace_readable(avg_total_moving_pace), \
                 round(avg_total_cadence), \
                 round(avg_total_heart_rate), \
                 active_days
@@ -126,13 +135,10 @@ class Performance(models.Model):
     
 
 
-
-
+    # 
+    
     # def total_points(self):
     #     return sum([act.points() for act in self.activity.activity_records.all()]) 
-    
-    # def total_duration(self):
-    #     return format(self.total_stats('duration'))
 
     # def avg_total_moving_pace(self):
     #     length = self.activity.activity_records.count()

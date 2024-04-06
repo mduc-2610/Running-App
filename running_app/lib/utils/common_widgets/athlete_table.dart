@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 
 class CustomText extends StatelessWidget {
   final String text;
@@ -130,9 +131,8 @@ class AthleteTable extends StatelessWidget {
                 for(var participant in participants ?? [])...[
                   CustomTextButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/event_member_detail', arguments: {
-                        "id": participant?.id,
-                        "participant": participant
+                      Navigator.pushNamed(context, '/user', arguments: {
+                        "id": participant?.userId,
                       });
                     },
                     child: Container(
@@ -153,7 +153,7 @@ class AthleteTable extends StatelessWidget {
                               Container(
                                   alignment: Alignment.centerLeft,
                                   width: media.width * 0.05,
-                                  child: CustomText(text: (participants!.indexOf(participant) + 1).toString())
+                                  child: CustomText(text: (participants!.indexOf(participant) + 4).toString())
                               ),
                               SizedBox(width: media.width * 0.02,),
                               Container(
@@ -190,13 +190,13 @@ class AthleteTable extends StatelessWidget {
                               Container(
                                   alignment: Alignment.centerLeft,
                                   width: media.width * 0.15,
-                                  child: CustomText(text: generateRandomDistance())
+                                  child: CustomText(text: "${participant?.totalDistance ?? 0}")
                               ),
                               // SizedBox(width: media.width * 0.1,),
                               Container(
                                   alignment: Alignment.centerLeft,
                                   width: media.width * 0.15,
-                                  child: CustomText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m')
+                                  child: CustomText(text: '${formatTimeDuration(participant?.totalDuration ?? "00:00:00", type: 2)}')
                               )
                             ],
                           )

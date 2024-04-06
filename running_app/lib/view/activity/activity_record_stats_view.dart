@@ -40,20 +40,28 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
     'year': DateTime.now().year,
   };
 
-  void initToken() {
+  void getProviderData() {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
-    });
-  }
-
-  void initUser() {
-    setState(() {
       user = Provider.of<UserProvider>(context).user;
     });
   }
 
+  Future<void> initUser() async {
+    Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    print(arguments?["id"]);
+    String? userId = arguments?["id"];
+    print(userId);
+    if(userId != null) {
+      final data = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
+      setState(() {
+        user = data;
+      });
+    }
+  }
 
-  void initUserPerformance() async {
+
+  Future<void> initUserPerformance() async {
     final startDate = DateTime(monthYearFilter['year'] ?? 0, monthYearFilter['month'] ?? 0, 1);
     final endDate = DateTime(monthYearFilter['year'] ?? 0, (monthYearFilter['month'] ?? 0) + 1, 0);
 
@@ -82,11 +90,11 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
   // }
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     super.didChangeDependencies();
-    initUser();
-    initToken();
-    initUserPerformance();
+    getProviderData();
+    await initUser();
+    await initUserPerformance();
     // initUserActivity();
   }
 
@@ -280,7 +288,8 @@ class _ActivityRecordStatsViewState extends State<ActivityRecordStatsView> {
                         totalActiveDays: "${userPerformance?.periodActiveDays ?? 00}",
                         totalAvgPace: "${userPerformance?.periodAvgMovingPace ?? "00:00"}",
                         totalTime: "${userPerformance?.periodDuration ?? "00:00:00"}",
-                        boxNumber: 4,
+                        totalAvgHeartBeat: "${userPerformance?.periodAvgTotalHeartRate ?? 0}",
+                        boxNumber: 5,
                       )
                     ],
                   )

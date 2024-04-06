@@ -25,6 +25,7 @@ class StatsLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
