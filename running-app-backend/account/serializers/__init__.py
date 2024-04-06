@@ -7,7 +7,8 @@ from .user import UserSerializer, \
                 DetailUserSerializer, \
                 CreateUserSerializer, \
                 UpdateUserSerializer, \
-                LoginSerializer
+                LoginSerializer, \
+                ChangePasswordSerializer
 
 from .profile import ProfileSerializer, \
                     DetailProfileSerializer, \

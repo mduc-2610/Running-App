@@ -8,6 +8,7 @@ import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/performance.dart';
 import 'package:running_app/models/account/privacy.dart';
 import 'package:running_app/models/account/profile.dart';
+import 'package:running_app/utils/common_widgets/show_notification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:running_app/models/account/user.dart';
@@ -101,43 +102,10 @@ class _SignInViewState extends State<SignInView> {
           'token': token
         });
       } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Error'),
-              content: const Text('Invalid username or password'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
+        showNotification(context, 'Error', 'Invalid username or password');
       }
     } catch (e) {
-      print('Error: $e');
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: const Text('An error occurred. Please try again later.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      showNotification(context, 'Error', 'An error occurred. Please try again later.');
     }
   }
 

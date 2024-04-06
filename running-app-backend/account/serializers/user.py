@@ -11,6 +11,13 @@ class LoginSerializer(serializers.Serializer):
             "username",
             "password",
         )
+
+class ChangePasswordSerializer(serializers.Serializer):
+    user_id = serializers.UUIDField()
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    confirm_new_password = serializers.CharField(required=True)
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, \
                             mixins, \
                             response, \
@@ -5,9 +6,11 @@ from rest_framework import viewsets, \
                             views
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
 
 from django.contrib.auth import authenticate
 from django.db.models import Q
+from django.contrib.auth import authenticate, update_session_auth_hash
 
 from account.models import User
 
@@ -15,7 +18,8 @@ from account.serializers import UserSerializer, \
                                 DetailUserSerializer, \
                                 CreateUserSerializer, \
                                 UpdateUserSerializer, \
-                                LoginSerializer
+                                LoginSerializer, \
+                                ChangePasswordSerializer
 
 
 class UserViewSet(
@@ -47,12 +51,31 @@ class UserViewSet(
             return UpdateUserSerializer
         elif self.action == "create":
             return CreateUserSerializer
+        elif self.action == "change_password":
+            return ChangePasswordSerializer
         return super().get_serializer_class()
     
-    # def get_serializer(self, *args, **kwargs):
-    #     serializer_class = self.get_serializer_class()
-    #     kwargs["context"] = self.get_serializer_context()
-    #     return serializer_class(*args, **kwargs)
+    @action(detail=False, methods=['post'], url_path='change-password')
+    def change_password(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            user_id = serializer.data.get("user_id")
+            old_password = serializer.data.get("old_password")
+            new_password = serializer.data.get("new_password")
+            confirm_new_password = serializer.data.get("confirm_new_password")
+            user = get_object_or_404(User, id=user_id)
+            
+            if not user.check_password(old_password):
+                return response.Response({"error": "Invalid old password"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if new_password != confirm_new_password:
+                return response.Response({"error": "New passwords do not match"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user.set_password(new_password)
+            user.save()
+            update_session_auth_hash(request, user) 
+            return response.Response({"message": "Password changed successfully"}, status=status.HTTP_200_OK)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class LoginViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()

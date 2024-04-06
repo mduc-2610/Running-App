@@ -48,11 +48,13 @@ class APIService {
       headers: _getHeaders(),
       body: json.encode(data),
     );
-
-    if (response.statusCode == 201) {
+    return json.decode(response.body);
+    if (response.statusCode == 201 || response.statusCode == 200) {
       return json.decode(response.body);
-    } else {
-      throw Exception(response.statusCode);
+    }
+    else {
+      return response;
+      // throw Exception(response.statusCode);
     }
   }
 
@@ -62,12 +64,7 @@ class APIService {
       headers: _getHeaders(),
       body: json.encode(data),
     );
-
-    if (response.statusCode == 200) {
-      print("Successfully updated");
-    } else {
-      throw Exception(response.statusCode);
-    }
+    return json.decode(response.body);
   }
 
   Map<String, String> _getHeaders() {
@@ -129,12 +126,12 @@ Future<dynamic> callCreateAPI(
   return await service.create(modelToJson);
 }
 
-Future<void> callUpdateAPI(
+Future<dynamic> callUpdateAPI(
     String? endpoint,
     String? id,
     modelToJson,
     String token
     ) async {
   APIService service = APIService(endpoint: endpoint, token: token);
-  await service.update(id, modelToJson);
+  return await service.update(id, modelToJson);
 }
