@@ -326,7 +326,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                       },
                                       {
                                         "type": "Avg. Moving Pace",
-                                        "figure": "${activityRecord?.avgMovingPace}",
+                                        "figure": "${activityRecord?.avgMovingPace}/km",
                                       },
                                     ]) ...[
                                       SizedBox(
@@ -373,7 +373,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                       },
                                       {
                                         "type": "Avg. Elapsed Pace",
-                                        "figure": "${activityRecord?.avgMovingPace}",
+                                        "figure": "${activityRecord?.avgMovingPace}/km",
                                       },
                                     ]) ...[
                                       SizedBox(
