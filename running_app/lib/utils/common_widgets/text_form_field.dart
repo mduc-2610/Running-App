@@ -7,7 +7,7 @@ class CustomTextFormField extends StatefulWidget {
   final bool obscureText;
   final FormFieldValidator<String>? validator;
   final FormFieldSetter<String>? onSaved;
-  final TextStyle inputTextStyle;
+  final TextStyle? inputTextStyle;
   final Color cursorColor;
   final TextEditingController? controller;
   final int? maxLength;
@@ -20,6 +20,8 @@ class CustomTextFormField extends StatefulWidget {
   final ValueChanged? onChanged;
   final VoidCallback? onClearChanged;
   final bool? showClearButton;
+  final bool? readOnly;
+  final bool noneEditable;
   const CustomTextFormField({
     Key? key,
     required this.decoration,
@@ -27,10 +29,7 @@ class CustomTextFormField extends StatefulWidget {
     this.obscureText = false,
     this.validator,
     this.onSaved,
-    this.inputTextStyle = const TextStyle(
-      color: Color(0xffcdcdcd),
-      fontSize: FontSize.NORMAL,
-    ),
+    this.inputTextStyle,
     this.cursorColor = const Color(0xffcdcdcd),
     this.controller,
     this.maxLength,
@@ -42,7 +41,9 @@ class CustomTextFormField extends StatefulWidget {
     this.focusNode,
     this.onChanged,
     this.onClearChanged,
-    this.showClearButton
+    this.showClearButton,
+    this.readOnly,
+    this.noneEditable = false,
   }) : super(key: key);
 
   @override
@@ -74,9 +75,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      style: widget.inputTextStyle,
+      style: widget.inputTextStyle ?? TextStyle(
+          color: (widget.noneEditable == false) ? Color(0xffcdcdcd) : Color(0xffcdcdcd).withOpacity(0.5),
+          fontSize: FontSize.NORMAL,
+      ),
       decoration: widget.decoration.copyWith(
-        suffixIcon: (widget.clearIcon == true && _showClearButton)
+        suffixIcon: (widget.clearIcon == true && _showClearButton && !widget.noneEditable)
             ? IconButton(
           icon: Icon(
               Icons.cancel,
@@ -107,6 +111,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       textAlign: widget.textAlign,
       focusNode: widget.focusNode,
       onChanged: widget.onChanged,
+      readOnly: widget.noneEditable,
     );
   }
 }

@@ -239,13 +239,6 @@ class _RankViewState extends State<RankView> {
         "&sort=${sort}"
         "&start_date=${formatQuery(getStartDate())}"
         "&end_date=${formatQuery(getEndDate())}"}');
-    // print(yearList);
-    // print('Start date: ${getStartDate()}');
-    // print('End date: ${getEndDate()}');
-    // print(userList?[0].userId);
-    // print('Week list: $weekList}');
-    // print('Month list: $monthList}');
-    // print('Year list: $yearList}');
     var media = MediaQuery.sizeOf(context);
     ScrollController childScrollController = ScrollController();
     ScrollController parentScrollController = ScrollController();
@@ -665,6 +658,7 @@ class _RankViewState extends State<RankView> {
               if(isLoading)...[
                 Loading(
                   marginTop: media.height * 0.4,
+                  // backgroundColor: Colors.transparent,
                 )
               ]
             ],

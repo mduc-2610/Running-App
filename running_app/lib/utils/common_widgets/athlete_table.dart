@@ -134,13 +134,13 @@ class AthleteTable extends StatelessWidget {
                           onPressed: distanceOnPressed ?? () {},
                           child: Row(
                             children: [
-                              CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Total (km) '),
+                              CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Total (km)'),
                           Transform.rotate(
                             angle: -90 * 3.14159 / 180,
                             child: Icon(
                               Icons.arrow_back_ios_rounded,
                               color: TColor.PRIMARY_TEXT,
-                              size: 15,
+                              size: 12,
                             ),)
                             ],
                           )),
@@ -152,13 +152,13 @@ class AthleteTable extends StatelessWidget {
                         onPressed: timeOnPressed ?? () {},
                         child: Row(
                           children: [
-                            CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Time '),
+                            CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Time'),
                             Transform.rotate(
                               angle: -90 * 3.14159 / 180,
                               child: Icon(
                                 Icons.arrow_back_ios_rounded,
                                 color: TColor.PRIMARY_TEXT,
-                                size: 15,
+                                size: 12,
                               ),)
                           ],
                         )),

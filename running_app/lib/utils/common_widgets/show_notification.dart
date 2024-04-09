@@ -27,8 +27,11 @@ void showNotification(
         ),
         actions: <Widget>[
           CustomTextButton(
-            onPressed: onPressed ?? () {
-              Navigator.pop(context);
+            onPressed: () {
+              Navigator.of(context).pop();
+              if(onPressed != null) {
+                onPressed.call();
+              }
             },
             child: Text(
               'OK',

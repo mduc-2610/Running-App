@@ -53,6 +53,12 @@ class TxtStyle {
       // fontWeight: FontWeight.w600,
       // letterSpacing: 0.8
   );
+  static TextStyle get largeTextDesc => TextStyle(
+    color: TColor.DESCRIPTION,
+    fontSize: FontSize.NORMAL,
+    // fontWeight: FontWeight.w600,
+    // letterSpacing: 0.8
+  );
   static TextStyle get normalTextWarning => TextStyle(
     color: TColor.WARNING,
     fontSize: FontSize.SMALL,

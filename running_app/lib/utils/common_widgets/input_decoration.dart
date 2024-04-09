@@ -13,7 +13,7 @@ class CustomInputDecoration extends InputDecoration {
     BorderRadius borderRadius = const BorderRadius.all(Radius.circular(12.0)),
     Color? fillColor,
     Color enabledBorderColor = const Color(0xff495466),
-    Color focusedBorderColor = const Color(0xff42447c),
+    Color focusedBorderColor = const Color(0xff444b5e),
     Color errorBorderColor = Colors.red,
     TextStyle? errorStyle,
     Icon? prefixIcon,

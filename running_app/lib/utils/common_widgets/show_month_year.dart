@@ -259,3 +259,84 @@ Future<dynamic> showDate(
   return completer.future;
 }
 
+
+Future<String> showChoiceList(
+    BuildContext context,
+    List<String> choiceList,
+    ) async {
+  Completer<String> completer = Completer<String>();
+  var media = MediaQuery.of(context).size;
+  showModalBottomSheet(
+    backgroundColor: Colors.transparent,
+    context:
+    context,
+    builder: (BuildContext context) {
+      return Container(
+        height: media.height * 0.4,
+        decoration: BoxDecoration(
+            color: TColor.PRIMARY_BACKGROUND,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(15.0),
+              topRight: Radius.circular(15.0),
+            ),
+            border:
+            Border(top: BorderSide(width: 1, color: TColor.BORDER_COLOR))),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom:
+                      BorderSide(width: 1, color: TColor.BORDER_COLOR))),
+              child: ListTile(
+                shape: const RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.black, width: 1),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15.0),
+                    topRight: Radius.circular(15.0),
+                  ),
+                ),
+                title: Center(
+                    child: Text(
+                      "Option",
+                      style: TxtStyle.headSection,
+                    )),
+              ),
+            ),
+            Container(
+              height: media.height * 0.33,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: choiceList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Center(
+                              child: Text(
+                                '${choiceList[index]}',
+                                style: TextStyle(
+                                    color: TColor.PRIMARY_TEXT,
+                                    fontSize: FontSize.NORMAL),
+                              )),
+                          onTap: () async {
+                            completer.complete(choiceList[index]);
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      );
+    },
+  );
+  return completer.future;
+}
+

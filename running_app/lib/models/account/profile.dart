@@ -141,4 +141,9 @@ class UpdateProfile {
       'shoe_size': shoeSize,
     };
   }
+
+  @override
+  String toString() {
+    return '${toJson()}';
+  }
 }

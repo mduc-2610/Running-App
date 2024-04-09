@@ -41,14 +41,9 @@ class _ClubCreateViewState extends State<ClubCreateView> {
   TextEditingController clubNameTextController = TextEditingController();
   TextEditingController clubDescriptionTextController = TextEditingController();
 
-  void initToken() {
+  void getProviderData() {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
-    });
-  }
-
-  void initUser() {
-    setState(() {
       user = Provider.of<UserProvider>(context).user;
     });
   }
@@ -62,8 +57,7 @@ class _ClubCreateViewState extends State<ClubCreateView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    initToken();
-    initUser();
+    getProviderData();
     initUserActivity();
   }
 

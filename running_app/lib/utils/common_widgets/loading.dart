@@ -20,7 +20,7 @@ class Loading extends StatelessWidget {
           height: media.height,
           // width: media.w,
           decoration: BoxDecoration(
-            color: backgroundColor ?? Colors.black.withOpacity(0.3),
+            color: backgroundColor ?? Colors.black.withOpacity(0.2),
           ),
         ),
         Container(

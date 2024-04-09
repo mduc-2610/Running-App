@@ -7,7 +7,12 @@ import 'package:running_app/utils/constants.dart';
 class BottomStickButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
-  const BottomStickButton({required this.text, this.onPressed, super.key});
+  final Color? changePasswordButtonState;
+  const BottomStickButton({
+    required this.text,
+    this.onPressed,
+    this.changePasswordButtonState,
+    super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +23,10 @@ class BottomStickButton extends StatelessWidget {
           child: CustomMainButton(
             horizontalPadding: 0,
             verticalPadding: 20,
-            onPressed: onPressed ?? () {
+            background: changePasswordButtonState,
+            onPressed: (changePasswordButtonState == TColor.BUTTON_DISABLED) ? null : (onPressed ?? () {
               Navigator.pushNamed(context, '/home');
-            },
+            }),
             child: Text(
               text,
               style: TxtStyle.headSection

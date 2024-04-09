@@ -24,6 +24,7 @@ class ChangePasswordSettingView extends StatefulWidget {
 }
 
 class _ChangePasswordSettingViewState extends State<ChangePasswordSettingView> {
+  Color changePasswordButtonState = TColor.BUTTON_DISABLED;
   String token = "";
   DetailUser? user;
 
@@ -75,6 +76,12 @@ class _ChangePasswordSettingViewState extends State<ChangePasswordSettingView> {
     "Confirm new password": TextEditingController(),
   };
 
+  Map<String, bool> clearButton = {
+    "Old password": false,
+    "New password": false,
+    "Confirm new password": false,
+  };
+
   List fieldList = [
     {
       "label": "Old password",
@@ -86,6 +93,16 @@ class _ChangePasswordSettingViewState extends State<ChangePasswordSettingView> {
       "label": "Confirm new password",
     },
   ];
+
+  void checkFormData() {
+    setState(() {
+      changePasswordButtonState =
+      (controller["Old password"]!.text.isNotEmpty &&
+          controller["New password"]!.text.isNotEmpty &&
+          controller["Confirm new password"]!.text.isNotEmpty)
+          ? TColor.PRIMARY : TColor.BUTTON_DISABLED;
+    });
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -125,6 +142,7 @@ class _ChangePasswordSettingViewState extends State<ChangePasswordSettingView> {
                   children: [
                     for(var field in fieldList)...[
                       CustomTextFormField(
+                        onChanged: (_) => checkFormData(),
                         decoration: CustomInputDecoration(
                           label: Text(
                            field["label"],
@@ -134,6 +152,14 @@ class _ChangePasswordSettingViewState extends State<ChangePasswordSettingView> {
                         controller: controller[field["label"]],
                         obscureText: true,
                         keyboardType: TextInputType.text,
+                          showClearButton: clearButton[field["label"]],
+                          onClearChanged: () {
+                            controller[field["label"]]?.clear();
+                            setState(() {
+                              clearButton[field["label"]] = false;
+                              changePasswordButtonState = TColor.BUTTON_DISABLED;
+                            });
+                          }
                       ),
                       SizedBox(height: media.height * 0.02,),
                     ],
@@ -148,6 +174,7 @@ class _ChangePasswordSettingViewState extends State<ChangePasswordSettingView> {
       bottomNavigationBar: BottomStickButton(
         text: "Change password",
         onPressed: changePassword,
+        changePasswordButtonState: changePasswordButtonState,
       ),
     );
   }

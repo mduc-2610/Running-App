@@ -9,6 +9,7 @@ import "package:running_app/utils/common_widgets/header.dart";
 import "package:running_app/utils/common_widgets/main_button.dart";
 import "package:running_app/utils/common_widgets/main_wrapper.dart";
 import "package:running_app/utils/common_widgets/default_background_layout.dart";
+import "package:running_app/utils/common_widgets/show_notification.dart";
 import "package:running_app/utils/common_widgets/wrapper.dart";
 import "package:running_app/utils/constants.dart";
 import "package:running_app/utils/providers/token_provider.dart";
@@ -80,7 +81,11 @@ class _NotificationSettingViewState extends State<NotificationSettingView> {
     // print(notificationSetting);
 
     final data = await callUpdateAPI("account/notification-setting", userNotificationSetting?.id, notificationSetting.toJson(), token);
-    Navigator.pop(context);
+    showNotification(context, 'Notice', "Successfully updated",
+        onPressed: () {
+          Navigator.pop(context);
+        }
+    );
   }
 
   List settingSection = [
