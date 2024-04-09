@@ -1,3 +1,7 @@
+import 'package:running_app/models/account/leaderboard.dart';
+
+import 'package:running_app/models/account/leaderboard.dart';
+
 import '../account/user.dart';
 
 class Club {
@@ -43,7 +47,7 @@ class Club {
 }
 
 class DetailClub extends Club {
-  final List<DetailUser> participants;
+  final List<Leaderboard> participants;
   final String? description;
   final String? privacy;
   final String? organization;
@@ -72,7 +76,7 @@ class DetailClub extends Club {
 
   DetailClub.fromJson(Map<String, dynamic> json)
       : description = json['description'],
-        participants = (json['participants'] as List<dynamic>).map((e) => DetailUser.fromJson(e)).toList(),
+        participants = (json['participants'] as List<dynamic>).map((e) => Leaderboard.fromJson(e)).toList(),
         privacy = json['privacy'],
         organization = json['organization'],
         cover_photo = json['cover_photo'],

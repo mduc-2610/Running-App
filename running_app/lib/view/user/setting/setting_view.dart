@@ -83,6 +83,7 @@ class _SettingViewState extends State<SettingView> {
         child: Stack(
           children: [
             MainWrapper(
+              topMargin: 0,
               leftMargin: 0,
               rightMargin: 0,
               child: Column(

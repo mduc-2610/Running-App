@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from activity.models import Event
-from account.serializers import DetailUserSerializer
+from account.serializers import DetailUserSerializer, LeaderboardSerializer
 from activity.serializers.group import GroupSerializer
 
 class EventSerializer(serializers.ModelSerializer):
@@ -38,8 +38,8 @@ class DetailEventSerializer(serializers.ModelSerializer):
     
     def get_participants(self, instance):
         request = self.context.get('request', None)
-        users = [instance.user for instance in instance.events.all()]
-        return DetailUserSerializer(users, many=True, context={'request': request}).data
+        users = [instance.user.performance for instance in instance.events.all()]
+        return LeaderboardSerializer(users, many=True, context={'request': request}).data
 
     def get_started_at(self, instance):
         return instance.get_readable_time('started_at')

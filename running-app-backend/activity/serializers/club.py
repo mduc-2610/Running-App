@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from activity.models import Club
-from account.serializers import UserSerializer 
+from account.serializers import LeaderboardSerializer 
 from account.serializers import DetailUserSerializer
 
 class ClubSerializer(serializers.ModelSerializer):
@@ -36,8 +36,8 @@ class DetailClubSerializer(serializers.ModelSerializer):
     
     def get_participants(self, instance):
         request = self.context.get('request', None)
-        users = [instance.user for instance in instance.clubs.all()]
-        return DetailUserSerializer(users, many=True, context={'request': request}).data
+        users = [instance.user.performance for instance in instance.clubs.all()]
+        return LeaderboardSerializer(users, many=True, context={'request': request}).data
 
     class Meta:
         model = Club

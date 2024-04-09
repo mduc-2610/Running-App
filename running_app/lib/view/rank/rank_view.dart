@@ -11,6 +11,7 @@ import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
+import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -33,6 +34,7 @@ class _RankViewState extends State<RankView> {
   List timeList = ["Week", "Month", "Year"];
   String period = "Week";
   String gender = "";
+  String sort = "Distance";
 
   DateTime? startDate;
   DateTime? endDate;
@@ -164,12 +166,13 @@ class _RankViewState extends State<RankView> {
   }
 
   Future<void> initUser() async {
-    _isLoading = true;
+    isLoading = true;
     final data = await callListAPI(
         'account/performance/leaderboard',
         Leaderboard.fromJson,
         token,
         queryParams: "?gender=${gender}"
+            "&sort=${sort}"
             "&start_date=${formatQuery(getStartDate())}"
             "&end_date=${formatQuery(getEndDate())}"
     );
@@ -188,22 +191,24 @@ class _RankViewState extends State<RankView> {
     initTime();
     super.initState();
   }
-  bool _isLoading = true;
+  bool isLoading = true;
 
-  void loadUser() async {
+  Future<void> delayedUser() async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     await initUser();
+    await Future.delayed(Duration(milliseconds: 500),);
+
     setState(() {
-      _isLoading = false;
+      isLoading = false;
     });
   }
 
   @override
   void didChangeDependencies() async {
     initToken();
-    loadUser();
+    delayedUser();
     super.didChangeDependencies();
   }
 
@@ -230,9 +235,13 @@ class _RankViewState extends State<RankView> {
 
   @override
   Widget build(BuildContext context) {
-    print(yearList);
-    print('Start date: ${getStartDate()}');
-    print('End date: ${getEndDate()}');
+    print('queryParams: ${"?gender=${gender}"
+        "&sort=${sort}"
+        "&start_date=${formatQuery(getStartDate())}"
+        "&end_date=${formatQuery(getEndDate())}"}');
+    // print(yearList);
+    // print('Start date: ${getStartDate()}');
+    // print('End date: ${getEndDate()}');
     // print(userList?[0].userId);
     // print('Week list: $weekList}');
     // print('Month list: $monthList}');
@@ -251,12 +260,12 @@ class _RankViewState extends State<RankView> {
           child: Stack(
             children: [
               const BackgroundContainer(),
-              MainWrapper(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    // Time Section
-                    Column(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Time Section
+                  MainWrapper(
+                    child: Column(
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -276,7 +285,7 @@ class _RankViewState extends State<RankView> {
                                       setState(() {
                                         period = time;
                                         initTime();
-                                        loadUser();
+                                        delayedUser();
                                       });
                                     },
                                     style: ButtonStyle(
@@ -315,7 +324,7 @@ class _RankViewState extends State<RankView> {
                                     startDate = date["startDate"];
                                     endDate = date["endDate"];
                                     setDateRepresent();
-                                    loadUser();
+                                    delayedUser();
                                   });
                                 } else if(period == "Month") {
                                   dynamic date = await showDate(context, monthList!);
@@ -323,7 +332,7 @@ class _RankViewState extends State<RankView> {
                                     startDateOfMonth = date["startDate"];
                                     endDateOfMonth = date["endDate"];
                                     setDateRepresent();
-                                    loadUser();
+                                    delayedUser();
                                   });
                                 } else if(period == "Year") {
                                   dynamic date = await showDate(context, yearList!);
@@ -331,7 +340,7 @@ class _RankViewState extends State<RankView> {
                                     startDateOfYear = date["startDate"];
                                     endDateOfYear = date["endDate"];
                                     setDateRepresent();
-                                    loadUser();
+                                    delayedUser();
                                   });
                                 }
                               },
@@ -361,7 +370,7 @@ class _RankViewState extends State<RankView> {
                                               endDateOfYear = DateTime(endDateOfYear!.year - 1, endDateOfYear!.month, endDateOfYear!.day);
                                             }
                                             setDateRepresent();
-                                            loadUser();
+                                            delayedUser();
                                           });
                                         },
                                         icon: const Icon(
@@ -395,7 +404,7 @@ class _RankViewState extends State<RankView> {
                                               endDateOfYear = DateTime(endDateOfYear!.year + 1, endDateOfYear!.month, endDateOfYear!.day);
                                             }
                                             setDateRepresent();
-                                            loadUser();
+                                            delayedUser();
                                           });
                                         } : null,
                                         icon: const Icon(
@@ -414,7 +423,7 @@ class _RankViewState extends State<RankView> {
                                       setState(() {
                                         gender = "";
                                       });
-                                      loadUser();
+                                      delayedUser();
                                       Navigator.pop(context);
                                     }
                                   },
@@ -424,7 +433,7 @@ class _RankViewState extends State<RankView> {
                                       setState(() {
                                         gender = "MALE";
                                       });
-                                      loadUser();
+                                      delayedUser();
                                       Navigator.pop(context);
                                     }
                                   },
@@ -434,7 +443,7 @@ class _RankViewState extends State<RankView> {
                                       setState(() {
                                         gender = "FEMALE";
                                       });
-                                      loadUser();
+                                      delayedUser();
                                       Navigator.pop(context);
                                     }
                                   },
@@ -461,202 +470,202 @@ class _RankViewState extends State<RankView> {
                         )
                       ],
                     ),
-                    if(_isLoading)...[
-                    ]
-                    else...[
-                      // Top 3 Section
-                      Container(
-                        height: media.height * 0.29,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            for (int i = 0; i < 3; i++) ...[
-                              Container(
-                                margin: (i == 0 || i == 2)
-                                    ? const EdgeInsets.only(top: 25)
-                                    : const EdgeInsets.all(0),
-                                // width: media.width * 0.25,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        CustomTextButton(
-                                          onPressed: () {
-                                            Navigator.pushNamed(context, '/user', arguments: {
-                                              "id": userList?[i].userId,
-                                            });
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 8, horizontal: 8),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(50),
-                                                border: Border.all(
-                                                  width: 3.0,
-                                                  color: topList[i]["borderColor"],
-                                                )),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(50),
-                                              child: Image.asset(
-                                                "assets/img/home/avatar.png",
-                                                width: 80,
-                                                height: 80,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: media.width * 0.25,
-                                          margin: EdgeInsets.only(
-                                              bottom: media.height * 0.16),
-                                        ),
-                                        Positioned(
-                                            bottom: 0,
-                                            left: media.width * 0.089,
-                                            child: (i == 4)
-                                                ? Container(
-                                              width: 30,
-                                              height: 30,
-                                              padding:
-                                              const EdgeInsets.all(5),
-                                              decoration: BoxDecoration(
-                                                color: topList[i]
-                                                ["borderColor"],
-                                                borderRadius:
-                                                BorderRadius.circular(50),
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  '${topList[i]["top"]}',
-                                                  // textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: topList[i]
-                                                      ["textColor"],
-                                                      fontSize:
-                                                      FontSize.NORMAL,
-                                                      fontWeight:
-                                                      FontWeight.w700),
-                                                ),
-                                              ),
-                                            )
-                                                : SvgPicture.asset(
-                                              topList[i]["trophy"],
-                                              width: 40,
-                                              height: 40,
+                  ),
+                  if(isLoading)...[
+                  ]
+                  else...[
+                    // Top 3 Section
+                    Container(
+                      height: media.height * 0.29,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          for (int i = 0; i < 3; i++) ...[
+                            Container(
+                              margin: (i == 0 || i == 2)
+                                  ? const EdgeInsets.only(top: 25)
+                                  : const EdgeInsets.all(0),
+                              // width: media.width * 0.25,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      CustomTextButton(
+                                        onPressed: () {
+                                          Navigator.pushNamed(context, '/user', arguments: {
+                                            "id": userList?[i].userId,
+                                          });
+                                        },
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 8),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.circular(50),
+                                              border: Border.all(
+                                                width: 3.0,
+                                                color: topList[i]["borderColor"],
+                                              )),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(50),
+                                            child: Image.asset(
+                                              "assets/img/home/avatar.png",
+                                              width: 80,
+                                              height: 80,
                                               fit: BoxFit.cover,
-                                            )),
-                                        Positioned(
-                                          bottom: 23,
-                                          child: Center(
-                                            child: Text(
-                                              '${topList[i]["top"]}',
-                                              // textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  color: topList[i]["textColor"],
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w800),
                                             ),
                                           ),
-                                        )
+                                        ),
+                                      ),
+                                      Container(
+                                        width: media.width * 0.25,
+                                        margin: EdgeInsets.only(
+                                            bottom: media.height * 0.16),
+                                      ),
+                                      Positioned(
+                                          bottom: 0,
+                                          left: media.width * 0.089,
+                                          child: (i == 4)
+                                              ? Container(
+                                            width: 30,
+                                            height: 30,
+                                            padding:
+                                            const EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                              color: topList[i]
+                                              ["borderColor"],
+                                              borderRadius:
+                                              BorderRadius.circular(50),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                '${topList[i]["top"]}',
+                                                // textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color: topList[i]
+                                                    ["textColor"],
+                                                    fontSize:
+                                                    FontSize.NORMAL,
+                                                    fontWeight:
+                                                    FontWeight.w700),
+                                              ),
+                                            ),
+                                          )
+                                              : SvgPicture.asset(
+                                            topList[i]["trophy"],
+                                            width: 40,
+                                            height: 40,
+                                            fit: BoxFit.cover,
+                                          )),
+                                      Positioned(
+                                        bottom: 23,
+                                        child: Center(
+                                          child: Text(
+                                            '${topList[i]["top"]}',
+                                            // textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: topList[i]["textColor"],
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w800),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  SizedBox(
+                                    width: media.width * 0.3,
+                                    child: Text(
+                                      "${userList?[i]?.name}",
+                                      style: TextStyle(
+                                        color: TColor.PRIMARY_TEXT,
+                                        fontSize: FontSize.SMALL,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 8
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: TColor.SECONDARY_BACKGROUND,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "${userList?[i].totalDistance ?? 0}km",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: TColor.PRIMARY_TEXT,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${formatTimeDuration(userList?[i].totalDuration ?? "00:00:00", type: 2)}',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: TColor.PRIMARY_TEXT,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
                                       ],
                                     ),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
-                                    SizedBox(
-                                      width: media.width * 0.3,
-                                      child: Text(
-                                        "${userList?[i]?.name}",
-                                        style: TextStyle(
-                                          color: TColor.PRIMARY_TEXT,
-                                          fontSize: FontSize.SMALL,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-
-                                    SizedBox(
-                                      height: 5,
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16,
-                                          vertical: 8
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: TColor.SECONDARY_BACKGROUND,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "${userList?[i].totalDistance ?? 0}km",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: TColor.PRIMARY_TEXT,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                          Text(
-                                            '${formatTimeDuration(userList?[i].totalDuration ?? "00:00:00", type: 2)}',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: TColor.PRIMARY_TEXT,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ]
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: media.height * 0.04,),
-                      ScrollSynchronized(
-                        parentScrollController: parentScrollController,
-                        child: AthleteTable(participants: userList?.sublist(3) ?? [], tableHeight: media.height - media.height * 0.26, controller: childScrollController),
-                      )
-                    ]
-                  ],
-                ),
-              ),
-              if(_isLoading)...[
-                Container(
-                  width: media.width,
-                  height: media.height,
-                  // width: media.w,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
-                  ),
-                  child: Center(
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      child: LoadingIndicator(
-                        indicatorType: Indicator.ballPulse,
-                        colors: const [Colors.white],
-                        strokeWidth: 2,
-                        backgroundColor: Colors.transparent,
-                        pathBackgroundColor: Colors.black,
+                                  )
+                                ],
+                              ),
+                            )
+                          ]
+                        ],
                       ),
                     ),
-                  ),
+                    SizedBox(height: media.height * 0.04,),
+                    ScrollSynchronized(
+                      parentScrollController: parentScrollController,
+                      child: AthleteTable(
+                          participants: userList?.sublist(3) ?? [],
+                          tableHeight: media.height - media.height * 0.26,
+                          controller: childScrollController,
+                          startIndex: 4,
+                          distanceOnPressed: () {
+                            setState(() {
+                              sort = "Distance";
+                              delayedUser();
+                              print(sort);
+                            });
+                          },
+                          timeOnPressed: () {
+                            setState(() {
+                              sort = "Time";
+                              delayedUser();
+                              print(sort);
+                            });
+                          },
+                      ),
+                    )
+                  ]
+                ],
+              ),
+              if(isLoading)...[
+                Loading(
+                  marginTop: media.height * 0.4,
                 )
-
               ]
             ],
           ),

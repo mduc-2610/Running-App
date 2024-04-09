@@ -18,7 +18,7 @@ class CustomTextButton extends StatelessWidget {
       onPressed: onPressed,
       style: style ?? ButtonStyle(
         padding: MaterialStateProperty.all<EdgeInsets>(
-          const EdgeInsets.all(0),
+          EdgeInsets.all(0),
         ),
       ),
       child: child

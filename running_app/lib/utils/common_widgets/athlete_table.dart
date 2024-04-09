@@ -10,8 +10,12 @@ class CustomText extends StatelessWidget {
   final double? fontSize;
   final fontWeight;
 
-  const CustomText({this.fontSize, this.fontWeight, required this.text, Key? key})
-      : super(key: key);
+  const CustomText({
+    this.fontSize,
+    this.fontWeight,
+    required this.text,
+    Key? key
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +37,19 @@ class AthleteTable extends StatelessWidget {
   final double? tableHeight;
   final List<dynamic>? participants;
   final ScrollController? controller;
+  final int startIndex;
+  final VoidCallback? distanceOnPressed;
+  final VoidCallback? timeOnPressed;
 
-  AthleteTable({this.controller, this.tableHeight, this.participants, super.key});
+  AthleteTable({
+    this.controller,
+    this.tableHeight,
+    this.participants,
+    this.startIndex = 1,
+    this.distanceOnPressed,
+    this.timeOnPressed,
+    super.key
+  });
 
   // Generate random data for demonstration
   String generateRandomName() {
@@ -88,6 +103,11 @@ class AthleteTable extends StatelessWidget {
           padding: const EdgeInsets.only(
             bottom: 8
           ),
+          decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(width: 1, color: Color(0xff746cb3))
+            )
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -95,28 +115,54 @@ class AthleteTable extends StatelessWidget {
                 children: [
                   Container(
                       alignment: Alignment.centerLeft,
-                      width: media.width * 0.1,
-                      child: const CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Rank'),
+                      width: media.width * 0.12,
+                      child: CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: ' Rank'),
                   ),
                   SizedBox(width: media.width * 0.02,),
                   Container(
                     alignment: Alignment.centerLeft,
                     width: media.width * 0.35,
-                    child: const CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Athlete name'),
+                    child: CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Athlete name'),
                   )
               ]),
               Row(
                 children: [
                   Container(
                       alignment: Alignment.centerLeft,
-                      width: media.width * 0.2,
-                      child: const CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Total (km)'),
+                      width: media.width * 0.25,
+                      child: CustomTextButton(
+                          onPressed: distanceOnPressed ?? () {},
+                          child: Row(
+                            children: [
+                              CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Total (km) '),
+                          Transform.rotate(
+                            angle: -90 * 3.14159 / 180,
+                            child: Icon(
+                              Icons.arrow_back_ios_rounded,
+                              color: TColor.PRIMARY_TEXT,
+                              size: 15,
+                            ),)
+                            ],
+                          )),
                   ),
                   Container(
-                      alignment: Alignment.centerLeft,
-                      width: media.width * 0.15,
-                      child: const CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Time'),
-                  )
+                    alignment: Alignment.centerLeft,
+                    width: media.width * 0.15,
+                    child: CustomTextButton(
+                        onPressed: timeOnPressed ?? () {},
+                        child: Row(
+                          children: [
+                            CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Time '),
+                            Transform.rotate(
+                              angle: -90 * 3.14159 / 180,
+                              child: Icon(
+                                Icons.arrow_back_ios_rounded,
+                                color: TColor.PRIMARY_TEXT,
+                                size: 15,
+                              ),)
+                          ],
+                        )),
+                  ),
                 ],
               )
             ],
@@ -152,8 +198,8 @@ class AthleteTable extends StatelessWidget {
                             children: [
                               Container(
                                   alignment: Alignment.centerLeft,
-                                  width: media.width * 0.05,
-                                  child: CustomText(text: (participants!.indexOf(participant) + 4).toString())
+                                  width: media.width * 0.08,
+                                  child: CustomText(text: (participants!.indexOf(participant) + startIndex!).toString())
                               ),
                               SizedBox(width: media.width * 0.02,),
                               Container(

@@ -27,14 +27,18 @@ class PerformanceViewSet(
             gender = self.request.query_params.get('gender', None)
             start_date = self.request.query_params.get('start_date', None)
             end_date = self.request.query_params.get('end_date', None)
+            sort = self.request.query_params.get('sort', None)
 
             if gender: 
                 queryset = queryset.filter(user__profile__gender=gender)
 
             if start_date and end_date:
-                queryset = sorted(queryset, key=lambda x: (
-                    -x.range_stats(start_date, end_date, sport_type="RUNNING")[0], 
-                    -x.range_stats(start_date, end_date, sport_type="RUNNING")[3]))
+                def sort_cmp(x, sort):
+                    running_stats = x.range_stats(start_date, end_date, sport_type="RUNNING")
+                    if sort == 'Time':
+                        return (-running_stats[3], -running_stats[0])
+                    return (-running_stats[0], -running_stats[3])
+                queryset = sorted(queryset, key=lambda x: sort_cmp(x, sort))
     
         return queryset
 

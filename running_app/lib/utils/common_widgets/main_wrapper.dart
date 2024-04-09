@@ -24,8 +24,10 @@ class MainWrapper extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(
           leftMargin ?? media.width * 0.025,
           topMargin ?? media.height * 0.01,
+          // topMargin ?? 0,
           rightMargin ?? media.width * 0.025,
-          bottomMargin ?? media.height * 0.025
+          // bottomMargin ?? media.height * 0.025
+          bottomMargin ?? 0
       ),
       child: child,
     );

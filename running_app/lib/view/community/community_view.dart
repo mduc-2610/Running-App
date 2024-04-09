@@ -16,7 +16,7 @@ import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/club/club_view.dart';
 import 'package:running_app/view/community/event/event_view.dart';
-import 'package:running_app/view/community/social_view.dart';
+import 'package:running_app/view/community/social/social_view.dart';
 
 class CommunityView extends StatefulWidget {
   const CommunityView({
@@ -79,11 +79,12 @@ class _CommunityViewState extends State<CommunityView> {
                   height: media.height * (_showView == "Events" ? 0.28 : 0.26),
                 ),
               ],
-              MainWrapper(
-                child: Column(
-                  children: [
-                    // Redirect and search section
-                    Container(
+              Column(
+                children: [
+                  // Redirect and search section
+                  MainWrapper(
+                    topMargin: media.height * 0.01,
+                    child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 3,
                           horizontal: 10
@@ -130,14 +131,14 @@ class _CommunityViewState extends State<CommunityView> {
                         ],
                       ),
                     ),
-                    SizedBox(height: media.height * 0.005,),
-        
-                    // EventView(),
-                    (_showView == "Events") ?
-                      const EventView() : (_showView == "Social" ? const SocialView() : const ClubView()),
-                    SizedBox(height: media.height * 0.05,),
-                  ],
-                )
+                  ),
+                  SizedBox(height: media.height * 0.005,),
+
+                  // EventView(),
+                  (_showView == "Events") ?
+                  const EventView() : (_showView == "Social" ? const SocialView() : const ClubView()),
+                  SizedBox(height: media.height * 0.05,),
+                ],
               ),
             ],
           ),

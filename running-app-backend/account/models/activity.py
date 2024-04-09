@@ -5,6 +5,8 @@ class Activity(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     user = models.OneToOneField(
         "account.User", related_name="activity", on_delete=models.CASCADE)
+    # performance = models.OneToOneField(
+    #     "account.Performance", related_name="activity_performance", on_delete=models.CASCADE)
     clubs = models.ManyToManyField(
         "activity.Club", through="activity.UserParticipationClub", related_name="clubs", blank=True)
     events = models.ManyToManyField(

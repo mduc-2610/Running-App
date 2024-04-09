@@ -224,7 +224,7 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                     ),
                                     SizedBox(width: media.width * 0.01,),
                                     Text(
-                                      '${club?.participants[0].username}  •  ${club?.organization}',
+                                      '${club?.participants[0].name}  •  ${club?.organization}',
                                       style: TextStyle(
                                           color: TColor.DESCRIPTION,
                                           fontSize: FontSize.SMALL

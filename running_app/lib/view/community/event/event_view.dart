@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
+import 'package:running_app/utils/common_widgets/loading.dart';
+import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/event/utils/common_widgets/event_box.dart';
 import 'package:provider/provider.dart';
@@ -28,8 +30,16 @@ class _EventViewState extends State<EventView> {
   DetailUser? user;
   int upcomingEvent = 0;
   int endedEvent = 0;
+  bool isLoading = true;
 
-  void initActivity() async {
+  void getProviderData() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+  Future<void> initUserActivity() async {
     final activity = await callRetrieveAPI(
         null, null,
         user?.activity,
@@ -51,19 +61,7 @@ class _EventViewState extends State<EventView> {
 
   }
 
-  void initUser() {
-    setState(() {
-      user = Provider.of<UserProvider>(context).user;
-    });
-  }
-
-  void initToken() {
-    setState(() {
-      token = Provider.of<TokenProvider>(context).token;
-    });
-  }
-
-  void initEvents() async{
+  Future<void> initEvents() async{
     final data1 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?sort=-participants&limit=10");
     final data2 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?limit=20");
     setState(() {
@@ -72,101 +70,116 @@ class _EventViewState extends State<EventView> {
     });
   }
 
+  Future<void> delayedInit() async {
+    await initEvents();
+    await initUserActivity();
+    await Future.delayed(Duration(seconds: 1),);
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    initToken();
-    initEvents();
-    initUser();
-    initActivity();
+    getProviderData();
+    delayedInit();
   }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     List text = ["Joined: $upcomingEvent", "Ended: $endedEvent"];
-    return Column(
+    return (isLoading == false) ? Column(
       children: [
         // Search events section
-        const SearchFilter(hintText: "Search events"),
+        MainWrapper(
+            topMargin: 0,
+            bottomMargin: 0,
+            child: SearchFilter(hintText: "Search events")),
         SizedBox(height: media.height * 0.01,),
 
         // Your event section
-        CustomTextButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/your_event_list');
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 15,
-            ),
-            decoration: BoxDecoration(
-                color: TColor.SECONDARY_BACKGROUND,
-                borderRadius: BorderRadius.circular(12)
-            ),
-            child: Row(
-              children: [
-                Transform.rotate(
-                  angle: 270,
-                  child: SvgPicture.asset(
-                    "assets/img/community/calendar.svg",
-                    width: media.width * 0.1,
-                    height: media.height *  0.1,
-                    fit: BoxFit.contain,
+        MainWrapper(
+          topMargin: 0,
+          bottomMargin: 0,
+          child: CustomTextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/your_event_list');
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 15,
+              ),
+              decoration: BoxDecoration(
+                  color: TColor.SECONDARY_BACKGROUND,
+                  borderRadius: BorderRadius.circular(12)
+              ),
+              child: Row(
+                children: [
+                  Transform.rotate(
+                    angle: 270,
+                    child: SvgPicture.asset(
+                      "assets/img/community/calendar.svg",
+                      width: media.width * 0.1,
+                      height: media.height *  0.1,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
-                SizedBox(width: media.width * 0.01,),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Your events",
-                      style: TextStyle(
-                          color: TColor.PRIMARY_TEXT,
-                          fontSize: FontSize.NORMAL,
-                          fontWeight: FontWeight.w700
+                  SizedBox(width: media.width * 0.01,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Your events",
+                        style: TextStyle(
+                            color: TColor.PRIMARY_TEXT,
+                            fontSize: FontSize.NORMAL,
+                            fontWeight: FontWeight.w700
+                        ),
                       ),
-                    ),
-                    Text(
-                      "View your events here",
-                      style: TextStyle(
-                          color: TColor.DESCRIPTION,
-                          fontSize: FontSize.SMALL,
-                          fontWeight: FontWeight.w500
+                      Text(
+                        "View your events here",
+                        style: TextStyle(
+                            color: TColor.DESCRIPTION,
+                            fontSize: FontSize.SMALL,
+                            fontWeight: FontWeight.w500
+                        ),
                       ),
-                    ),
-                    SizedBox(height: media.height * 0.01,),
-                    Row(
-                      children: [
-                        for(var x in text)...[
-                          Container(
-                            width: media.width * 0.3,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 3,
-                              horizontal: 15,
-                            ),
-                            decoration: BoxDecoration(
-                                color: TColor.PRIMARY.withOpacity(0.8),
-                                borderRadius: BorderRadius.circular(6)
-                            ),
-                            child: Text(
-                              x,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: TColor.PRIMARY_TEXT,
-                                  fontSize: FontSize.SMALL,
-                                  fontWeight: FontWeight.w700
+                      SizedBox(height: media.height * 0.01,),
+                      Row(
+                        children: [
+                          for(var x in text)...[
+                            Container(
+                              width: media.width * 0.3,
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 3,
+                                horizontal: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                  color: TColor.PRIMARY.withOpacity(0.8),
+                                  borderRadius: BorderRadius.circular(6)
+                              ),
+                              child: Text(
+                                x,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: TColor.PRIMARY_TEXT,
+                                    fontSize: FontSize.SMALL,
+                                    fontWeight: FontWeight.w700
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(width: media.width * 0.015,),
-                        ]
-                      ],
-                    )
-                  ],
-                )
-              ],
+                            SizedBox(width: media.width * 0.015,),
+                          ]
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -181,9 +194,13 @@ class _EventViewState extends State<EventView> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Popular events",
-                      style: TxtStyle.headSectionExtra,
+                    MainWrapper(
+                      topMargin: 0,
+                      bottomMargin: 0,
+                      child: Text(
+                        "Popular events",
+                        style: TxtStyle.headSectionExtra,
+                      ),
                     ),
                     SizedBox(height: media.height * 0.01,),
                     SizedBox(
@@ -220,9 +237,11 @@ class _EventViewState extends State<EventView> {
                     Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                              "All events",
-                              style: TxtStyle.headSectionExtra
+                          MainWrapper(
+                            child: Text(
+                                "All events",
+                                style: TxtStyle.headSectionExtra
+                            ),
                           ),
                           CustomTextButton(
                             onPressed: () {
@@ -232,14 +251,14 @@ class _EventViewState extends State<EventView> {
                                 "See all",
                                 style: TextStyle(
                                   color: TColor.PRIMARY,
-                                  fontSize: FontSize.NORMAL,
+                                  fontSize: FontSize.LARGE,
                                   fontWeight: FontWeight.w500,
                                 )
                             ),
                           )
                         ]
                     ),
-                    // SizedBox(height: media.height * 0.01,),
+                    SizedBox(height: media.height * 0.01,),
                     SizedBox(
                       height: media.height * 0.35,
                       child: SingleChildScrollView(
@@ -266,6 +285,9 @@ class _EventViewState extends State<EventView> {
           ),
         )
       ],
+    ) : Loading(
+      marginTop: media.height * 0.35,
+      backgroundColor: Colors.transparent,
     );
 
   }
