@@ -64,6 +64,7 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
         fields = "__all__"
         extra_kwargs = {
             "id": {"read_only": True},
+            "user": {"read_only": True},
         }
 
     def to_representation(self, instance):

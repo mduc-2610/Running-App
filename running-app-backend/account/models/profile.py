@@ -17,8 +17,8 @@ class Profile(models.Model):
     ]
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     date_of_birth = models.DateField()
-    height = models.IntegerField()
-    weight = models.IntegerField()
+    height = models.IntegerField(null=True)
+    weight = models.IntegerField(null=True)
     SIZE_CHOICES = [
         ("XS", "extra small"),
         ("S", "small"),
@@ -27,9 +27,9 @@ class Profile(models.Model):
         ("XL", "extra large"),
         ("XXL", "extra extra large"),
     ]
-    shirt_size = models.CharField(max_length=10, choices=SIZE_CHOICES)
-    trouser_size = models.CharField(max_length=10, choices=SIZE_CHOICES)
-    shoe_size = models.IntegerField()
+    shirt_size = models.CharField(max_length=10, choices=SIZE_CHOICES, null=True)
+    trouser_size = models.CharField(max_length=10, choices=SIZE_CHOICES, null=True)
+    shoe_size = models.IntegerField(null=True)
 
     
     def name(self):
