@@ -57,7 +57,7 @@ import 'package:running_app/view/login/sign_up_view.dart';
 import 'package:running_app/view/rank/rank_view.dart';
 import 'package:running_app/view/store/product_view.dart';
 import 'package:running_app/view/store/store_view.dart';
-import 'package:running_app/view/user/setting/account_information_setting_view.dart';
+import 'package:running_app/view/user/setting/profile_setting_view.dart';
 import 'package:running_app/view/home/user_discovery_view.dart';
 import 'package:running_app/view/user/follow_view.dart';
 import 'package:running_app/view/user/setting/notification_setting_view.dart';
@@ -204,7 +204,7 @@ class MyApp extends StatelessWidget {
         '/follow': (context) => const FollowView(),
         '/setting': (context) => const SettingView(),
         '/privacy_setting': (context) => const PrivacySettingView(),
-        '/account_information_setting': (context) => const AccountInformationSettingView(),
+        '/account_information_setting': (context) => const ProfileSettingView(),
         '/notification_setting': (context) => const NotificationSettingView(),
         '/change_password_setting': (context) => const ChangePasswordSettingView(),
         // '/verify': (context) => VerifyCodeForm(),

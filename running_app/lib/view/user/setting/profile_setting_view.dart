@@ -21,14 +21,14 @@ import "package:running_app/utils/function.dart";
 import "package:running_app/utils/providers/token_provider.dart";
 import "package:running_app/utils/providers/user_provider.dart";
 
-class AccountInformationSettingView extends StatefulWidget {
-  const AccountInformationSettingView({super.key});
+class ProfileSettingView extends StatefulWidget {
+  const ProfileSettingView({super.key});
 
   @override
-  State<AccountInformationSettingView> createState() => _AccountInformationSettingViewState();
+  State<ProfileSettingView> createState() => _ProfileSettingViewState();
 }
 
-class _AccountInformationSettingViewState extends State<AccountInformationSettingView> {
+class _ProfileSettingViewState extends State<ProfileSettingView> {
   bool isLoading = true;
   String? gender = "male";
   String selectedValue = "";
@@ -162,7 +162,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
   ];
 
   void updateAccountInformation() async {
-    final profile = UpdateProfile(
+    final profile = CreateUpdateProfile(
       name: fields[0]["controller"].text,
       country: fields[2]["value"],
       city: fields[3]["value"],
@@ -457,7 +457,7 @@ class _AccountInformationSettingViewState extends State<AccountInformationSettin
                                 ),
                                 floatingLabelBehavior: FloatingLabelBehavior.auto
                               ),
-                              noneEditable: true,
+                              noneEditable: (i == 7) ? true : false,
                               keyboardType: (i == 7) ? TextInputType.text : TextInputType.number,
                             ),
                             SizedBox(height: media.height * 0.015,),

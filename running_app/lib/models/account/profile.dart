@@ -99,7 +99,8 @@ class DetailProfile extends Profile {
   }
 }
 
-class UpdateProfile {
+class CreateUpdateProfile {
+  final String? user_id;
   final String? name;
   final String? avatar;
   final String? country;
@@ -112,7 +113,8 @@ class UpdateProfile {
   final String? trouserSize;
   final int? shoeSize;
 
-  UpdateProfile({
+  CreateUpdateProfile({
+    this.user_id,
     required this.name,
     this.avatar,
     required this.country,
@@ -128,6 +130,7 @@ class UpdateProfile {
 
   Map<String, dynamic> toJson() {
     return {
+      'user_id': user_id,
       'name': name,
       'avatar': avatar,
       'country': country,

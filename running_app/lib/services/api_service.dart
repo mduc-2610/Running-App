@@ -69,13 +69,11 @@ class APIService {
 
   Map<String, String> _getHeaders() {
     // if (token != null) {
-    return {
+    return (token != "") ? {
       'Content-Type': 'application/json',
       'Authorization': 'TOKEN $token',
-      //   };
-      // } else {
-      //   return {'Content-Type': 'application/json'};
-      // }
+    } : {
+        'Content-Type': 'application/json'
     };
   }
 }

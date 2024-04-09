@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 import 'package:running_app/models/account/user.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
+import 'package:running_app/utils/common_widgets/show_notification.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
 
 import '../../utils/constants.dart';
 import '../../utils/common_widgets/input_decoration.dart';
@@ -11,17 +15,39 @@ import '../../utils/common_widgets/text_form_field.dart';
 import '../../utils/common_widgets/main_wrapper.dart';
 
 
-class SignUpView extends StatelessWidget {
+class SignUpView extends StatefulWidget {
   const SignUpView({super.key});
 
-  Future<void> _createUser(String username, String email, String password, String confirmPassword) async {
-    final userCreate = CreateUser(
+  @override
+  State<SignUpView> createState() => _SignUpViewState();
+}
+
+class _SignUpViewState extends State<SignUpView> {
+  void signUp() async {
+    String username = signUpFields[0]['controller'].text;
+    String email = signUpFields[1]['controller'].text;
+    String phoneNumber = signUpFields[2]['controller'].text;
+    String password = signUpFields[3]['controller'].text;
+    String confirmPassword = signUpFields[4]['controller'].text;
+    CreateUser user = CreateUser(
         username: username,
         email: email,
-        password: password
+        phoneNumber: phoneNumber,
+        password: password,
     );
-    // final data = await callCreateAPI('account/user', userCreate.toJson(), token);
-    // print(data);
+    if(password != confirmPassword) {
+      showNotification(context, 'Error', "Confirm password doesn't match password");
+    }
+    else {
+      final data = await callCreateAPI('account/user', user.toJson(), "");
+      print(data);
+      Navigator.pushNamed(context, '/profile_create', arguments: {
+        "id": data["id"],
+        "email": data["email"],
+        "phoneNumber": data["phone_number"]
+      });
+    }
+
   }
 
   String? validateUsername(String? value) {
@@ -61,42 +87,49 @@ class SignUpView extends StatelessWidget {
     return null;
   }
 
+  List<Map<String, dynamic>> signUpFields = [
+    {
+      'fieldType': 'Username',
+      'hintText': 'Enter a Username',
+      'keyboardType': TextInputType.text,
+      'controller': TextEditingController(),
+      // 'validator': validateUsername,
+    },
+    {
+      'fieldType': 'Email',
+      'hintText': 'Enter an Email',
+      'keyboardType': TextInputType.emailAddress,
+      'controller': TextEditingController(),
+      // 'validator': validateEmail,
+    },
+    {
+      'fieldType': 'Phone number',
+      'hintText': 'Enter a Phone number',
+      'keyboardType': TextInputType.number,
+      'controller': TextEditingController(),
+      // 'validator': validateEmail,
+    },
+    {
+      'fieldType': 'Password',
+      'hintText': 'Enter a Password',
+      'keyboardType': TextInputType.visiblePassword,
+      'obscureText': true,
+      'controller': TextEditingController(),
+      // 'validator': validatePassword,
+    },
+    {
+      'fieldType': 'Confirm Password',
+      'hintText': 'Enter the Password again',
+      'keyboardType': TextInputType.visiblePassword,
+      'obscureText': true,
+      'controller': TextEditingController(),
+      // 'validator':validateConfirmPassword
+    }
+  ];
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    List<Map<String, dynamic>> signUpFields = [
-      {
-        'fieldType': 'Username',
-        'hintText': 'Enter a Username',
-        'keyboardType': TextInputType.text,
-        'controller': TextEditingController(),
-        'validator': validateUsername,
-      },
-      {
-        'fieldType': 'Email',
-        'hintText': 'Enter an Email',
-        'keyboardType': TextInputType.emailAddress,
-        'controller': TextEditingController(),
-        'validator': validateEmail,
-      },
-      {
-        'fieldType': 'Password',
-        'hintText': 'Enter a Password',
-        'keyboardType': TextInputType.visiblePassword,
-        'obscureText': true,
-        'controller': TextEditingController(),
-        'validator': validatePassword,
-      },
-      {
-        'fieldType': 'Confirm Password',
-        'hintText': 'Enter the Password again',
-        'keyboardType': TextInputType.visiblePassword,
-        'obscureText': true,
-        'controller': TextEditingController(),
-        // 'validator':validateConfirmPassword
-      }
-    ];
-
     return Scaffold(
       backgroundColor: TColor.PRIMARY_BACKGROUND,
         body: SingleChildScrollView(
@@ -161,31 +194,32 @@ class SignUpView extends StatelessWidget {
                         SizedBox(height: media.width * 0.03),
                         CustomMainButton(
                             horizontalPadding: media.width * 0.35,
-                            onPressed: () async {
-                              bool isValid = true;
-
-                              // Validate all form fields
-                              for (var field in signUpFields) {
-                                if (field['validator'] != null) {
-                                  FormFieldValidator<String>? validator = field['validator'];
-                                  String? error = validator!(field['controller'].text);
-                                  print(error);
-                                  if (error != null) {
-                                    isValid = false;
-                                    break;
-                                  }
-                                }
-                              }
-                              if(isValid) {
-                                final username = signUpFields[0]['controller'].text;
-                                final email = signUpFields[1]['controller'].text;
-                                final password = signUpFields[2]['controller'].text;
-                                final confirmPassword = signUpFields[3]['controller'].text;
-
-                                _createUser(username, email, password, confirmPassword);
-                              }
-                              Navigator.pushReplacementNamed(context, '/profile_create');
-                            },
+                            onPressed: signUp,
+                            //     () async {
+                            //   bool isValid = true;
+                            //
+                            //   // Validate all form fields
+                            //   for (var field in signUpFields) {
+                            //     if (field['validator'] != null) {
+                            //       FormFieldValidator<String>? validator = field['validator'];
+                            //       String? error = validator!(field['controller'].text);
+                            //       print(error);
+                            //       if (error != null) {
+                            //         isValid = false;
+                            //         break;
+                            //       }
+                            //     }
+                            //   }
+                            //   if(isValid) {
+                            //     final username = signUpFields[0]['controller'].text;
+                            //     final email = signUpFields[1]['controller'].text;
+                            //     final password = signUpFields[2]['controller'].text;
+                            //     final confirmPassword = signUpFields[3]['controller'].text;
+                            //
+                            //     _createUser(username, email, password, confirmPassword);
+                            //   }
+                            //   Navigator.pushReplacementNamed(context, '/profile_create');
+                            // },
                             child: Text(
                               'Sign Up',
                               style: TextStyle(

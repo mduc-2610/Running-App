@@ -108,16 +108,15 @@ class DetailUser extends User {
 }
 
 class CreateUser {
-  final String? id;
   final String? username;
   final String? email;
   final String? password;
-
+  final String? phoneNumber;
   CreateUser({
-    this.id,
     required this.username,
     required this.email,
     required this.password,
+    required this.phoneNumber,
   });
 
   Map<String, dynamic> toJson() {
@@ -125,6 +124,11 @@ class CreateUser {
       'username': username,
       'email': email,
       'password': password,
+      'phone_number': phoneNumber
     };
+  }
+   @override
+   String toString() {
+    return "${toJson()}";
   }
 }

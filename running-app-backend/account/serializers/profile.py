@@ -32,24 +32,32 @@ class DetailProfileSerializer(serializers.ModelSerializer):
 
 class CreateProfileSerializer(serializers.ModelSerializer):
     name = serializers.CharField(write_only=True)
-    
+    user_id = serializers.UUIDField()
     class Meta:
         model = Profile
         fields = (
-            "id", "first_name", "last_name", 
+            "id", "name", 
             "avatar", "updated_at", "country",
             "city", "gender", "date_of_birth",
             "height", "weight", "shirt_size",
-            "trouser_size", "shoe_size",
+            "trouser_size", "shoe_size", "user_id"
         )
         extra_kwargs = {
             "id": {"read_only": True},
         }
 
+    def validate(self, data):
+        super().validate(data)
+        data['user_id'] = self.initial_data.get('user_id', None)
+        data['name'] = self.initial_data.get('name', None)
+
+        return data
+
     def create(self, validated_data):
-        user_data = validated_data.pop('name', None)
-        profile = Profile.objects.create(**validated_data)
-        profile.user.name = user_data
+        name = validated_data.pop('name', None)
+        user_id = validated_data.pop('user_id', None)
+        profile = Profile.objects.create(user_id=user_id, **validated_data)
+        profile.user.name = name
         profile.user.save()
         
         return profile

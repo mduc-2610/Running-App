@@ -12,7 +12,8 @@ from activity.serializers.activity_record import ActivityRecordSerializer
 from product.serializers.product import ProductSerializer
 
 class ActivitySerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
+    user_id = serializers.UUIDField()
     products = ProductSerializer(many=True, read_only=True)
     events = EventSerializer(many=True, read_only=True)
     clubs = ClubSerializer(many=True, read_only=True)
@@ -35,6 +36,11 @@ class ActivitySerializer(serializers.ModelSerializer):
                 
         data.update({'events': events})
         return data
+    
+    def create(self, validated_data):
+        user_id = validated_data.pop('user_id')
+        return Activity.objects.create(user_id=user_id, **validated_data)
+
     
     class Meta:
         model = Activity

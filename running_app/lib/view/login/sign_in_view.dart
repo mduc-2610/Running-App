@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/login.dart';
 import 'package:running_app/models/account/performance.dart';
 import 'package:running_app/models/account/privacy.dart';
 import 'package:running_app/models/account/profile.dart';
@@ -53,26 +54,23 @@ class _SignInViewState extends State<SignInView> {
   TextEditingController passwordController = TextEditingController();
 
   Future<void> signIn() async {
-    String apiUrl = '${APIEndpoints.BASE_URL}/account/login/';
     print(usernameController.text);
     print(passwordController.text);
-    Map<String, String> mainBody = {
-      'username': usernameController.text,
-      'password': passwordController.text,
-    };
-    try {
-      final tokenResponse = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String> {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(mainBody),
-      );
-
-
+    Login login = Login(
+      username: usernameController.text,
+      password: passwordController.text,
+    );
+    // try {
+      final tokenResponse = await callCreateAPI(
+          'account/login',
+          login.toJson(), "");
+      print(tokenResponse);
       var token;
-      if (tokenResponse.statusCode == 200) {
-        token = jsonDecode(tokenResponse.body)["token"];
+      if(tokenResponse["error"] != null) {
+        showNotification(context, 'Error', tokenResponse["error"] ?? "");
+      }
+      else {
+        token = tokenResponse["token"];
         Provider.of<TokenProvider>(context, listen: false).setToken(token);
 
         List<dynamic> users = await callListAPI('account/user', User.fromJson, token);
@@ -101,12 +99,7 @@ class _SignInViewState extends State<SignInView> {
         Navigator.pushNamed(context, '/home', arguments: {
           'token': token
         });
-      } else {
-        showNotification(context, 'Error', 'Invalid username or password');
       }
-    } catch (e) {
-      showNotification(context, 'Error', 'An error occurred. Please try again later.');
-    }
   }
 
   @override
