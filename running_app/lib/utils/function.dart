@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 String convertChoice(String x) {
   List<String> words = x.split(" ");
   String result = words.map((word) => word.toUpperCase()).join("_");
@@ -56,4 +58,11 @@ String formatTimeDuration(String timeDuration, {int type = 1}) {
     return '${parts[0]}h${parts[1]}m';
   }
   return '$formattedHours H';
+}
+
+String formatDate(DateTime x) {
+  return DateFormat('yyyy-MM-dd').format(x);
+}
+String formatDateMonthStr(DateTime x) {
+  return DateFormat('yyyy MMMM, dd', 'en_US').format(x);
 }

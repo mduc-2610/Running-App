@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:provider/provider.dart';
 import 'package:csc_picker/csc_picker.dart';
+import 'package:intl/intl.dart';
 import "package:running_app/models/account/user.dart";
 import "package:running_app/models/account/profile.dart";
 import "package:running_app/services/api_service.dart";
@@ -11,6 +12,7 @@ import "package:running_app/utils/common_widgets/loading.dart";
 import "package:running_app/utils/common_widgets/main_button.dart";
 import "package:running_app/utils/common_widgets/main_wrapper.dart";
 import "package:running_app/utils/common_widgets/default_background_layout.dart";
+import "package:running_app/utils/common_widgets/show_date_picker.dart";
 import "package:running_app/utils/common_widgets/show_month_year.dart";
 import "package:running_app/utils/common_widgets/show_notification.dart";
 import "package:running_app/utils/common_widgets/text_button.dart";
@@ -134,12 +136,12 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
 
   List fields = [
     {
-      "hintText": "Name",
+      "hintText": "Name*",
       "value": "",
       "controller": TextEditingController() // Name controller
     },
     {
-      "hintText": "Email",
+      "hintText": "Email*",
       "value": "",
       "controller": TextEditingController() // Name controller
     },
@@ -157,12 +159,12 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
       "controller": TextEditingController(), // Height controller
     },
     {
-      "hintText": "Height (cm)",
+      "hintText": "Height (cm) (Option)",
       "value": "",
       "controller": TextEditingController(), // Height controller
     },
     {
-      "hintText": "Weight (kg)",
+      "hintText": "Weight (kg) (Option)",
       "value": "",
       "controller": TextEditingController(), // Weight controller
     },
@@ -172,19 +174,20 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
       "controller": TextEditingController(), // Phone number controller
     },
     {
-      "hintText": "Shoe size",
+      "hintText": "Shoe size (Option)",
       "value": "",
       "controller": TextEditingController(), // Shoe size controller
     },
     {
-      "hintText": "Shirt size",
+      "hintText": "Shirt size (Option)",
       "value": "",
     },
     {
-      "hintText": "Trouser size",
+      "hintText": "Trouser size (Option)",
       "value": "",
     },
   ];
+
 
   void createAccountInformation() async {
     final profile = CreateUpdateProfile(
@@ -395,7 +398,7 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
                                         x[0].toUpperCase() + x.substring(1),
                                         style: const TextStyle(
                                             color: Color(0xffcdcdcd),
-                                            fontSize: 15
+                                            fontSize: FontSize.NORMAL
                                         ),
                                       ),
                                     ],
@@ -405,20 +408,36 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
                             ],
                           ),
                           SizedBox(height: media.height * 0.015,),
-                          CustomTextFormField(
-                            controller: fields[4]["controller"],
-                            // initialValue: fields[4]["value"],
-                            decoration: CustomInputDecoration(
-                              label: Text(
-                                fields[4]["hintText"],
-                                style: TextStyle(
-                                  color: TColor.DESCRIPTION,
-                                  fontSize: FontSize.NORMAL,
+                          CustomMainButton(
+                            verticalPadding: 22,
+                            borderWidth: 2,
+                            borderWidthColor: TColor.BORDER_COLOR,
+                            background: Colors.transparent,
+                            horizontalPadding: 25,
+                            onPressed: () async {
+                              DateTime? result = await showDatePickerCustom(
+                                  context,
+                                  DateTime(1960, 1, 1),
+                                  DateTime(2015, 1, 1)
+                              );
+                              setState(() {
+                                fields[4]["value"] = formatDate(result!);
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${fields[4]["value"] == "" ? fields[4]["hintText"] : fields[4]["value"]}",
+                                  style: TxtStyle.largeTextDesc,
                                 ),
-                              ),
-                              floatingLabelBehavior: FloatingLabelBehavior.auto,
+                                Icon(
+                                  Icons.calendar_today,
+                                  color: TColor.DESCRIPTION,
+                                  // size: 15,
+                                )
+                              ],
                             ),
-                            keyboardType: TextInputType.text,
                           ),
                           SizedBox(height: media.height * 0.015,),
                           Row(
@@ -520,7 +539,7 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "${fields[i]["value"] ?? fields[i]["hintText"]}",
+                                    "${fields[i]["value"] == "" ? fields[i]["hintText"] : fields[i]["value"]}",
                                     style: TxtStyle.largeTextDesc,
                                   ),
                                   Transform.rotate(

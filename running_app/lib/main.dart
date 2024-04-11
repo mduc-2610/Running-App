@@ -140,7 +140,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/',
+      initialRoute: '/event_information_create',
       routes: {
         '/': (context) => homeScreen,
         // Login

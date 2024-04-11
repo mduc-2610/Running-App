@@ -11,6 +11,7 @@ import "package:running_app/utils/common_widgets/loading.dart";
 import "package:running_app/utils/common_widgets/main_button.dart";
 import "package:running_app/utils/common_widgets/main_wrapper.dart";
 import "package:running_app/utils/common_widgets/default_background_layout.dart";
+import "package:running_app/utils/common_widgets/show_date_picker.dart";
 import "package:running_app/utils/common_widgets/show_month_year.dart";
 import "package:running_app/utils/common_widgets/show_notification.dart";
 import "package:running_app/utils/common_widgets/text_button.dart";
@@ -356,7 +357,7 @@ class _ProfileSettingViewState extends State<ProfileSettingView> {
                                         x[0].toUpperCase() + x.substring(1),
                                         style: const TextStyle(
                                             color: Color(0xffcdcdcd),
-                                            fontSize: 15
+                                            fontSize: FontSize.NORMAL
                                         ),
                                       ),
                                     ],
@@ -366,20 +367,36 @@ class _ProfileSettingViewState extends State<ProfileSettingView> {
                             ],
                           ),
                           SizedBox(height: media.height * 0.015,),
-                          CustomTextFormField(
-                            controller: fields[4]["controller"],
-                            // initialValue: fields[4]["value"],
-                            decoration: CustomInputDecoration(
-                              label: Text(
-                                fields[4]["hintText"],
-                                style: TextStyle(
-                                  color: TColor.DESCRIPTION,
-                                  fontSize: FontSize.NORMAL,
+                          CustomMainButton(
+                            verticalPadding: 22,
+                            borderWidth: 2,
+                            borderWidthColor: TColor.BORDER_COLOR,
+                            background: Colors.transparent,
+                            horizontalPadding: 25,
+                            onPressed: () async {
+                              DateTime? result = await showDatePickerCustom(
+                                  context,
+                                  DateTime(1960, 1, 1),
+                                  DateTime(2015, 1, 1)
+                              );;
+                              setState(() {
+                                fields[4]["value"] = formatDate(result!);
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${fields[4]["value"] == "" ? fields[4]["hintText"] : fields[4]["value"]}",
+                                  style: TxtStyle.largeTextDesc,
                                 ),
-                              ),
-                              floatingLabelBehavior: FloatingLabelBehavior.auto,
+                                Icon(
+                                  Icons.calendar_today,
+                                  color: TColor.DESCRIPTION,
+                                  // size: 15,
+                                )
+                              ],
                             ),
-                            keyboardType: TextInputType.text,
                           ),
                           SizedBox(height: media.height * 0.015,),
                           Row(

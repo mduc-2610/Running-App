@@ -6,6 +6,7 @@ import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/models/activity/user_participation.dart';
 import 'package:running_app/services/api_service.dart';
+import 'package:running_app/utils/common_widgets/show_date_picker.dart';
 import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
@@ -42,8 +43,8 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
   bool eventDescriptionClearButtonState = false;
 
   // Event information data
-  DateTime startDate = DateTime.parse("${DateTime.now().toString().split(' ')[0]} 00:00");
-  DateTime endDate = DateTime.parse("${DateTime.now().add(const Duration(days: 7)).toString().split(' ')[0]} 23:59");
+  DateTime startDate = DateTime.parse("${DateTime.now().toString().split(' ')[0]} 00:00:00");
+  DateTime endDate = DateTime.parse("${DateTime.now().add(const Duration(days: 7)).toString().split(' ')[0]} 23:59:59");
   String rankingType = "Distance";
   bool contactInformationButtonState = false;
   TextEditingController eventNameTextController = TextEditingController();
@@ -93,8 +94,8 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
       name: eventNameTextController.text,
       description: eventDescriptionTextController.text,
       contactInformation: contactInformationButtonState ? contactInformationTextController.text : null,
-      startedAt: startDate.toString(),
-      endedAt: endDate.toString(),
+      startedAt: formatDate(startDate),
+      endedAt: formatDate(endDate),
       completionGoal: completionGoal,
       competition: convertChoice(competition),
       rankingType: convertChoice(rankingType),
@@ -425,38 +426,39 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                                 SizedBox(height: media.height * 0.01,),
                                 Container(
                                   alignment: Alignment.center,
-                                  width: media.width * 0.65,
+                                  // width: media.width * 0.65,
                                   // height: 70,
-                                  child: DateTimeFormField(
-                                    style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: FontSize.SMALL,
-                                    ),
-                                    decoration: CustomInputDecoration(
-                                      suffixIcon: Icon(
-                                        Icons.calendar_today_rounded,
-                                        color: TColor.DESCRIPTION,
-                                      ),
-                                        label: Text(
-                                        "${DateTime.now().toString().split(' ')[0]} 00:00",
-                                        style: TextStyle(
-                                          color: TColor.DESCRIPTION,
-                                          fontSize: FontSize.SMALL,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 20
-                                      ),
-                                    ),
-
-                                    materialDatePickerOptions: const MaterialDatePickerOptions(),
-                                    firstDate: DateTime.now().add(const Duration(days: 10)),
-                                    lastDate: DateTime.now().add(const Duration(days: 365)),
-                                    initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
-                                    onChanged: (DateTime? value) {
-                                      startDate = value!;
+                                  child: CustomMainButton(
+                                    verticalPadding: 18,
+                                    borderWidth: 2,
+                                    borderWidthColor: TColor.BORDER_COLOR,
+                                    background: Colors.transparent,
+                                    horizontalPadding: 25,
+                                    onPressed: () async {
+                                      DateTime? result = await showDatePickerCustom(
+                                          context,
+                                          DateTime.now(),
+                                          DateTime.now().add(Duration(days: 15))
+                                      );
+                                      setState(() {
+                                         startDate = result!;
+                                         createChallengeButtonState = (endDate.isBefore(startDate)) ? TColor.BUTTON_DISABLED : TColor.PRIMARY;
+                                      });
                                     },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "${formatDateMonthStr(startDate)}",
+                                          style: TxtStyle.largeTextDesc,
+                                        ),
+                                        Icon(
+                                          Icons.calendar_today,
+                                          color: TColor.DESCRIPTION,
+                                          // size: 15,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],
@@ -475,37 +477,39 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                                 ),
                                 SizedBox(height: media.height * 0.01,),
                                 SizedBox(
-                                  width: media.width * 0.65,
+                                  // width: media.width * 0.65,
                                   // height: 50,
-                                  child: DateTimeFormField(
-                                    style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: FontSize.SMALL,
-                                    ),
-                                    decoration: CustomInputDecoration(
-                                      suffixIcon: Icon(
-                                        Icons.calendar_today_rounded,
-                                        color: TColor.DESCRIPTION,
-                                      ),
-                                      label: Text(
-                                        "${DateTime.now().add(const Duration(days: 7)).toString().split(' ')[0]} 23:59",
-                                        style: TextStyle(
-                                          color: TColor.DESCRIPTION,
-                                          fontSize: FontSize.SMALL,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      contentPadding: const EdgeInsets.symmetric(
-                                          horizontal: 20
-                                      ),
-                                    ),
-
-                                    firstDate: DateTime.now().add(const Duration(days: 10)),
-                                    lastDate: DateTime.now().add(const Duration(days: 40)),
-                                    initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
-                                    onChanged: (DateTime? value) {
-                                      endDate = value!;
+                                  child: CustomMainButton(
+                                    verticalPadding: 18,
+                                    borderWidth: 2,
+                                    borderWidthColor: TColor.BORDER_COLOR,
+                                    background: Colors.transparent,
+                                    horizontalPadding: 25,
+                                    onPressed: () async {
+                                      DateTime? result = await showDatePickerCustom(
+                                          context,
+                                          DateTime.now(),
+                                          DateTime.now().add(Duration(days: 365))
+                                      );
+                                      setState(() {
+                                        endDate = result!;
+                                        createChallengeButtonState = (endDate.isBefore(startDate)) ? TColor.BUTTON_DISABLED : TColor.PRIMARY;
+                                      });
                                     },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "${formatDateMonthStr(endDate)}",
+                                          style: TxtStyle.largeTextDesc,
+                                        ),
+                                        Icon(
+                                          Icons.calendar_today,
+                                          color: TColor.DESCRIPTION,
+                                          // size: 15,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],
