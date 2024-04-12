@@ -8,7 +8,7 @@ import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/description_text.dart';
+import 'package:running_app/utils/common_widgets/limit_line_text.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
@@ -33,13 +33,18 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
   String token = "";
   String? activityRecordId;
   DetailActivityRecord? activityRecord;
-  bool showFullText = false;
-  bool showViewMoreButton = false;
+  bool showFullTitle = false;
+  bool showFullDescription = false;
+  bool showViewMoreDescriptionButton = false;
+  bool showViewMoreTitleButton = false;
+  bool checkRequestUser = false;
 
   void getSideData() {
     setState(() {
+      Map<String, dynamic> arguments = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>);
       token = Provider.of<TokenProvider>(context).token;
-      activityRecordId = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>)["id"];
+      activityRecordId = arguments["id"];
+      checkRequestUser = arguments["checkRequestUser"];
     });
   }
 
@@ -92,17 +97,21 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
           child: Stack(
             children: [
               if(isLoading == false)...[
-                MainWrapper(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: media.height * 0.01,),
-                      //User section
-                      Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: media.height * 0.01,),
+                    //User section
+                    MainWrapper(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           CustomTextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/user', arguments: {
+                                "id": activityRecord?.user?.id,
+                              });
+                            },
                             child: Row(
                               children: [
                                 ClipRRect(
@@ -145,137 +154,157 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                               ],
                             ),
                           ),
-                          CustomIconButton(
-                            icon: Icon(
-                              Icons.more_horiz_rounded,
-                              color: TColor.PRIMARY_TEXT,
-                            ),
-                            onPressed: () {
-                              showActionList(
-                                  context,
-                                  [
-                                    {
-                                      "text": "Edit Activity",
-                                      "onPressed": () {
-                                        Navigator.pushNamed(context, '/activity_record_edit');
-                                      }
-                                    },
-                                    {
-                                      "text": "Delete Activity",
-                                      "textColor": Colors.red,
-                                      "onPressed": () {
+                          if(checkRequestUser)...[
+                            CustomIconButton(
+                              icon: Icon(
+                                Icons.more_horiz_rounded,
+                                color: TColor.PRIMARY_TEXT,
+                              ),
+                              onPressed: () {
+                                showActionList(
+                                    context,
+                                    [
+                                      {
+                                        "text": "Edit Activity",
+                                        "onPressed": () {
+                                          Navigator.pushNamed(context, '/activity_record_edit');
+                                        }
+                                      },
+                                      {
+                                        "text": "Delete Activity",
+                                        "textColor": Colors.red,
+                                        "onPressed": () {
 
+                                        }
                                       }
-                                    }
-                                  ],
-                                  "Options");
-                            },
-                          )
+                                    ],
+                                    "Options");
+                              },
+                            )
+                          ]
                         ],
                       ),
-                      SizedBox(height: media.height * 0.01,),
+                    ),
+                    SizedBox(height: media.height * 0.01,),
 
-                      // Caption section
-                      Column(
+                    // Caption section
+                    MainWrapper(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Afternoon Run",
-                            style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.LARGE,
-                                fontWeight: FontWeight.w600
-                            ),
-                          ),
-                          DescriptionText(
-                            showFullText: showFullText,
-                            showViewMoreButton: showViewMoreButton,
-                            description: "${activityRecord?.description ?? ""}",
-                            onTap: () {
-                              setState(() {
-                                showFullText = (showFullText) ? false : true;
-                              });
-                            },
-                          )
-                        ],
-                      ),
-                      SizedBox(height: media.height * 0.01,),
-
-                      // Stats section
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      //     for (int j = 0; j < 3; j++) ...[
-                      //       Row(
-                      //         children: [
-                      //           if (j != 0) ...[
-                      //             SeparateBar(
-                      //                 width: 2, height: media.height * 0.04),
-                      //             SizedBox(width: media.width * 0.03)
-                      //           ],
-                      //           Column(
-                      //             crossAxisAlignment: CrossAxisAlignment.start,
-                      //             children: [
-                      //               Text(
-                      //                 "Distance",
-                      //                 style: TextStyle(
-                      //                     color: TColor.DESCRIPTION,
-                      //                     fontSize: FontSize.SMALL,
-                      //                     fontWeight: FontWeight.w500),
-                      //               ),
-                      //               Text(
-                      //                 "1.83 km",
-                      //                 style: TextStyle(
-                      //                     color: TColor.PRIMARY_TEXT,
-                      //                     fontSize: FontSize.NORMAL,
-                      //                     fontWeight: FontWeight.w800),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ],
-                      //       ),
-                      //     ]
-                      //   ],
-                      // ),
-
-                      // Image section
-                      Column(
-                        children: [
-                          SizedBox(
-                            height: media.height * 0.27,
-                            child: CarouselSlider(
-                              options: CarouselOptions(
-                                  autoPlay: true,
-                                  autoPlayInterval: const Duration(seconds: 3),
-                                  scrollDirection: Axis.horizontal,
-                                  viewportFraction: 1
+                          if(activityRecord?.title != "")...[
+                            LimitLineText(
+                              showFullText: showFullTitle,
+                              showViewMoreButton: showViewMoreTitleButton,
+                              description: '${activityRecord?.title}',
+                              onTap: () {
+                                setState(() {
+                                  showFullTitle = (showFullTitle) ? false : true;
+                                });
+                              },
+                              style: TextStyle(
+                                  color: TColor.PRIMARY_TEXT,
+                                  fontSize: FontSize.LARGE,
+                                  fontWeight: FontWeight.w600
                               ),
-                              items: [
-                                ClipRRect(
-                                  // borderRadius: BorderRadius.circular(15),
-                                  child: Image.asset(
-                                    "assets/img/community/ptit_background.jpg",
-                                    fit: BoxFit.contain,
-                                  ),
-                                )
-                              ],
+                              char_in_line: 35,
                             ),
-                          ),
-                          SizedBox(height: media.height * 0.01,),
-                          DotsIndicator(
-                            dotsCount: 10,
-                            position: currentSlide,
-                            decorator: DotsDecorator(
-                              activeColor: TColor.PRIMARY,
-                              spacing: const EdgeInsets.only(left: 8),
+                            SizedBox(height: media.height * 0.01,),
+                          ],
+                          if(activityRecord?.description != "")...[
+                            LimitLineText(
+                              showFullText: showFullDescription,
+                              showViewMoreButton: showViewMoreDescriptionButton,
+                              description: "${activityRecord?.description}",
+                              onTap: () {
+                                setState(() {
+                                  showFullDescription = (showFullDescription) ? false : true;
+                                });
+                              },
                             ),
-                          )
+                            SizedBox(height: media.height * 0.01,),
+                          ]
                         ],
                       ),
-                      SizedBox(height: media.height * 0.01,),
+                    ),
+                    SizedBox(height: media.height * 0.01,),
 
-                      // Stats detail section
-                      Column(
+                    // Stats section
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     for (int j = 0; j < 3; j++) ...[
+                    //       Row(
+                    //         children: [
+                    //           if (j != 0) ...[
+                    //             SeparateBar(
+                    //                 width: 2, height: media.height * 0.04),
+                    //             SizedBox(width: media.width * 0.03)
+                    //           ],
+                    //           Column(
+                    //             crossAxisAlignment: CrossAxisAlignment.start,
+                    //             children: [
+                    //               Text(
+                    //                 "Distance",
+                    //                 style: TextStyle(
+                    //                     color: TColor.DESCRIPTION,
+                    //                     fontSize: FontSize.SMALL,
+                    //                     fontWeight: FontWeight.w500),
+                    //               ),
+                    //               Text(
+                    //                 "1.83 km",
+                    //                 style: TextStyle(
+                    //                     color: TColor.PRIMARY_TEXT,
+                    //                     fontSize: FontSize.NORMAL,
+                    //                     fontWeight: FontWeight.w800),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ]
+                    //   ],
+                    // ),
+
+                    // Image section
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: media.height * 0.27,
+                          child: CarouselSlider(
+                            options: CarouselOptions(
+                                autoPlay: true,
+                                autoPlayInterval: const Duration(seconds: 3),
+                                scrollDirection: Axis.horizontal,
+                                viewportFraction: 1
+                            ),
+                            items: [
+                              ClipRRect(
+                                // borderRadius: BorderRadius.circular(15),
+                                child: Image.asset(
+                                  "assets/img/community/ptit_background.jpg",
+                                  fit: BoxFit.contain,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: media.height * 0.01,),
+                        DotsIndicator(
+                          dotsCount: 10,
+                          position: currentSlide,
+                          decorator: DotsDecorator(
+                            activeColor: TColor.PRIMARY,
+                            spacing: const EdgeInsets.only(left: 8),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: media.height * 0.01,),
+
+                    // Stats detail section
+                    MainWrapper(
+                      child: Column(
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -480,47 +509,65 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                           )
                         ],
                       ),
-                      SizedBox(height: media.height * 0.02,),
+                    ),
+                    SizedBox(height: media.height * 0.02,),
 
-                      // Social section
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            "0 comment",
-                            style: TxtStyle.normalTextDesc,
+                    // Social section
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        MainWrapper(
+                          topMargin: 0,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/feed_comment', arguments: {
+                                "id": activityRecord?.id,
+                                "checkRequestUser": checkRequestUser,
+                              });
+                            },
+                            child: Text(
+                              "0 comment",
+                              style: TxtStyle.normalTextDesc,
+                            ),
                           ),
-                          SizedBox(height: media.height * 0.015,),
+                        ),
+                        SizedBox(height: media.height * 0.015,),
 
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0
-                            ),
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    top: BorderSide(width: 1, color: TColor.BORDER_COLOR),
-                                    bottom: BorderSide(width: 1, color: TColor.BORDER_COLOR)
-                                )
-                            ),
-                            child: Row(
-                              mainAxisAlignment:  MainAxisAlignment.spaceAround,
-                              children: [
-                                for(var x in [
-                                  {
-                                    "icon": Icons.thumb_up_alt_outlined,
-                                    "text": "Like",
-                                  },
-                                  {
-                                    "icon": Icons.mode_comment_outlined,
-                                    "text": "Comment",
-                                  },
-                                  {
-                                    "icon": Icons.ios_share_rounded,
-                                    "text": "Share",
-                                  }
-                                ])...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0
+                          ),
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  top: BorderSide(width: 1, color: TColor.BORDER_COLOR),
+                                  bottom: BorderSide(width: 1, color: TColor.BORDER_COLOR)
+                              )
+                          ),
+                          child: Row(
+                            mainAxisAlignment:  MainAxisAlignment.spaceAround,
+                            children: [
+                              for(var x in [
+                                {
+                                  "icon": Icons.thumb_up_alt_outlined,
+                                  "text": "Like",
+                                },
+                                {
+                                  "icon": Icons.mode_comment_outlined,
+                                  "text": "Comment",
+                                },
+                                (checkRequestUser == true) ? {
+                                  "icon": Icons.ios_share_rounded,
+                                  "text": "Share",
+                                } : null,
+                              ])...[
+                                if(x != null)...[
                                   CustomTextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, '/feed_comment', arguments: {
+                                        "id": activityRecord?.id,
+                                        "checkRequestUser": checkRequestUser,
+                                      });
+                                    },
                                     child: Row(
                                       children: [
                                         Icon(
@@ -535,55 +582,55 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                       ],
                                     ),
                                   ),
-                                  if(x["text"] != "Share") SeparateBar(width: 1, height: 45, color: TColor.BORDER_COLOR,)
+                                  // if(x["text"] != "Share") SeparateBar(width: 1, height: 45, color: TColor.BORDER_COLOR,)
                                 ]
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: media.height * 0.02,),
-
-                      // View Analysis
-                      CustomTextButton(
-                        onPressed: () {},
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 12
-                          ),
-                          decoration: BoxDecoration(
-                              border: Border.symmetric(
-                                  horizontal: BorderSide(width: 1, color: TColor.BORDER_COLOR)
-                              )
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "View analysis",
-                                    style: TxtStyle.headSection,
-                                  ),
-                                  SizedBox(height: media.height * 0.01,),
-                                  Text(
-                                    "View your activity detailed analytics",
-                                    style: TxtStyle.descSection,
-                                  )
-                                ],
-                              ),
-                              Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                color: TColor.PRIMARY_TEXT,
-                              )
+                              ]
                             ],
                           ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: media.height * 0.02,),
+
+                    // View Analysis
+                    CustomTextButton(
+                      onPressed: () {},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12
                         ),
-                      )
-                    ],
-                  ),
+                        decoration: BoxDecoration(
+                            border: Border.symmetric(
+                                horizontal: BorderSide(width: 1, color: TColor.BORDER_COLOR)
+                            )
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "View analysis",
+                                  style: TxtStyle.headSection,
+                                ),
+                                SizedBox(height: media.height * 0.01,),
+                                Text(
+                                  "View your activity detailed analytics",
+                                  style: TxtStyle.descSection,
+                                )
+                              ],
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: TColor.PRIMARY_TEXT,
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 )
               ]
               else...[

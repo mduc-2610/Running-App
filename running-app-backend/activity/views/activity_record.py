@@ -3,14 +3,18 @@ from rest_framework import viewsets, \
                             status, \
                             response
 
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import action
 from activity.models import ActivityRecord
 from activity.serializers import ActivityRecordSerializer, \
                             DetailActivityRecordSerializer, \
                             CreateActivityRecordSerializer, \
                             UpdateActivityRecordSerializer
 
-# class ActivityRecordViewSet(
-# ):
+class ActivityRecordPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 class ActivityRecordViewSet(
     mixins.ListModelMixin, 
@@ -23,11 +27,12 @@ class ActivityRecordViewSet(
 ):
     queryset = ActivityRecord.objects.all()
     serializer_class = ActivityRecordSerializer
+    pagination_class = ActivityRecordPagination
 
     def get_serializer_class(self):
         if self.action == "create":
             return CreateActivityRecordSerializer
-        elif self.action == "retrieve":
+        elif self.action == "retrieve" or self.action == "feed":
             return DetailActivityRecordSerializer
         elif self.action == "update":
             return UpdateActivityRecordSerializer
@@ -37,3 +42,16 @@ class ActivityRecordViewSet(
         serializer_class = self.get_serializer_class()
         kwargs["context"] = self.get_serializer_context()
         return serializer_class(*args, **kwargs)
+    
+    
+    @action(detail=False, methods=['get'], url_path='feed', name='feed')
+    def feed(self, request):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return response.Response(serializer.data, status=status.HTTP_200_OK)

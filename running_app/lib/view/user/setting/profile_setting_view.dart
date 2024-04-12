@@ -55,7 +55,7 @@ class _ProfileSettingViewState extends State<ProfileSettingView> {
     getProviderData();
     await initUserProfile();
     initFields();
-    Future.delayed(Duration(seconds: 3));
+    await Future.delayed(Duration(milliseconds: 1000));
     setState(() {
       isLoading = false;
     });
@@ -547,7 +547,7 @@ class _ProfileSettingViewState extends State<ProfileSettingView> {
                 )
               ]
               else...[
-                Loading()
+                Loading(backgroundColor: Colors.transparent,)
               ]
             ],
           ),

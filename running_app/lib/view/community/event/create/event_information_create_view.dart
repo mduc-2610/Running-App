@@ -135,7 +135,8 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
       print('event name text: ${eventNameTextController.text.isNotEmpty}');
       createChallengeButtonState =
         (eventNameTextController.text.isNotEmpty &&
-          eventDescriptionTextController.text.isNotEmpty)
+          eventDescriptionTextController.text.isNotEmpty &&
+          startDate.isBefore(endDate))
           ? TColor.PRIMARY : TColor.BUTTON_DISABLED;
     });
   }
@@ -449,7 +450,7 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "${formatDateMonthStr(startDate)}",
+                                          "${formatDateEnUS(startDate)}",
                                           style: TxtStyle.largeTextDesc,
                                         ),
                                         Icon(
@@ -500,7 +501,7 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "${formatDateMonthStr(endDate)}",
+                                          "${formatDateEnUS(endDate)}",
                                           style: TxtStyle.largeTextDesc,
                                         ),
                                         Icon(

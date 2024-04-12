@@ -13,6 +13,7 @@ class ActivityRecordSerializer(serializers.ModelSerializer):
 
     def get_completed_at(self, instance):
         return instance.get_readable_date('completed_at')
+    
     def get_name(self, instance):
         return instance.user.user.name
 

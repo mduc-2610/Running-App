@@ -12,7 +12,7 @@ class CustomInputDecoration extends InputDecoration {
     bool alignLabelWithHint = false,
     BorderRadius borderRadius = const BorderRadius.all(Radius.circular(12.0)),
     Color? fillColor,
-    Color enabledBorderColor = const Color(0xff495466),
+    Color enabledBorderColor = const Color(0xff444b5e),
     Color focusedBorderColor = const Color(0xff444b5e),
     Color errorBorderColor = Colors.red,
     TextStyle? errorStyle,

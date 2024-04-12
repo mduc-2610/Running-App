@@ -31,11 +31,12 @@ String paceRepresentation(int duration, double distance) {
   return '$paceMinutes:${paceSeconds.toString().padLeft(2, '0')}';
 }
 
-int countTextLines(String text) {
+int countTextLines(String text, {int? char_in_line}) {
   int count = 0;
   List<String> textLines = text.split('\n');
+  char_in_line = char_in_line ?? 47;
   for(String line in textLines) {
-    count += (line.length / 47).ceil();
+    count += (line.length / char_in_line).ceil();
   }
   return count;
 }
@@ -57,12 +58,22 @@ String formatTimeDuration(String timeDuration, {int type = 1}) {
   if(type == 2) {
     return '${parts[0]}h${parts[1]}m';
   }
+  else if (type == 3) {
+    int totalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+    if (totalSeconds >= 3600) {
+      int remainingMinutes = (totalSeconds % 3600) ~/ 60;
+      return '${totalSeconds ~/ 3600}h${remainingMinutes}m';
+    } else {
+      return '${totalSeconds ~/ 60}m${totalSeconds % 60}s';
+    }
+  }
   return '$formattedHours H';
 }
 
 String formatDate(DateTime x) {
   return DateFormat('yyyy-MM-dd').format(x);
 }
-String formatDateMonthStr(DateTime x) {
-  return DateFormat('yyyy MMMM, dd', 'en_US').format(x);
+String formatDateEnUS(DateTime x) {
+  return DateFormat('MMMM dd, yyyy', 'en_US').format(x);
 }

@@ -11,6 +11,7 @@ import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
+import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -365,6 +366,11 @@ class _HomeViewState extends State<HomeView> {
                                     )
                                   ]
                               ),
+                              if(activityRecords?.length == 0)...[
+                                EmptyListNotification(
+                                  description: "No latest activities ",
+                                )
+                              ],
                               Column(
                                 children: [
                                   for(int i = 0; i < min(activityRecords?.length ?? 0, 5); i++)...[

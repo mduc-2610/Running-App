@@ -8,6 +8,7 @@ import 'package:running_app/models/account/performance.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
+import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
@@ -107,7 +108,7 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
       },
       {
         "icon": "assets/img/activity/heartbeat_icon.svg",
-        "figure": '${userPerformance?.periodAvgTotalHeartRate} BPM',
+        "figure": '${userPerformance?.periodAvgTotalHeartRate ?? 0} BPM',
         "type": "Heart Beat"
       }
     ];
@@ -189,6 +190,12 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
                           SizedBox(height: media.height * 0.02,),
                           Column(
                             children: [
+                              if(activityRecords?.length == 0)...[
+                                SizedBox(height: media.height * 0.2,),
+                                EmptyListNotification(
+                                  title: "No activities ",
+                                )
+                              ],
                               for(var activity in activityRecords ?? [])
                                 CustomTextButton(
                                   onPressed: () {

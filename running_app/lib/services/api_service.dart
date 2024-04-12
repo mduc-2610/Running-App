@@ -13,15 +13,23 @@ class APIService {
     return '${APIEndpoints.BASE_URL}/$endpoint/${id != '' ? '$id/' : ''}';
   }
 
-  Future<List<dynamic>> fetchList(final modelFromJson, { String queryParams = "" }) async {
+  Future<List<dynamic>> fetchList(final modelFromJson,
+      {
+        String queryParams = "",
+        bool pagination = false,
+      }
+      ) async {
     final response = await http.get(
       Uri.parse(url() + queryParams ?? ""),
       headers: _getHeaders(),
     );
 
     if (response.statusCode == 200) {
-      Iterable jsonResponse = json.decode(response.body);
-      return jsonResponse.map((instance) => modelFromJson(instance)).toList();
+      dynamic jsonResponse = json.decode(response.body);
+      if(pagination == true) {
+        jsonResponse = jsonResponse["results"];
+      }
+      return (jsonResponse as Iterable).map((instance) => modelFromJson(instance)).toList();
     } else {
       throw Exception('Failed to get data');
     }
@@ -82,13 +90,17 @@ Future<List<dynamic>> callListAPI(
     String endpoint,
     Function modelFromJson,
     String token,
-    { String queryParams = "" }
+    {
+      String queryParams = "",
+      bool pagination = false,
+    }
     ) async {
   APIService service = APIService(endpoint: endpoint, token: token);
 
-  final List<dynamic> querySet = await service.fetchList(
+   List<dynamic> querySet = await service.fetchList(
       modelFromJson,
-      queryParams: queryParams
+      queryParams: queryParams,
+      pagination: pagination,
   );
   return querySet;
 }

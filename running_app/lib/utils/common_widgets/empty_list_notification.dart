@@ -8,11 +8,13 @@ class EmptyListNotification extends StatelessWidget {
   final bool? addButton;
   final String? addButtonText;
   final VoidCallback? onPressed;
+  final double? addButtonWidth;
   const EmptyListNotification({
     this.title,
     this.description,
     this.addButton,
     this.addButtonText,
+    this.addButtonWidth,
     this.onPressed,
     super.key
   });
@@ -46,28 +48,32 @@ class EmptyListNotification extends StatelessWidget {
           ],
         ),
         SizedBox(height: media.height * 0.01,),
-        Text(
-          title ?? "",
-          style: TxtStyle.headSection,
-        ),
-        SizedBox(height: media.height * 0.01,),
-        SizedBox(
-          width: media.width * 0.75,
-          child: Text(
-            description ?? "",
-            style: TextStyle(
-              color: TColor.DESCRIPTION,
-              fontSize: FontSize.NORMAL,
-            ),
-            textAlign: TextAlign.center,
+        if(title != null) ...[
+          Text(
+            title ?? "",
+            style: TxtStyle.headSection,
           ),
-        ),
-        SizedBox(height: media.height * 0.015,),
+          SizedBox(height: media.height * 0.01,),
+        ],
+        if(description != null)...[
+          SizedBox(
+            width: media.width * 0.75,
+            child: Text(
+              description ?? "",
+              style: TextStyle(
+                color: TColor.DESCRIPTION,
+                fontSize: FontSize.NORMAL,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          SizedBox(height: media.height * 0.015,),
+        ],
         if(addButton == true)...[
           CustomTextButton(
             onPressed: onPressed ?? () {},
             child: Container(
-              width: media.width * 0.55,
+              width: addButtonWidth ?? media.width * 0.55,
               padding: const EdgeInsets.symmetric(
                 vertical: 12,
               ),

@@ -15,7 +15,7 @@ class Profile(models.Model):
         ("MALE", "male"),
         ("FEMALE", "female"),
     ]
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default="MALE")
     date_of_birth = models.DateField()
     height = models.IntegerField(null=True)
     weight = models.IntegerField(null=True)
@@ -27,8 +27,8 @@ class Profile(models.Model):
         ("XL", "extra large"),
         ("XXL", "extra extra large"),
     ]
-    shirt_size = models.CharField(max_length=10, choices=SIZE_CHOICES, null=True)
-    trouser_size = models.CharField(max_length=10, choices=SIZE_CHOICES, null=True)
+    shirt_size = models.CharField(max_length=10, choices=SIZE_CHOICES, null=True, blank=True)
+    trouser_size = models.CharField(max_length=10, choices=SIZE_CHOICES, null=True, blank=True)
     shoe_size = models.IntegerField(null=True)
 
     

@@ -25,7 +25,7 @@ class Loading extends StatelessWidget {
         ),
         Container(
           margin: EdgeInsets.only(
-            top: marginTop ?? media.height * 0.4,
+            top: marginTop ?? media.height * 0.37,
           ),
           child: Center(
             child: SizedBox(

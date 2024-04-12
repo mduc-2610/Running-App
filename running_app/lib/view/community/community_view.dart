@@ -16,7 +16,7 @@ import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/club/club_view.dart';
 import 'package:running_app/view/community/event/event_view.dart';
-import 'package:running_app/view/community/social/social_view.dart';
+import 'package:running_app/view/community/feed/feed_view.dart';
 
 class CommunityView extends StatefulWidget {
   const CommunityView({
@@ -64,7 +64,7 @@ class _CommunityViewState extends State<CommunityView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    List redirect = ["Events", "Social", "Clubs"];
+    List redirect = ["Events", "Feed", "Clubs"];
     return Scaffold(
       appBar: const CustomAppBar(
         title: Header(title: "Community", backButton: false, noIcon: true),
@@ -74,7 +74,7 @@ class _CommunityViewState extends State<CommunityView> {
         child: DefaultBackgroundLayout(
           child: Stack(
             children: [
-              if(_showView != "Social")...[
+              if(_showView != "Feed")...[
                 BackgroundContainer(
                   height: media.height * (_showView == "Events" ? 0.28 : 0.26),
                 ),
@@ -136,7 +136,7 @@ class _CommunityViewState extends State<CommunityView> {
 
                   // EventView(),
                   (_showView == "Events") ?
-                  const EventView() : (_showView == "Social" ? const SocialView() : const ClubView()),
+                  const EventView() : (_showView == "Feed" ? const FeedView() : const ClubView()),
                   SizedBox(height: media.height * 0.05,),
                 ],
               ),

@@ -22,6 +22,7 @@ import 'package:running_app/view/community/event/create/event_information_create
 import 'package:running_app/view/community/event/create/event_group_create_view.dart';
 import 'package:running_app/view/community/event/list/event_group_list_view.dart';
 import 'package:running_app/view/community/event/management/event_group_management_view.dart';
+import 'package:running_app/view/community/feed/feed_comment_view.dart';
 import 'package:running_app/view/community/utils/common_widgets/member_management_private_view.dart';
 import 'package:running_app/view/community/utils/common_widgets/member_management_public_view.dart';
 import 'package:running_app/view/community/club/club_member_view.dart';
@@ -140,7 +141,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false
       ),
-      initialRoute: '/event_information_create',
+      initialRoute: '/',
       routes: {
         '/': (context) => homeScreen,
         // Login
@@ -197,6 +198,8 @@ class MyApp extends StatelessWidget {
         '/group_management': (context) => const EventGroupManagementView(),
         '/member_management_private': (context) => const MemberManagementPrivateView(),
         '/member_management_public': (context) => const MemberManagementPublicView(),
+        //Social
+        '/feed_comment': (context) => const FeedCommentView(),
 
         // User
         '/user': (context) => const UserView(),

@@ -22,7 +22,7 @@ class SearchFilter extends StatelessWidget {
           height: media.height * 0.05,
           decoration: BoxDecoration(
               color: TColor.SECONDARY_BACKGROUND,
-              borderRadius: BorderRadius.circular(10)
+              borderRadius: BorderRadius.circular(10),
           ),
           child: CustomTextFormField(
             decoration: CustomInputDecoration(
@@ -41,7 +41,7 @@ class SearchFilter extends StatelessWidget {
           style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
                 const EdgeInsets.symmetric(
-                    vertical: 11,
+                    vertical: 10,
                     horizontal: 0
                 )
             ),
@@ -54,8 +54,8 @@ class SearchFilter extends StatelessWidget {
                 )
             ),
             side: MaterialStateProperty.all(BorderSide(
-              color: TColor.BORDER_COLOR, // Set border color here
-              width: 1.0, // Set border width here
+              color: TColor.BORDER_COLOR,
+              width: 1.0,
             )),
           ),
           child: Icon(Icons.filter_list_rounded, color: TColor.PRIMARY_TEXT,),

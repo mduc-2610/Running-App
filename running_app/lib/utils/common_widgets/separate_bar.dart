@@ -5,10 +5,12 @@ class SeparateBar extends StatelessWidget {
   final double width;
   final double height;
   final Color? color;
+  final double? radius;
   const SeparateBar({
     required this.width,
     required this.height,
     this.color,
+    this.radius,
     super.key
   });
 
@@ -19,7 +21,7 @@ class SeparateBar extends StatelessWidget {
       height: height, // Height of the bar
       decoration: BoxDecoration(
         color: color ?? TColor.DESCRIPTION, // Color of the bar
-        borderRadius: BorderRadius.circular(10), // Rounded corners
+        borderRadius: BorderRadius.circular(radius ?? 10), // Rounded corners
       ),
     );
   }

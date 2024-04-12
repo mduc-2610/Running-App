@@ -30,7 +30,7 @@ class UserViewSet(
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet
 ):
-    queryset = User.objects.all()
+    queryset = User.objects.filter(is_superuser=0)
     serializer_class = UserSerializer
 
     def get_permissions(self):

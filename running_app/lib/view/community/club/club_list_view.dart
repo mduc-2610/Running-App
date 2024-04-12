@@ -4,6 +4,7 @@ import 'package:running_app/models/activity/club.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
+import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -20,6 +21,7 @@ class ClubListView extends StatefulWidget {
 }
 
 class _ClubListViewState extends State<ClubListView> {
+  bool isLoading = true;
   List<dynamic>? clubs;
   String token = "";
 
@@ -29,25 +31,31 @@ class _ClubListViewState extends State<ClubListView> {
     });
   }
 
-  void initClubs() async {
-    print("ok");
+  Future<void> initClubs() async {
     final data = await callListAPI("activity/club", Club.fromJson, token);
-    print('data $data');
     setState(() {
       clubs = data;
     });
   }
 
+  void delayedInit() async {
+    await initClubs();
+    await Future.delayed(Duration(seconds: 1));
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     super.didChangeDependencies();
     initToken();
-    initClubs();
+    delayedInit();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('Clubs: $clubs');
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -66,121 +74,128 @@ class _ClubListViewState extends State<ClubListView> {
         
                     SizedBox(height: media.height * 0.01,),
                     // All clubs
-                    SizedBox(
-                      height: media.height - media.height * 0.1,
-                      child: GridView.count(
-                          padding: const EdgeInsets.all(0),
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.85,
-        
-                          crossAxisSpacing: media.width * 0.035,
-                          mainAxisSpacing: media.height * 0.01,
-                          children: [
-                            for(var club in clubs ?? [])
-                              CustomTextButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, '/club_detail', arguments: {
-                                    "id": club?.id
-                                  });
-                                },
-                                child: IntrinsicHeight(
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12.0),
-                                          color: TColor.SECONDARY_BACKGROUND,
-                                          border: Border.all(
-                                            color: const Color(0xff495466),
-                                            width: 2.0,
-                                          ),
-                                        ),
-                                        child: Column(
-                                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Center(
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(50),
-                                                child: Image.asset(
-                                                  "assets/img/community/ptit_logo.png",
-                                                  width: 60,
-                                                  height: 60,
-                                                  fit: BoxFit.cover,
-                                                ),
+                    if(isLoading == false)...[
+                      SizedBox(
+                        height: media.height - media.height * 0.1,
+                        child: GridView.count(
+                            padding: const EdgeInsets.all(0),
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.85,
+
+                            crossAxisSpacing: media.width * 0.035,
+                            mainAxisSpacing: media.height * 0.01,
+                            children: [
+                              for(var club in clubs ?? [])
+                                CustomTextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/club_detail', arguments: {
+                                      "id": club?.id
+                                    });
+                                  },
+                                  child: IntrinsicHeight(
+                                    child: Column(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(12.0),
+                                              color: TColor.SECONDARY_BACKGROUND,
+                                              border: Border.all(
+                                                color: const Color(0xff495466),
+                                                width: 2.0,
                                               ),
                                             ),
-                                            SizedBox(height: media.height * 0.015,),
-                                            Column(
+                                            child: Column(
+                                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  club?.name ?? "",
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                  style: TextStyle(
-                                                      color: TColor.PRIMARY_TEXT,
-                                                      fontSize: FontSize.LARGE,
-                                                      fontWeight: FontWeight.w800
-                                                  ),
-                                                ),
-                                                // SizedBox(height: media.height * 0.01),
-                                                Text(
-                                                  club?.sportType ?? "",
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                  style: TextStyle(
-                                                    color: TColor.DESCRIPTION,
-                                                    fontSize: FontSize.SMALL,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                                // SizedBox(height: media.height * 0.005,),
-                                                Text(
-                                                  "Member: ${club?.numberOfParticipants}",
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                  style: TextStyle(
-                                                    color: TColor.DESCRIPTION,
-                                                    fontSize: FontSize.SMALL,
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: media.height * 0.01,),
-        
-                                            Center(
-                                              child: SizedBox(
-                                                width: media.width * 0.4, // Set width of the TextButton
-                                                height: 35,
-                                                child: CustomMainButton(
-                                                  horizontalPadding: 0,
-                                                  verticalPadding: 0,
-                                                  onPressed: () {},
-                                                  child: Text(
-                                                    "Join",
-                                                    style: TextStyle(
-                                                        color: TColor.PRIMARY_TEXT,
-                                                        fontSize: FontSize.LARGE,
-                                                        fontWeight: FontWeight.w800
+                                                Center(
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(50),
+                                                    child: Image.asset(
+                                                      "assets/img/community/ptit_logo.png",
+                                                      width: 60,
+                                                      height: 60,
+                                                      fit: BoxFit.cover,
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ]
-        
+                                                SizedBox(height: media.height * 0.015,),
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      club?.name ?? "",
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                          color: TColor.PRIMARY_TEXT,
+                                                          fontSize: FontSize.LARGE,
+                                                          fontWeight: FontWeight.w800
+                                                      ),
+                                                    ),
+                                                    // SizedBox(height: media.height * 0.01),
+                                                    Text(
+                                                      club?.sportType ?? "",
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                        color: TColor.DESCRIPTION,
+                                                        fontSize: FontSize.SMALL,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    // SizedBox(height: media.height * 0.005,),
+                                                    Text(
+                                                      "Member: ${club?.numberOfParticipants}",
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: TextStyle(
+                                                        color: TColor.DESCRIPTION,
+                                                        fontSize: FontSize.SMALL,
+                                                        fontWeight: FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: media.height * 0.01,),
+
+                                                Center(
+                                                  child: SizedBox(
+                                                    width: media.width * 0.4, // Set width of the TextButton
+                                                    height: 35,
+                                                    child: CustomMainButton(
+                                                      horizontalPadding: 0,
+                                                      verticalPadding: 0,
+                                                      onPressed: () {},
+                                                      child: Text(
+                                                        "Join",
+                                                        style: TextStyle(
+                                                            color: TColor.PRIMARY_TEXT,
+                                                            fontSize: FontSize.LARGE,
+                                                            fontWeight: FontWeight.w800
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ]
+
+                                    ),
                                   ),
                                 ),
-                              ),
-                          ]
+                            ]
+                        ),
                       ),
-                    ),
+                    ]
+                    else...[
+                      Loading(
+                        backgroundColor: Colors.transparent,
+                      )
+                    ]
         
                   ],
                 )

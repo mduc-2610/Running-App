@@ -66,8 +66,7 @@ def run():
     # MAX_NUMBER_CATEGORIES = 20
     # MAX_NUMBER_BRANDS = 20
     # MAX_NUMBER_PRODUCTS = 50
-
-    User.objects.create_superuser(username="duc", password="Duckkucd.123", email="duc@gmail.com")
+    
     print("________________________________________________________________")
     print("USER:")
     user_list = []
@@ -81,10 +80,12 @@ def run():
             "password": make_password("Duckkucd.123")
         }
         user = User.objects.create(**data)
-        user_activity = Activity.objects.create(user=user)
+        user_activity, _ = Activity.objects.get_or_create(user=user)
         user_list.append(user)
         user_activity_list.append(user_activity)
         print(f"\tSuccesfully created User: {user}")
+    # COMMENT IN USER MODEL
+
     
     print("________________________________________________________________")
     print("PROFILE:")
@@ -103,7 +104,7 @@ def run():
             "trouser_size": random.choice(['XS', 'S', 'M', 'L', 'XL', 'XXL']),
             "shoe_size": random.randint(36, 46),
         }
-        profile = Profile.objects.create(**data)
+        profile = Profile.objects.get_or_create(**data)
         profile_list.append(profile)
         print(f"\tSuccesfully created Profile: {profile}")
     
@@ -116,7 +117,7 @@ def run():
             "follow_privacy": random.choice(["APPROVAL", "NO_APPROVAL"]),
             "activity_privacy": random.choice(["EVERYONE", "FOLLOWER", "ONLY YOU"]),
         }
-        privacy = Privacy.objects.create(**data)
+        privacy = Privacy.objects.get_or_create(**data)
         privacy_list.append(privacy)
         print(f"\tSuccesfully created Privacy: {privacy}")
         
@@ -128,7 +129,7 @@ def run():
             "user": user_list[i],
             "activity": user_activity_list[i],
         }
-        performance = Performance.objects.create(**data)
+        performance = Performance.objects.get_or_create(**data)
         performance_list.append(performance)
         print(f"\tSuccesfully created Performance: {performance}")
     
@@ -155,7 +156,7 @@ def run():
             "pending_join_requests": random.choice([True, False]),
             "invited_to_club": random.choice([True, False]),
         }
-        notification_setting = NotificationSetting.objects.create(**data)
+        notification_setting = NotificationSetting.objects.get_or_create(**data)
         notification_setting_list.append(notification_setting)
         print(f"Succesfully created NotificationSetting for user {user}")
 
@@ -169,6 +170,7 @@ def run():
         completed_at = fake.date_time_between_dates(datetime_start=start_date, datetime_end=end_date)
 
         data = {
+            "title": fake.text(max_nb_chars=50),
             "distance": random.uniform(0, 10),
             "duration": timedelta(hours=random.randint(0, 3), minutes=random.randint(0, 59), seconds=random.randint(0, 59)),
             "completed_at": completed_at,
@@ -390,3 +392,5 @@ def run():
         user_product = UserProduct.objects.get_or_create(**data)
         user_product_list.append(user_product)
         print(f"\tSuccesfully created User Product: {user_product}")
+    User.objects.create_superuser(username="duc", password="Duckkucd.123", email="duc@gmail.com")
+

@@ -38,7 +38,8 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
   DetailUser? user;
   DetailProfile? userProfile;
   String? nation, city, shirtSize, trouserSize;
-
+  Color createProfileButtonState = TColor.BUTTON_DISABLED;
+  bool nameClearButton = false;
 
   String? userId;
   String? email;
@@ -146,15 +147,15 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
       "controller": TextEditingController() // Name controller
     },
     {
-      "hintText": "Nation",
+      "hintText": "Nation (Option)",
       "value": "",
     },
     {
-      "hintText": "City",
+      "hintText": "City (Option)",
       "value": "",
     },
     {
-      "hintText": "Birthday",
+      "hintText": "Birthday*",
       "value": "",
       "controller": TextEditingController(), // Height controller
     },
@@ -188,6 +189,15 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
     },
   ];
 
+  void checkFormData() {
+    setState(() {
+      createProfileButtonState =
+      (fields[0]['controller'].text != "" &&
+        fields[4]['value'] != ""
+      )
+          ? TColor.PRIMARY : TColor.BUTTON_DISABLED;
+    });
+  }
 
   void createAccountInformation() async {
     final profile = CreateUpdateProfile(
@@ -196,7 +206,7 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
       country: fields[2]["value"] ?? "",
       city: fields[3]["value"] ?? "",
       gender: gender?.toUpperCase(),
-      dateOfBirth: fields[4]["controller"].text,
+      dateOfBirth: fields[4]["value"],
       height: (fields[5]["controller"].text != "") ? int.parse(fields[5]["controller"].text) : null,
       weight: (fields[6]["controller"].text != "") ? int.parse(fields[6]["controller"].text) : null,
       shoeSize: (fields[8]["controller"].text != "") ? int.parse(fields[8]["controller"].text) : null,
@@ -206,25 +216,22 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
     print(profile);
 
     final data = await callCreateAPI('account/profile', profile.toJson(), "");
+    print(data);
     showNotification(context, 'Notice', "Successfully updated",
         onPressed: () {
-          Navigator.pop(context);
+          Navigator.pushReplacementNamed(context, '/sign_in');
         }
     );
+
     // Navigator.pop(context);
   }
   @override
   Widget build(BuildContext context) {
-    print(userId);
-    print(email);
-    print(phoneNumber);
-    print(fields[2]["value"] ?? "");
-    print(fields[3]["value"] ?? "");
-    print("type: ${fields[8]["value"]}");
+    print(createProfileButtonState);
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Header(title: "Account Information", noIcon: true,),
+        title: const Header(title: "Create Profile", noIcon: true,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -287,14 +294,14 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
                           SizedBox(height: media.height * 0.02),
                           Column(
                             children: [
-                              for(int i = 0; i < 2; i++)...[
                                 CustomTextFormField(
-                                  controller: fields[i]["controller"],
-                                  // initialValue: fields[i]["controller"].text ?? fields[i]["value"],
+                                  onChanged: (_) => checkFormData(),
+                                  controller: fields[0]["controller"],
+                                  // initialValue: fields[0]["controller"].text ?? fields[0]["value"],
                                   decoration: CustomInputDecoration(
-                                    // hintText: fields[i]["hintText"],
+                                    // hintText: fields[0]["hintText"],
                                     label: Text(
-                                      fields[i]["hintText"],
+                                      fields[0]["hintText"],
                                       style: TextStyle(
                                         color: TColor.DESCRIPTION,
                                         fontSize: FontSize.NORMAL,
@@ -303,10 +310,36 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
                                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                                   ),
                                   keyboardType: TextInputType.text,
-                                  noneEditable: (i == 1) ? true : false,
+                                  showClearButton: nameClearButton,
+                                  onClearChanged: () {
+                                    fields[0]["controller"].clear();
+                                    setState(() {
+                                      nameClearButton = false;
+                                      createProfileButtonState = TColor.BUTTON_DISABLED;
+                                    });
+                                  },
                                 ),
-                                SizedBox(height: media.height * 0.015,)
-                              ],
+                                SizedBox(height: media.height * 0.015,),
+
+                              CustomTextFormField(
+                                controller: fields[1]["controller"],
+                                // initialValue: fields[1]["controller"].text ?? fields[1]["value"],
+                                decoration: CustomInputDecoration(
+                                  // hintText: fields[1]["hintText"],
+                                  label: Text(
+                                    fields[1]["hintText"],
+                                    style: TextStyle(
+                                      color: TColor.DESCRIPTION,
+                                      fontSize: FontSize.NORMAL,
+                                    ),
+                                  ),
+                                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                                ),
+                                keyboardType: TextInputType.text,
+                                noneEditable: true,
+                              ),
+                              SizedBox(height: media.height * 0.015,),
+
                               for(int i = 2; i < 4; i++)...[
                                 CustomMainButton(
                                   verticalPadding: 22,
@@ -330,7 +363,7 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "${fields[i]["value"] ?? fields[i]["hintText"]}",
+                                        "${fields[i]["value"] == "" ?  fields[i]["hintText"] : fields[i]["value"]}",
                                         style: TxtStyle.largeTextDesc,
                                       ),
                                       Transform.rotate(
@@ -422,6 +455,7 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
                               );
                               setState(() {
                                 fields[4]["value"] = formatDate(result!);
+                                createProfileButtonState = (fields[4]["value"] != "") ? TColor.PRIMARY : TColor.BUTTON_DISABLED;
                               });
                             },
                             child: Row(
@@ -557,32 +591,6 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
                           ]
                         ],
                       ),
-                      SizedBox(height: media.height * 0.02,),
-
-                      Column(
-                        children: [
-                          SizedBox(
-                            width: media.width,
-                            child: CustomMainButton(
-                              background: Colors.transparent,
-                              borderWidth: 2.0,
-                              borderWidthColor: TColor.PRIMARY,
-                              horizontalPadding: 0,
-                              onPressed: () {
-                                Navigator.pushNamed(context, "/address");
-                              },
-                              child: Text(
-                                "Add address",
-                                style: TextStyle(
-                                    color: TColor.PRIMARY,
-                                    fontSize: FontSize.LARGE,
-                                    fontWeight: FontWeight.w800
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
                     ],
                   ),
                 )
@@ -599,9 +607,10 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
             margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
-              onPressed: createAccountInformation,
+              background: createProfileButtonState,
+              onPressed: (createProfileButtonState == TColor.BUTTON_DISABLED) ? null : createAccountInformation,
               child: Text(
-                "Save",
+                "Create profile",
                 style: TextStyle(
                     color: TColor.PRIMARY_TEXT,
                     fontSize: FontSize.LARGE,

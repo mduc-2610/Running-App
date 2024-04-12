@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
+import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/search_filter.dart';
@@ -163,17 +164,36 @@ class _ClubViewState extends State<ClubView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Clubs joined",
-                style: TextStyle(
-                    color: TColor.PRIMARY_TEXT,
-                    fontSize: FontSize.LARGE,
-                    fontWeight: FontWeight.w800
-                ),
-                textAlign: TextAlign.start,
+              Row(
+                children: [
+                  Text(
+                    "Clubs joined",
+                    style: TextStyle(
+                        color: TColor.PRIMARY_TEXT,
+                        fontSize: FontSize.LARGE,
+                        fontWeight: FontWeight.w800
+                    ),
+                    // textAlign: TextAlign.start,
+                  ),
+                ],
               ),
               SizedBox(height: media.height * 0.015,),
               if(isLoading == false)...[
+                if(userClubs?.length == 0)...[
+                  SizedBox(height: media.height * 0.02,),
+                  Center(
+                    child: EmptyListNotification(
+                      title: "No clubs found",
+                      description: "Discover new clubs and compete with other athletes",
+                      addButtonText: "Explore now",
+                      addButton: true,
+                      addButtonWidth: media.width * 0.45,
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/club_list');
+                      },
+                    ),
+                  )
+                ],
                 SizedBox(
                   height: media.height,
                   child: SingleChildScrollView(

@@ -97,6 +97,10 @@ class TxtStyle {
       color: TColor.DESCRIPTION,
       fontSize: FontSize.EXTRA_SMALL,
   );
+  static TextStyle get smallTextDesc => TextStyle(
+    color: TColor.DESCRIPTION,
+    fontSize: FontSize.SMALL,
+  );
   static TextStyle get descSectionNormal => TextStyle(
     color: TColor.DESCRIPTION,
     fontSize: FontSize.SMALL,
