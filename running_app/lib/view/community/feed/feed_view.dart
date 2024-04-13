@@ -38,6 +38,10 @@ class _FeedViewState extends State<FeedView> {
     });
   }
 
+  Future<void> handleRefresh() async {
+    delayedInit();
+  }
+
   void delayedInit() async {
 
     await initActivityRecord();
@@ -58,22 +62,26 @@ class _FeedViewState extends State<FeedView> {
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     print('Activity Record: ${activityRecords?.length}');
-    return SizedBox(
-      height: media.height * 0.73,
-      child: SingleChildScrollView(
-        child: (isLoading == false) ? Column(
-          children: [
-            for(var activityRecord in activityRecords ?? [])...[
-              ActivityRecordPost(
-                  activityRecord: activityRecord,
-                  checkRequestUser: user?.id == activityRecord?.user?.id,
-              ),
-              // SeparateBar(width: media.width, height: 10, color: TColor.SECONDARY_BACKGROUND,  radius: 0,),
-            ]
-          ],
-        ) : Loading(
-          backgroundColor: Colors.transparent,
-        )
+    return RefreshIndicator(
+      onRefresh: handleRefresh,
+      child: SizedBox(
+        height: media.height * 0.73,
+        child: SingleChildScrollView(
+          child: (isLoading == false) ? Column(
+            children: [
+              for(var activityRecord in activityRecords ?? [])...[
+                ActivityRecordPost(
+                    token: token,
+                    activityRecord: activityRecord,
+                    checkRequestUser: user?.id == activityRecord?.user?.id,
+                ),
+                // SeparateBar(width: media.width, height: 10, color: TColor.SECONDARY_BACKGROUND,  radius: 0,),
+              ]
+            ],
+          ) : Loading(
+            backgroundColor: Colors.transparent,
+          )
+        ),
       ),
     );
   }

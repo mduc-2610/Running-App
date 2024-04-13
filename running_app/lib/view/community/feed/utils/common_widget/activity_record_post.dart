@@ -3,21 +3,26 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:running_app/models/activity/activity_record.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/limit_line_text.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/show_action_list.dart';
+import 'package:running_app/utils/common_widgets/show_notification.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 
 
 class ActivityRecordPost extends StatefulWidget {
+  final String token;
   final DetailActivityRecord? activityRecord;
   final bool? checkRequestUser;
   final bool socialSection;
+
   const ActivityRecordPost({
+    required this.token,
     required this.activityRecord,
     this.checkRequestUser,
     this.socialSection = true,
@@ -34,12 +39,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
   bool showViewMoreDescriptionButton = false;
   bool showViewMoreTitleButton = false;
   int currentSlide = 0;
-  Map<String, dynamic> sportTypeIcon = {
-    "Running": Icons.directions_run_rounded,
-    "Walking": Icons.directions_walk_rounded,
-    "Cycling": Icons.directions_bike_rounded,
-    "Swimming": Icons.pool_rounded
-  };
+
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +99,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                         Row(
                           children: [
                             Icon(
-                              sportTypeIcon['${widget.activityRecord?.sportType ?? "Running"}'],
+                              ActIcon.sportTypeIcon['${widget.activityRecord?.sportType ?? "Running"}'],
                               color: TColor.DESCRIPTION,
                               size: 20,
                             ),
@@ -128,14 +128,22 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                           {
                             "text": "Edit Activity",
                             "onPressed": () {
-                              Navigator.pushNamed(context, '/activity_record_edit');
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, '/activity_record_edit', arguments: {
+                                "id": widget.activityRecord?.id                              });
                             }
                           },
                           {
                             "text": "Delete Activity",
                             "textColor": Colors.red,
-                            "onPressed": () {
-
+                            "onPressed": () async {
+                              showNotificationDecision(context, 'Notice', "Are you sure to delete this activity", "No", "Yes", onPressed2: () async {
+                                await callDestroyAPI(
+                                    'activity/activity-record',
+                                    widget.activityRecord?.id,
+                                    widget.token
+                                );
+                              });
                             }
                           }
                         ],
@@ -305,7 +313,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                     });
                   },
                   child: Text(
-                    "0 comment",
+                    "10 comment",
                     style: TxtStyle.normalTextDesc,
                   ),
                 ),

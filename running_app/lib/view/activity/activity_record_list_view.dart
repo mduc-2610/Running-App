@@ -92,6 +92,10 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
     super.didChangeDependencies();
   }
 
+  Future<void> handleRefresh() async {
+    delayedInit();
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -131,161 +135,165 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
           ),
           backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
         ),
-      body: SingleChildScrollView(
-        child: DefaultBackgroundLayout(
-          child: Stack(
-            children: [
-              if(isLoading == false)...[
-                MainWrapper(
-                    child: Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: media.height * 0.02,
-                              horizontal: media.width * 0.05,
-                            ),
-                            decoration: BoxDecoration(
-                                color: const Color(0xff464c67),
-                                borderRadius: BorderRadius.circular(18.0),
-                                border: Border.all(
-                                    color: const Color(0xff444b5e),
-                                    width: 2
-                                )
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                for(var stats in statsList)...[
-                                  Column(
-                                    children: [
-                                      SvgPicture.asset(
-                                        stats["icon"],
-                                        width: media.width * 0.08,
-                                        height: media.width * 0.08,
-                                        fit: BoxFit.contain,
-                                      ),
-                                      Text(
-                                        "${stats["figure"]}",
-                                        style: TextStyle(
-                                          color: TColor.PRIMARY_TEXT,
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w900,
+      body: RefreshIndicator(
+        onRefresh: handleRefresh,
+        child: SingleChildScrollView(
+          child: DefaultBackgroundLayout(
+            child: Stack(
+              children: [
+                if(isLoading == false)...[
+                  MainWrapper(
+                      child: Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: media.height * 0.02,
+                                horizontal: media.width * 0.05,
+                              ),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xff464c67),
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  border: Border.all(
+                                      color: const Color(0xff444b5e),
+                                      width: 2
+                                  )
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  for(var stats in statsList)...[
+                                    Column(
+                                      children: [
+                                        SvgPicture.asset(
+                                          stats["icon"],
+                                          width: media.width * 0.08,
+                                          height: media.width * 0.08,
+                                          fit: BoxFit.contain,
                                         ),
-                                      ),
-                                      Text(
-                                          "${stats["type"]}",
+                                        Text(
+                                          "${stats["figure"]}",
                                           style: TextStyle(
-                                              color: TColor.DESCRIPTION,
-                                              fontSize: FontSize.NORMAL,
-                                              fontWeight: FontWeight.w500
-                                          )
-                                      )
-                                    ],
-                                  ),
-                                  if(statsList.indexOf(stats) != 2) SeparateBar(width: 2, height: media.height * 0.07)
-                                ]
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: media.height * 0.02,),
-                          Column(
-                            children: [
-                              if(activityRecords?.length == 0)...[
-                                SizedBox(height: media.height * 0.2,),
-                                EmptyListNotification(
-                                  title: "No activities ",
-                                )
-                              ],
-                              for(var activity in activityRecords ?? [])
-                                CustomTextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, '/activity_record_detail', arguments: {
-                                      "id": activity?.id,
-                                    });
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(0, 0, 0, media.height * 0.01),
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: media.height * 0.015,
-                                      horizontal: media.width * 0.05,
-                                    ),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12.0),
-                                        border: Border.all(
-                                            color: const Color(0xff3f4252),
-                                            width: 2
-                                        )
-                                    ),
-                                    child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                  activity?.completedAt ?? "",
-                                                  style: TextStyle(
-                                                    color: TColor.PRIMARY,
-                                                    fontSize: 16,
-                                                    fontWeight: FontWeight.w600,
-                                                  )
-                                              ),
-                                              SizedBox(height: media.height * 0.005),
-                                              RichText(
-                                                  text: TextSpan(
-                                                      style: TextStyle(
-                                                        color: TColor.DESCRIPTION,
-                                                        fontSize: 12,
-                                                      ),
-                                                      children: <TextSpan>[
-                                                        TextSpan(
-                                                          text: '${activity?.points}',
-                                                          style: TextStyle(
-                                                            color: Color(0xffda477e),
-                                                          ),
-                                                        ),
-                                                        TextSpan(text: "  •  ${activity?.distance} km •  ${activity?.kcal} kcal"),
-                                                      ]
-                                                  )
-                                              )
-                                            ],
+                                            color: TColor.PRIMARY_TEXT,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w900,
                                           ),
-
-                                          RichText(
-                                            text: TextSpan(
-                                                style: TextStyle(
-                                                    color: TColor.DESCRIPTION,
-                                                    fontSize: FontSize.SMALL,
-                                                    fontWeight: FontWeight.w400
-                                                ),
-                                                children: <TextSpan> [
-                                                  TextSpan(
-                                                      text: '${activity?.steps ?? ""} ',
-                                                      style: TextStyle(
-                                                          color: TColor.DESCRIPTION,
-                                                          fontSize: FontSize.NORMAL,
-                                                          fontWeight: FontWeight.w900
-                                                      )
-                                                  ),
-                                                  TextSpan(text: "steps")
-                                                ]
-                                            ),
+                                        ),
+                                        Text(
+                                            "${stats["type"]}",
+                                            style: TextStyle(
+                                                color: TColor.DESCRIPTION,
+                                                fontSize: FontSize.NORMAL,
+                                                fontWeight: FontWeight.w500
+                                            )
+                                        )
+                                      ],
+                                    ),
+                                    if(statsList.indexOf(stats) != 2) SeparateBar(width: 2, height: media.height * 0.07)
+                                  ]
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: media.height * 0.02,),
+                            Column(
+                              children: [
+                                if(activityRecords?.length == 0)...[
+                                  SizedBox(height: media.height * 0.2,),
+                                  EmptyListNotification(
+                                    title: "No activities ",
+                                  )
+                                ],
+                                for(var activity in activityRecords ?? [])
+                                  CustomTextButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, '/activity_record_detail', arguments: {
+                                        "id": activity?.id,
+                                        "checkRequestUser": true,
+                                      });
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.fromLTRB(0, 0, 0, media.height * 0.01),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: media.height * 0.015,
+                                        horizontal: media.width * 0.05,
+                                      ),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(12.0),
+                                          border: Border.all(
+                                              color: const Color(0xff3f4252),
+                                              width: 2
                                           )
-                                        ]
+                                      ),
+                                      child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                    activity?.completedAt ?? "",
+                                                    style: TextStyle(
+                                                      color: TColor.PRIMARY,
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w600,
+                                                    )
+                                                ),
+                                                SizedBox(height: media.height * 0.005),
+                                                RichText(
+                                                    text: TextSpan(
+                                                        style: TextStyle(
+                                                          color: TColor.DESCRIPTION,
+                                                          fontSize: 12,
+                                                        ),
+                                                        children: <TextSpan>[
+                                                          TextSpan(
+                                                            text: '${activity?.points}',
+                                                            style: TextStyle(
+                                                              color: Color(0xffda477e),
+                                                            ),
+                                                          ),
+                                                          TextSpan(text: "  •  ${activity?.distance} km •  ${activity?.kcal} kcal"),
+                                                        ]
+                                                    )
+                                                )
+                                              ],
+                                            ),
+
+                                            RichText(
+                                              text: TextSpan(
+                                                  style: TextStyle(
+                                                      color: TColor.DESCRIPTION,
+                                                      fontSize: FontSize.SMALL,
+                                                      fontWeight: FontWeight.w400
+                                                  ),
+                                                  children: <TextSpan> [
+                                                    TextSpan(
+                                                        text: '${activity?.steps ?? ""} ',
+                                                        style: TextStyle(
+                                                            color: TColor.DESCRIPTION,
+                                                            fontSize: FontSize.NORMAL,
+                                                            fontWeight: FontWeight.w900
+                                                        )
+                                                    ),
+                                                    TextSpan(text: "steps")
+                                                  ]
+                                              ),
+                                            )
+                                          ]
+                                      ),
                                     ),
                                   ),
-                                ),
-                            ],
-                          )
-                        ]
-                    )
-                ),
-              ]
-              else...[
-                Loading()
-              ]
-            ],
+                              ],
+                            )
+                          ]
+                      )
+                  ),
+                ]
+                else...[
+                  Loading()
+                ]
+              ],
+            ),
           ),
         ),
       ),

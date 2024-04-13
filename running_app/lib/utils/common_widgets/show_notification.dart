@@ -83,26 +83,35 @@ void showNotificationDecision(
                       "text": deny,
                       "color": TColor.WARNING,
                       "background": TColor.BACKGROUND_WARNING,
+                      "onPressed": onPressed1 ?? () {
+                        Navigator.pop(context);
+                      },
                     },
                     {
                       "text": accept,
                       "color": TColor.PRIMARY_TEXT,
                       "background": TColor.PRIMARY,
+                      "onPressed": onPressed2 ?? () {
+
+                      },
                     }
                   ])...[
-                    CustomMainButton(
-                      verticalPadding: 8,
-                      horizontalPadding: 0,
-                      onPressed: onPressed1 ?? () {},
-                      child: Text(
-                        x["text"] as String,
-                        style: TextStyle(
-                          color: x["color"] as Color,
-                          fontSize: FontSize.LARGE,
-                          fontWeight: FontWeight.w800,
+                    SizedBox(
+                      width: media.width * 0.3,
+                      child: CustomMainButton(
+                        verticalPadding: 8,
+                        horizontalPadding: 0,
+                        onPressed: x["onPressed"],
+                        child: Text(
+                          x["text"] as String,
+                          style: TextStyle(
+                            color: x["color"] as Color,
+                            fontSize: FontSize.LARGE,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
+                        background: x["background"] as Color,
                       ),
-                      background: x["background"] as Color,
                     ),
                     if(x["text"] == deny) SizedBox(width: media.width * 0.03,),
                   ]

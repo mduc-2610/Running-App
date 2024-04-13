@@ -1,3 +1,4 @@
+import 'package:running_app/models/account/leaderboard.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/group.dart';
 
@@ -48,7 +49,7 @@ class DetailEvent extends Event {
   final String? sportType;
   final String? privacy;
   final String? competition;
-  final List<DetailUser>? participants;
+  final List<Leaderboard>? participants;
   final List<Group>? groups;
 
   DetailEvent({
@@ -100,7 +101,7 @@ class DetailEvent extends Event {
         sportType = json['sport_type'],
         privacy = json['privacy'],
         competition = json['competition'],
-        participants = (json['participants'] as List<dynamic>).map((e) => DetailUser.fromJson(e)).toList(),
+        participants = (json['participants'] as List<dynamic>).map((e) => Leaderboard.fromJson(e)).toList(),
         groups = (json['groups'] as List<dynamic>).map((e) => Group.fromJson(e)).toList(),
         super(
           id: json['id'],

@@ -42,7 +42,19 @@ class _EventBoxState extends State<EventBox> {
   void initUser() {
     setState(() {
       user = Provider.of<UserProvider>(context).user;
-      userActivity = Provider.of<UserProvider>(context).userActivity;
+    });
+  }
+
+  void initUserActivity() async {
+    final data = await callRetrieveAPI(
+        null,
+        null,
+        user?.activity,
+        Activity.fromJson,
+        token
+    );
+    setState(() {
+      userActivity = data;
       userInEvent = checkUserInEvent();
     });
   }
@@ -52,6 +64,7 @@ class _EventBoxState extends State<EventBox> {
     super.didChangeDependencies();
     initToken();
     initUser();
+    initUserActivity();
   }
 
   bool checkUserInEvent() {

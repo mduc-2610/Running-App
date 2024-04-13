@@ -263,6 +263,9 @@ Future<dynamic> showDate(
 Future<String> showChoiceList(
     BuildContext context,
     List<String> choiceList,
+    {
+      String? title
+    }
     ) async {
   Completer<String> completer = Completer<String>();
   var media = MediaQuery.of(context).size;
@@ -299,7 +302,7 @@ Future<String> showChoiceList(
                 ),
                 title: Center(
                     child: Text(
-                      "Option",
+                      title ?? "Option",
                       style: TxtStyle.headSection,
                     )),
               ),

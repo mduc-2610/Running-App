@@ -150,13 +150,26 @@ class CreateActivityRecord {
 }
 
 class UpdateActivityRecord {
+  final String? title;
   final String? description;
+  final String? privacy;
 
-  UpdateActivityRecord({required this.description});
+  UpdateActivityRecord({
+    required this.title,
+    required this.description,
+    required this.privacy,
+  });
 
   Map<String, dynamic> toJson() {
     return {
-      'description': description
+      'title': title,
+      'description': description,
+      'privacy': privacy
     };
+  }
+
+  @override
+  String toString() {
+    return "${toJson()}";
   }
 }

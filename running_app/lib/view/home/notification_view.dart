@@ -18,10 +18,12 @@ class NotificationView extends StatelessWidget {
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
         child: DefaultBackgroundLayout(
           child: Stack(
             children: [
               MainWrapper(
+                bottomMargin: 0,
                 child: Column(
                   children: [
                     SizedBox(

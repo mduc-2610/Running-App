@@ -85,5 +85,9 @@ class CreateActivityRecordSerializer(serializers.ModelSerializer):
 class UpdateActivityRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityRecord
-        fields = ("description",)
+        fields = (
+            "description",
+            "title",
+            "privacy",
+        )
 

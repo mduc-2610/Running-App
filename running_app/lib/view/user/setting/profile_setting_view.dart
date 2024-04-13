@@ -179,7 +179,7 @@ class _ProfileSettingViewState extends State<ProfileSettingView> {
 
     final data = await callUpdateAPI('account/profile', getUrlId(user?.profile ?? ""), profile.toJson(), token);
     print(data);
-    showNotification(context, 'Notice', "Successfully updated",
+    showNotification(context, 'Notice', "Successfully updated account information",
       onPressed: () {
         Navigator.pop(context);
       }

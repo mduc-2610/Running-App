@@ -163,3 +163,12 @@ class BShadow {
     offset: const Offset(0, 3),
   );
 }
+
+class ActIcon {
+  static final Map<String, dynamic> sportTypeIcon = {
+    "Running": Icons.directions_run_rounded,
+    "Walking": Icons.directions_walk_rounded,
+    "Cycling": Icons.directions_bike_rounded,
+    "Swimming": Icons.pool_rounded
+  };
+}

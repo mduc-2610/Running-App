@@ -74,6 +74,15 @@ String formatTimeDuration(String timeDuration, {int type = 1}) {
 String formatDate(DateTime x) {
   return DateFormat('yyyy-MM-dd').format(x);
 }
-String formatDateEnUS(DateTime x) {
-  return DateFormat('MMMM dd, yyyy', 'en_US').format(x);
+
+String formatDateTime(DateTime x) {
+  return DateFormat('yyyy-MM-dd hh:mm').format(x);
+}
+
+String formatDateTimeEnUS(DateTime x, {bool shortcut = false, bool time = false}) {
+  String monthFormat = shortcut ? 'MMM' : 'MMMM';
+  String dateFormat = '$monthFormat dd, yyyy';
+  String timeFormat = time ? 'hh:mm' : '';
+
+  return DateFormat('$dateFormat $timeFormat', 'en_US').format(x);
 }

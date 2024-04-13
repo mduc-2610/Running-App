@@ -94,8 +94,8 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
       name: eventNameTextController.text,
       description: eventDescriptionTextController.text,
       contactInformation: contactInformationButtonState ? contactInformationTextController.text : null,
-      startedAt: formatDate(startDate),
-      endedAt: formatDate(endDate),
+      startedAt: formatDateTime(startDate),
+      endedAt: formatDateTime(endDate),
       completionGoal: completionGoal,
       competition: convertChoice(competition),
       rankingType: convertChoice(rankingType),
@@ -126,7 +126,8 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
     Navigator.pop(context);
     Navigator.pop(context);
     Navigator.pushNamed(context, '/event_detail', arguments: {
-      "id": data["id"]
+      "id": data["id"],
+      "userInEvent": true,
     });
   }
 
@@ -450,7 +451,7 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "${formatDateEnUS(startDate)}",
+                                          "${formatDateTimeEnUS(startDate)}",
                                           style: TxtStyle.largeTextDesc,
                                         ),
                                         Icon(
@@ -501,7 +502,7 @@ class _EventInformationCreateViewState extends State<EventInformationCreateView>
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          "${formatDateEnUS(endDate)}",
+                                          "${formatDateTimeEnUS(endDate)}",
                                           style: TxtStyle.largeTextDesc,
                                         ),
                                         Icon(

@@ -46,7 +46,8 @@ class _FeedCommentViewState extends State<FeedCommentView> {
         activityRecordId,
         null,
         DetailActivityRecord.fromJson,
-        token);
+        token
+    );
 
     setState(() {
       activityRecord = data;
@@ -76,6 +77,10 @@ class _FeedCommentViewState extends State<FeedCommentView> {
     super.didChangeDependencies();
   }
 
+  Future<void> handleRefresh() async {
+    delayedInit();
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -83,101 +88,105 @@ class _FeedCommentViewState extends State<FeedCommentView> {
       appBar: CustomAppBar(
         title: Header(title: "Comment", noIcon: true),
       ),
-      body: SingleChildScrollView(
-        child: DefaultBackgroundLayout(
-          child: Stack(
-            children: [
-              (isLoading == false) ?
-              Column(
-                children: [
-                  Column(
-                    children: [
-                      ActivityRecordPost(
-                          activityRecord: activityRecord,
-                          socialSection: false,
-                          checkRequestUser: checkRequestUser,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: media.height * 0.02,),
-                  MainWrapper(
-                    topMargin: 0,
-                    child: Column(
+      body: RefreshIndicator(
+        onRefresh: handleRefresh,
+        child: SingleChildScrollView(
+          child: DefaultBackgroundLayout(
+            child: Stack(
+              children: [
+                (isLoading == false) ?
+                Column(
+                  children: [
+                    Column(
                       children: [
-                        EmptyListNotification(
-                          title: "No comment",
+                        ActivityRecordPost(
+                            token: token,
+                            activityRecord: activityRecord,
+                            socialSection: false,
+                            checkRequestUser: checkRequestUser,
                         ),
-                        for(int i = 0; i < 5; i++)...[
-
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(50),
-                                    child: Image.asset(
-                                      "assets/img/community/ptit_logo.png",
-                                      width: 50,
-                                      height: 50,
-                                    ),
-                                  ),
-                                  SizedBox(width: media.width * 0.02,),
-                                  Container(
-                                    width: media.width * 0.8,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 12,
-                                        horizontal: 12
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: TColor.SECONDARY_BACKGROUND,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            "Dang Minh Duc",
-                                            style: TextStyle(
-                                                color: TColor.PRIMARY_TEXT,
-                                                fontSize: FontSize.NORMAL,
-                                                fontWeight: FontWeight.w700
-                                            )
-                                        ),
-                                        LimitLineText(
-                                            description: "${activityRecord?.description}",
-                                            onTap: () {
-                                              setState(() {
-                                                showFullText = (showFullText) ? false : true;
-                                              });
-                                            },
-                                            showFullText: showFullText,
-                                            showViewMoreButton: showViewMoreButton
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              SizedBox(height: media.height * 0.007,),
-                              Padding(
-                                padding: EdgeInsets.only(left: media.width * 0.08),
-                                child: Text(
-                                  "Today 20:49",
-                                  style: TxtStyle.smallTextDesc,
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(height: media.height * 0.02,)
-                        ]
                       ],
                     ),
-                  )
-                ],
-              ) : Loading(),
-            ],
+                    SizedBox(height: media.height * 0.02,),
+                    MainWrapper(
+                      topMargin: 0,
+                      child: Column(
+                        children: [
+                          EmptyListNotification(
+                            title: "No comment",
+                          ),
+                          for(int i = 0; i < 5; i++)...[
+
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(50),
+                                      child: Image.asset(
+                                        "assets/img/community/ptit_logo.png",
+                                        width: 50,
+                                        height: 50,
+                                      ),
+                                    ),
+                                    SizedBox(width: media.width * 0.02,),
+                                    Container(
+                                      width: media.width * 0.8,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 12,
+                                          horizontal: 12
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: TColor.SECONDARY_BACKGROUND,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              "Dang Minh Duc",
+                                              style: TextStyle(
+                                                  color: TColor.PRIMARY_TEXT,
+                                                  fontSize: FontSize.NORMAL,
+                                                  fontWeight: FontWeight.w700
+                                              )
+                                          ),
+                                          LimitLineText(
+                                              description: "${activityRecord?.description}",
+                                              onTap: () {
+                                                setState(() {
+                                                  showFullText = (showFullText) ? false : true;
+                                                });
+                                              },
+                                              showFullText: showFullText,
+                                              showViewMoreButton: showViewMoreButton
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(height: media.height * 0.007,),
+                                Padding(
+                                  padding: EdgeInsets.only(left: media.width * 0.08),
+                                  child: Text(
+                                    "Today 20:49",
+                                    style: TxtStyle.smallTextDesc,
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: media.height * 0.02,)
+                          ]
+                        ],
+                      ),
+                    )
+                  ],
+                ) : Loading(),
+              ],
+            ),
           ),
         ),
       ),

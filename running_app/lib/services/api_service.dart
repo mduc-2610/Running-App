@@ -75,6 +75,21 @@ class APIService {
     return json.decode(response.body);
   }
 
+  Future<void> delete(String? id) async {
+    final response = await http.delete(
+      Uri.parse(url(id: id!)),
+      headers: _getHeaders(),
+    );
+
+    if (response.statusCode == 204) {
+      print("Successful");
+      return;
+    } else {
+      throw Exception('Failed to delete object');
+    }
+  }
+
+
   Map<String, String> _getHeaders() {
     // if (token != null) {
     return (token != "") ? {
@@ -144,4 +159,13 @@ Future<dynamic> callUpdateAPI(
     ) async {
   APIService service = APIService(endpoint: endpoint, token: token);
   return await service.update(id, modelToJson);
+}
+
+Future<void> callDestroyAPI(
+    String? endpoint,
+    String? id,
+    String token,
+    ) async {
+  APIService service = APIService(endpoint: endpoint, token: token);
+  await service.delete(id!);
 }

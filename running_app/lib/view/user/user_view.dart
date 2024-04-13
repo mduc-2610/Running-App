@@ -465,7 +465,9 @@ class _UserViewState extends State<UserView> {
                                     )
                                   ]
                               ),
-                            )
+                            ),
+                            SizedBox(height: media.height * 0.02,),
+
                           ],
                         ) : InventoryLayout(productList: productList),
 

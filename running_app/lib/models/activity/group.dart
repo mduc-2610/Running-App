@@ -1,3 +1,5 @@
+import 'package:running_app/models/account/leaderboard.dart';
+
 import '../account/user.dart';
 import '../activity/event.dart';
 
@@ -46,7 +48,7 @@ class Group {
 class DetailGroup extends Group {
   final int? rank;
   // final Event? event;
-  final List<User>? users;
+  final List<Leaderboard>? users;
   final String? description;
 
   DetailGroup({
@@ -72,7 +74,7 @@ class DetailGroup extends Group {
   DetailGroup.fromJson(Map<String, dynamic> json)
       : rank = json['rank'],
         // event = Event.fromJson(json['event']),
-          users = (json['users'] as List<dynamic>).map((user) => User.fromJson(user)).toList(),
+        users = (json['users'] as List<dynamic>).map((user) => Leaderboard.fromJson(user)).toList(),
         description = json['description'],
         super.fromJson(json);
 

@@ -9,6 +9,7 @@ import 'package:running_app/models/account/privacy.dart';
 import 'package:running_app/models/account/profile.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
+import 'package:running_app/utils/providers/delete_activity_state_provider.dart';
 import 'package:running_app/view/activity/activity_record_create_view.dart';
 import 'package:running_app/view/activity/activity_record_detail_view.dart';
 import 'package:running_app/view/activity/activity_record_edit_view.dart';
@@ -115,6 +116,9 @@ void main() async {
         ChangeNotifierProvider<EventAdvancedOptionCreateProvider>(
           create: (_) => EventAdvancedOptionCreateProvider()
         ),
+        ChangeNotifierProvider<DeleteActivityStateProvider>(
+          create: (_) => DeleteActivityStateProvider(),
+        )
   ],
       child: MyApp(homeScreen: homeScreen, token: token, user: user),
     ),
@@ -198,7 +202,7 @@ class MyApp extends StatelessWidget {
         '/group_management': (context) => const EventGroupManagementView(),
         '/member_management_private': (context) => const MemberManagementPrivateView(),
         '/member_management_public': (context) => const MemberManagementPublicView(),
-        //Social
+        // Feed
         '/feed_comment': (context) => const FeedCommentView(),
 
         // User

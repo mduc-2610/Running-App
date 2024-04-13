@@ -59,6 +59,10 @@ class _ClubViewState extends State<ClubView> {
     super.didChangeDependencies();
   }
 
+  Future<void> handleRefresh() async {
+    delayedInit();
+  }
+
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -159,195 +163,198 @@ class _ClubViewState extends State<ClubView> {
         SizedBox(height: media.height * 0.03,),
 
         // Your clubs
-        MainWrapper(
-          topMargin: 0,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Clubs joined",
-                    style: TextStyle(
-                        color: TColor.PRIMARY_TEXT,
-                        fontSize: FontSize.LARGE,
-                        fontWeight: FontWeight.w800
+        RefreshIndicator(
+          onRefresh: handleRefresh,
+          child: MainWrapper(
+            topMargin: 0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Clubs joined",
+                      style: TextStyle(
+                          color: TColor.PRIMARY_TEXT,
+                          fontSize: FontSize.LARGE,
+                          fontWeight: FontWeight.w800
+                      ),
+                      // textAlign: TextAlign.start,
                     ),
-                    // textAlign: TextAlign.start,
-                  ),
-                ],
-              ),
-              SizedBox(height: media.height * 0.015,),
-              if(isLoading == false)...[
-                if(userClubs?.length == 0)...[
-                  SizedBox(height: media.height * 0.02,),
-                  Center(
-                    child: EmptyListNotification(
-                      title: "No clubs found",
-                      description: "Discover new clubs and compete with other athletes",
-                      addButtonText: "Explore now",
-                      addButton: true,
-                      addButtonWidth: media.width * 0.45,
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/club_list');
-                      },
+                  ],
+                ),
+                SizedBox(height: media.height * 0.015,),
+                if(isLoading == false)...[
+                  if(userClubs?.length == 0)...[
+                    SizedBox(height: media.height * 0.02,),
+                    Center(
+                      child: EmptyListNotification(
+                        title: "No clubs found",
+                        description: "Discover new clubs and compete with other athletes",
+                        addButtonText: "Explore now",
+                        addButton: true,
+                        addButtonWidth: media.width * 0.45,
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/club_list');
+                        },
+                      ),
+                    )
+                  ],
+                  SizedBox(
+                    height: media.height * 0.49,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          for(var club in userClubs ?? [])...[
+                            Column(
+                              children: [
+                                CustomTextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context,
+                                        '/club_detail',
+                                        arguments: {
+                                          "id": club.id,
+                                        }
+                                    );
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.all(0),
+                                        width: media.width,
+                                        height: media.height * 0.15,
+                                        decoration: BoxDecoration(
+                                          color: TColor.PRIMARY,
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: const EdgeInsets.all(0),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10, horizontal: 15),
+                                        height: media.height * 0.15,
+                                        decoration: BoxDecoration(
+                                            color: TColor.SECONDARY_BACKGROUND,
+                                            borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(12),
+                                              topRight: Radius.circular(90),
+                                              bottomRight: Radius.circular(12),
+                                              bottomLeft: Radius.circular(12),
+                                            ),
+                                            border: Border.all(
+                                              color: TColor.PRIMARY,
+                                              width: 1.0,
+                                            )),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: BorderRadius.circular(50),
+                                                  child: Image.asset(
+                                                    "assets/img/community/ptit_logo.png",
+                                                    width: 40,
+                                                    height: 40,
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                                SizedBox(width: media.width * 0.02,),
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: media.width * 0.7,
+                                                      child: Text(
+                                                        club.name ?? "",
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: TextStyle(
+                                                            color: TColor.PRIMARY_TEXT,
+                                                            fontSize: FontSize.NORMAL,
+                                                            fontWeight: FontWeight.w800),
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      club.sportType,
+                                                      style: TextStyle(
+                                                          color: TColor.DESCRIPTION,
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w500),
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(height: media.height * 0.02,),
+                                            Row(
+                                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                for (int j = 0; j < 3; j++) ...[
+                                                  Row(
+                                                    children: [
+                                                      if (j != 0) ...[
+                                                        SeparateBar(
+                                                            width: 2, height: media.height * 0.04),
+                                                        SizedBox(width: media.width * 0.03)
+                                                      ],
+                                                      Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(
+                                                            clubStat[j]["type"],
+                                                            style: TextStyle(
+                                                                color: TColor.DESCRIPTION,
+                                                                fontSize: FontSize.SMALL,
+                                                                fontWeight: FontWeight.w500),
+                                                          ),
+                                                          Text(
+                                                            clubStat[j]["amount"](userClubs?.indexOf(club)  ?? 0 + 1),
+                                                            style: TextStyle(
+                                                                color: TColor.PRIMARY_TEXT,
+                                                                fontSize: FontSize.NORMAL,
+                                                                fontWeight: FontWeight.w800),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      if(j < 2) SizedBox(width: media.width * 0.08,),
+                                                    ],
+                                                  ),
+                                                ]
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 5,
+                                        right: 5,
+                                        child: Icon(
+                                          Icons.arrow_forward_rounded,
+                                          color: TColor.PRIMARY_TEXT,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                            SizedBox(height: media.height * 0.015,)
+                          ]
+                        ],
+                      ),
                     ),
                   )
-                ],
-                SizedBox(
-                  height: media.height,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        for(var club in userClubs ?? [])...[
-                          Column(
-                            children: [
-                              CustomTextButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                      context,
-                                      '/club_detail',
-                                      arguments: {
-                                        "id": club.id,
-                                      }
-                                  );
-                                },
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.all(0),
-                                      width: media.width,
-                                      height: media.height * 0.15,
-                                      decoration: BoxDecoration(
-                                        color: TColor.PRIMARY,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.all(0),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 10, horizontal: 15),
-                                      height: media.height * 0.15,
-                                      decoration: BoxDecoration(
-                                          color: TColor.SECONDARY_BACKGROUND,
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(12),
-                                            topRight: Radius.circular(90),
-                                            bottomRight: Radius.circular(12),
-                                            bottomLeft: Radius.circular(12),
-                                          ),
-                                          border: Border.all(
-                                            color: TColor.PRIMARY,
-                                            width: 1.0,
-                                          )),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius: BorderRadius.circular(50),
-                                                child: Image.asset(
-                                                  "assets/img/community/ptit_logo.png",
-                                                  width: 40,
-                                                  height: 40,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                              ),
-                                              SizedBox(width: media.width * 0.02,),
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  SizedBox(
-                                                    width: media.width * 0.7,
-                                                    child: Text(
-                                                      club.name ?? "",
-                                                      maxLines: 1,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                          color: TColor.PRIMARY_TEXT,
-                                                          fontSize: FontSize.NORMAL,
-                                                          fontWeight: FontWeight.w800),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    club.sportType,
-                                                    style: TextStyle(
-                                                        color: TColor.DESCRIPTION,
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w500),
-                                                  )
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                          SizedBox(height: media.height * 0.02,),
-                                          Row(
-                                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              for (int j = 0; j < 3; j++) ...[
-                                                Row(
-                                                  children: [
-                                                    if (j != 0) ...[
-                                                      SeparateBar(
-                                                          width: 2, height: media.height * 0.04),
-                                                      SizedBox(width: media.width * 0.03)
-                                                    ],
-                                                    Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          clubStat[j]["type"],
-                                                          style: TextStyle(
-                                                              color: TColor.DESCRIPTION,
-                                                              fontSize: FontSize.SMALL,
-                                                              fontWeight: FontWeight.w500),
-                                                        ),
-                                                        Text(
-                                                          clubStat[j]["amount"](userClubs?.indexOf(club)  ?? 0 + 1),
-                                                          style: TextStyle(
-                                                              color: TColor.PRIMARY_TEXT,
-                                                              fontSize: FontSize.NORMAL,
-                                                              fontWeight: FontWeight.w800),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    if(j < 2) SizedBox(width: media.width * 0.08,),
-                                                  ],
-                                                ),
-                                              ]
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 5,
-                                      right: 5,
-                                      child: Icon(
-                                        Icons.arrow_forward_rounded,
-                                        color: TColor.PRIMARY_TEXT,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                            ],
-                          ),
-                          SizedBox(height: media.height * 0.015,)
-                        ]
-                      ],
-                    ),
-                  ),
-                )
-              ]
-              else...[
-                Loading(
-                  marginTop: media.height * 0.1,
-                  backgroundColor: Colors.transparent,
-                )
-              ]
-            ],
+                ]
+                else...[
+                  Loading(
+                    marginTop: media.height * 0.1,
+                    backgroundColor: Colors.transparent,
+                  )
+                ]
+              ],
+            ),
           ),
         )
       ],

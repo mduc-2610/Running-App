@@ -49,15 +49,15 @@ class UserProvider with ChangeNotifier {
         Performance? userPerformance
       }) async {
     _user = user;
-    notifyListeners();
-    _userActivity = userActivity;
-    notifyListeners();
-    _userProfile = userProfile;
-    notifyListeners();
-    _userPrivacy = userPrivacy;
-    notifyListeners();
-    _userPerformance = userPerformance;
-    notifyListeners();
+    // notifyListeners();
+    // _userActivity = userActivity;
+    // notifyListeners();
+    // _userProfile = userProfile;
+    // notifyListeners();
+    // _userPrivacy = userPrivacy;
+    // notifyListeners();
+    // _userPerformance = userPerformance;
+    // notifyListeners();
   }
 
   //
