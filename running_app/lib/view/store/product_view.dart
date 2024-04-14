@@ -7,6 +7,7 @@ import 'package:running_app/utils/common_widgets/app_bar.dart';
 
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
+import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -23,6 +24,8 @@ class ProductView extends StatefulWidget {
 }
 
 class _ProductViewState extends State<ProductView> {
+  String menuButtonClicked = "/store";
+  bool isLoading = true;
   List<dynamic>? productList;
   String token = "";
 
@@ -32,18 +35,27 @@ class _ProductViewState extends State<ProductView> {
     });
   }
 
-  void initProduct() async {
+  Future<void> initProduct() async {
     final data = await callListAPI('product/product', Product.fromJson, token);
     setState(() {
       productList = data;
     });
   }
 
+  Future<void> delayedInit() async {
+    await initProduct();
+    await Future.delayed(Duration(milliseconds: 700));
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     initToken();
-    initProduct();
+    delayedInit();
   }
 
   @override
@@ -79,104 +91,111 @@ class _ProductViewState extends State<ProductView> {
                       SizedBox(height: media.height * 0.01,),
 
                       // Product
-                      SizedBox(
-                        height: media.height, // Set a specific height
-                        child: GridView.count(
-                            padding: const EdgeInsets.all(0),
-                            crossAxisCount: 2,
-                            crossAxisSpacing: media.width * 0.05,
-                            mainAxisSpacing: media.height * 0.025,
-                            children: [
-                              for(var product in productList ?? [])
-                                CustomTextButton(
-                                  onPressed: () {},
-                                  child: Container(
-                                    padding: EdgeInsets.all(media.width * 0.025),
-                                    // width: media.width * 0.45,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      color: TColor.SECONDARY_BACKGROUND,
-                                      border: Border.all(
-                                        color: const Color(0xff495466),
-                                        width: 2.0,
+                      if(isLoading == false)...[
+                        SizedBox(
+                          height: media.height, // Set a specific height
+                          child: GridView.count(
+                              padding: const EdgeInsets.all(0),
+                              crossAxisCount: 2,
+                              crossAxisSpacing: media.width * 0.05,
+                              mainAxisSpacing: media.height * 0.025,
+                              children: [
+                                for(var product in productList ?? [])
+                                  CustomTextButton(
+                                    onPressed: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(media.width * 0.025),
+                                      // width: media.width * 0.45,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                        color: TColor.SECONDARY_BACKGROUND,
+                                        border: Border.all(
+                                          color: const Color(0xff495466),
+                                          width: 2.0,
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Stack(
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(12.0),
+                                                ),
+                                                child: Image.asset(
+                                                  "assets/img/store/product/air_force_1.png",
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              Positioned(
+                                                top: 5,
+                                                right: 5,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(12.0),
+                                                        color: TColor.SECONDARY_BACKGROUND.withOpacity(0.7),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          SvgPicture.asset(
+                                                            "assets/img/home/coin_icon.svg",
+                                                            width: 16,
+                                                            height: 16,
+                                                            fit: BoxFit.contain,
+                                                          ),
+                                                          Text(
+                                                            product.price.toString() ?? "",
+                                                            style: TextStyle(
+                                                              color: TColor.PRIMARY_TEXT,
+                                                              fontSize: FontSize.NORMAL,
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          SizedBox(height: media.height * 0.01),
+                                          Text(
+                                            product.brand.name ?? "",
+                                            style: TextStyle(
+                                              color: TColor.DESCRIPTION,
+                                              fontSize: FontSize.SMALL,
+                                            ),
+                                          ),
+                                          // SizedBox(height: media.height * 0.005),
+                                          Text(
+                                            product.name ?? "",
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: TextStyle(
+                                              color: TColor.PRIMARY_TEXT,
+                                              fontSize: FontSize.SMALL,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Stack(
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(12.0),
-                                              ),
-                                              child: Image.asset(
-                                                "assets/img/store/product/air_force_1.png",
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            Positioned(
-                                              top: 5,
-                                              right: 5,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                    decoration: BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(12.0),
-                                                      color: TColor.SECONDARY_BACKGROUND.withOpacity(0.7),
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        SvgPicture.asset(
-                                                          "assets/img/home/coin_icon.svg",
-                                                          width: 16,
-                                                          height: 16,
-                                                          fit: BoxFit.contain,
-                                                        ),
-                                                        Text(
-                                                          product.price.toString() ?? "",
-                                                          style: TextStyle(
-                                                            color: TColor.PRIMARY_TEXT,
-                                                            fontSize: FontSize.NORMAL,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(height: media.height * 0.01),
-                                        Text(
-                                          product.brand.name ?? "",
-                                          style: TextStyle(
-                                            color: TColor.DESCRIPTION,
-                                            fontSize: FontSize.SMALL,
-                                          ),
-                                        ),
-                                        // SizedBox(height: media.height * 0.005),
-                                        Text(
-                                          product.name ?? "",
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            color: TColor.PRIMARY_TEXT,
-                                            fontSize: FontSize.SMALL,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        )
-                                      ],
-                                    ),
                                   ),
-                                ),
-                            ]
+                              ]
+                          ),
                         ),
-                      ),
+                      ] else...[
+                        Loading(
+                          marginTop: media.height * 0.3,
+                          backgroundColor: Colors.transparent,
+                        )
+                      ]
                     ],
                   ),
                 ),
@@ -184,7 +203,9 @@ class _ProductViewState extends State<ProductView> {
             ),
           ),
         ),
-        bottomNavigationBar: const Menu()
+        bottomNavigationBar: Menu(
+          buttonClicked: menuButtonClicked,
+        )
     );
   }
 }

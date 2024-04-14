@@ -31,12 +31,12 @@ String paceRepresentation(int duration, double distance) {
   return '$paceMinutes:${paceSeconds.toString().padLeft(2, '0')}';
 }
 
-int countTextLines(String text, {int? char_in_line}) {
+int countTextLines(String text, {int? charInLine}) {
   int count = 0;
   List<String> textLines = text.split('\n');
-  char_in_line = char_in_line ?? 47;
+  charInLine = charInLine ?? 50;
   for(String line in textLines) {
-    count += (line.length / char_in_line).ceil();
+    count += (line.length / charInLine).ceil();
   }
   return count;
 }
@@ -78,6 +78,16 @@ String formatDate(DateTime x) {
 String formatDateTime(DateTime x) {
   return DateFormat('yyyy-MM-dd hh:mm').format(x);
 }
+
+String formatDateQuery(DateTime? date) {
+  return DateFormat('yyyy-MM-dd').format(date!);
+}
+
+String formatDateTimeQuery(DateTime x) {
+  return DateFormat('yyyy-MM-dd hh:mm').format(x);
+}
+
+
 
 String formatDateTimeEnUS(DateTime x, {bool shortcut = false, bool time = false}) {
   String monthFormat = shortcut ? 'MMM' : 'MMMM';

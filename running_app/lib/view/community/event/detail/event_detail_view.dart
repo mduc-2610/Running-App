@@ -108,7 +108,6 @@ class _EventDetailViewState extends State<EventDetailView> {
           child: Stack(
             children: [
               if(isLoading == false)...[
-
                 ColorFiltered(
                   colorFilter: ColorFilter.mode(
                     Colors.black.withOpacity(0.6),

@@ -15,11 +15,14 @@ class EventBox extends StatefulWidget {
   final double? width;
   final String? buttonText;
   final Event? event;
+  final bool? small;
+
   const EventBox({
     this.buttonMargin,
     this.width,
     this.buttonText,
     this.event,
+    this.small = false,
     super.key
   });
 
@@ -32,31 +35,44 @@ class _EventBoxState extends State<EventBox> {
   DetailUser? user;
   Activity? userActivity;
   bool userInEvent = false;
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
 
   void initToken() {
-    setState(() {
-      token = Provider.of<TokenProvider>(context).token;
-    });
+    if (!_disposed) {
+      setState(() {
+        token = Provider.of<TokenProvider>(context).token;
+      });
+    }
   }
 
   void initUser() {
-    setState(() {
-      user = Provider.of<UserProvider>(context).user;
-    });
+    if (!_disposed) {
+      setState(() {
+        user = Provider.of<UserProvider>(context).user;
+      });
+    }
   }
 
   void initUserActivity() async {
-    final data = await callRetrieveAPI(
-        null,
-        null,
-        user?.activity,
-        Activity.fromJson,
-        token
-    );
-    setState(() {
-      userActivity = data;
-      userInEvent = checkUserInEvent();
-    });
+    if (!_disposed) {
+      final data = await callRetrieveAPI(
+          null,
+          null,
+          user?.activity,
+          Activity.fromJson,
+          token
+      );
+      setState(() {
+        userActivity = data;
+        userInEvent = checkUserInEvent();
+      });
+    }
   }
 
   @override
@@ -70,6 +86,7 @@ class _EventBoxState extends State<EventBox> {
   bool checkUserInEvent() {
     return (userActivity?.events ?? []).where((e) => e.id == widget.event?.id).toList().length != 0;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -145,25 +162,31 @@ class _EventBoxState extends State<EventBox> {
                       {
                         "icon": Icons.people_alt_outlined,
                         "text": "Join: ${widget.event?.numberOfParticipants}"
-                      }
+                      },
+                      (widget.small == false) ?{
+                        "icon": Icons.directions_run_rounded,
+                        "text": "Competition: ${widget.event?.competition}"
+                      } : null
                     ])...[
-                      Row(
-                        children: [
-                          Icon(
-                            x["icon"] as IconData,
-                            color: TColor.DESCRIPTION,
-                          ),
-                          SizedBox(width: media.width * 0.02,),
-                          Text(
-                            x["text"] as String,
-                            style: TextStyle(
+                      if(x != null)...[
+                        Row(
+                          children: [
+                            Icon(
+                              x["icon"] as IconData,
                               color: TColor.DESCRIPTION,
-                              fontSize: 14,
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: media.height * 0.01,),
+                            SizedBox(width: media.width * 0.02,),
+                            Text(
+                              x["text"] as String,
+                              style: TextStyle(
+                                color: TColor.DESCRIPTION,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: media.height * 0.01,),
+                      ]
                     ],
                   ],
                 )

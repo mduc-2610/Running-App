@@ -103,7 +103,11 @@ class EventLeaderboard extends StatelessWidget {
                   Container(
                     alignment: Alignment.centerLeft,
                     width: media.width * 0.2,
-                    child: EventLeaderboardText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Total (km)'),
+                    child: EventLeaderboardText(
+                        fontSize: FontSize.SMALL,
+                        fontWeight: FontWeight.w700,
+                        text: 'Total (km)'
+                    ),
                   ),
                   Container(
                     alignment: Alignment.centerLeft,
@@ -240,13 +244,13 @@ class EventLeaderboard extends StatelessWidget {
                               Container(
                                   alignment: Alignment.centerLeft,
                                   width: media.width * 0.15,
-                                  child: EventLeaderboardText(text: generateRandomDistance())
+                                  child: EventLeaderboardText(text: "${entity?.totalDistance}")
                               ),
                               // SizedBox(width: media.width * 0.1,),
                               Container(
                                   alignment: Alignment.centerLeft,
                                   width: media.width * 0.15,
-                                  child: EventLeaderboardText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m')
+                                  child: EventLeaderboardText(text: entity?.totalDuration)
                               )
                             ],
                           )

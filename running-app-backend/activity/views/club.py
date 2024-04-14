@@ -10,6 +10,15 @@ from activity.serializers import ClubSerializer, \
                                 DetailClubSerializer, \
                                 CreateUpdateClubSerializer
 
+from utils.function import get_start_of_day, \
+                            get_end_of_day, \
+                            get_start_date_of_week, \
+                            get_end_date_of_week, \
+                            get_start_date_of_month, \
+                            get_end_date_of_month, \
+                            get_start_date_of_year, \
+                            get_end_date_of_year
+
 class ClubViewSet(
     mixins.ListModelMixin, 
     mixins.RetrieveModelMixin,
@@ -29,7 +38,18 @@ class ClubViewSet(
             return DetailClubSerializer
         return super().get_serializer_class()
     
-    def get_serializer(self, *args, **kwargs):
-        serializer_class = self.get_serializer_class()
-        kwargs["context"] = self.get_serializer_context()
-        return serializer_class(*args, **kwargs)
+    def retrieve(self, request, * args, **kwargs):
+        query_params = self.request.query_params
+        start_date = query_params.get('start_date', get_start_date_of_week())
+        end_date = query_params.get('end_date', get_end_date_of_week())
+        sort_by = query_params.get('sort_by', 'Distance')
+        gender = query_params.get('gender', None)
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, context={
+            'start_date': start_date, 
+            'end_date': end_date,
+            'sort_by': sort_by,
+            'gender': gender
+        })
+        return response.Response(serializer.data, status=status.HTTP_200_OK)

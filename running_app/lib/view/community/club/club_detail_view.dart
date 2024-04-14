@@ -27,6 +27,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
   DetailClub? club;
   String clubId = "";
   String token = "";
+  bool? joinButtonState = false;
 
   void getSideData() {
     setState(() {
@@ -85,18 +86,18 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  MainWrapper(
-                    child: Column(
-                      children: [
-                        SizedBox(height: media.height * 0.05,),
-                        const Header(title: "", iconButtons: [
-                          {
-                            "icon": Icons.more_vert_rounded,
-                          }
-                        ],),
-                        SizedBox(height: media.height * 0.06,),
-                        // Main section
-                        Container(
+                  Column(
+                    children: [
+                      SizedBox(height: media.height * 0.05,),
+                      Header(title: "", iconButtons: [
+                        {
+                          "icon": Icons.more_vert_rounded,
+                        }
+                      ],),
+                      SizedBox(height: media.height * 0.05,),
+                      // Main section
+                      MainWrapper(
+                        child: Container(
                           child: Column(
                             children: [
                               // Head section
@@ -120,7 +121,10 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                         child: CustomTextButton(
                                           style: ButtonStyle(
                                               backgroundColor: MaterialStateProperty.all<Color?>(
-                                                  TColor.PRIMARY
+                                                  (joinButtonState!) ? Colors.transparent : TColor.PRIMARY
+                                              ),
+                                              side: MaterialStateProperty.all(
+                                                BorderSide(width: 2, color: TColor.PRIMARY)
                                               ),
                                               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                                   RoundedRectangleBorder(
@@ -128,9 +132,13 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                                   )
                                               )
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            setState(() {
+                                              joinButtonState = (joinButtonState!) ? false : true;
+                                            });
+                                          },
                                           child: Text(
-                                            "Join",
+                                            "${(joinButtonState!) ? "Joined" : "Join"}",
                                             style: TextStyle(
                                                 color: TColor.PRIMARY_TEXT,
                                                 fontSize: FontSize.LARGE,
@@ -156,6 +164,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                             onPressed: () {
                                               Navigator.pushNamed(context, '/club_detail_information', arguments: {
                                                 "club": club as DetailClub,
+                                                "joinButtonState": joinButtonState,
                                               });
                                             },
                                             child: Icon(
@@ -248,7 +257,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                       SizedBox(
                                         child: CustomTextButton(
                                           onPressed: () {
-
+                        
                                           },
                                           child: Stack(
                                             children: [
@@ -304,7 +313,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                       SizedBox(
                                         child: CustomTextButton(
                                           onPressed: () {
-
+                        
                                           },
                                           child: Stack(
                                             children: [
@@ -360,7 +369,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                     ],
                                   ),
                                   SizedBox(height: media.height * 0.015,),
-
+                        
                                   // Table section
                                   Column(
                                     children: [
@@ -377,7 +386,10 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                             ),
                                             CustomTextButton(
                                               onPressed: () {
-                                                // Navigator.pushNamed(context, '/rank');
+                                                Navigator.pushNamed(context, '/rank', arguments: {
+                                                  "rankType": "Club",
+                                                  "id": club?.id,
+                                                });
                                               },
                                               child: Text(
                                                   "View more",
@@ -402,14 +414,14 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                       )
                                     ],
                                   )
-
+                        
                                 ],
                               )
                             ],
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
                 ]
                 else...[

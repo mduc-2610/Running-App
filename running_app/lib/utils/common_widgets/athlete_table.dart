@@ -135,14 +135,15 @@ class AthleteTable extends StatelessWidget {
                           child: Row(
                             children: [
                               CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Total (km)'),
-                          Transform.rotate(
-                            angle: -90 * 3.14159 / 180,
-                            child: Icon(
-                              Icons.arrow_back_ios_rounded,
-                              color: TColor.PRIMARY_TEXT,
-                              size: 12,
-                            ),)
-                            ],
+                              SizedBox(width: 2,),
+                              Transform.rotate(
+                                angle: -90 * 3.14159 / 180,
+                                child: Icon(
+                                  Icons.arrow_back_ios_rounded,
+                                  color: TColor.PRIMARY_TEXT,
+                                  size: 12,
+                                ),)
+                                ],
                           )),
                   ),
                   Container(
@@ -153,6 +154,7 @@ class AthleteTable extends StatelessWidget {
                         child: Row(
                           children: [
                             CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Time'),
+                            SizedBox(width: 2,),
                             Transform.rotate(
                               angle: -90 * 3.14159 / 180,
                               child: Icon(
@@ -199,7 +201,7 @@ class AthleteTable extends StatelessWidget {
                               Container(
                                   alignment: Alignment.centerLeft,
                                   width: media.width * 0.08,
-                                  child: CustomText(text: (participants!.indexOf(participant) + startIndex!).toString())
+                                  child: CustomText(text: " ${(participants!.indexOf(participant) + startIndex!).toString()}")
                               ),
                               SizedBox(width: media.width * 0.02,),
                               Container(

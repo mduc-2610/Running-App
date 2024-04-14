@@ -92,7 +92,7 @@ class DetailClub extends Club {
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
-    data['participants'] = participants.map((e) => e.toJson()); // Serialize DetailUser object
+    data['participants'] = participants.map((e) => e.toJson());
     data['description'] = description;
     data['privacy'] = privacy;
     data['organization'] = organization;

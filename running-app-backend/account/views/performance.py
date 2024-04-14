@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from rest_framework import viewsets, \
                             mixins, \
                             response, \
@@ -8,6 +10,15 @@ from account.models import Performance
 from account.serializers import PerformanceSerializer, \
                                 CreatePerformanceSerializer, \
                                 LeaderboardSerializer
+
+from utils.function import get_start_of_day, \
+                            get_end_of_day, \
+                            get_start_date_of_week, \
+                            get_end_date_of_week, \
+                            get_start_date_of_month, \
+                            get_end_date_of_month, \
+                            get_start_date_of_year, \
+                            get_end_date_of_year
 
 from rest_framework.decorators import action
 from functools import cmp_to_key
@@ -24,21 +35,21 @@ class PerformanceViewSet(
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.action == 'leaderboard':
-            gender = self.request.query_params.get('gender', None)
-            start_date = self.request.query_params.get('start_date', None)
-            end_date = self.request.query_params.get('end_date', None)
-            sort = self.request.query_params.get('sort', None)
+            query_params = self.request.query_params
+            gender = query_params.get('gender', None)
+            start_date = query_params.get('start_date', get_start_date_of_week())
+            end_date = query_params.get('end_date', get_end_date_of_week())
+            sort_by = query_params.get('sort_by', 'Distance')
 
             if gender: 
                 queryset = queryset.filter(user__profile__gender=gender)
 
-            if start_date and end_date:
-                def sort_cmp(x, sort):
-                    running_stats = x.range_stats(start_date, end_date, sport_type="RUNNING")
-                    if sort == 'Time':
-                        return (-running_stats[3], -running_stats[0])
-                    return (-running_stats[0], -running_stats[3])
-                queryset = sorted(queryset, key=lambda x: sort_cmp(x, sort))
+            def sort_cmp(x, sort_by):
+                stats = x.range_stats(start_date, end_date, sport_type="RUNNING")
+                if sort_by == 'Time':
+                    return (-stats[3], -stats[0])
+                return (-stats[0], -stats[3])
+            queryset = sorted(queryset, key=lambda x: sort_cmp(x, sort_by))
     
         return queryset
 
@@ -52,8 +63,10 @@ class PerformanceViewSet(
     @action(detail=False, methods=['GET'], url_path='leaderboard', name='leaderboard')
     def leaderboard(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        start_date = self.request.query_params.get('start_date', None)
-        end_date = self.request.query_params.get('end_date', None)
+        query_params = self.request.query_params
+        start_date = query_params.get('start_date', None)
+        end_date = query_params.get('end_date', None)
+        
         serializer = self.get_serializer(queryset, many=True, context={'start_date': start_date, 'end_date': end_date})
         return response.Response(serializer.data, status=status.HTTP_200_OK)
     

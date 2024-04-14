@@ -34,6 +34,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  String menuButtonClicked = "/home";
   List<dynamic>? users;
   String token = "";
   DetailUser? user;
@@ -470,6 +471,7 @@ class _HomeViewState extends State<HomeView> {
                 ]
                 else...[
                   Loading(
+                    backgroundColor: Colors.transparent,
                     marginTop: media.height * 0.4,
                   )
                 ]
@@ -479,7 +481,9 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       ),
-      bottomNavigationBar: Menu(),
+      bottomNavigationBar: Menu(
+        buttonClicked: menuButtonClicked,
+      ),
     );
   }
 }

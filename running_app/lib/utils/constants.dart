@@ -12,6 +12,7 @@ class APIEndpoints {
 class TColor {
   static Color get PRIMARY => const Color(0xff7b61ff);
   static Color get SECONDARY => const Color(0xff3362f5);
+  static Color get THIRD => const Color(0xffb054c5);
   // static Color get PRIMARY => Colors.green;
   static Color get PRIMARY_TEXT => const Color(0xffffffff);
   static Color get SECONDARY_TEXT => const Color(0xff7b61ff);
@@ -161,6 +162,12 @@ class BShadow {
     spreadRadius: 3,
     blurRadius: 7,
     offset: const Offset(0, 3),
+  );
+  static final BoxShadow customBoxShadow2 = BoxShadow(
+    color: Colors.black.withOpacity(0.5),
+    spreadRadius: 1,
+    blurRadius: 7,
+    offset: const Offset(0, 1),
   );
 }
 

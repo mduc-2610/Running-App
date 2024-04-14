@@ -4,6 +4,15 @@ from datetime import timedelta, datetime
 from django.db import models
 from django.db.models import Sum
 
+from utils.function import get_start_of_day, \
+                            get_end_of_day, \
+                            get_start_date_of_week, \
+                            get_end_date_of_week, \
+                            get_start_date_of_month, \
+                            get_end_date_of_month, \
+                            get_start_date_of_year, \
+                            get_end_date_of_year
+
 class Performance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     user = models.OneToOneField("account.User", related_name="performance", on_delete=models.CASCADE)
@@ -90,34 +99,30 @@ class Performance(models.Model):
                 active_days
 
     def daily_stats(self, sport_type=None):
-        today = datetime.now().date()
-        start_of_day = datetime.combine(today, datetime.min.time())
-        end_of_day = datetime.combine(today, datetime.max.time())
+        start_of_day = get_start_of_day()
+        end_of_day = get_end_of_day()
 
         daily_activities = self.get_activities_in_range(start_of_day, end_of_day)
         return self.calculate_stats(daily_activities, sport_type)
 
     def weekly_stats(self, sport_type=None):
-        today = datetime.now().date()
-        start_of_week = today - timedelta(days=today.weekday())
-        end_of_week = start_of_week + timedelta(days=6)
+        start_of_week = get_start_date_of_week()
+        end_of_week = get_end_date_of_week()
 
         weekly_activities = self.get_activities_in_range(start_of_week, end_of_week)
         return self.calculate_stats(weekly_activities, sport_type)
 
     def monthly_stats(self, sport_type=None):
-        today = datetime.now().date()
-        start_of_month = today.replace(day=1)
-        next_month = today.replace(day=28) + timedelta(days=4)
-        end_of_month = next_month - timedelta(days=next_month.day)
+        start_of_month = get_start_date_of_month()
+        end_of_month = get_end_date_of_month()
 
         monthly_activities = self.get_activities_in_range(start_of_month, end_of_month)
         return self.calculate_stats(monthly_activities, sport_type)
 
     def yearly_stats(self, sport_type=None):
         today = datetime.now().date()
-        start_of_year = today.replace(month=1, day=1)
-        end_of_year = today.replace(month=12, day=31)
+        start_of_year = get_start_date_of_year()
+        end_of_year = get_end_date_of_year()
 
         yearly_activities = self.get_activities_in_range(start_of_year, end_of_year)
         return self.calculate_stats(yearly_activities, sport_type)

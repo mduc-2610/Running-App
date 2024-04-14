@@ -204,7 +204,7 @@ class _EventViewState extends State<EventView> {
                     ),
                     SizedBox(height: media.height * 0.01,),
                     SizedBox(
-                      height: media.height * 0.42,
+                      height: media.height * 0.45,
                       child: CarouselSlider(
                         options: CarouselOptions(
                             autoPlay: true,
@@ -212,7 +212,7 @@ class _EventViewState extends State<EventView> {
                             autoPlayAnimationDuration: const Duration(milliseconds: 1000),
                             viewportFraction: 0.9,
                             initialPage: 0,
-                            aspectRatio: 1.2,
+                            aspectRatio: 1.1,
                             enlargeCenterPage: true,
                             enlargeFactor: 0.16,
                             enableInfiniteScroll: false
@@ -234,33 +234,33 @@ class _EventViewState extends State<EventView> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          MainWrapper(
-                            child: Text(
+                    MainWrapper(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
                                 "All events",
                                 style: TxtStyle.headSectionExtra
                             ),
-                          ),
-                          CustomTextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/event_list');
-                            },
-                            child: Text(
-                                "See all",
-                                style: TextStyle(
-                                  color: TColor.PRIMARY,
-                                  fontSize: FontSize.LARGE,
-                                  fontWeight: FontWeight.w500,
-                                )
-                            ),
-                          )
-                        ]
+                            CustomTextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/event_list');
+                              },
+                              child: Text(
+                                  "See all",
+                                  style: TextStyle(
+                                    color: TColor.PRIMARY,
+                                    fontSize: FontSize.LARGE,
+                                    fontWeight: FontWeight.w500,
+                                  )
+                              ),
+                            )
+                          ]
+                      ),
                     ),
                     SizedBox(height: media.height * 0.01,),
                     SizedBox(
-                      height: media.height * 0.35,
+                      height: media.height * 0.36,
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.only(left: 10),
 
@@ -270,7 +270,7 @@ class _EventViewState extends State<EventView> {
                             for(var event in allEvents ?? [])...[
                               IntrinsicHeight(
                                   child: EventBox(event: event, width: 200,
-                                    buttonMargin: const EdgeInsets.fromLTRB(12, 0, 12, 12),)
+                                    buttonMargin: const EdgeInsets.fromLTRB(12, 0, 12, 12), small: true,)
                               ),
                               const SizedBox(width: 10,)
                             ]

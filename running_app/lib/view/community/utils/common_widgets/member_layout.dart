@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:running_app/models/account/leaderboard.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/show_action_list.dart';
@@ -10,7 +11,7 @@ import 'package:running_app/utils/function.dart';
 
 class MemberLayout extends StatelessWidget {
   final String layout;
-  final List<User>? participants;
+  final List<Leaderboard>? participants;
 
   const MemberLayout({
     required this.layout,

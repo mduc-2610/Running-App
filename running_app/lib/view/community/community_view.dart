@@ -33,16 +33,11 @@ class _CommunityViewState extends State<CommunityView> {
   DetailUser? user;
   Activity? userActivity;
   bool userInEvent = false;
+  String menuButtonState = "/community";
 
-
-  void initToken() {
+  void getData() {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
-    });
-  }
-
-  void initUser() {
-    setState(() {
       user = Provider.of<UserProvider>(context).user;
     });
   }
@@ -56,8 +51,7 @@ class _CommunityViewState extends State<CommunityView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    initToken();
-    initUser();
+    getData();
     initUserActivity();
   }
 
@@ -92,6 +86,9 @@ class _CommunityViewState extends State<CommunityView> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         color: TColor.SECONDARY_BACKGROUND,
+                        boxShadow: [
+                          BShadow.customBoxShadow2
+                        ]
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -166,7 +163,9 @@ class _CommunityViewState extends State<CommunityView> {
       //     Navigator.pushNamed(context, _showView == "Events" ? "/event_feature_create" : "/club_create");
       //   },
       // ) : null,
-      bottomNavigationBar: Menu(),
+      bottomNavigationBar: Menu(
+        buttonClicked: menuButtonState,
+      ),
     );
   }
 }

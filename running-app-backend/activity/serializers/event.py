@@ -4,13 +4,25 @@ from activity.models import Event
 from account.serializers import DetailUserSerializer, LeaderboardSerializer
 from activity.serializers.group import GroupSerializer
 
+from utils.function import get_start_of_day, \
+                            get_end_of_day, \
+                            get_start_date_of_week, \
+                            get_end_date_of_week, \
+                            get_start_date_of_month, \
+                            get_end_date_of_month, \
+                            get_start_date_of_year, \
+                            get_end_date_of_year
+
 class EventSerializer(serializers.ModelSerializer):
+    competition = serializers.CharField(source='get_competition_display')
+
     class Meta:
         model = Event
         fields = (
             "id",
             "name",
             "number_of_participants",
+            "competition",
             "banner",
             "days_remain"
         )
@@ -36,11 +48,44 @@ class DetailEventSerializer(serializers.ModelSerializer):
     def get_number_of_participants(self, instance):
         return instance.number_of_participants()
     
-    def get_participants(self, instance):
-        request = self.context.get('request', None)
-        users = [instance.user.performance for instance in instance.events.all()]
-        return LeaderboardSerializer(users, many=True, context={'request': request}).data
+    # def get_participants(self, instance):
+    #     request = self.context.get('request', None)
+    #     users = [instance.user.performance for instance in instance.events.all()]
+    #     return LeaderboardSerializer(users, many=True, context={'request': request}).data
 
+    def get_participants(self, instance):
+        context = self.context
+        sport_type = instance.sport_type
+        event_id = instance.id
+        type = "event"
+
+        start_date = context.get('start_date', get_start_date_of_week())
+        end_date = context.get('end_date', get_end_date_of_week())
+        gender = context.get('gender', None)
+        sort_by = context.get('sort_by', 'Distance')
+
+        print({'start_date': start_date, 'end_date': end_date, 'sort_by': sort_by})
+
+        users = [instance.user.performance for instance in instance.events.all()]
+
+        if gender:
+            users = [user for user in users if user.user.profile.gender == gender]
+
+        def sort_cmp(x, sort_by):
+            stats = x.range_stats(start_date, end_date, sport_type=sport_type)
+            if sort_by == 'Time':
+                return (-stats[3], -stats[0])
+            return (-stats[0], -stats[3])
+        users = sorted(users, key=lambda x: sort_cmp(x, sort_by))
+
+        return LeaderboardSerializer(users, many=True, context={
+            'id': event_id,
+            'type': type,
+            'start_date': start_date,
+            'end_date': end_date,
+            'sport_type': sport_type,
+        }).data
+    
     def get_started_at(self, instance):
         return instance.get_readable_time('started_at')
     

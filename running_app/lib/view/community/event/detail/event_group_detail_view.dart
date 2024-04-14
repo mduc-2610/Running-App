@@ -6,7 +6,7 @@ import 'package:running_app/models/activity/group.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/limit_line_text.dart';
+import 'package:running_app/utils/common_widgets/limit_text_line.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
@@ -420,7 +420,7 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
                               style: TxtStyle.headSection,
                             ),
                             SizedBox(height: media.height * 0.01,),
-                            LimitLineText(
+                            LimitTextLine(
                               showFullText: showFullText,
                               showViewMoreButton: showViewMoreButton,
                               onTap: () {

@@ -7,7 +7,7 @@ import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/limit_line_text.dart';
+import 'package:running_app/utils/common_widgets/limit_text_line.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/constants.dart';
@@ -153,7 +153,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
                                                   fontWeight: FontWeight.w700
                                               )
                                           ),
-                                          LimitLineText(
+                                          LimitTextLine(
                                               description: "${activityRecord?.description}",
                                               onTap: () {
                                                 setState(() {

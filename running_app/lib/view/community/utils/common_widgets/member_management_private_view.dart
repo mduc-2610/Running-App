@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/account/leaderboard.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -28,7 +29,7 @@ class MemberManagementPrivateView extends StatefulWidget {
 class MemberManagementPrivateViewState extends State<MemberManagementPrivateView> {
   String _showLayout = "Approval";
   String token = "";
-  List<User>? participants;
+  List<Leaderboard>? participants;
 
   void initToken() {
     setState(() {

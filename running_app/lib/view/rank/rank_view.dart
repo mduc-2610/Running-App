@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:running_app/models/account/leaderboard.dart';
 import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/activity/club.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
@@ -31,13 +32,15 @@ class RankView extends StatefulWidget {
 }
 
 class _RankViewState extends State<RankView> {
+  String menuButtonClicked = "/rank";
+
   List timeList = ["Week", "Month", "Year"];
   String period = "Week";
   String gender = "";
-  String sort = "Distance";
+  String sort_by = "Distance";
 
-  DateTime? startDate;
-  DateTime? endDate;
+  DateTime? startDateOfWeek;
+  DateTime? endDateOfWeek;
 
   DateTime? startDateOfMonth;
   DateTime? endDateOfMonth;
@@ -52,15 +55,18 @@ class _RankViewState extends State<RankView> {
   List<dynamic>? userList;
   String token = "";
 
+  String rankType = "";
+  String rankTypeId = "";
+
   void initTime() {
     DateTime now = DateTime.now();
     if(period == "Week") {
       weekList = [];
-      startDate = startDate ?? now.subtract(Duration(days: now.weekday - 1));
-      endDate = endDate ?? startDate!.add(Duration(days: 6));
-      dateRepresent = "${formatDate(startDate).substring(0, formatDate(startDate).length - 5)} - ${formatDate(endDate)}";
-      DateTime? tmpStartDate = startDate!;
-      DateTime? tmpEndDate = endDate!;
+      startDateOfWeek = startDateOfWeek ?? now.subtract(Duration(days: now.weekday - 1));
+      endDateOfWeek = endDateOfWeek ?? startDateOfWeek!.add(Duration(days: 6));
+      dateRepresent = "${formatDate(startDateOfWeek).substring(0, formatDate(startDateOfWeek).length - 5)} - ${formatDate(endDateOfWeek)}";
+      DateTime? tmpStartDate = startDateOfWeek!;
+      DateTime? tmpEndDate = endDateOfWeek!;
       for(int i = 0; i < 240; i++) {
         weekList?.add(
             {
@@ -115,7 +121,7 @@ class _RankViewState extends State<RankView> {
 
   DateTime? getStartDate() {
     if(period == "Week") {
-      return startDate;
+      return startDateOfWeek;
     }
     else if (period == "Month") {
       return startDateOfMonth;
@@ -125,7 +131,7 @@ class _RankViewState extends State<RankView> {
 
   DateTime? getEndDate() {
     if(period == "Week") {
-      return endDate;
+      return endDateOfWeek;
     }
     else if (period == "Month") {
       return endDateOfMonth;
@@ -135,7 +141,7 @@ class _RankViewState extends State<RankView> {
 
   void setDateRepresent() {
     if(period == "Week") {
-      dateRepresent = "${formatDate(startDate).substring(0, formatDate(startDate).length - 5)} - ${formatDate(endDate)}";
+      dateRepresent = "${formatDate(startDateOfWeek).substring(0, formatDate(startDateOfWeek).length - 5)} - ${formatDate(endDateOfWeek)}";
     }
     else if (period == "Month") {
       dateRepresent = "${formatMonth(startDateOfMonth)}";
@@ -157,25 +163,31 @@ class _RankViewState extends State<RankView> {
     return DateFormat('yyyy').format(date!);
   }
 
-  String formatQuery(DateTime? date) {
-    return DateFormat('yyyy-MM-dd').format(date!);
-  }
-
   void initToken() {
     token = Provider.of<TokenProvider>(context).token;
   }
 
   Future<void> initUser() async {
     isLoading = true;
-    final data = await callListAPI(
+    String queryParams = "?gender=${gender}"
+        "&sort_by=${sort_by}"
+        "&start_date=${formatDateQuery(getStartDate())}"
+        "&end_date=${formatDateQuery(getEndDate())}";
+    final data =
+    (rankType == "") ? await callListAPI(
         'account/performance/leaderboard',
         Leaderboard.fromJson,
         token,
-        queryParams: "?gender=${gender}"
-            "&sort=${sort}"
-            "&start_date=${formatQuery(getStartDate())}"
-            "&end_date=${formatQuery(getEndDate())}"
-    );
+        queryParams: queryParams
+    ) : (await callRetrieveAPI(
+        'activity/club',
+        rankTypeId,
+        null,
+        DetailClub.fromJson,
+        token,
+        queryParams: queryParams
+    )).participants
+    ;
     setState(() {
       userList = data;
       if (userList!.length >= 2) {
@@ -186,6 +198,15 @@ class _RankViewState extends State<RankView> {
       }
     });
   }
+
+  void getArguments() {
+    setState(() {
+      Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      rankType = arguments?["rankType"] ?? "";
+      rankTypeId = arguments?["id"] ?? "";
+    });
+  }
+
   @override
   void initState() {
     initTime();
@@ -193,7 +214,7 @@ class _RankViewState extends State<RankView> {
   }
   bool isLoading = true;
 
-  Future<void> delayedUser() async {
+  void delayedUser() async {
     setState(() {
       isLoading = true;
     });
@@ -208,6 +229,7 @@ class _RankViewState extends State<RankView> {
   @override
   void didChangeDependencies() async {
     initToken();
+    getArguments();
     delayedUser();
     super.didChangeDependencies();
   }
@@ -235,17 +257,24 @@ class _RankViewState extends State<RankView> {
 
   @override
   Widget build(BuildContext context) {
+    print(rankTypeId);
+    print(userList);
+    print('Rank type: ${(startDateOfWeek!.isAtSameMomentAs(weekList?[weekList!.length - 1]["startDate"]))} ${weekList?[weekList!.length - 1]["startDate"]}');
     print('queryParams: ${"?gender=${gender}"
-        "&sort=${sort}"
-        "&start_date=${formatQuery(getStartDate())}"
-        "&end_date=${formatQuery(getEndDate())}"}');
+        "&sort_by=${sort_by}"
+        "&start_date=${formatDateQuery(getStartDate())}"
+        "&end_date=${formatDateQuery(getEndDate())}"}');
     var media = MediaQuery.sizeOf(context);
     ScrollController childScrollController = ScrollController();
     ScrollController parentScrollController = ScrollController();
 
     return Scaffold(
-      appBar: const CustomAppBar(
-          title: Header(title: "Rank", backButton: false, noIcon: true)
+      appBar: CustomAppBar(
+          title: Header(
+              title: "$rankType Rank",
+              backButton: (rankType == "") ? false : true,
+              noIcon: true
+          )
       ),
       body: SingleChildScrollView(
         controller: parentScrollController,
@@ -314,8 +343,8 @@ class _RankViewState extends State<RankView> {
                                 if(period == "Week") {
                                   dynamic date = await showDate(context, weekList!);
                                   setState(() {
-                                    startDate = date["startDate"];
-                                    endDate = date["endDate"];
+                                    startDateOfWeek = date["startDate"];
+                                    endDateOfWeek = date["endDate"];
                                     setDateRepresent();
                                     delayedUser();
                                   });
@@ -350,11 +379,15 @@ class _RankViewState extends State<RankView> {
                                     MainAxisAlignment.spaceBetween,
                                     children: [
                                       CustomIconButton(
-                                        onPressed: () {
-                                          setState(() async {
+                                        onPressed: (
+                                          (period == "Week" && !startDateOfWeek!.isAtSameMomentAs(weekList?[weekList!.length - 1]["startDate"])) ||
+                                          (period == "Month" && !startDateOfMonth!.isAtSameMomentAs(monthList?[monthList!.length - 1]["startDate"])) ||
+                                          (period == "Year" && !startDateOfYear!.isAtSameMomentAs(yearList?[yearList!.length - 1]["startDate"]))
+                                        ) ? () {
+                                          setState(() {
                                             if(period == "Week") {
-                                              startDate = startDate?.subtract(Duration(days: 7));
-                                              endDate = endDate?.subtract(Duration(days: 7));
+                                              startDateOfWeek = startDateOfWeek?.subtract(Duration(days: 7));
+                                              endDateOfWeek = endDateOfWeek?.subtract(Duration(days: 7));
                                             } else if(period == "Month") {
                                               startDateOfMonth = DateTime(startDateOfMonth!.year, startDateOfMonth!.month - 1, 1);
                                               endDateOfMonth = DateTime(endDateOfMonth!.year, endDateOfMonth!.month, 1).subtract(Duration(days: 1));
@@ -365,7 +398,7 @@ class _RankViewState extends State<RankView> {
                                             setDateRepresent();
                                             delayedUser();
                                           });
-                                        },
+                                        } : null,
                                         icon: const Icon(
                                             Icons.arrow_back_ios_rounded),
                                         color: TColor.PRIMARY_TEXT,
@@ -379,15 +412,15 @@ class _RankViewState extends State<RankView> {
                                       ),
                                       CustomIconButton(
                                         onPressed: (
-                                            (DateTime.now().isAfter(endDate!) && (period == "Week")) ||
+                                            (DateTime.now().isAfter(endDateOfWeek!) && (period == "Week")) ||
                                             (endDateOfMonth != null && DateTime.now().isAfter(endDateOfMonth!) && (period == "Month")) ||
                                             (endDateOfYear != null && DateTime.now().isAfter(endDateOfYear!) && (period == "Year"))
                                         ) ? () {
-                                          setState(() async {
+                                          setState(() {
                                             if(period == "Week") {
-                                              startDate = startDate?.add(Duration(days: 7));
-                                              endDate = endDate?.add(Duration(days: 7));
-                                              dateRepresent = "${formatDate(startDate).substring(0, formatDate(startDate).length - 5)} - ${formatDate(endDate)}";
+                                              startDateOfWeek = startDateOfWeek?.add(Duration(days: 7));
+                                              endDateOfWeek = endDateOfWeek?.add(Duration(days: 7));
+                                              dateRepresent = "${formatDate(startDateOfWeek).substring(0, formatDate(startDateOfWeek).length - 5)} - ${formatDate(endDateOfWeek)}";
                                             }
                                             else if(period == "Month") {
                                               startDateOfMonth = DateTime(startDateOfMonth!.year, startDateOfMonth!.month + 1, startDateOfMonth!.day);
@@ -412,7 +445,7 @@ class _RankViewState extends State<RankView> {
                                 showActionList(context, [
                                   {
                                     "text": "All",
-                                    "onPressed": () async {
+                                    "onPressed": () {
                                       setState(() {
                                         gender = "";
                                       });
@@ -422,7 +455,7 @@ class _RankViewState extends State<RankView> {
                                   },
                                   {
                                     "text": "Male",
-                                    "onPressed": () async {
+                                    "onPressed": () {
                                       setState(() {
                                         gender = "MALE";
                                       });
@@ -432,7 +465,7 @@ class _RankViewState extends State<RankView> {
                                   },
                                   {
                                     "text": "Female",
-                                    "onPressed": () async {
+                                    "onPressed": () {
                                       setState(() {
                                         gender = "FEMALE";
                                       });
@@ -465,6 +498,10 @@ class _RankViewState extends State<RankView> {
                     ),
                   ),
                   if(isLoading)...[
+                    Loading(
+                      marginTop: media.height * 0.25,
+                      backgroundColor: Colors.transparent,
+                    )
                   ]
                   else...[
                     // Top 3 Section
@@ -638,16 +675,16 @@ class _RankViewState extends State<RankView> {
                           startIndex: 4,
                           distanceOnPressed: () {
                             setState(() {
-                              sort = "Distance";
+                              sort_by = "Distance";
                               delayedUser();
-                              print(sort);
+                              print(sort_by);
                             });
                           },
                           timeOnPressed: () {
                             setState(() {
-                              sort = "Time";
+                              sort_by = "Time";
                               delayedUser();
-                              print(sort);
+                              print(sort_by);
                             });
                           },
                       ),
@@ -656,16 +693,15 @@ class _RankViewState extends State<RankView> {
                 ],
               ),
               if(isLoading)...[
-                Loading(
-                  marginTop: media.height * 0.4,
-                  // backgroundColor: Colors.transparent,
-                )
+
               ]
             ],
           ),
         ),
       ),
-      bottomNavigationBar: const Menu(),
+      bottomNavigationBar: Menu(
+        buttonClicked: menuButtonClicked,
+      ),
     );
   }
 }

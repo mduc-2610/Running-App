@@ -8,7 +8,7 @@ import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/limit_line_text.dart';
+import 'package:running_app/utils/common_widgets/limit_text_line.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
@@ -212,7 +212,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             if(activityRecord?.title != "")...[
-                              LimitLineText(
+                              LimitTextLine(
                                 showFullText: showFullTitle,
                                 showViewMoreButton: showViewMoreTitleButton,
                                 description: '${activityRecord?.title}',
@@ -226,12 +226,12 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                     fontSize: FontSize.LARGE,
                                     fontWeight: FontWeight.w600
                                 ),
-                                char_in_line: 35,
+                                charInLine: 35,
                               ),
                               SizedBox(height: media.height * 0.01,),
                             ],
                             if(activityRecord?.description != "")...[
-                              LimitLineText(
+                              LimitTextLine(
                                 showFullText: showFullDescription,
                                 showViewMoreButton: showViewMoreDescriptionButton,
                                 description: "${activityRecord?.description}",

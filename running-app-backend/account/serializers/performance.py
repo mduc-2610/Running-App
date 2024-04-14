@@ -1,10 +1,21 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from rest_framework import serializers
 
 from account.models import Performance
+from activity.models import UserParticipationClub, \
+                            UserParticipationEvent
+
 from account.serializers.user import UserSerializer
 
+from utils.function import get_start_of_day, \
+                            get_end_of_day, \
+                            get_start_date_of_week, \
+                            get_end_date_of_week, \
+                            get_start_date_of_month, \
+                            get_end_date_of_month, \
+                            get_start_date_of_year, \
+                            get_end_date_of_year
 
 class LeaderboardSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -12,7 +23,8 @@ class LeaderboardSerializer(serializers.ModelSerializer):
     gender = serializers.SerializerMethodField()
     total_distance = serializers.SerializerMethodField()
     total_duration = serializers.SerializerMethodField()
-
+    participated_at = serializers.SerializerMethodField()
+    
     def get_user_id(self, instance):
         return instance.user.id
 
@@ -23,16 +35,33 @@ class LeaderboardSerializer(serializers.ModelSerializer):
         return instance.user.profile.gender
     
     def get_period_stats(self, instance, index):
-        start_date = self.context.get('start_date', None)
-        end_date = self.context.get('end_date', None)
+        context = self.context
+        start_date = context.get('start_date', get_start_date_of_week())
+        end_date = context.get('end_date', get_end_date_of_week())
+        type = context.get('type', None)
+    
         print({'start_date': start_date, 'end_date': end_date})
-        return instance.range_stats(start_date, end_date, sport_type="RUNNING")[index]
+        sport_type = context.get('sport_type', None) if type else "RUNNING"
+        return instance.range_stats(start_date, end_date, sport_type=sport_type)[index]
         
     def get_total_distance(self, instance):
         return self.get_period_stats(instance, 0)
     
     def get_total_duration(self, instance):
         return instance.format_duration(self.get_period_stats(instance, 3))
+
+    def get_total_points(self, instance):
+        return self.get_period_stats(instance, 2)
+    
+    def get_participated_at(self, instance):
+        type = self.context.get("type", None)
+        id = self.context.get("id", None)
+        user_id = instance.user.activity.id
+        if type == "club":
+            return UserParticipationClub.objects.get(user_id=user_id, club_id=id).participated_at
+        elif type == "event":
+            return UserParticipationEvent.objects.get(user_id=user_id, event_id=id).participated_at    
+        return None
 
     class Meta:
         model = Performance
@@ -43,6 +72,7 @@ class LeaderboardSerializer(serializers.ModelSerializer):
             "gender",
             "total_duration",
             "total_distance",
+            "participated_at"
         )
         extra_kwargs = {
             "id": {"read_only": True},

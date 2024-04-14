@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:running_app/models/activity/club.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
+import 'package:running_app/utils/common_widgets/limit_text_line.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
@@ -15,17 +16,21 @@ class ClubDetailInformationView extends StatefulWidget {
 
 class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
   DetailClub? club;
-
-  void initClub() {
+  bool showFullText = false;
+  bool showViewMoreButton = false;
+  bool? joinButtonState;
+  void getArguments() {
     setState(() {
-      club = (ModalRoute.of(context)?.settings.arguments as Map<String, DetailClub>)["club"];
+      final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      club = arguments["club"];
+      joinButtonState = arguments["joinButtonState"];
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    initClub();
+    getArguments();
   }
 
   @override
@@ -84,7 +89,10 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                       child: CustomTextButton(
                                         style: ButtonStyle(
                                             backgroundColor: MaterialStateProperty.all<Color?>(
-                                                TColor.PRIMARY
+                                                (joinButtonState!) ? Colors.transparent : TColor.PRIMARY
+                                            ),
+                                            side: MaterialStateProperty.all(
+                                                BorderSide(width: 2, color: TColor.PRIMARY)
                                             ),
                                             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                                                 RoundedRectangleBorder(
@@ -92,36 +100,19 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                                 )
                                             )
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          setState(() {
+                                            joinButtonState = (joinButtonState!) ? false : true;
+                                          });
+                                        },
                                         child: Text(
-                                          "Joins",
+                                          "${(joinButtonState!) ? "Joined" : "Join"}",
                                           style: TextStyle(
                                               color: TColor.PRIMARY_TEXT,
                                               fontSize: FontSize.LARGE,
                                               fontWeight: FontWeight.w800
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(width: media.width * 0.015,),
-                                    SizedBox(
-                                      width: 50,
-                                      child: CustomTextButton(
-                                          style: ButtonStyle(
-                                              backgroundColor: MaterialStateProperty.all<Color?>(
-                                                  TColor.PRIMARY
-                                              ),
-                                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                  RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(12)
-                                                  )
-                                              )
-                                          ),
-                                          onPressed: () {},
-                                          child: Icon(
-                                            Icons.info_outline_rounded,
-                                            color: TColor.PRIMARY_TEXT,
-                                          )
                                       ),
                                     ),
                                     SizedBox(width: media.width * 0.015,),
@@ -235,12 +226,16 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                   ],
                                 ),
                                 SizedBox(height: media.height * 0.01,),
-                                Text(
-                                  club?.description ?? "",
-                                  style: TextStyle(
-                                      color: TColor.DESCRIPTION,
-                                      fontSize: FontSize.SMALL
-                                  ),
+                                LimitTextLine(
+                                    description: club?.description ?? "",
+                                    onTap: () {
+                                      setState(() {
+                                        showFullText = (showFullText) ? false : true;
+                                      });
+                                    },
+                                    showFullText: showFullText,
+                                    showViewMoreButton: showViewMoreButton,
+                                    maxLines: 3,
                                 ),
                                 SizedBox(height: media.height * 0.015,),
 
@@ -257,7 +252,9 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                       ),
                                       CustomTextButton(
                                         onPressed: () {
-                                          Navigator.pushNamed(context, '/member_management_public');
+                                          Navigator.pushNamed(context, '/member_management_public', arguments: {
+                                            "participants": club?.participants ?? []
+                                          });
                                         },
                                         child: Text(
                                             "View more",
@@ -304,7 +301,7 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                        participant?.username ?? "",
+                                                        participant?.name ?? "",
                                                         style: TextStyle(
                                                             color: TColor.PRIMARY_TEXT,
                                                             fontSize: FontSize.SMALL,

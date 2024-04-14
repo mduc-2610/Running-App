@@ -2,31 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 
-class LimitLineText extends StatefulWidget {
+class LimitTextLine extends StatefulWidget {
   final String description;
   final VoidCallback onTap;
   bool showFullText;
   bool showViewMoreButton;
   TextStyle? style;
-  int? char_in_line;
-  LimitLineText({
+  int? charInLine;
+  int? maxLines;
+  LimitTextLine({
     required this.description,
     required this.onTap,
     required this.showFullText,
     required this.showViewMoreButton,
     this.style,
-    this.char_in_line,
+    this.charInLine,
+    this.maxLines,
     super.key
   });
 
   @override
-  State<LimitLineText> createState() => _LimitLineTextState();
+  State<LimitTextLine> createState() => _LimitTextLineState();
 }
 
-class _LimitLineTextState extends State<LimitLineText> {
+class _LimitTextLineState extends State<LimitTextLine> {
   @override
   Widget build(BuildContext context) {
-    if(countTextLines(widget.description, char_in_line: widget.char_in_line) > 2) {
+    print(countTextLines(widget.description, charInLine: widget.charInLine));
+    if(countTextLines(widget.description, charInLine: widget.charInLine) > (widget.maxLines ?? 2)) {
       widget.showViewMoreButton = true;
     }
     return Column(
@@ -35,7 +38,7 @@ class _LimitLineTextState extends State<LimitLineText> {
         Text(
           widget.description,
           style: widget.style ?? TxtStyle.descSectionNormal,
-          maxLines: widget.showFullText ? null : 2,
+          maxLines: widget.showFullText ? null : (widget.maxLines ?? 2),
         ),
         if(widget.showViewMoreButton)... [
           GestureDetector(

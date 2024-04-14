@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:running_app/utils/constants.dart';
 
-class Menu extends StatelessWidget {
+class Menu extends StatefulWidget {
+  final String buttonClicked;
+  const Menu({
+    required this.buttonClicked,
+    super.key
+  });
 
-  const Menu({super.key});
+  @override
+  State<Menu> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +36,13 @@ class Menu extends StatelessWidget {
             IconButton(
               onPressed: () {
                 (icon["url"] != "/activity_record")
-                    ? Navigator.pushReplacementNamed(context, icon["url"])
+                    ? Navigator.pushReplacementNamed(context, icon["url"], arguments: {
+                      "menuButtonState": icon["url"]
+                    })
                     : Navigator.pushNamed(context, icon["url"]);
               },
               icon: Icon(icon["icon"]),
-              color: TColor.DESCRIPTION,
+              color: (widget.buttonClicked == icon["url"]) ? TColor.THIRD : TColor.DESCRIPTION,
               iconSize: 35,
             )
         ],

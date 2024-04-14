@@ -7,12 +7,14 @@ class Event {
   final String? name;
   final int? numberOfParticipants;
   final String? banner;
+  final String? competition;
   final int? daysRemain;
 
   Event({
     required this.id,
     required this.name,
     required this.numberOfParticipants,
+    required this.competition,
     required this.banner,
     required this.daysRemain,
   });
@@ -21,6 +23,7 @@ class Event {
     : id = json['id'],
       name = json['name'],
       numberOfParticipants = json['number_of_participants'],
+      competition = json['competition'],
       banner = json['banner'],
       daysRemain = json['days_remaining'];
 
@@ -46,9 +49,8 @@ class DetailEvent extends Event {
   final Map<String, dynamic>? regulations;
   final String? description;
   final String? contactInformation;
-  final String? sportType;
   final String? privacy;
-  final String? competition;
+  final String? sportType;
   final List<Leaderboard>? participants;
   final List<Group>? groups;
 
@@ -58,14 +60,14 @@ class DetailEvent extends Event {
     int? numberOfParticipants,
     String? banner,
     int? daysRemain,
+    String? competition,
     required this.startedAt,
     required this.endedAt,
     required this.regulations,
     required this.description,
     required this.contactInformation,
-    required this.sportType,
     required this.privacy,
-    required this.competition,
+    required this.sportType,
     required this.participants,
     required this.groups,
   }) : super(
@@ -73,6 +75,7 @@ class DetailEvent extends Event {
     name: name,
     numberOfParticipants: numberOfParticipants,
     banner: banner,
+    competition: competition,
     daysRemain: daysRemain
   );
 
@@ -84,7 +87,6 @@ class DetailEvent extends Event {
     data['regulations'] = regulations;
     data['description'] = description;
     data['contact_information'] = contactInformation;
-    data['sport_type'] = sportType;
     data['privacy'] = privacy;
     data['competition'] = competition;
     data['participants'] = participants;
@@ -98,18 +100,11 @@ class DetailEvent extends Event {
         regulations = json['regulations'],
         description = json['description'],
         contactInformation = json['contact_information'],
-        sportType = json['sport_type'],
         privacy = json['privacy'],
-        competition = json['competition'],
+        sportType = json['sportType'],
         participants = (json['participants'] as List<dynamic>).map((e) => Leaderboard.fromJson(e)).toList(),
         groups = (json['groups'] as List<dynamic>).map((e) => Group.fromJson(e)).toList(),
-        super(
-          id: json['id'],
-          name: json['name'],
-          numberOfParticipants: json['number_of_participants'],
-          banner: json['banner'],
-          daysRemain: json['days_remaining']
-        );
+        super.fromJson(json);
 
   @override
   String toString() {

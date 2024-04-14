@@ -5,7 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
-import 'package:running_app/utils/common_widgets/limit_line_text.dart';
+import 'package:running_app/utils/common_widgets/limit_text_line.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/show_action_list.dart';
@@ -169,7 +169,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if(widget.activityRecord?.title != "")...[
-                  LimitLineText(
+                  LimitTextLine(
                     showFullText: showFullTitle,
                     showViewMoreButton: showViewMoreTitleButton,
                     description: '${widget.activityRecord?.title}',
@@ -183,12 +183,12 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                         fontSize: FontSize.LARGE,
                         fontWeight: FontWeight.w600
                     ),
-                    char_in_line: 35,
+                    charInLine: 35,
                   ),
                   SizedBox(height: media.height * 0.01,),
                 ],
                 if(widget.activityRecord?.description != "")...[
-                  LimitLineText(
+                  LimitTextLine(
                     showFullText: showFullDescription,
                     showViewMoreButton: showViewMoreDescriptionButton,
                     description: "${widget.activityRecord?.description}",
