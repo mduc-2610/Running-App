@@ -1,9 +1,14 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/product/brand.dart';
 import 'package:running_app/models/product/product.dart';
+import 'package:running_app/models/product/category.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
+import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
@@ -11,6 +16,7 @@ import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/show_filter_product.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import '../../utils/constants.dart';
@@ -25,9 +31,16 @@ class ProductView extends StatefulWidget {
 
 class _ProductViewState extends State<ProductView> {
   String menuButtonClicked = "/store";
+  bool showClearButton = false;
   bool isLoading = true;
-  List<dynamic>? productList;
+  List<dynamic>? productList, brandList, categoryList;
+  List<dynamic>? brandNameList, categoryNameList;
   String token = "";
+  String brandFilter = "";
+  String categoryFilter = "";
+  String brandButtonClicked = "";
+  String categoryButtonClicked = "";
+  TextEditingController searchTextController = TextEditingController();
 
   void initToken() {
     setState(() {
@@ -36,13 +49,46 @@ class _ProductViewState extends State<ProductView> {
   }
 
   Future<void> initProduct() async {
-    final data = await callListAPI('product/product', Product.fromJson, token);
+    final data = await callListAPI(
+        'product/product',
+        Product.fromJson,
+        token,
+        queryParams: "?q=${searchTextController.text}&"
+                    "brand=${brandFilter}&"
+                    "category=${categoryFilter}"
+    );
     setState(() {
       productList = data;
     });
   }
 
+  Future<void> initBrand() async {
+    final data = await callListAPI(
+        'product/brand',
+        Brand.fromJson,
+        token,
+    );
+    setState(() {
+      brandList = data;
+      brandNameList = brandList?.map((e) => (e.name ?? "")).toList();
+    });
+  }
+
+  Future<void> initCategory() async {
+    final data = await callListAPI(
+      'product/category',
+      Category.fromJson,
+      token,
+    );
+    setState(() {
+      categoryList = data;
+      categoryNameList = categoryList?.map((e) => (e.name ?? "")).toList();
+    });
+  }
+
   Future<void> delayedInit() async {
+    await initBrand();
+    await initCategory();
     await initProduct();
     await Future.delayed(Duration(milliseconds: 700));
     setState(() {
@@ -50,6 +96,13 @@ class _ProductViewState extends State<ProductView> {
     });
   }
 
+  Future<void> delayedInitProduct() async {
+    await initProduct();
+    await Future.delayed(Duration(milliseconds: 700));
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   void didChangeDependencies() {
@@ -58,22 +111,55 @@ class _ProductViewState extends State<ProductView> {
     delayedInit();
   }
 
+  var focusNode = FocusNode();
   @override
   Widget build(BuildContext context) {
+    print(categoryNameList);
+    print("?q=${searchTextController.text}"
+        "&brand=${brandFilter}"
+        "&category=${categoryFilter}"
+    );
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
         appBar: CustomAppBar(
-          title: const Header(
+          title: Header(
             title: "Product",
             iconButtons: [
               {
                 "icon": Icons.filter_alt_outlined,
+                "onPressed": () async {
+                  setState(() {
+                    brandButtonClicked = brandFilter;
+                    categoryButtonClicked = categoryFilter;
+                  });
+                  Map<String, String?> result =await showFilterProduct(
+                      context,
+                      [
+                        {
+                          "title": "Brand",
+                          "list": brandNameList ?? []
+                        },
+                        {
+                          "title": "Category",
+                          "list": categoryNameList ?? []
+                        },
+                      ],
+                      buttonClicked: [brandButtonClicked, categoryButtonClicked]
+                  );
+
+                  setState(() {
+                    brandFilter = result["Brand"] ?? "";
+                    categoryFilter = result["Category"] ?? "";
+                    delayedInitProduct();
+                  });
+                }
               }
             ],
           ),
           backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
         ),
         body: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
           child: DefaultBackgroundLayout(
             child: Stack(
               children: [
@@ -82,114 +168,146 @@ class _ProductViewState extends State<ProductView> {
                     children: [
                       // Search bar
                       CustomTextFormField(
-                        decoration: CustomInputDecoration(
-                          hintText: "Search products",
-                          prefixIcon: Icon(Icons.search, color: TColor.DESCRIPTION),
-                        ),
-                        keyboardType: TextInputType.text,
+                          controller: searchTextController,
+                          decoration: CustomInputDecoration(
+                            hintText: "Search products",
+                            prefixIcon: Icon(
+                                Icons.search,
+                                color: TColor.DESCRIPTION
+                            ),
+                          ),
+                          keyboardType: TextInputType.text,
+                          onSaved: (value) {
+                            print("Save");
+                          },
+                          showClearButton: showClearButton,
+                          onClearChanged: () {
+                            searchTextController.clear();
+                            setState(() {
+                              showClearButton = false;
+                              delayedInitProduct();
+                            });
+                          },
+                          onFieldSubmitted: (String x) {
+                            delayedInitProduct();
+                          },
+                          onPrefixPressed: () {
+                            delayedInitProduct();
+                          },
                       ),
                       SizedBox(height: media.height * 0.01,),
 
                       // Product
                       if(isLoading == false)...[
-                        SizedBox(
-                          height: media.height, // Set a specific height
-                          child: GridView.count(
-                              padding: const EdgeInsets.all(0),
-                              crossAxisCount: 2,
-                              crossAxisSpacing: media.width * 0.05,
-                              mainAxisSpacing: media.height * 0.025,
-                              children: [
-                                for(var product in productList ?? [])
-                                  CustomTextButton(
-                                    onPressed: () {},
-                                    child: Container(
-                                      padding: EdgeInsets.all(media.width * 0.025),
-                                      // width: media.width * 0.45,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12.0),
-                                        color: TColor.SECONDARY_BACKGROUND,
-                                        border: Border.all(
-                                          color: const Color(0xff495466),
-                                          width: 2.0,
-                                        ),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Stack(
+                        if(productList?.length == 0)...[
+                          SizedBox(height: media.height * 0.2,),
+                          EmptyListNotification(
+                            title: "No products found",
+                            image: "assets/img/store/product/no_items_found.png",
+                          )
+                        ]
+                        else...[
+                          SingleChildScrollView(
+                            child: SizedBox(
+                              height: media.height * 0.7,
+                              child: GridView.count(
+                                  padding: const EdgeInsets.all(0),
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: media.width * 0.05,
+                                  mainAxisSpacing: media.height * 0.025,
+                                  children: [
+                                    for(var product in productList ?? [])
+                                      CustomTextButton(
+                                        onPressed: () {},
+                                        child: Container(
+                                          padding: EdgeInsets.all(media.width * 0.025),
+                                          // width: media.width * 0.45,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(12.0),
+                                            color: TColor.SECONDARY_BACKGROUND,
+                                            border: Border.all(
+                                              color: const Color(0xff495466),
+                                              width: 2.0,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(12.0),
-                                                ),
-                                                child: Image.asset(
-                                                  "assets/img/store/product/air_force_1.png",
-                                                  fit: BoxFit.cover,
+                                              Stack(
+                                                children: [
+                                                  Container(
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(12.0),
+                                                    ),
+                                                    child: Image.asset(
+                                                      "assets/img/store/product/air_force_1.png",
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    top: 5,
+                                                    right: 5,
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Container(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(12.0),
+                                                            color: TColor.SECONDARY_BACKGROUND.withOpacity(0.7),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              SvgPicture.asset(
+                                                                "assets/img/home/coin_icon.svg",
+                                                                width: 16,
+                                                                height: 16,
+                                                                fit: BoxFit.contain,
+                                                              ),
+                                                              Text(
+                                                                product.price.toString() ?? "",
+                                                                style: TextStyle(
+                                                                  color: TColor.PRIMARY_TEXT,
+                                                                  fontSize: FontSize.NORMAL,
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(height: media.height * 0.01),
+                                              Text(
+                                                product.brand.name ?? "",
+                                                style: TextStyle(
+                                                  color: TColor.DESCRIPTION,
+                                                  fontSize: FontSize.SMALL,
                                                 ),
                                               ),
-                                              Positioned(
-                                                top: 5,
-                                                right: 5,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(12.0),
-                                                        color: TColor.SECONDARY_BACKGROUND.withOpacity(0.7),
-                                                      ),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          SvgPicture.asset(
-                                                            "assets/img/home/coin_icon.svg",
-                                                            width: 16,
-                                                            height: 16,
-                                                            fit: BoxFit.contain,
-                                                          ),
-                                                          Text(
-                                                            product.price.toString() ?? "",
-                                                            style: TextStyle(
-                                                              color: TColor.PRIMARY_TEXT,
-                                                              fontSize: FontSize.NORMAL,
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
+                                              // SizedBox(height: media.height * 0.005),
+                                              Text(
+                                                product.name ?? "",
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                  color: TColor.PRIMARY_TEXT,
+                                                  fontSize: FontSize.SMALL,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
                                               )
                                             ],
                                           ),
-                                          SizedBox(height: media.height * 0.01),
-                                          Text(
-                                            product.brand.name ?? "",
-                                            style: TextStyle(
-                                              color: TColor.DESCRIPTION,
-                                              fontSize: FontSize.SMALL,
-                                            ),
-                                          ),
-                                          // SizedBox(height: media.height * 0.005),
-                                          Text(
-                                            product.name ?? "",
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                              color: TColor.PRIMARY_TEXT,
-                                              fontSize: FontSize.SMALL,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          )
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                              ]
+                                  ]
+                              ),
+                            ),
                           ),
-                        ),
+                        ]
                       ] else...[
                         Loading(
                           marginTop: media.height * 0.3,

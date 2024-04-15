@@ -6,6 +6,7 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:running_app/models/account/leaderboard.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/club.dart';
+import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/athlete_table.dart';
@@ -179,11 +180,20 @@ class _RankViewState extends State<RankView> {
         Leaderboard.fromJson,
         token,
         queryParams: queryParams
-    ) : (await callRetrieveAPI(
+    ) : (rankType == "Club")
+        ?(await callRetrieveAPI(
         'activity/club',
         rankTypeId,
         null,
         DetailClub.fromJson,
+        token,
+        queryParams: queryParams
+    )).participants
+        : (await callRetrieveAPI(
+        'activity/event',
+        rankTypeId,
+        null,
+        DetailEvent.fromJson,
         token,
         queryParams: queryParams
     )).participants
@@ -219,7 +229,7 @@ class _RankViewState extends State<RankView> {
       isLoading = true;
     });
     await initUser();
-    await Future.delayed(Duration(milliseconds: 500),);
+    await Future.delayed(Duration(milliseconds: 1000),);
 
     setState(() {
       isLoading = false;
@@ -497,204 +507,194 @@ class _RankViewState extends State<RankView> {
                       ],
                     ),
                   ),
-                  if(isLoading)...[
-                    Loading(
-                      marginTop: media.height * 0.25,
-                      backgroundColor: Colors.transparent,
-                    )
-                  ]
-                  else...[
-                    // Top 3 Section
-                    Container(
-                      height: media.height * 0.29,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          for (int i = 0; i < 3; i++) ...[
-                            Container(
-                              margin: (i == 0 || i == 2)
-                                  ? const EdgeInsets.only(top: 25)
-                                  : const EdgeInsets.all(0),
-                              // width: media.width * 0.25,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      CustomTextButton(
-                                        onPressed: () {
-                                          Navigator.pushNamed(context, '/user', arguments: {
-                                            "id": userList?[i].userId,
-                                          });
-                                        },
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 8),
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(50),
-                                              border: Border.all(
-                                                width: 3.0,
-                                                color: topList[i]["borderColor"],
-                                              )),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(50),
-                                            child: Image.asset(
-                                              "assets/img/home/avatar.png",
-                                              width: 80,
-                                              height: 80,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: media.width * 0.25,
-                                        margin: EdgeInsets.only(
-                                            bottom: media.height * 0.16),
-                                      ),
-                                      Positioned(
-                                          bottom: 0,
-                                          left: media.width * 0.089,
-                                          child: (i == 4)
-                                              ? Container(
-                                            width: 30,
-                                            height: 30,
-                                            padding:
-                                            const EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                              color: topList[i]
-                                              ["borderColor"],
-                                              borderRadius:
-                                              BorderRadius.circular(50),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                '${topList[i]["top"]}',
-                                                // textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    color: topList[i]
-                                                    ["textColor"],
-                                                    fontSize:
-                                                    FontSize.NORMAL,
-                                                    fontWeight:
-                                                    FontWeight.w700),
-                                              ),
-                                            ),
-                                          )
-                                              : SvgPicture.asset(
-                                            topList[i]["trophy"],
-                                            width: 40,
-                                            height: 40,
+
+                  // Top 3 Section
+                  Container(
+                    height: media.height * 0.29,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        for (int i = 0; i < 3; i++) ...[
+                          Container(
+                            margin: (i == 0 || i == 2)
+                                ? const EdgeInsets.only(top: 25)
+                                : const EdgeInsets.all(0),
+                            // width: media.width * 0.25,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    CustomTextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, '/user', arguments: {
+                                          "id": userList?[i].userId,
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8, horizontal: 8),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(50),
+                                            border: Border.all(
+                                              width: 3.0,
+                                              color: topList[i]["borderColor"],
+                                            )),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(50),
+                                          child: Image.asset(
+                                            "assets/img/home/avatar.png",
+                                            width: 80,
+                                            height: 80,
                                             fit: BoxFit.cover,
-                                          )),
-                                      Positioned(
-                                        bottom: 23,
-                                        child: Center(
-                                          child: Text(
-                                            '${topList[i]["top"]}',
-                                            // textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                color: topList[i]["textColor"],
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w800),
                                           ),
                                         ),
-                                      )
+                                      ),
+                                    ),
+                                    Container(
+                                      width: media.width * 0.25,
+                                      margin: EdgeInsets.only(
+                                          bottom: media.height * 0.16),
+                                    ),
+                                    Positioned(
+                                        bottom: 0,
+                                        left: media.width * 0.089,
+                                        child: (i == 4)
+                                            ? Container(
+                                          width: 30,
+                                          height: 30,
+                                          padding:
+                                          const EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            color: topList[i]
+                                            ["borderColor"],
+                                            borderRadius:
+                                            BorderRadius.circular(50),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${topList[i]["top"]}',
+                                              // textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: topList[i]["textColor"],
+                                                  fontSize:
+                                                  FontSize.NORMAL,
+                                                  fontWeight:
+                                                  FontWeight.w700),
+                                            ),
+                                          ),
+                                        )
+                                            : SvgPicture.asset(
+                                          topList[i]["trophy"],
+                                          width: 40,
+                                          height: 40,
+                                          fit: BoxFit.cover,
+                                        )),
+                                    Positioned(
+                                      bottom: 23,
+                                      child: Center(
+                                        child: Text(
+                                          '${topList[i]["top"]}',
+                                          // textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: topList[i]["textColor"],
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w800),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 5,
+                                ),
+                                SizedBox(
+                                  width: media.width * 0.3,
+                                  child: Text(
+                                    "${userList?[i]?.name ?? ""}",
+                                    style: TextStyle(
+                                      color: TColor.PRIMARY_TEXT,
+                                      fontSize: FontSize.SMALL,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: TColor.SECONDARY_BACKGROUND,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "${userList?[i].totalDistance ?? 0}km",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: TColor.PRIMARY_TEXT,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${formatTimeDuration(userList?[i].totalDuration ?? "00:00:00", type: 2)}',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: TColor.PRIMARY_TEXT,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  SizedBox(
-                                    width: media.width * 0.3,
-                                    child: Text(
-                                      "${userList?[i]?.name}",
-                                      style: TextStyle(
-                                        color: TColor.PRIMARY_TEXT,
-                                        fontSize: FontSize.SMALL,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 8
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: TColor.SECONDARY_BACKGROUND,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "${userList?[i].totalDistance ?? 0}km",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: TColor.PRIMARY_TEXT,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        Text(
-                                          '${formatTimeDuration(userList?[i].totalDuration ?? "00:00:00", type: 2)}',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: TColor.PRIMARY_TEXT,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                          ]
-                        ],
-                      ),
+                                )
+                              ],
+                            ),
+                          )
+                        ]
+                      ],
                     ),
-                    SizedBox(height: media.height * 0.04,),
-                    ScrollSynchronized(
-                      parentScrollController: parentScrollController,
-                      child: AthleteTable(
-                          participants: userList?.sublist(3) ?? [],
-                          tableHeight: media.height - media.height * 0.26,
-                          controller: childScrollController,
-                          startIndex: 4,
-                          distanceOnPressed: () {
-                            setState(() {
-                              sort_by = "Distance";
-                              delayedUser();
-                              print(sort_by);
-                            });
-                          },
-                          timeOnPressed: () {
-                            setState(() {
-                              sort_by = "Time";
-                              delayedUser();
-                              print(sort_by);
-                            });
-                          },
-                      ),
-                    )
-                  ]
-                ],
+                  ),
+                  SizedBox(height: media.height * 0.04,),
+                  ScrollSynchronized(
+                    parentScrollController: parentScrollController,
+                    child: AthleteTable(
+                      participants: userList?.sublist(3) ?? [],
+                      tableHeight: media.height - media.height * 0.26,
+                      controller: childScrollController,
+                      startIndex: 4,
+                      distanceOnPressed: () {
+                        setState(() {
+                          sort_by = "Distance";
+                          delayedUser();
+                          print(sort_by);
+                        });
+                      },
+                      timeOnPressed: () {
+                        setState(() {
+                          sort_by = "Time";
+                          delayedUser();
+                          print(sort_by);
+                        });
+                      },
+                      isLoading: isLoading,
+                    ),
+                  )
+                ]
               ),
-              if(isLoading)...[
-
-              ]
             ],
           ),
         ),

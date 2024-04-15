@@ -36,12 +36,11 @@ class LeaderboardSerializer(serializers.ModelSerializer):
     
     def get_period_stats(self, instance, index):
         context = self.context
-        start_date = context.get('start_date', get_start_date_of_week())
-        end_date = context.get('end_date', get_end_date_of_week())
-        type = context.get('type', None)
-    
-        print({'start_date': start_date, 'end_date': end_date})
-        sport_type = context.get('sport_type', None) if type else "RUNNING"
+        start_date = context.get('start_date')
+        end_date = context.get('end_date')
+        type = context.get('type')
+        
+        sport_type = context.get('sport_type') if type else "RUNNING"
         return instance.range_stats(start_date, end_date, sport_type=sport_type)[index]
         
     def get_total_distance(self, instance):

@@ -39,7 +39,13 @@ class _ClubDetailViewState extends State<ClubDetailView> {
 
   Future<void>initClub() async {
     final data = await callRetrieveAPI(
-        'activity/club', clubId, null, DetailClub.fromJson, token);
+        'activity/club',
+        clubId,
+        null,
+        DetailClub.fromJson,
+        token,
+        queryParams: "?limit_user=20"
+    );
     setState(() {
       club = data;
     });
@@ -406,7 +412,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                       (club?.numberOfParticipants != 0)
                                           ? ScrollSynchronized(
                                         parentScrollController: parentScrollController,
-                                        child: AthleteTable(participants: club?.participants, tableHeight: media.height - media.height * 0.15, controller: childScrollController,),
+                                        child: AthleteTable(participants: club?.participants, tableHeight: media.height - media.height * 0.15, controller: childScrollController, startIndex: 1,),
                                       )
                                           : const EmptyListNotification(
                                         title: "No users joined yet!",

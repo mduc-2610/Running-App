@@ -35,6 +35,7 @@ class EventDetailView extends StatefulWidget {
 
 class _EventDetailViewState extends State<EventDetailView> {
   bool isLoading = true;
+  bool isLoadingLeaderboard = false;
   String _showLayout = "Information";
   String token = "";
   String eventId = "";
@@ -45,6 +46,7 @@ class _EventDetailViewState extends State<EventDetailView> {
   bool showMilestone = false;
   bool showChooseGroup = false;
   bool userInEvent = false;
+  String sort_by = "Distance";
 
   void getData() {
     setState(() {
@@ -61,7 +63,9 @@ class _EventDetailViewState extends State<EventDetailView> {
         eventId,
         null,
         DetailEvent.fromJson,
-        token
+        token,
+        queryParams: "?limit_user=20&"
+            "sort_by=${sort_by}"
     );
     setState(() {
       event = data;
@@ -82,7 +86,6 @@ class _EventDetailViewState extends State<EventDetailView> {
   }
 
   void delayedInit() async {
-    getData();
     await initUserActivity();
     await initDetailEvent();
     await Future.delayed(Duration(seconds: 1));
@@ -91,9 +94,21 @@ class _EventDetailViewState extends State<EventDetailView> {
     });
   }
 
+  void delayedDetailEvent() async {
+    setState(() {
+      isLoadingLeaderboard = true;
+    });
+    await initDetailEvent();
+    await Future.delayed(Duration(milliseconds: 800));
+    setState(() {
+      isLoadingLeaderboard = false;
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    getData();
     delayedInit();
   }
 
@@ -120,49 +135,49 @@ class _EventDetailViewState extends State<EventDetailView> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                MainWrapper(
-                  child: Column(
-                    children: [
-                      SizedBox(height: media.height * 0.05,),
-                      // Header
-                      Header(
-                        title: "",
-                        iconButtons: [
-                          {
-                            "icon": Icons.more_vert_rounded,
-                            "onPressed": () {
-                              showActionList(
-                                  context,
-                                  [
-                                    {
-                                      "text": "Edit event",
-                                      "onPressed": () {
-                                        // Navigator.pushNamed(
-                                        //     context,
-                                        //     '/'
-                                        // );
-                                      }
-                                    },
-                                    {
-                                      "text": "Delete event",
-                                      "onPressed": () {
-
-                                      },
-                                      "textColor": TColor.WARNING
+                Column(
+                  children: [
+                    SizedBox(height: media.height * 0.05,),
+                    // Header
+                    Header(
+                      title: "",
+                      iconButtons: [
+                        {
+                          "icon": Icons.more_vert_rounded,
+                          "onPressed": () {
+                            showActionList(
+                                context,
+                                [
+                                  {
+                                    "text": "Edit event",
+                                    "onPressed": () {
+                                      // Navigator.pushNamed(
+                                      //     context,
+                                      //     '/'
+                                      // );
                                     }
-                                  ],
-                                  "Options"
-                              );
-                            },
-                          }
-                        ],
-                      ),
-                      SizedBox(
-                        height: media.height * 0.07,
-                      ),
+                                  },
+                                  {
+                                    "text": "Delete event",
+                                    "onPressed": () {
 
-                      // Event target
-                      Column(
+                                    },
+                                    "textColor": TColor.WARNING
+                                  }
+                                ],
+                                "Options"
+                            );
+                          },
+                        }
+                      ],
+                    ),
+                    SizedBox(
+                      height: media.height * 0.07,
+                    ),
+
+                    // Event target section
+                    MainWrapper(
+                      child: Column(
                         children: [
                           if(userInEvent || showMilestone)...[
                             SizedBox(
@@ -180,7 +195,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                     });
                                   },
                                 ),
-
+                      
                                 items: [
                                   Container(
                                     margin: const EdgeInsets.only(
@@ -417,7 +432,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                         "iconColor": TColor.ACCEPTED
                                       }
                                     ])...[
-
+                      
                                       Row(
                                         children: [
                                           Icon(
@@ -514,7 +529,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                                         "iconColor": TColor.ACCEPTED
                                       }
                                     ])...[
-
+                      
                                       Row(
                                         children: [
                                           Icon(
@@ -574,11 +589,11 @@ class _EventDetailViewState extends State<EventDetailView> {
                           ]
                         ],
                       ),
+                    ),
 
-                      SizedBox(
-                        height: media.height * 0.02,
-                      ),
-                      Row(
+                    SizedBox(height: media.height * 0.01,),
+                    MainWrapper(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           for (var x in ["Information", "Leaderboard"]) ...[
@@ -597,6 +612,9 @@ class _EventDetailViewState extends State<EventDetailView> {
                                         MaterialStateProperty.all<Color?>(
                                           _showLayout == x ? TColor.PRIMARY : null
                                         ),
+                                    side: MaterialStateProperty.all<BorderSide>(
+                                      BorderSide(width: 2, color: TColor.PRIMARY)
+                                    ),
                                     shape: MaterialStateProperty.all<
                                             RoundedRectangleBorder>(
                                         RoundedRectangleBorder(
@@ -612,29 +630,49 @@ class _EventDetailViewState extends State<EventDetailView> {
                           ],
                         ],
                       ),
-                      SizedBox(
-                        height: media.height * 0.02,
-                      ),
-                      _showLayout == "Information"
-                          ? InformationLayout(event: event,)
-                          : (event?.participants?.length == 0)
-                          ? EmptyListNotification(
-                              title: (event?.competition == "Group") ? "No groups created yet!" : "No users joined yet!",
-                              description: (event?.competition == "Group")
-                                  ? "Please create a new group for joining the group ranking right away"
-                                  : "Invite your friend for joining the event ranking right away",
-                              addButton: (event?.competition == "Group") ? true : false,
-                              addButtonText: "Create a group",
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/group_create');
-                              },
-                          )
-                      : LeaderBoardLayout(event: event, parentScrollController: parentScrollController,)
-                    ],
-                  ),
+                    ),
+                    // SizedBox(height: media.height * 0.01,),
+                    _showLayout == "Information"
+                        ? MainWrapper(
+                      child: InformationLayout(event: event,),
+                    )
+                        : (event?.participants?.length == 0)
+                        ? EmptyListNotification(
+                            title: (event?.competition == "Group") ? "No groups created yet!" : "No users joined yet!",
+                            description: (event?.competition == "Group")
+                                ? "Please create a new group for joining the group ranking right away"
+                                : "Invite your friend for joining the event ranking right away",
+                            addButton: (event?.competition == "Group") ? true : false,
+                            addButtonText: "Create a group",
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/group_create');
+                            },
+                        )
+                    : LeaderBoardLayout(
+                      event: event,
+                      parentScrollController: parentScrollController,
+                      distanceOnPressed: () {
+                        setState(() {
+                          sort_by = "Distance";
+                          print(sort_by);
+                        });
+                        delayedDetailEvent();
+                      },
+                      timeOnPressed: () {
+                        setState(() {
+                          sort_by = "Time";
+                          print(sort_by);
+                        });
+                        delayedDetailEvent();
+                      },
+                      isLoading: isLoadingLeaderboard,
+                    )
+                  ],
                 ),
               ] else...[
-                Loading()
+                Loading(
+                  marginTop: media.height * 0.5,
+                )
               ]
             ],
           ),
@@ -715,29 +753,81 @@ class _InformationLayoutState extends State<InformationLayout> {
     );
   }
 }
-class LeaderBoardLayout extends StatelessWidget {
+
+class LeaderBoardLayout extends StatefulWidget {
   final ScrollController parentScrollController;
   final DetailEvent? event;
+  final VoidCallback distanceOnPressed;
+  final VoidCallback timeOnPressed;
+  final bool isLoading;
+
   const LeaderBoardLayout({
     required this.parentScrollController,
     required this.event,
+    required this.distanceOnPressed,
+    required this.timeOnPressed,
+    required this. isLoading,
     super.key
   });
 
+  @override
+  State<LeaderBoardLayout> createState() => _LeaderBoardLayoutState();
+}
+
+class _LeaderBoardLayoutState extends State<LeaderBoardLayout> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     ScrollController childScrollController = ScrollController();
 
     return ScrollSynchronized(
-      parentScrollController: parentScrollController,
-      child: EventLeaderboard(
-        event: event,
-        participants: event?.participants ?? [],
-        groups: event?.groups ?? [],
-        tableHeight: media.height - media.height * 0.19,
-        controller: childScrollController,
-        secondColumnName: (event?.competition == "Individual") ? "Athlete name" : "Group name",
+      parentScrollController: widget.parentScrollController,
+      child: Column(
+        children: [
+          MainWrapper(
+            topMargin: 0,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                      "Weekly statistics",
+                      style: TextStyle(
+                        color: TColor.PRIMARY_TEXT,
+                        fontSize: FontSize.NORMAL,
+                        fontWeight: FontWeight.w600,
+                      )
+                  ),
+                  CustomTextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/rank', arguments: {
+                        "rankType": "Event",
+                        "id": widget.event?.id,
+                      });
+                    },
+                    child: Text(
+                        "View more",
+                        style: TextStyle(
+                          color: TColor.PRIMARY,
+                          fontSize: FontSize.NORMAL,
+                          fontWeight: FontWeight.w500,
+                        )
+                    ),
+                  )
+                ]
+            ),
+          ),
+          EventLeaderboard(
+            event: widget.event,
+            participants: widget.event?.participants ?? [],
+            groups: widget.event?.groups ?? [],
+            tableHeight: media.height - media.height * 0.19,
+            controller: childScrollController,
+            secondColumnName: (widget.event?.competition == "Individual") ? "Athlete name" : "Group name",
+            distanceOnPressed: widget.distanceOnPressed,
+            timeOnPressed: widget.timeOnPressed,
+            isLoading: widget.isLoading,
+          )
+        ],
       ),
     );
   }
@@ -1248,6 +1338,8 @@ class GeneralInformationLayout extends StatelessWidget {
                   )
                 ],
               ),
+              SizedBox(height: media.height * 0.02,),
+
             ]
           ],
         ),

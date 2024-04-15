@@ -4,9 +4,15 @@ import 'package:running_app/utils/constants.dart';
 class EventLeaderboardText extends StatelessWidget {
   final String text;
   final double? fontSize;
+  final Color? color;
   final fontWeight;
 
-  const EventLeaderboardText({this.fontSize, this.fontWeight, required this.text, Key? key})
+  EventLeaderboardText({
+    this.fontSize,
+    this.fontWeight,
+    this.color,
+    required this.text,
+    Key? key})
       : super(key: key);
 
   @override
@@ -14,7 +20,7 @@ class EventLeaderboardText extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-          color: TColor.PRIMARY_TEXT,
+          color: color ?? TColor.PRIMARY_TEXT,
           fontSize: fontSize ?? 14,
           fontWeight: fontWeight),
       // overflow: TextOverflow.ellipsis,

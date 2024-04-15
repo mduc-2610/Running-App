@@ -22,6 +22,9 @@ class CustomTextFormField extends StatefulWidget {
   final bool? showClearButton;
   final bool? readOnly;
   final bool noneEditable;
+  final Function(String)? onFieldSubmitted;
+  final VoidCallback? onPrefixPressed;
+
   const CustomTextFormField({
     Key? key,
     required this.decoration,
@@ -44,6 +47,8 @@ class CustomTextFormField extends StatefulWidget {
     this.showClearButton,
     this.readOnly,
     this.noneEditable = false,
+    this.onFieldSubmitted,
+    this.onPrefixPressed,
   }) : super(key: key);
 
   @override
@@ -95,8 +100,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               });
             }
           },
-        )
-            : null,
+        ) : null,
+        prefixIcon: widget.decoration.prefixIcon != null
+            ? GestureDetector(
+          onTap: widget.onPrefixPressed,
+          child: widget.decoration.prefixIcon,
+        ) : null,
       ),
       obscureText: widget.obscureText,
       keyboardType: widget.keyboardType,
@@ -112,6 +121,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       focusNode: widget.focusNode,
       onChanged: widget.onChanged,
       readOnly: widget.noneEditable,
+      onFieldSubmitted: widget.onFieldSubmitted,
     );
   }
 }

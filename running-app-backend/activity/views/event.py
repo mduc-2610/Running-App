@@ -64,23 +64,20 @@ class EventViewSet(
             return DetailEventSerializer
         return super().get_serializer_class()
     
-    def get_serializer(self, *args, **kwargs):
-        serializer_class = self.get_serializer_class()
-        kwargs["context"] = self.get_serializer_context()
-        return serializer_class(*args, **kwargs)
-    
     def retrieve(self, request, * args, **kwargs):
         query_params = self.request.query_params
-        start_date = query_params.get('start_date', get_start_date_of_week())
-        end_date = query_params.get('end_date', get_end_date_of_week())
+        start_date = query_params.get('start_date', get_start_date_of_month())
+        end_date = query_params.get('end_date', get_end_date_of_month())
         sort_by = query_params.get('sort_by', 'Distance')
         gender = query_params.get('gender', None)
+        limit_user = query_params.get('limit_user', None)
 
         instance = self.get_object()
         serializer = self.get_serializer(instance, context={
             'start_date': start_date, 
             'end_date': end_date,
             'sort_by': sort_by,
-            'gender': gender
+            'gender': gender,
+            'limit_user': limit_user
         })
         return response.Response(serializer.data, status=status.HTTP_200_OK)

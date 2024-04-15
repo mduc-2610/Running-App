@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
@@ -9,10 +10,12 @@ class CustomText extends StatelessWidget {
   final String text;
   final double? fontSize;
   final fontWeight;
+  final Color? color;
 
   const CustomText({
     this.fontSize,
     this.fontWeight,
+    this.color,
     required this.text,
     Key? key
   }) : super(key: key);
@@ -22,7 +25,7 @@ class CustomText extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-          color: TColor.PRIMARY_TEXT,
+          color: color ?? TColor.PRIMARY_TEXT,
           fontSize: fontSize ?? 14,
           fontWeight: fontWeight),
       // overflow: TextOverflow.ellipsis,
@@ -32,14 +35,14 @@ class CustomText extends StatelessWidget {
     );
   }
 }
-class AthleteTable extends StatelessWidget {
-  final Random random = Random();
+class AthleteTable extends StatefulWidget {
   final double? tableHeight;
   final List<dynamic>? participants;
   final ScrollController? controller;
   final int startIndex;
   final VoidCallback? distanceOnPressed;
   final VoidCallback? timeOnPressed;
+  final bool? isLoading;
 
   AthleteTable({
     this.controller,
@@ -48,9 +51,17 @@ class AthleteTable extends StatelessWidget {
     this.startIndex = 1,
     this.distanceOnPressed,
     this.timeOnPressed,
+    this.isLoading,
     super.key
   });
 
+  @override
+  State<AthleteTable> createState() => _AthleteTableState();
+}
+
+class _AthleteTableState extends State<AthleteTable> {
+  final Random random = Random();
+  String buttonClicked = "Total (km)";
   // Generate random data for demonstration
   String generateRandomName() {
     List<String> names = [
@@ -131,16 +142,26 @@ class AthleteTable extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       width: media.width * 0.25,
                       child: CustomTextButton(
-                          onPressed: distanceOnPressed ?? () {},
+                          onPressed: () {
+                            widget.distanceOnPressed?.call();
+                            setState(() {
+                              buttonClicked = "Total (km)";
+                            });
+                          },
                           child: Row(
                             children: [
-                              CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Total (km)'),
+                              CustomText(
+                                  fontSize: FontSize.SMALL,
+                                  fontWeight: FontWeight.w700,
+                                  text: 'Total (km)',
+                                  color: (buttonClicked == "Total (km)") ? TColor.THIRD : TColor.PRIMARY_TEXT,
+                              ),
                               SizedBox(width: 2,),
                               Transform.rotate(
                                 angle: -90 * 3.14159 / 180,
                                 child: Icon(
                                   Icons.arrow_back_ios_rounded,
-                                  color: TColor.PRIMARY_TEXT,
+                                  color: (buttonClicked == "Total (km)") ? TColor.THIRD : TColor.PRIMARY_TEXT,
                                   size: 12,
                                 ),)
                                 ],
@@ -150,16 +171,26 @@ class AthleteTable extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     width: media.width * 0.15,
                     child: CustomTextButton(
-                        onPressed: timeOnPressed ?? () {},
+                        onPressed: () {
+                          widget.timeOnPressed?.call();
+                          setState(() {
+                            buttonClicked = "Time";
+                          });
+                        },
                         child: Row(
                           children: [
-                            CustomText(fontSize: FontSize.SMALL, fontWeight: FontWeight.w700, text: 'Time'),
+                            CustomText(
+                                fontSize: FontSize.SMALL,
+                                fontWeight: FontWeight.w700,
+                                text: 'Time',
+                                color: (buttonClicked == "Time") ? TColor.THIRD : TColor.PRIMARY_TEXT,
+                            ),
                             SizedBox(width: 2,),
                             Transform.rotate(
                               angle: -90 * 3.14159 / 180,
                               child: Icon(
                                 Icons.arrow_back_ios_rounded,
-                                color: TColor.PRIMARY_TEXT,
+                                color: (buttonClicked == "Time") ? TColor.THIRD : TColor.PRIMARY_TEXT,
                                 size: 12,
                               ),)
                           ],
@@ -170,202 +201,210 @@ class AthleteTable extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(
-          height: tableHeight,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // for(int i = 0; i < 30; i++)
-                for(var participant in participants ?? [])...[
-                  CustomTextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/user', arguments: {
-                        "id": participant?.userId,
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 12
-                      ),
-                      decoration: const BoxDecoration(
-                          border: Border(
-                              bottom: BorderSide(width: 1, color: Color(0xff746cb3))
-                          )
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                  alignment: Alignment.centerLeft,
-                                  width: media.width * 0.08,
-                                  child: CustomText(text: " ${(participants!.indexOf(participant) + startIndex!).toString()}")
-                              ),
-                              SizedBox(width: media.width * 0.02,),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                width: media.width * 0.35,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(50),
-                                      child: Image.asset(
-                                        "assets/img/community/ptit_logo.png",
-                                        width: 30,
-                                        height: 30,
-                                      ),
-                                    ),
-                                    SizedBox(width: media.width * 0.02,),
-                                    Container(
-                                        alignment: Alignment.centerLeft,
-                                        child: SizedBox(
-                                          width: media.width * 0.25,
-                                          child: CustomText(
-                                            text: participant?.name,
-                                          ),
-                                        )
-                                    ),
-                                  ],
+        if(widget.isLoading == false)...[
+          SizedBox(
+            height: widget.tableHeight,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // for(int i = 0; i < 30; i++)
+                  for(var participant in widget.participants ?? [])...[
+                    CustomTextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/user', arguments: {
+                          "id": participant?.userId,
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 12
+                        ),
+                        decoration: const BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(width: 1, color: Color(0xff746cb3))
+                            )
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                    alignment: Alignment.centerLeft,
+                                    width: media.width * 0.08,
+                                    child: CustomText(text: " ${(widget.participants!.indexOf(participant) + widget.startIndex!).toString()}")
                                 ),
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Container(
+                                SizedBox(width: media.width * 0.02,),
+                                Container(
                                   alignment: Alignment.centerLeft,
-                                  width: media.width * 0.15,
-                                  child: CustomText(text: "${participant?.totalDistance ?? 0}")
-                              ),
-                              // SizedBox(width: media.width * 0.1,),
-                              Container(
-                                  alignment: Alignment.centerLeft,
-                                  width: media.width * 0.15,
-                                  child: CustomText(text: '${formatTimeDuration(participant?.totalDuration ?? "00:00:00", type: 2)}')
-                              )
-                            ],
-                          )
-                        ],
+                                  width: media.width * 0.35,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: Image.asset(
+                                          "assets/img/community/ptit_logo.png",
+                                          width: 30,
+                                          height: 30,
+                                        ),
+                                      ),
+                                      SizedBox(width: media.width * 0.02,),
+                                      Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: SizedBox(
+                                            width: media.width * 0.25,
+                                            child: CustomText(
+                                              text: participant?.name,
+                                            ),
+                                          )
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                    alignment: Alignment.centerLeft,
+                                    width: media.width * 0.15,
+                                    child: CustomText(text: "${participant?.totalDistance ?? 0}")
+                                ),
+                                // SizedBox(width: media.width * 0.1,),
+                                Container(
+                                    alignment: Alignment.centerLeft,
+                                    width: media.width * 0.15,
+                                    child: CustomText(text: '${formatTimeDuration(participant?.totalDuration ?? "00:00:00", type: 2)}')
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ]
-                // DataTable(
-                //     border: const TableBorder(
-                //         horizontalInside: BorderSide(width: 2, color: Color(0xff746cb3))
-                //     ),
-                //     columnSpacing: 12, horizontalMargin: 0,
-                //     columns: [
-                //       DataColumn(
-                //     label: Container(
-                //       alignment: Alignment.centerLeft,
-                //       child: const CustomText(text: '1'),
-                //     ),
-                //     numeric: true,
-                //     tooltip: 'Athlete Rank',
-                //     onSort: (columnIndex, ascending) {
-                //     },
-                //   ),
-                //   DataColumn(
-                //     label: Row(
-                //       mainAxisAlignment: MainAxisAlignment.start,
-                //       children: [
-                //         ClipRRect(
-                //           borderRadius: BorderRadius.circular(50),
-                //           child: Image.asset(
-                //             "assets/img/community/ptit_logo.png",
-                //             width: 30,
-                //             height: 30,
-                //           ),
-                //         ),
-                //         SizedBox(width: media.width * 0.02,),
-                //         Container(
-                //             alignment: Alignment.centerLeft,
-                //             child: SizedBox(
-                //               width: media.width * 0.25,
-                //               child: CustomText(
-                //                 text: "adadadadadasd",
-                //               ),
-                //             )
-                //             ),
-                //       ],
-                //     ),
-                //     numeric: false,
-                //     tooltip: 'Athlete Name',
-                //   ),
-                //   DataColumn(
-                //     label: Center(
-                //       child: CustomText(text: '6.32'),
-                //     ),
-                //     numeric: true,
-                //     tooltip: 'Total Distance',
-                //   ),
-                //   DataColumn(
-                //     label: Center(
-                //       child: CustomText(text: '4h11m'),
-                //     ),
-                //     numeric: true,
-                //     tooltip: 'Athlete Time',
-                //   ),
-                // ],
-                //     rows: [
-                //
-                //   for (var participant in participants ?? []) ...[
-                //     DataRow(
-                //         cells: [
-                //           DataCell(
-                //             Center(
-                //               child: Container(
-                //                   alignment: Alignment.center,
-                //                   child: CustomText(text: (participants!.indexOf(participant) + 1).toString())),
-                //             ),
-                //           ),
-                //           DataCell(
-                //             Row(
-                //               mainAxisAlignment: MainAxisAlignment.start,
-                //               children: [
-                //                 ClipRRect(
-                //                   borderRadius: BorderRadius.circular(50),
-                //                   child: Image.asset(
-                //                     "assets/img/community/ptit_logo.png",
-                //                     width: 30,
-                //                     height: 30,
-                //                   ),
-                //                 ),
-                //                 SizedBox(width: media.width * 0.02,),
-                //                 Container(
-                //                     alignment: Alignment.centerLeft,
-                //                     child: SizedBox(
-                //                       width: media.width * 0.25,
-                //                       child: CustomText(
-                //                           text: participant?.username,
-                //                       ),
-                //                     )),
-                //               ],
-                //             ),
-                //           ),
-                //           DataCell(
-                //             Center(
-                //                 child: Container(
-                //                   alignment: Alignment.centerLeft,
-                //                   child: CustomText(text: generateRandomDistance()),
-                //                 )),
-                //           ),
-                //           DataCell(Center(
-                //               child: Container(
-                //                 alignment: Alignment.centerLeft,
-                //                 child: CustomText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m'),
-                //               ))),
-                //         ]),
-                //   ]
-                // ]),
-              ],
+                    )
+                  ]
+                  // DataTable(
+                  //     border: const TableBorder(
+                  //         horizontalInside: BorderSide(width: 2, color: Color(0xff746cb3))
+                  //     ),
+                  //     columnSpacing: 12, horizontalMargin: 0,
+                  //     columns: [
+                  //       DataColumn(
+                  //     label: Container(
+                  //       alignment: Alignment.centerLeft,
+                  //       child: const CustomText(text: '1'),
+                  //     ),
+                  //     numeric: true,
+                  //     tooltip: 'Athlete Rank',
+                  //     onSort: (columnIndex, ascending) {
+                  //     },
+                  //   ),
+                  //   DataColumn(
+                  //     label: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.start,
+                  //       children: [
+                  //         ClipRRect(
+                  //           borderRadius: BorderRadius.circular(50),
+                  //           child: Image.asset(
+                  //             "assets/img/community/ptit_logo.png",
+                  //             width: 30,
+                  //             height: 30,
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: media.width * 0.02,),
+                  //         Container(
+                  //             alignment: Alignment.centerLeft,
+                  //             child: SizedBox(
+                  //               width: media.width * 0.25,
+                  //               child: CustomText(
+                  //                 text: "adadadadadasd",
+                  //               ),
+                  //             )
+                  //             ),
+                  //       ],
+                  //     ),
+                  //     numeric: false,
+                  //     tooltip: 'Athlete Name',
+                  //   ),
+                  //   DataColumn(
+                  //     label: Center(
+                  //       child: CustomText(text: '6.32'),
+                  //     ),
+                  //     numeric: true,
+                  //     tooltip: 'Total Distance',
+                  //   ),
+                  //   DataColumn(
+                  //     label: Center(
+                  //       child: CustomText(text: '4h11m'),
+                  //     ),
+                  //     numeric: true,
+                  //     tooltip: 'Athlete Time',
+                  //   ),
+                  // ],
+                  //     rows: [
+                  //
+                  //   for (var participant in participants ?? []) ...[
+                  //     DataRow(
+                  //         cells: [
+                  //           DataCell(
+                  //             Center(
+                  //               child: Container(
+                  //                   alignment: Alignment.center,
+                  //                   child: CustomText(text: (participants!.indexOf(participant) + 1).toString())),
+                  //             ),
+                  //           ),
+                  //           DataCell(
+                  //             Row(
+                  //               mainAxisAlignment: MainAxisAlignment.start,
+                  //               children: [
+                  //                 ClipRRect(
+                  //                   borderRadius: BorderRadius.circular(50),
+                  //                   child: Image.asset(
+                  //                     "assets/img/community/ptit_logo.png",
+                  //                     width: 30,
+                  //                     height: 30,
+                  //                   ),
+                  //                 ),
+                  //                 SizedBox(width: media.width * 0.02,),
+                  //                 Container(
+                  //                     alignment: Alignment.centerLeft,
+                  //                     child: SizedBox(
+                  //                       width: media.width * 0.25,
+                  //                       child: CustomText(
+                  //                           text: participant?.username,
+                  //                       ),
+                  //                     )),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //           DataCell(
+                  //             Center(
+                  //                 child: Container(
+                  //                   alignment: Alignment.centerLeft,
+                  //                   child: CustomText(text: generateRandomDistance()),
+                  //                 )),
+                  //           ),
+                  //           DataCell(Center(
+                  //               child: Container(
+                  //                 alignment: Alignment.centerLeft,
+                  //                 child: CustomText(text: '${generateRandomTime().split(":")[0]}h${generateRandomTime().split(":")[1]}m'),
+                  //               ))),
+                  //         ]),
+                  //   ]
+                  // ]),
+                ],
+              ),
             ),
           ),
-        ),
+        ]
+        else...[
+          Loading(
+            marginTop: media.height * 0.02,
+            backgroundColor: Colors.transparent,
+          )
+        ]
       ],
     );
   }

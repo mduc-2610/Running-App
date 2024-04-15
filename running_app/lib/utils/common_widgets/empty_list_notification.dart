@@ -9,6 +9,8 @@ class EmptyListNotification extends StatelessWidget {
   final String? addButtonText;
   final VoidCallback? onPressed;
   final double? addButtonWidth;
+  final String? image;
+
   const EmptyListNotification({
     this.title,
     this.description,
@@ -16,6 +18,7 @@ class EmptyListNotification extends StatelessWidget {
     this.addButtonText,
     this.addButtonWidth,
     this.onPressed,
+    this.image,
     super.key
   });
 
@@ -27,24 +30,34 @@ class EmptyListNotification extends StatelessWidget {
       children: [
         Stack(
           children: [
-            Image.asset(
-              "assets/img/community/athlete_on_fire.png",
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
-            Container(
-              margin: const EdgeInsets.only(
-                  left: 50,
-                  top: 25
-              ),
-              child: Image.asset(
-                "assets/img/community/athlete_trophy.png",
+            if(image == null)...[
+              Image.asset(
+                "assets/img/community/athlete_on_fire.png",
                 width: 80,
                 height: 80,
                 fit: BoxFit.cover,
               ),
-            )
+              Container(
+                margin: const EdgeInsets.only(
+                    left: 50,
+                    top: 25
+                ),
+                child: Image.asset(
+                  "assets/img/community/athlete_trophy.png",
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
+                ),
+              )
+            ]
+            else...[
+              Image.asset(
+                image!,
+                width: 120,
+                height: 120,
+                fit: BoxFit.cover,
+              ),
+            ]
           ],
         ),
         SizedBox(height: media.height * 0.01,),

@@ -54,18 +54,18 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                     fit: BoxFit.cover,
                   ),
                 ),
-                MainWrapper(
-                  child: Column(
-                    children: [
-                      SizedBox(height: media.height * 0.05,),
-                      const Header(title: "", iconButtons: [
-                        {
-                          "icon": Icons.more_vert_rounded,
-                        }
-                      ],),
-                      SizedBox(height: media.height * 0.06,),
-                      // Main section
-                      Container(
+                Column(
+                  children: [
+                    SizedBox(height: media.height * 0.05,),
+                    const Header(title: "", iconButtons: [
+                      {
+                        "icon": Icons.more_vert_rounded,
+                      }
+                    ],),
+                    SizedBox(height: media.height * 0.05,),
+                    // Main section
+                    MainWrapper(
+                      child: Container(
                         child: Column(
                           children: [
                             // Head section
@@ -238,7 +238,7 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                     maxLines: 3,
                                 ),
                                 SizedBox(height: media.height * 0.015,),
-
+                      
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -364,9 +364,9 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                             )
                           ],
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
               ]
           ),

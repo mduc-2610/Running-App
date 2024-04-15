@@ -48,15 +48,16 @@ class DetailClubSerializer(serializers.ModelSerializer):
         club_id = instance.id
         type = "club"
 
-        start_date = context.get('start_date', get_start_date_of_week())
-        end_date = context.get('end_date', get_end_date_of_week())
-        gender = context.get('gender', None)
-        sort_by = context.get('sort_by', 'Distance')
+        start_date = context.get('start_date')
+        end_date = context.get('end_date')
+        gender = context.get('gender')
+        sort_by = context.get('sort_by')
+        limit_user = context.get('limit_user')
 
         print({'start_date': start_date, 'end_date': end_date, 'sort_by': sort_by})
 
         users = [instance.user.performance for instance in instance.clubs.all()]
-
+        
         if gender:
             users = [user for user in users if user.user.profile.gender == gender]
 
@@ -66,6 +67,9 @@ class DetailClubSerializer(serializers.ModelSerializer):
                 return (-stats[3], -stats[0])
             return (-stats[0], -stats[3])
         users = sorted(users, key=lambda x: sort_cmp(x, sort_by))
+        
+        if limit_user:
+            users = users[:int(limit_user)]
 
         return LeaderboardSerializer(users, many=True, context={
             'id': club_id,
