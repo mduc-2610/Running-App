@@ -11,6 +11,7 @@ Future<Map<String, String?>> showFilter(
       String? title,
       VoidCallback? onPressed,
       List? buttonClicked,
+      VoidCallback? applyOnPressed,
     }) async {
   Completer<Map<String, String?>> completer = Completer<Map<String, String?>>();
   var media = MediaQuery.of(context).size;
@@ -160,6 +161,7 @@ Future<Map<String, String?>> showFilter(
                             }
                             completer.complete(result);
                             Navigator.of(context).pop();
+                            applyOnPressed?.call();
                           },
                           child: Text(
                             "Apply",

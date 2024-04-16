@@ -3,7 +3,7 @@ from rest_framework import viewsets, \
                             status, \
                             response
 
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Q
 from django.utils import timezone
 
 from activity.models import Event
@@ -18,7 +18,8 @@ from utils.function import get_start_of_day, \
                             get_start_date_of_month, \
                             get_end_date_of_month, \
                             get_start_date_of_year, \
-                            get_end_date_of_year
+                            get_end_date_of_year, \
+                            format_choice_query_params
 
 class EventViewSet(
     mixins.ListModelMixin, 
@@ -32,19 +33,11 @@ class EventViewSet(
     serializer_class = EventSerializer
     
     def get_queryset(self):
-        queryset =  super().get_queryset()
-        state = self.request.query_params.get("state", None)
         now = timezone.now()
+        queryset =  super().get_queryset()
+        query_params = self.request.query_params
 
-        if state:
-            if state == "upcoming":
-                queryset = queryset.filter(started_at__gt=now)
-            elif state == "ongoing":
-                queryset = queryset.filter(started_at__lte=now, ended_at__gte=now)
-            elif state == "ended":
-                queryset = queryset.filter(ended_at__lt=now)
-        
-        sort_by = self.request.query_params.get("sort", None)
+        sort_by = query_params.get("sort", None)
         sort_params = [x.strip() for x in sort_by.split(",")] if sort_by else []
         if sort_params and ("participants" in sort_params or "-participants" in sort_params):
             queryset = queryset.annotate(participants=Count("events"))
@@ -52,11 +45,43 @@ class EventViewSet(
             sort_params.remove(participants_param[0])
             queryset = queryset.order_by(participants_param[0], *sort_params)
         
-        limit = self.request.query_params.get("limit", None)
-        queryset = queryset[:int(limit)] if limit else queryset
-        
-        return queryset
+        extra_params = {
+            "name": query_params.get("name", ""),
+            "state": format_choice_query_params(
+                query_params.get("state", "")),
+            "mode": format_choice_query_params(
+                query_params.get("mode", "")),
+            "competition" : format_choice_query_params(
+                query_params.get("competition", "")),
+        }
 
+        print(extra_params)
+
+        filters = Q()
+
+        if extra_params["state"]:
+            if extra_params["state"] == "UPCOMING":
+                filters &= Q(started_at__gt=now)
+            elif extra_params["state"] == "ONGOING":
+                filters &= Q(started_at__lte=now, ended_at__gte=now)
+            elif extra_params["state"] == "ENDED":
+                filters &= Q(ended_at__lt=now)
+
+        if extra_params["name"]:
+            filters &= Q(name__icontains=extra_params["name"])
+
+        if extra_params["mode"]:
+            filters &= Q(privacy=extra_params["mode"])
+
+        if extra_params["competition"]:
+            filters &= Q(competition=extra_params["competition"])
+        queryset = queryset.filter(filters)
+        
+        limit = query_params.get("limit", None)
+        queryset = queryset[:int(limit)] if limit else queryset
+
+        return queryset
+    
     def get_serializer_class(self):
         if self.action == "create" or self.action == "update":
             return CreateUpdateEventSerializer

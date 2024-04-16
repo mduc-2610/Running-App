@@ -5,6 +5,7 @@ import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/show_filter.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/event/utils/common_widgets/event_box.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,8 @@ class _EventViewState extends State<EventView> {
   int upcomingEvent = 0;
   int endedEvent = 0;
   bool isLoading = true;
+  bool showClearButton = false;
+  TextEditingController searchTextController = TextEditingController();
 
   void getProviderData() {
     setState(() {
@@ -45,14 +48,14 @@ class _EventViewState extends State<EventView> {
         user?.activity,
         Activity.fromJson,
         token,
-        queryParams: "?state=joined"
+        queryParams: "?event_state=joined"
     );
     final activity2 = await callRetrieveAPI(
         null, null,
         user?.activity,
         Activity.fromJson,
         token,
-        queryParams: "?state=ended"
+        queryParams: "?event_state=ended"
     );
     setState(() {
       upcomingEvent = activity?.events.length;
@@ -80,6 +83,14 @@ class _EventViewState extends State<EventView> {
     });
   }
 
+  void handleSearch() {
+    if(searchTextController.text != "") {
+      Navigator.pushNamed(context, '/event_filter', arguments: {
+        "searchText": searchTextController.text
+      });
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -97,7 +108,40 @@ class _EventViewState extends State<EventView> {
         MainWrapper(
             topMargin: 0,
             bottomMargin: 0,
-            child: SearchFilter(hintText: "Search events")),
+            child: SearchFilter(
+                controller: searchTextController,
+                hintText: "Search events",
+                filterOnPressed: () async {
+                  Map<String, String?> filterArgument = await showFilter(
+                      context,
+                      [
+                        {
+                          "title": "State",
+                          "list": ["All ", "Upcoming", "Ongoing", "Ended"]
+                        },
+                        {
+                          "title": "Event mode",
+                          "list": ["Public", "Private"]
+                        },
+                        {
+                          "title": "Competition",
+                          "list": ["Group", "Individual"]
+                        },
+                      ],
+                      buttonClicked: ["", "", ""]
+                  );
+                  Navigator.pushNamed(context, '/event_filter', arguments: {
+                    "filterArgument": filterArgument
+                  });
+
+                },
+                onPrefixPressed: handleSearch,
+                onFieldSubmitted: (_) => handleSearch(),
+                onClearChanged: () {
+                  searchTextController.clear();
+                },
+                showClearButton: showClearButton,
+            )),
         SizedBox(height: media.height * 0.01,),
 
         // Your event section

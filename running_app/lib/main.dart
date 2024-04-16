@@ -21,6 +21,7 @@ import 'package:running_app/view/community/event/create/event_advanced_option_cr
 import 'package:running_app/view/community/event/create/event_feature_create_view.dart';
 import 'package:running_app/view/community/event/create/event_information_create_view.dart';
 import 'package:running_app/view/community/event/create/event_group_create_view.dart';
+import 'package:running_app/view/community/event/list/event_filter_view.dart';
 import 'package:running_app/view/community/event/list/event_group_list_view.dart';
 import 'package:running_app/view/community/event/management/event_group_management_view.dart';
 import 'package:running_app/view/community/feed/feed_comment_view.dart';
@@ -190,6 +191,7 @@ class MyApp extends StatelessWidget {
         '/club_member': (context) => const ClubMemberView(),
         // Event
         '/event_list': (context) => const EventListView(),
+        '/event_filter': (context) => const EventFilterView(),
         '/your_event_list': (context) => const YourEventListView(),
         '/group_list': (context) => const EventGroupListView(),
         '/event_detail': (context) => const EventDetailView(),

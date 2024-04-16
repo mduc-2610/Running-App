@@ -7,9 +7,11 @@ import 'package:running_app/view/community/event/utils/common_widgets/event_box.
 class EventList extends StatelessWidget {
   final String eventType;
   final List<dynamic>? events;
+  final double? scrollHeight;
   const EventList({
     required this.eventType,
     required this.events,
+    required this.scrollHeight,
     super.key
   });
 
@@ -20,7 +22,7 @@ class EventList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          eventType,
+          "${eventType} (${events?.length ?? 0})",
           style: TextStyle(
               color: TColor.PRIMARY_TEXT,
               fontSize: FontSize.LARGE,
@@ -29,9 +31,9 @@ class EventList extends StatelessWidget {
         ),
         SizedBox(height: media.height * 0.02,),
         if(events?.length == 0)...[
-
+          SizedBox(height: media.height * 0.15,),
           Center(child: EmptyListNotification(
-            title: "No $eventType now",
+            title: "No events found",
             description: "Add your own event now ",
             addButton: true,
             addButtonText: "Create an event",
@@ -40,7 +42,7 @@ class EventList extends StatelessWidget {
         ]
         else...[
           SizedBox(
-            height: media.height * 0.65,
+            height: scrollHeight,
             child: SingleChildScrollView(
               child: Column(
                 children: [

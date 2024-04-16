@@ -37,8 +37,7 @@ class ClubViewSet(
         query_params = self.request.query_params
 
         params = {
-            "name": format_choice_query_params(
-                query_params.get("name", "")),
+            "name": query_params.get("name", ""),
             "sport_type": format_choice_query_params(
                 query_params.get("sport_type", "")),
             "mode": format_choice_query_params(

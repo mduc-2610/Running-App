@@ -28,21 +28,27 @@ class ActivityViewSet(
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         query_params = request.query_params
-        state = query_params.get("state", None)
+
+        event_params = {
+            "state": format_choice_query_params(
+                query_params.get("event_state", "")),
+            "name": query_params.get("event_name", ""),   
+        }
+
         club_params = {
-            "club_name": format_choice_query_params(
-                query_params.get("club_name", "")),
-            "club_sport_type": format_choice_query_params(
+            "name": query_params.get("club_name", ""),
+            "sport_type": format_choice_query_params(
                 query_params.get("club_sport_type", "")),
-            "club_mode": format_choice_query_params(
+            "mode": format_choice_query_params(
                 query_params.get("club_mode", "")),
-            "club_org_type" : format_choice_query_params(
+            "org_type" : format_choice_query_params(
                 query_params.get("club_org_type", "")),
         }
+        print(event_params)
         print(club_params)
         
         serializer = self.get_serializer(instance, context={
-            "state": state, 
+            "event_params": event_params, 
             "club_params": club_params,
         })
         return response.Response(serializer.data)
