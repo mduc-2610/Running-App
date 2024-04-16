@@ -194,7 +194,7 @@ def run():
             "sport_type": random.choice(["RUNNING", "CYCLING", "SWIMMING"]),
             "description": fake.text(max_nb_chars=250),
             "privacy": random.choice(["Public", "Private"]),
-            "organization": random.choice(["SPORT_CLUB", "BUSINESS", "SCHOOL"]),
+            "organization": random.choice(["SPORT_CLUB", "COMPANY", "SCHOOL"]),
         }
         club = Club.objects.create(**data)
         club_list.append(club)

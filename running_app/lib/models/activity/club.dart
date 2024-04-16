@@ -11,6 +11,8 @@ class Club {
   final String? sportType;
   final int? weekActivities;
   final int? numberOfParticipants;
+  final String? privacy;
+  final String? organization;
 
   Club({
      required this.id,
@@ -19,6 +21,8 @@ class Club {
      required this.sportType,
      required this.weekActivities,
      required this.numberOfParticipants,
+     required this.privacy,
+     required this.organization,
   });
 
   Club.fromJson(Map<String, dynamic> json)
@@ -27,7 +31,9 @@ class Club {
       avatar = json['avatar'],
       sportType = json['sport_type'],
       weekActivities = json['week_activities'],
-      numberOfParticipants = json['number_of_participants'];
+      numberOfParticipants = json['number_of_participants'],
+      privacy = json['privacy'],
+      organization = json['organization'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -37,6 +43,8 @@ class Club {
       'sport_type': sportType,
       'week_activities': weekActivities,
       'number_of_participants': numberOfParticipants,
+      'privacy' : privacy,
+      'organization' : organization,
     };
   }
 
@@ -49,53 +57,43 @@ class Club {
 class DetailClub extends Club {
   final List<Leaderboard> participants;
   final String? description;
-  final String? privacy;
-  final String? organization;
-  final String? cover_photo;
+  final String? coverPhoto;
 
   DetailClub({
     String? id,
     String? name,
     String? avatar,
     String? sportType,
+    String? privacy,
+    String? organization,
     int? weekActivities,
     int? numberOfParticipants,
     required this.participants,
     required this.description,
-    required this.privacy,
-    required this.organization,
-    required this.cover_photo,
+    required this.coverPhoto,
   }) : super(
     id: id,
     name: name,
     avatar: avatar,
     sportType: sportType,
     weekActivities: weekActivities,
-    numberOfParticipants: numberOfParticipants
+    numberOfParticipants: numberOfParticipants,
+    privacy: privacy,
+    organization: organization,
   );
 
   DetailClub.fromJson(Map<String, dynamic> json)
       : description = json['description'],
         participants = (json['participants'] as List<dynamic>).map((e) => Leaderboard.fromJson(e)).toList(),
-        privacy = json['privacy'],
-        organization = json['organization'],
-        cover_photo = json['cover_photo'],
-        super(
-          id: json['id'],
-          name: json['name'],
-          avatar: json['avatar'],
-          sportType: json['sport_type'],
-          weekActivities: json['week_activities'],
-          numberOfParticipants: json['number_of_participants'],
-        );
+        coverPhoto = json['cover_photo'],
+        super.fromJson(json);
 
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
     data['participants'] = participants.map((e) => e.toJson());
     data['description'] = description;
-    data['privacy'] = privacy;
-    data['organization'] = organization;
+    data['cover_photo'] = coverPhoto;
     return data;
   }
 

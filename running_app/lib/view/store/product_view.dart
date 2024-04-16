@@ -16,7 +16,7 @@ import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/menu.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/show_filter_product.dart';
+import 'package:running_app/utils/common_widgets/show_filter.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import '../../utils/constants.dart';
@@ -38,8 +38,6 @@ class _ProductViewState extends State<ProductView> {
   String token = "";
   String brandFilter = "";
   String categoryFilter = "";
-  String brandButtonClicked = "";
-  String categoryButtonClicked = "";
   TextEditingController searchTextController = TextEditingController();
 
   void initToken() {
@@ -86,9 +84,16 @@ class _ProductViewState extends State<ProductView> {
     });
   }
 
-  Future<void> delayedInit() async {
-    await initBrand();
-    await initCategory();
+  Future<void> delayedInit({bool reload = false}) async {
+    if(reload == true) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+    else {
+      await initBrand();
+      await initCategory();
+    }
     await initProduct();
     await Future.delayed(Duration(milliseconds: 700));
     setState(() {
@@ -128,11 +133,7 @@ class _ProductViewState extends State<ProductView> {
               {
                 "icon": Icons.filter_alt_outlined,
                 "onPressed": () async {
-                  setState(() {
-                    brandButtonClicked = brandFilter;
-                    categoryButtonClicked = categoryFilter;
-                  });
-                  Map<String, String?> result =await showFilterProduct(
+                  Map<String, String?> result =await showFilter(
                       context,
                       [
                         {
@@ -144,13 +145,13 @@ class _ProductViewState extends State<ProductView> {
                           "list": categoryNameList ?? []
                         },
                       ],
-                      buttonClicked: [brandButtonClicked, categoryButtonClicked]
+                      buttonClicked: [brandFilter, categoryFilter]
                   );
 
                   setState(() {
                     brandFilter = result["Brand"] ?? "";
                     categoryFilter = result["Category"] ?? "";
-                    delayedInitProduct();
+                    delayedInit(reload: true);
                   });
                 }
               }
@@ -177,25 +178,22 @@ class _ProductViewState extends State<ProductView> {
                             ),
                           ),
                           keyboardType: TextInputType.text,
-                          onSaved: (value) {
-                            print("Save");
-                          },
                           showClearButton: showClearButton,
                           onClearChanged: () {
                             searchTextController.clear();
                             setState(() {
                               showClearButton = false;
-                              delayedInitProduct();
+                              delayedInit(reload: true);
                             });
                           },
                           onFieldSubmitted: (String x) {
-                            delayedInitProduct();
+                            delayedInit(reload: true);
                           },
                           onPrefixPressed: () {
-                            delayedInitProduct();
+                            delayedInit(reload: true);
                           },
                       ),
-                      SizedBox(height: media.height * 0.01,),
+                      SizedBox(height: media.height * 0.02,),
 
                       // Product
                       if(isLoading == false)...[
@@ -213,8 +211,8 @@ class _ProductViewState extends State<ProductView> {
                               child: GridView.count(
                                   padding: const EdgeInsets.all(0),
                                   crossAxisCount: 2,
-                                  crossAxisSpacing: media.width * 0.05,
-                                  mainAxisSpacing: media.height * 0.025,
+                                  crossAxisSpacing: media.width * 0.04,
+                                  mainAxisSpacing: media.height * 0.02,
                                   children: [
                                     for(var product in productList ?? [])
                                       CustomTextButton(

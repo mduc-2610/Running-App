@@ -14,13 +14,17 @@ from utils.function import get_start_of_day, \
                             get_end_date_of_year
 class ClubSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='get_sport_type_display')
+    organization = serializers.CharField(source='get_organization_display')
+    privacy = serializers.CharField(source='get_privacy_display') 
     class Meta:
         model = Club
         fields = (
             "id", 
             "name", 
             "avatar", 
-            "sport_type", 
+            "sport_type",
+            "privacy", 
+            "organization",
             "week_activities", 
             "number_of_participants"
         )

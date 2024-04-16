@@ -5,7 +5,7 @@ import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 
-Future<Map<String, String?>> showFilterProduct(
+Future<Map<String, String?>> showFilter(
     BuildContext context,
     List<Map<String, dynamic>> choiceSection, {
       String? title,
@@ -145,10 +145,12 @@ Future<Map<String, String?>> showFilterProduct(
                   ),
                   SizedBox(height: media.height * 0.01),
                   MainWrapper(
+                    bottomMargin: 3,
                     child: Center(
                       child: SizedBox(
-                        width: media.width * 0.5,
+                        width: media.width,
                         child: CustomMainButton(
+                          borderRadius: 10,
                           horizontalPadding: 0,
                           verticalPadding: 12,
                           onPressed: () {
@@ -157,7 +159,7 @@ Future<Map<String, String?>> showFilterProduct(
                               result[choiceSection[i]["title"]] = buttonClickedStateList[i];
                             }
                             completer.complete(result);
-                            Navigator.of(context).pop(); // Close modal sheet when "Apply" is clicked
+                            Navigator.of(context).pop();
                           },
                           child: Text(
                             "Apply",

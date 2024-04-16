@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from django.utils import timezone
+from django.db.models import Q
 
 from account.models import Activity
 
@@ -16,8 +17,9 @@ class ActivitySerializer(serializers.ModelSerializer):
     user_id = serializers.UUIDField()
     products = ProductSerializer(many=True, read_only=True)
     events = EventSerializer(many=True, read_only=True)
-    clubs = ClubSerializer(many=True, read_only=True)
+    clubs = serializers.SerializerMethodField()
     activity_records = ActivityRecordSerializer(many=True, read_only=True)
+
     def to_representation(self, instance):
         state = self.context.get('state', None)
         data = super().to_representation(instance)
@@ -36,6 +38,28 @@ class ActivitySerializer(serializers.ModelSerializer):
                 
         data.update({'events': events})
         return data
+    
+    def get_clubs(self, instance):
+        queryset = instance.clubs.all()
+        context = self.context
+        club_params = context.get('club_params')
+        filters = Q()
+
+        if club_params["club_name"]:
+            filters &= Q(name__icontains=club_params["club_name"])
+
+        if club_params["club_sport_type"]:
+            filters &= Q(sport_type=club_params["club_sport_type"])
+
+        if club_params["club_mode"]:
+            filters &= Q(privacy=club_params["club_mode"])
+
+        if club_params["club_org_type"]:
+            filters &= Q(organization=club_params["club_org_type"])
+
+        queryset = queryset.filter(filters)
+
+        return ClubSerializer(queryset, many=True, read_only=True).data
     
     def create(self, validated_data):
         user_id = validated_data.pop('user_id')

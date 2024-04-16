@@ -4,12 +4,33 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
-class SearchFilter extends StatelessWidget {
+class SearchFilter extends StatefulWidget {
+  // For filter
+  final VoidCallback? filterOnPressed;
+  // For search
   final String hintText;
-  const SearchFilter({
+  final TextEditingController? controller;
+  final ValueChanged<String>? onFieldSubmitted;
+  final VoidCallback? onPrefixPressed;
+  final VoidCallback? onClearChanged;
+  final bool? showClearButton;
+
+  SearchFilter({
     required this.hintText,
+    this.controller,
+    this.filterOnPressed,
+    this.onFieldSubmitted,
+    this.onPrefixPressed,
+    this.onClearChanged,
+    this.showClearButton,
     super.key
   });
+
+  @override
+  State<SearchFilter> createState() => _SearchFilterState();
+}
+
+class _SearchFilterState extends State<SearchFilter> {
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +46,9 @@ class SearchFilter extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
           ),
           child: CustomTextFormField(
+            controller: widget.controller,
             decoration: CustomInputDecoration(
-                hintText: hintText,
+                hintText: widget.hintText,
                 prefixIcon: Icon(Icons.search, color: TColor.DESCRIPTION),
                 borderSide: 1,
                 contentPadding: const EdgeInsets.symmetric(
@@ -34,10 +56,14 @@ class SearchFilter extends StatelessWidget {
                 )
             ),
             keyboardType: TextInputType.text,
+            onFieldSubmitted: widget.onFieldSubmitted,
+            onPrefixPressed: widget.onPrefixPressed,
+            showClearButton: widget.showClearButton,
+            onClearChanged: widget.onClearChanged,
           ),
         ),
         CustomTextButton(
-          onPressed: () {},
+          onPressed: widget.filterOnPressed ?? () {},
           style: ButtonStyle(
             padding: MaterialStateProperty.all<EdgeInsets>(
                 const EdgeInsets.symmetric(

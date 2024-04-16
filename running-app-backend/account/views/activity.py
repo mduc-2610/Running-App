@@ -16,6 +16,8 @@ from rest_framework import generics, \
 from account.models import Activity
 from account.serializers import ActivitySerializer
 
+from utils.function import format_choice_query_params
+
 class ActivityViewSet(
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet
@@ -25,8 +27,24 @@ class ActivityViewSet(
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        state = request.query_params.get('state', None)
-        serializer = self.get_serializer(instance, context={'state': state})
+        query_params = request.query_params
+        state = query_params.get("state", None)
+        club_params = {
+            "club_name": format_choice_query_params(
+                query_params.get("club_name", "")),
+            "club_sport_type": format_choice_query_params(
+                query_params.get("club_sport_type", "")),
+            "club_mode": format_choice_query_params(
+                query_params.get("club_mode", "")),
+            "club_org_type" : format_choice_query_params(
+                query_params.get("club_org_type", "")),
+        }
+        print(club_params)
+        
+        serializer = self.get_serializer(instance, context={
+            "state": state, 
+            "club_params": club_params,
+        })
         return response.Response(serializer.data)
 
 

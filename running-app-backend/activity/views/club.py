@@ -1,9 +1,9 @@
+from django.db.models import Q
 from rest_framework import viewsets, \
                             mixins, \
                             status, \
                             response
 from rest_framework.permissions import IsAuthenticated
-
 
 from activity.models import Club
 from activity.serializers import ClubSerializer, \
@@ -17,7 +17,8 @@ from utils.function import get_start_of_day, \
                             get_start_date_of_month, \
                             get_end_date_of_month, \
                             get_start_date_of_year, \
-                            get_end_date_of_year
+                            get_end_date_of_year, \
+                            format_choice_query_params
 
 class ClubViewSet(
     mixins.ListModelMixin, 
@@ -30,6 +31,39 @@ class ClubViewSet(
     queryset = Club.objects.all()
     serializer_class = ClubSerializer
     # permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query_params = self.request.query_params
+
+        params = {
+            "name": format_choice_query_params(
+                query_params.get("name", "")),
+            "sport_type": format_choice_query_params(
+                query_params.get("sport_type", "")),
+            "mode": format_choice_query_params(
+                query_params.get("mode", "")),
+            "org_type" : format_choice_query_params(
+                query_params.get("org_type", "")),
+        }
+
+        print(params)
+
+        filters = Q()
+
+        if params["name"]:
+            filters &= Q(name__icontains=params["name"])
+
+        if params["sport_type"]:
+            filters &= Q(sport_type=params["sport_type"])
+
+        if params["mode"]:
+            filters &= Q(privacy=params["mode"])
+
+        if params["org_type"]:
+            filters &= Q(organization=params["org_type"])
+
+        return queryset.filter(filters)
 
     def get_serializer_class(self):
         if self.action == "create" or self.action == "update":
@@ -56,3 +90,33 @@ class ClubViewSet(
         })
         return response.Response(serializer.data, status=status.HTTP_200_OK)
     
+    # def get_queryset(self):
+    #     queryset = super().get_queryset()
+    #     query_params = self.request.query_params
+
+    #     club_params = {
+    #         "club_name": format_choice_query_params(
+    #             query_params.get("club_name", "")),
+    #         "club_sport_type": format_choice_query_params(
+    #             query_params.get("club_sport_type", "")),
+    #         "club_mode": format_choice_query_params(
+    #             query_params.get("club_mode", "")),
+    #         "club_org_type" : format_choice_query_params(
+    #             query_params.get("club_org_type", "")),
+    #     }
+
+    #     filters = Q()
+
+    #     if club_params["club_name"]:
+    #         filters &= Q(name__icontains=club_params["club_name"])
+
+    #     if club_params["club_sport_type"]:
+    #         filters &= Q(sport_type=club_params["club_sport_type"])
+
+    #     if club_params["club_mode"]:
+    #         filters &= Q(privacy=club_params["club_mode"])
+
+    #     if club_params["club_org_type"]:
+    #         filters &= Q(organization=club_params["club_org_type"])
+
+    #     return queryset.filter(filters)

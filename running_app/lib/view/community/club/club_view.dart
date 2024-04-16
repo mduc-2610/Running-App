@@ -9,8 +9,10 @@ import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/search_filter.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
+import 'package:running_app/utils/common_widgets/show_filter.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 
@@ -27,6 +29,13 @@ class _ClubViewState extends State<ClubView> {
   Activity? userActivity;
   String token = "";
   bool isLoading = true;
+  bool showClearButton = false;
+  String sportTypeFilter = "";
+  String clubModeFilter = "";
+  String organizationTypeFilter = "";
+
+
+  TextEditingController searchTextController = TextEditingController();
 
   void getProviderData() {
     setState(() {
@@ -36,14 +45,29 @@ class _ClubViewState extends State<ClubView> {
   }
 
   Future<void> initUserActivity() async {
-    final activity = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    final activity = await callRetrieveAPI(
+        null,
+        null,
+        user?.activity,
+        Activity.fromJson,
+        token,
+        queryParams: "?club_name=${searchTextController.text}&"
+            "club_sport_type=${sportTypeFilter}&"
+            "club_mode=${clubModeFilter}&"
+            "club_org_type=${organizationTypeFilter}"
+    );
     setState(() {
       userClubs = activity.clubs;
       userActivity = activity;
     });
   }
 
-  Future<void> delayedInit() async {
+  Future<void> delayedInit({bool reload = false}) async {
+    if(reload) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     await initUserActivity();
     await Future.delayed(Duration(seconds: 1),);
 
@@ -65,6 +89,11 @@ class _ClubViewState extends State<ClubView> {
 
   @override
   Widget build(BuildContext context) {
+    print("?club_name=${searchTextController.text}&"
+        "club_sport_type=${sportTypeFilter}&"
+        "club_mode=${clubModeFilter}&"
+        "club_organization_type=${organizationTypeFilter}");
+
     var media = MediaQuery.sizeOf(context);
     List clubStat = [
       {
@@ -159,7 +188,52 @@ class _ClubViewState extends State<ClubView> {
         // Search clubs
         MainWrapper(
             topMargin: 0,
-            child: SearchFilter(hintText: "Search clubs")),
+            child: SearchFilter(
+              hintText: "Search clubs",
+              controller: searchTextController,
+              showClearButton: showClearButton,
+              onClearChanged: () {
+                searchTextController.clear();
+                setState(() {
+                  showClearButton = false;
+                });
+                delayedInit(reload: true);
+              },
+              onFieldSubmitted: (String x) {
+                delayedInit(reload: true);
+              },
+              onPrefixPressed: () {
+                delayedInit(reload: true);
+              },
+              filterOnPressed:() async {
+                Map<String, String?> result =await showFilter(
+                    context,
+                    [
+                      {
+                        "title": "Sport type",
+                        "list": ["Running", "Cycling", "Swimming"]
+                      },
+                      {
+                        "title": "Club mode",
+                        "list": ["Public", "Private"]
+                      },
+                      {
+                        "title": "Organization type",
+                        "list": ["Company", "Sport club", "School"]
+                      },
+                    ],
+                    buttonClicked: [sportTypeFilter, clubModeFilter, organizationTypeFilter]
+                );
+
+                setState(() {
+                  sportTypeFilter = result["Sport type"] ?? "";
+                  clubModeFilter = result["Club mode"] ?? "";
+                  organizationTypeFilter = result["Organization type"] ?? "";
+                  delayedInit(reload: true);
+                });
+              }
+            )
+        ),
         SizedBox(height: media.height * 0.03,),
 
         // Your clubs
@@ -201,7 +275,7 @@ class _ClubViewState extends State<ClubView> {
                     )
                   ],
                   SizedBox(
-                    height: media.height * 0.49,
+                    height: media.height * 0.48,
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
@@ -276,7 +350,7 @@ class _ClubViewState extends State<ClubView> {
                                                       ),
                                                     ),
                                                     Text(
-                                                      club.sportType,
+                                                      "${club.sportType}  •  ${club?.privacy}  •  ${club?.organization}",
                                                       style: TextStyle(
                                                           color: TColor.DESCRIPTION,
                                                           fontSize: 14,

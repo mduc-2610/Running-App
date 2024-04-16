@@ -26,3 +26,6 @@ def get_start_date_of_year():
 
 def get_end_date_of_year():
     return today.replace(month=12, day=31)
+
+def format_choice_query_params(str):
+    return "_".join([x.upper() for x in str.split()])

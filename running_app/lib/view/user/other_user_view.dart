@@ -472,7 +472,7 @@ class InventoryLayout extends StatelessWidget {
     return Column(
       children: [
         // Search bar
-        const SearchFilter(hintText: "Search items"),
+        SearchFilter(hintText: "Search items"),
         SizedBox(
           height: media.height * 0.015,
         ),
