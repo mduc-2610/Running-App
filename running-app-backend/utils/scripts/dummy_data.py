@@ -5,26 +5,25 @@ from django.contrib.auth.hashers import make_password
 
 from rest_framework.authtoken.models import Token
 
-from account.models import User, \
-                        Performance, \
-                        Privacy, \
-                        Profile, \
-                        Activity, \
-                        NotificationSetting
+from account.models import (User, Performance,
+                        Privacy, Profile,
+                        Activity, NotificationSetting)
 
-from activity.models import ActivityRecord, \
-                            Club, \
-                            Group, \
-                            Event, \
-                            UserParticipationClub, \
-                            UserParticipationEvent, \
-                            UserParticipationGroup
+from activity.models import (ActivityRecord, Club,
+                            Group, Event,
+                            UserParticipationClub,
+                            UserParticipationEvent,
+                            UserParticipationGroup)
 
-from product.models import Brand, \
-                            Category, \
-                            Product, \
-                            ProductImage, \
-                            UserProduct
+from product.models import (Brand, Category, 
+                            Product, ProductImage, 
+                            UserProduct )
+
+from social.models import (Follow, ClubPost, EventPost,
+                            ClubPostImage, EventPostImage, 
+                            ClubPostComment, EventPostComment,
+                            ActivityRecordPostComment)
+                
 
 
 def generate_phone_number():
@@ -47,16 +46,29 @@ def run():
         NotificationSetting, ActivityRecord, Club, Group, 
         UserParticipationGroup, Event, UserParticipationClub, 
         UserParticipationEvent, Brand, Category, Product, 
-        ProductImage, UserProduct, Token
+        ProductImage, UserProduct, Token,
+        Follow, ClubPost, EventPost,
+        ClubPostImage, EventPostImage, 
+        ClubPostComment, EventPostComment,
+        ActivityRecordPostComment
     ]
 
     for model in model_list:
         model.objects.all().delete()
 
     MAX_NUMBER_USERS = 100
+    MAX_NUMBER_USERS_FOLLOWERS = 50
     MAX_ACTIVITY_RECORDS = 500
+    MAX_COMMENTS_PER_ACTIVITY_RECORDS_POST = 30
+
     MAX_NUMBER_EVENTS = 30
+    MAX_POSTS_PER_EVENT = 30
+    MAX_COMMENTS_PER_EVENT_POST = 20
+
     MAX_NUMBER_CLUBS = 50
+    MAX_POSTS_PER_CLUB = 30
+    MAX_COMMENTS_PER_CLUB_POST = 20
+
     MAX_NUMBER_EVENT_GROUPS = 200
     MAX_NUMBER_USER_EVENT_GROUPS = 30
     MAX_NUMBER_USER_PARTICIPATION_CLUBS = 30
@@ -80,7 +92,7 @@ def run():
             "password": make_password("Duckkucd.123")
         }
         user = User.objects.create(**data)
-        user_activity, _ = Activity.objects.get_or_create(user=user)
+        user_activity = Activity.objects.create(user=user)
         user_list.append(user)
         user_activity_list.append(user_activity)
         print(f"\tSuccesfully created User: {user}")
@@ -104,9 +116,24 @@ def run():
             "trouser_size": random.choice(['XS', 'S', 'M', 'L', 'XL', 'XXL']),
             "shoe_size": random.randint(36, 46),
         }
-        profile = Profile.objects.get_or_create(**data)
+        profile = Profile.objects.create(**data)
         profile_list.append(profile)
         print(f"\tSuccesfully created Profile: {profile}")
+
+    print("________________________________________________________________")
+    print("FOLLOW:")
+    follow_list = []
+    for u in range(MAX_NUMBER_USERS):
+        user_tmp = [user for user in user_activity_list if user != user_activity_list[u]]
+        for i in range(random.randint(0, MAX_NUMBER_USERS_FOLLOWERS)): 
+            random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
+            data = {
+                "follower": random_user,
+                "followee": user_activity_list[u]
+            }
+            follow = Follow.objects.create(**data)
+            follow_list.append(follow)
+            print(f"\tSuccesfully created follow: {follow}")
     
     print("________________________________________________________________")
     print("PRIVACY")
@@ -117,7 +144,7 @@ def run():
             "follow_privacy": random.choice(["APPROVAL", "NO_APPROVAL"]),
             "activity_privacy": random.choice(["EVERYONE", "FOLLOWER", "ONLY YOU"]),
         }
-        privacy = Privacy.objects.get_or_create(**data)
+        privacy = Privacy.objects.create(**data)
         privacy_list.append(privacy)
         print(f"\tSuccesfully created Privacy: {privacy}")
         
@@ -129,7 +156,7 @@ def run():
             "user": user_list[i],
             "activity": user_activity_list[i],
         }
-        performance = Performance.objects.get_or_create(**data)
+        performance = Performance.objects.create(**data)
         performance_list.append(performance)
         print(f"\tSuccesfully created Performance: {performance}")
     
@@ -156,7 +183,7 @@ def run():
             "pending_join_requests": random.choice([True, False]),
             "invited_to_club": random.choice([True, False]),
         }
-        notification_setting = NotificationSetting.objects.get_or_create(**data)
+        notification_setting = NotificationSetting.objects.create(**data)
         notification_setting_list.append(notification_setting)
         print(f"Succesfully created NotificationSetting for user {user}")
 
@@ -265,7 +292,7 @@ def run():
                 "is_approved": random.choice([True, False]) if group.privacy == "PRIVATE" else True,
                 "participated_at": fake.date_time_this_year(),
             }
-            user_event_group, _ = UserParticipationGroup.objects.get_or_create(**data)
+            user_event_group = UserParticipationGroup.objects.create(**data)
             user_event_group_list.append(user_event_group)
             print(f"\tSuccesfully created User Event Group: {user_event_group}")
     
@@ -284,7 +311,7 @@ def run():
                 "is_approved": random.choice([True, False]) if club.privacy == "PRIVATE" else True,
                 "participated_at": fake.date_time_this_year(),
             }
-            user_participation_club, _ = UserParticipationClub.objects.get_or_create(**data)
+            user_participation_club = UserParticipationClub.objects.create(**data)
             user_participation_club_list.append(user_participation_club)
             print(f"\tSuccesfully created User Participation Club: {user_participation_club}")
     
@@ -382,15 +409,98 @@ def run():
             print(f"\tSuccesfully created Product Image: {product_image}")
     
     print("________________________________________________________________")
-    print("USER:")
+    print("USER PRODUCT:")
     user_product_list = []
     for i in range(MAX_NUMBER_USER_PRODUCTS):
         data = {
             "user": random.choice(user_activity_list),
             "product": random.choice(product_list),
         }
-        user_product = UserProduct.objects.get_or_create(**data)
+        user_product = UserProduct.objects.create(**data)
         user_product_list.append(user_product)
         print(f"\tSuccesfully created User Product: {user_product}")
+
+    print("________________________________________________________________")
+    print("CLUB POST:")
+    club_post_list = []
+    for i in range(MAX_NUMBER_CLUBS):
+        tmp = []
+        for _ in range(random.randint(0, MAX_POSTS_PER_CLUB)):
+            data = {
+                "title": fake.text(max_nb_chars=50),
+                "content": fake.text(max_nb_chars=250),
+                "user": random.choice(user_activity_list),
+                "club": club_list[i]
+            }
+            club_post = ClubPost.objects.create(**data)
+            tmp.append(club_post)
+            print(f"\tSuccesfully created Club post: {club_post}")
+        club_post_list.append(tmp)
+
+    print("________________________________________________________________")
+    print("EVENT POST:")
+    event_post_list = []
+    for i in range(MAX_NUMBER_EVENTS):
+        tmp = []
+        for _ in range(random.randint(0, MAX_POSTS_PER_EVENT)):
+            data = {
+                "title": fake.text(max_nb_chars=50),
+                "content": fake.text(max_nb_chars=250),
+                "user": random.choice(user_activity_list),
+                "event": event_list[i]
+            }
+            event_post = EventPost.objects.create(**data)
+            tmp.append(event_post)
+            print(f"\tSuccesfully created Event post: {event_post}")
+        event_post_list.append(tmp)
+
+    print("________________________________________________________________")
+    print("CLUB POST COMMENT:")
+    club_post_comment_list = []
+    for i in range(MAX_NUMBER_EVENTS):
+        for post in club_post_list[i]:
+            for _ in range(random.randint(0, MAX_COMMENTS_PER_EVENT_POST)):
+                data = {
+                    "user": random.choice(user_activity_list),
+                    "content": fake.text(max_nb_chars=250),
+                    "post": post
+                }
+                club_post_comment = ClubPostComment.objects.create(**data)
+                club_post_comment_list.append(club_post_comment)
+                print(f"\tSuccesfully created club post comment: {club_post_comment}")
+
+    print("________________________________________________________________")
+    print("EVENT POST COMMENT:")
+    event_post_comment_list = []
+    for i in range(MAX_NUMBER_EVENTS):
+        for post in event_post_list[i]:
+            for _ in range(random.randint(0, MAX_COMMENTS_PER_EVENT_POST)):
+                data = {
+                    "user": random.choice(user_activity_list),
+                    "content": fake.text(max_nb_chars=250),
+                    "post": post
+                }
+                event_post_comment = EventPostComment.objects.create(**data)
+                event_post_comment_list.append(event_post_comment)
+                print(f"\tSuccesfully created event post comment: {event_post_comment}")
+
+    print("________________________________________________________________")
+    print("ACTIVIY RECORD POST COMMENT:")
+    activity_record_post_comment_list = []
+    for i in range(MAX_ACTIVITY_RECORDS):
+        for _ in range(random.randint(0, MAX_COMMENTS_PER_ACTIVITY_RECORDS_POST)):
+            data = {
+                "user": random.choice(user_activity_list),
+                "content": fake.text(max_nb_chars=250),
+                "post": activity_record_list[i]
+            }
+            activity_record_post_comment = ActivityRecordPostComment.objects.create(**data)
+            activity_record_post_comment_list.append(activity_record_post_comment)
+            print(f"\tSuccesfully created activity record post comment: {activity_record_post_comment}")
+    
+    
     User.objects.create_superuser(username="duc", password="Duckkucd.123", email="duc@gmail.com")
+
+
+    
 

@@ -3,7 +3,7 @@ from rest_framework import generics, \
                             permissions, \
                             mixins, \
                             response
-
+from rest_framework.exceptions import NotFound
 # from activity.models import Event, \
 #                             Club
 # from product.models import Product
@@ -28,29 +28,48 @@ class ActivityViewSet(
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         query_params = request.query_params
+        fields = query_params.get("fields", "")
+        try:
+            if fields:
+                fields = [field.strip() for field in fields.split(",")] 
 
-        event_params = {
-            "state": format_choice_query_params(
-                query_params.get("event_state", "")),
-            "name": query_params.get("event_name", ""),   
-        }
+            event_params = {
+                "state": format_choice_query_params(
+                    query_params.get("event_state", "")),
+                "name": query_params.get("event_name", ""),   
+                "page": int(query_params.get("event_pg", 1)),
+                "page_size": int(query_params.get("event_pg_sz", 5)),
+            }
 
-        club_params = {
-            "name": query_params.get("club_name", ""),
-            "sport_type": format_choice_query_params(
-                query_params.get("club_sport_type", "")),
-            "mode": format_choice_query_params(
-                query_params.get("club_mode", "")),
-            "org_type" : format_choice_query_params(
-                query_params.get("club_org_type", "")),
-        }
+            club_params = {
+                "name": query_params.get("club_name", ""),
+                "sport_type": format_choice_query_params(
+                    query_params.get("club_sport_type", "")),
+                "mode": format_choice_query_params(
+                    query_params.get("club_mode", "")),
+                "org_type" : format_choice_query_params(
+                    query_params.get("club_org_type", "")),
+                "page": int(query_params.get("club_pg", 1)),
+                "page_size": int(query_params.get("club_pg_sz", 5)),
+            }
+
+            activity_record_params = {
+                "page": int(query_params.get("act_rec_pg", 1)),
+                "page_size": int(query_params.get("act_rec_pg_sz", 5)),
+            }
+        except:
+            raise NotFound("Invalid type for page or page_size")
+        
         print(event_params)
         print(club_params)
         
         serializer = self.get_serializer(instance, context={
+            "fields": fields,
             "event_params": event_params, 
             "club_params": club_params,
+            "activity_record_params": activity_record_params
         })
+
         return response.Response(serializer.data)
 
 

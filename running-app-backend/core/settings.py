@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'activity.apps.ActivityConfig',
     'product.apps.ProductConfig',
+    'social.apps.SocialConfig',
     'utils.apps.UtilsConfig',
 ]
 

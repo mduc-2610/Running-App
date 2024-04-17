@@ -4,6 +4,7 @@ from rest_framework import viewsets, \
                             status, \
                             response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 
 from activity.models import Club
 from activity.serializers import ClubSerializer, \
@@ -20,6 +21,11 @@ from utils.function import get_start_of_day, \
                             get_end_date_of_year, \
                             format_choice_query_params
 
+class ActivityRecordPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
 class ClubViewSet(
     mixins.ListModelMixin, 
     mixins.RetrieveModelMixin,
@@ -30,6 +36,8 @@ class ClubViewSet(
 ):
     queryset = Club.objects.all()
     serializer_class = ClubSerializer
+    # pagination_class = ActivityRecordPagination
+
     # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):

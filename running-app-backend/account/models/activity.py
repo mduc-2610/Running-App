@@ -13,6 +13,7 @@ class Activity(models.Model):
         "activity.Event", through="activity.UserParticipationEvent", related_name="events", blank=True)
     products = models.ManyToManyField(
         "product.Product", through="product.UserProduct", related_name="products", blank=True)
+    follow = models.ManyToManyField('self', through="social.Follow", symmetrical=False)
     
     def __str__(self):
         return f"{self.user}"
