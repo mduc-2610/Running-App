@@ -6,6 +6,10 @@ from .post import ClubPostSerializer, \
                 DetailClubPostSerializer, \
                 DetailEventPostSerializer
 
+from .post_like import ClubPostLikeSerializer, \
+                        EventPostLikeSerializer, \
+                        ActivityRecordPostLikeSerializer
+
 from .post_comment import ClubPostCommentSerializer, \
                     EventPostCommentSerializer, \
                     ActivityRecordPostCommentSerializer

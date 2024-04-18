@@ -22,7 +22,9 @@ from product.models import (Brand, Category,
 from social.models import (Follow, ClubPost, EventPost,
                             ClubPostImage, EventPostImage, 
                             ClubPostComment, EventPostComment,
-                            ActivityRecordPostComment)
+                            ActivityRecordPostComment, 
+                            EventPostLike, ClubPostLike, ActivityRecordPostLike
+                            )
                 
 
 
@@ -50,7 +52,9 @@ def run():
         Follow, ClubPost, EventPost,
         ClubPostImage, EventPostImage, 
         ClubPostComment, EventPostComment,
-        ActivityRecordPostComment
+        ActivityRecordPostComment,
+        EventPostLike, ClubPostLike, ActivityRecordPostLike
+        
     ]
 
     for model in model_list:
@@ -58,16 +62,20 @@ def run():
 
     MAX_NUMBER_USERS = 100
     MAX_NUMBER_USERS_FOLLOWERS = 50
+    
     MAX_ACTIVITY_RECORDS = 500
     MAX_COMMENTS_PER_ACTIVITY_RECORDS_POST = 30
+    MAX_LIKES_PER_ACTIVITY_RECORDS_POST = 30
 
     MAX_NUMBER_EVENTS = 30
     MAX_POSTS_PER_EVENT = 30
     MAX_COMMENTS_PER_EVENT_POST = 50
+    MAX_LIKES_PER_EVENT_POST = 50
 
     MAX_NUMBER_CLUBS = 50
     MAX_POSTS_PER_CLUB = 30
     MAX_COMMENTS_PER_CLUB_POST = 50
+    MAX_LIKES_PER_CLUB_POST = 50
 
     MAX_NUMBER_EVENT_GROUPS = 200
     MAX_NUMBER_USER_EVENT_GROUPS = 30
@@ -498,6 +506,46 @@ def run():
             activity_record_post_comment_list.append(activity_record_post_comment)
             print(f"\tSuccesfully created activity record post comment: {activity_record_post_comment}")
     
+    print("________________________________________________________________")
+    print("CLUB POST LIKE:")
+    club_post_like_list = []
+    for i in range(MAX_NUMBER_CLUBS):
+        for post in club_post_list[i]:
+            for _ in range(random.randint(0, MAX_LIKES_PER_CLUB_POST)):
+                data = {
+                    "user": random.choice(user_activity_list),
+                    "post": post
+                }
+                club_post_like = ClubPostLike.objects.create(**data)
+                club_post_like_list.append(club_post_like)
+                print(f"\tSuccesfully created club like comment: {club_post_like}")
+    
+    print("________________________________________________________________")
+    print("EVENT POST COMMENT:")
+    event_post_like_list = []
+    for i in range(MAX_NUMBER_EVENTS):
+        for post in event_post_list[i]:
+            for _ in range(random.randint(0, MAX_LIKES_PER_EVENT_POST)):
+                data = {
+                    "user": random.choice(user_activity_list),
+                    "post": post
+                }
+                event_post_like = EventPostLike.objects.create(**data)
+                event_post_like_list.append(event_post_like)
+                print(f"\tSuccesfully created event post like: {event_post_like}")
+
+    print("________________________________________________________________")
+    print("ACTIVIY RECORD POST LIKE:")
+    activity_record_post_like_list = []
+    for i in range(MAX_ACTIVITY_RECORDS):
+        for _ in range(random.randint(0, MAX_LIKES_PER_ACTIVITY_RECORDS_POST)):
+            data = {
+                "user": random.choice(user_activity_list),
+                "post": activity_record_list[i]
+            }
+            activity_record_post_like = ActivityRecordPostLike.objects.create(**data)
+            activity_record_post_like_list.append(activity_record_post_like)
+            print(f"\tSuccesfully created activity record post like: {activity_record_post_like}")
     
     User.objects.create_superuser(username="duc", password="Duckkucd.123", email="duc@gmail.com")
 

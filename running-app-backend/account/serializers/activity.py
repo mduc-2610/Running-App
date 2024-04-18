@@ -13,6 +13,26 @@ from activity.serializers.club import ClubSerializer
 from activity.serializers.activity_record import ActivityRecordSerializer
 from product.serializers.product import ProductSerializer
 
+
+class LikeSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+
+    def get_id(self, instance):
+        return instance.user.id
+    
+    def get_name(self, instance):
+        return instance.user.name
+    class Meta:
+        model = Activity
+        fields = (
+            "id",
+            "name"
+        )
+        extra_kwargs = {
+            "id": {"read_only" : True}
+        }
+
 class ActivitySerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     user_id = serializers.UUIDField()

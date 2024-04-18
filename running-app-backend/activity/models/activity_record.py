@@ -36,7 +36,9 @@ class ActivityRecord(models.Model):
     )
     user = models.ForeignKey(
             "account.Activity", related_name="activity_records", on_delete=models.CASCADE)
-    
+    likes = models.ManyToManyField(
+        "account.Activity", blank=True, through="social.ActivityRecordPostLike")
+
     def avg_moving_pace(self):
         total_seconds = self.duration.total_seconds()
         distance = self.distance
