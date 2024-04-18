@@ -1,10 +1,10 @@
-# from django.contrib import admin
+from django.contrib import admin
+from activity.models import UserParticipationClub, \
+                            UserParticipationEvent, \
+                            UserParticipationGroup
 
-# class UserParticipationClubAdmin(admin.ModelAdmin):
-#     list_display = ("user", "club")
-#     list_filter = ("user", "club")
-
-# class UserParticipationEventAdmin(admin.ModelAdmin):
-#     list_display = ("user", "event_group", "event")
-#     list_filter = ("user", "event_group", "event")
-
+class UserParticipationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'is_superadmin', 'is_admin', 'is_approved', 'participated_at')
+    list_filter = ('is_superadmin', 'is_admin', 'is_approved', 'participated_at')
+    search_fields = ['user__username']
+    readonly_fields = ('participated_at',)

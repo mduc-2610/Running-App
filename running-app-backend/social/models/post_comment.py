@@ -17,7 +17,7 @@ class PostComment(models.Model):
 
 class ClubPostComment(PostComment):
     post = models.ForeignKey('social.ClubPost', on_delete=models.CASCADE, related_name='comments')
-
+    
     def __str__(self):
         return f'{self.user.user.name} - {self.created_at} - Post: {self.post.id}'
 
@@ -30,6 +30,6 @@ class EventPostComment(PostComment):
 class ActivityRecordPostComment(PostComment):
     # activity_record = models.ForeignKey('activity.ActivityRecord', on_delete=models.CASCADE, related_name='comments')
     post = models.ForeignKey('activity.ActivityRecord', on_delete=models.CASCADE, related_name='comments')
-
+        
     def __str__(self):
         return f'{self.user.user.name} - {self.created_at} - Activity Record: {self.post.id}'

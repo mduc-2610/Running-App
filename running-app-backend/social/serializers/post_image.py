@@ -5,10 +5,16 @@ class EventPostImageSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = EventPostImage
-        fields = ('id', 'image', 'post')
+        fields = "__all__"
+        extra_kwargs = {
+            "id": {"read_only": True},
+        }
 
 class ClubPostImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ClubPostImage
-        fields = ('id', 'image', 'post')
+        fields = "__all__"
+        extra_kwargs = {
+            "id": {"read_only": True},
+        }

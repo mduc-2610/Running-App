@@ -1,12 +1,11 @@
 from django.contrib import admin
-from activity.models import EventGroup, UserEventGroup
+from activity.models import Group
 
-class EventGroupAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description')
-    list_filter = ('name',)
-    search_fields = ('name', 'description')
+class GroupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'privacy', 'event', 
+                    'total_distance', 'total_duration', 
+                    'number_of_participants', 'rank', 'is_approved')
+    list_filter = ('privacy', 'event', 'is_approved')
+    search_fields = ['name']
+    readonly_fields = ('id', 'total_distance', 'total_duration', 'number_of_participants', 'rank')
 
-class UserEventGroupAdmin(admin.ModelAdmin):
-    list_display = ('user', 'event_group', 'participated_at', 'is_admin')
-    list_filter = ('user', 'event_group', 'is_admin')
-    search_fields = ('user__username', 'event_group__name')

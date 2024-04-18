@@ -9,7 +9,9 @@ class PostImage(models.Model):
         abstract = True
 
 class EventPostImage(PostImage):
-    post = models.ForeignKey("activity.Event", related_name='images', on_delete=models.CASCADE)
+    post = models.ForeignKey(
+        "social.EventPost", related_name='images', on_delete=models.CASCADE, null=True)
 
 class ClubPostImage(PostImage):
-    post = models.ForeignKey("activity.Club", related_name='images', on_delete=models.CASCADE)
+    post = models.ForeignKey(
+        "social.ClubPost", related_name='images', on_delete=models.CASCADE, null=True)

@@ -1,26 +1,25 @@
-# from django.contrib import admin
+from django.contrib import admin
 
-# from .activity_record import ActivityRecordAdmin
-# from .club import ClubAdmin
-# from .event_group import EventGroupAdmin,\
-#                         UserEventGroupAdmin
-# from .event import EventAdmin
-# from .user_participation import UserParticipationClubAdmin, \
-#                                 UserParticipationEventAdmin
+from .activity_record import ActivityRecordAdmin, \
+                            ActivityRecordImageAdmin
+from .club import ClubAdmin
+from .event import EventAdmin
+from .group import GroupAdmin
+from .user_participation import UserParticipationAdmin
 
-# from activity.models import ActivityRecord, \
-#                             Club, \
-#                             EventGroup, \
-#                             UserEventGroup, \
-#                             Event, \
-#                             UserParticipationClub, \
-#                             UserParticipationEvent
+from activity.models import (ActivityRecord, 
+                            ActivityRecordImage, 
+                            Club, Group, Event, 
+                            UserParticipationClub, 
+                            UserParticipationEvent,
+                            UserParticipationGroup)
 
 
-# admin.site.register(ActivityRecord, ActivityRecordAdmin)
-# admin.site.register(Club, ClubAdmin)
-# admin.site.register(EventGroup, EventGroupAdmin)
-# admin.site.register(UserEventGroup, UserEventGroupAdmin)
-# admin.site.register(Event, EventAdmin)
-# admin.site.register(UserParticipationClub, UserParticipationClubAdmin)
-# admin.site.register(UserParticipationEvent, UserParticipationEventAdmin)
+admin.site.register(ActivityRecord, ActivityRecordAdmin)
+admin.site.register(ActivityRecordImage, ActivityRecordImageAdmin)
+admin.site.register(Club, ClubAdmin)
+admin.site.register(Event, EventAdmin)
+admin.site.register(Group, GroupAdmin)
+admin.site.register(UserParticipationClub, UserParticipationAdmin)
+admin.site.register(UserParticipationEvent, UserParticipationAdmin)
+admin.site.register(UserParticipationGroup, UserParticipationAdmin)

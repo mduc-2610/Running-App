@@ -5,20 +5,20 @@ from social.models import ClubPostComment, \
 from social.serializers import ClubPostCommentSerializer, \
                                 EventPostCommentSerializer, \
                                 ActivityRecordPostCommentSerializer
-from social.pagination import SocialPagination
+from utils.pagination import CommonPagination
 
 
 class ClubPostCommentViewSet(viewsets.ModelViewSet):
     queryset = ClubPostComment.objects.all()
     serializer_class = ClubPostCommentSerializer
-    pagination_class = SocialPagination
+    pagination_class = CommonPagination
 
 class EventPostCommentViewSet(viewsets.ModelViewSet):
     queryset = EventPostComment.objects.all()
     serializer_class = EventPostCommentSerializer
-    pagination_class = SocialPagination
+    pagination_class = CommonPagination
     
 class ActivityRecordPostCommentViewSet(viewsets.ModelViewSet):
     queryset = ActivityRecordPostComment.objects.all()
     serializer_class = ActivityRecordPostCommentSerializer
-    pagination_class = SocialPagination
+    pagination_class = CommonPagination

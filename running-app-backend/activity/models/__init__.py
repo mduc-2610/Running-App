@@ -1,4 +1,5 @@
-from .activity_record import ActivityRecord
+from .activity_record import ActivityRecord, \
+                            ActivityRecordImage
 from .club import Club
 from .group import Group
 from .event import Event

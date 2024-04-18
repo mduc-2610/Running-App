@@ -4,5 +4,5 @@ from social.models import Follow
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
-        fields = ('id', 'follower', 'followee', 'created_at')
+        fields = "__all__"
         read_only_fields = ('created_at', "id")

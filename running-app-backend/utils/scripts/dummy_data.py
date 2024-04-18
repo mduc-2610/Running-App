@@ -63,11 +63,11 @@ def run():
 
     MAX_NUMBER_EVENTS = 30
     MAX_POSTS_PER_EVENT = 30
-    MAX_COMMENTS_PER_EVENT_POST = 20
+    MAX_COMMENTS_PER_EVENT_POST = 50
 
     MAX_NUMBER_CLUBS = 50
     MAX_POSTS_PER_CLUB = 30
-    MAX_COMMENTS_PER_CLUB_POST = 20
+    MAX_COMMENTS_PER_CLUB_POST = 50
 
     MAX_NUMBER_EVENT_GROUPS = 200
     MAX_NUMBER_USER_EVENT_GROUPS = 30
@@ -355,8 +355,8 @@ def run():
     print("________________________________________________________________")
     print("BRAND:")
     brands = ["Nike", "Adidas", "New Balance", "Asics", "Brooks", "Saucony", "Under Armour", "Puma", "Reebok",
-                    "Speedo", "TYR", "Arena", "FINIS", "Dolfin", "Funky Trunks", "MP Michael Phelps", "Zoggs", "Aqua Sphere"
-                    "Giant", "Trek", "Specialized", "Cannondale", "Scott", "Bianchi", "Cervélo", "Felt", "Colnago"]
+                "Speedo", "TYR", "Arena", "FINIS", "Dolfin", "Funky Trunks", "MP Michael Phelps", "Zoggs", "Aqua Sphere"
+                "Giant", "Trek", "Specialized", "Cannondale", "Scott", "Bianchi", "Cervélo", "Felt", "Colnago"]
     brand_list = []
     for brand_  in brands:
         random_event = random.choice(event_list)
@@ -457,9 +457,9 @@ def run():
     print("________________________________________________________________")
     print("CLUB POST COMMENT:")
     club_post_comment_list = []
-    for i in range(MAX_NUMBER_EVENTS):
+    for i in range(MAX_NUMBER_CLUBS):
         for post in club_post_list[i]:
-            for _ in range(random.randint(0, MAX_COMMENTS_PER_EVENT_POST)):
+            for _ in range(random.randint(0, MAX_COMMENTS_PER_CLUB_POST)):
                 data = {
                     "user": random.choice(user_activity_list),
                     "content": fake.text(max_nb_chars=250),

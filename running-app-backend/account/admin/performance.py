@@ -2,6 +2,12 @@ from django.contrib import admin
 
 from account.models import Performance
 
+class PerformanceAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'activity', 'total_distance', 'total_steps', 'total_duration', 'level')
+    # list_filter = ('user', 'activity__sport_type__name')
+    search_fields = ['user__username', 'activity__name']
+    readonly_fields = ('id', 'user', 'activity', 'total_distance', 'total_steps', 'total_duration', 'level')
+
 
 # class LevelFilter(admin.SimpleListFilter):
 #     title = 'Level'
@@ -74,36 +80,36 @@ from account.models import Performance
 #             return queryset
 
 
-class PerformanceAdmin(admin.ModelAdmin):
-    list_display = (
-        # "get_username", "total_steps", "level", 
-        # "steps_done_this_level", "total_points", 
-        # "get_week_stats", "get_month_stats", "get_year_stats"
-    )
+# class PerformanceAdmin(admin.ModelAdmin):
+#     list_display = (
+#         # "get_username", "total_steps", "level", 
+#         # "steps_done_this_level", "total_points", 
+#         # "get_week_stats", "get_month_stats", "get_year_stats"
+#     )
 
-    # list_filter = (
-    #     "get_week_stats", "get_month_stats", "get_year_stats"
-    # )
-    list_filter = (
-        # LevelFilter,
-        # StepRemainingToLevelUpFilter,
-        # PointFilter,
-    )
+#     # list_filter = (
+#     #     "get_week_stats", "get_month_stats", "get_year_stats"
+#     # )
+#     list_filter = (
+#         # LevelFilter,
+#         # StepRemainingToLevelUpFilter,
+#         # PointFilter,
+#     )
 
-    def get_username(self, obj):
-        return obj.get_username()
+#     def get_username(self, obj):
+#         return obj.get_username()
 
-    def get_week_stats(self, obj):
-        return obj.week_stats('distance')
+#     def get_week_stats(self, obj):
+#         return obj.week_stats('distance')
     
-    def get_month_stats(self, obj):
-        return obj.month_stats('distance')
+#     def get_month_stats(self, obj):
+#         return obj.month_stats('distance')
     
-    def get_year_stats(self, obj):
-        return obj.year_stats('distance')
+#     def get_year_stats(self, obj):
+#         return obj.year_stats('distance')
     
-    get_username.short_description = 'username'
-    get_week_stats.short_description = 'distance week stats'
-    get_month_stats.short_description = 'distance month stats'
-    get_year_stats.short_description = 'distance year stats'
+#     get_username.short_description = 'username'
+#     get_week_stats.short_description = 'distance week stats'
+#     get_month_stats.short_description = 'distance month stats'
+#     get_year_stats.short_description = 'distance year stats'
 

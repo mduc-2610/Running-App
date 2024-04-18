@@ -2,7 +2,9 @@
 from .follow import FollowSerializer
 
 from .post import ClubPostSerializer, \
-                EventPostSerializer
+                EventPostSerializer, \
+                DetailClubPostSerializer, \
+                DetailEventPostSerializer
 
 from .post_comment import ClubPostCommentSerializer, \
                     EventPostCommentSerializer, \
