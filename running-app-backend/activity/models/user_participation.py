@@ -1,10 +1,11 @@
-import datetime
+import datetime, uuid
 from datetime import timedelta
 
 from django.db import models
 from django.db.models import Sum
 
 class UserParticipation(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     user = models.ForeignKey(
         "account.Activity", on_delete=models.CASCADE, null=True)
     is_superadmin = models.BooleanField(default=False,)

@@ -136,8 +136,8 @@ def run():
         for i in range(random.randint(0, MAX_NUMBER_USERS_FOLLOWERS)): 
             random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
             data = {
+                "followee": user_activity_list[u],
                 "follower": random_user,
-                "followee": user_activity_list[u]
             }
             follow = Follow.objects.create(**data)
             follow_list.append(follow)
@@ -511,9 +511,11 @@ def run():
     club_post_like_list = []
     for i in range(MAX_NUMBER_CLUBS):
         for post in club_post_list[i]:
+            user_tmp = user_activity_list.copy()
             for _ in range(random.randint(0, MAX_LIKES_PER_CLUB_POST)):
+                random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
                 data = {
-                    "user": random.choice(user_activity_list),
+                    "user": random_user,
                     "post": post
                 }
                 club_post_like = ClubPostLike.objects.create(**data)
@@ -525,9 +527,11 @@ def run():
     event_post_like_list = []
     for i in range(MAX_NUMBER_EVENTS):
         for post in event_post_list[i]:
+            user_tmp = user_activity_list.copy()
             for _ in range(random.randint(0, MAX_LIKES_PER_EVENT_POST)):
+                random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
                 data = {
-                    "user": random.choice(user_activity_list),
+                    "user": random_user,
                     "post": post
                 }
                 event_post_like = EventPostLike.objects.create(**data)
@@ -538,9 +542,11 @@ def run():
     print("ACTIVIY RECORD POST LIKE:")
     activity_record_post_like_list = []
     for i in range(MAX_ACTIVITY_RECORDS):
+        user_tmp = user_activity_list.copy()
         for _ in range(random.randint(0, MAX_LIKES_PER_ACTIVITY_RECORDS_POST)):
+            random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))
             data = {
-                "user": random.choice(user_activity_list),
+                "user": random_user,
                 "post": activity_record_list[i]
             }
             activity_record_post_like = ActivityRecordPostLike.objects.create(**data)

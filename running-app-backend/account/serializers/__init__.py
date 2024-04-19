@@ -17,7 +17,8 @@ from .profile import ProfileSerializer, \
                     CreateProfileSerializer, \
                     UpdateProfileSerializer 
 
-from .activity import ActivitySerializer, \
-                        LikeSerializer
+from .activity import ActivitySerializer
+
+from .like import LikeSerializer
 
 from .notification_setting import NotificationSettingSerializer

@@ -5,7 +5,7 @@ from rest_framework import response, \
 from rest_framework import pagination
 
 class CommonPagination(pagination.PageNumberPagination):
-    def __init__(self, page_size=10, max_page_size=100):
+    def __init__(self, page_size=10, max_page_size=10000):
         super().__init__()
         self.page_size = page_size
         self.max_page_size = max_page_size

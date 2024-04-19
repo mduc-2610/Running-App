@@ -8,7 +8,7 @@ import '../activity/event.dart';
 
 class Activity {
   final String? id;
-  final User? user;
+  // final User? user;
   final List<Product> products;
   final List<Event> events;
   final List<Club> clubs;
@@ -16,7 +16,7 @@ class Activity {
 
   Activity({
     required this.id,
-    required this.user,
+    // required this.user,
     required this.products,
     required this.events,
     required this.clubs,
@@ -25,7 +25,7 @@ class Activity {
 
   Activity.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        user = User.fromJson(json['user']),
+        // user = User.fromJson(json['user']),
         products = (json['products'] as List<dynamic>).map((e) => Product.fromJson(e)).toList(),
         events = (json['events'] as List<dynamic>).map((e) => Event.fromJson(e)).toList(),
         clubs = (json['clubs'] as List<dynamic>).map((e) => Club.fromJson(e)).toList(),
@@ -34,7 +34,7 @@ class Activity {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user': user?.toJson(),
+      // 'user': user?.toJson(),
       'products': products.map((product) => product.toJson()).toList(),
       'events': events.map((event) => event.toJson()).toList(),
       'clubs': clubs.map((club) => club.toJson()).toList(),
@@ -44,6 +44,6 @@ class Activity {
 
   @override
   String toString() {
-    return 'Activity{id: $id, user: $user, point: $products, level: $events, total_steps: $clubs, activityRecords: $activityRecords}';
+    return 'Activity{id: $id, user: , point: $products, level: $events, total_steps: $clubs, activityRecords: $activityRecords}';
   }
 }

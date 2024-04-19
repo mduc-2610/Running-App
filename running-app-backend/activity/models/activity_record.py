@@ -90,6 +90,12 @@ class ActivityRecord(models.Model):
         kcal_per_km = kcal_per_unit_distance[self.sport_type]
         total_kcal = self.distance * kcal_per_km
         return round(total_kcal)
+
+    def total_likes(self):
+        return self.likes.count()
+    
+    def total_comments(self):
+        return self.comments.count()
     
     def get_readable_date(self, col):
         return self[col].strftime('%d %b')
