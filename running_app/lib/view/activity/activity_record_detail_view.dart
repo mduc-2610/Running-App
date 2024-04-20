@@ -529,7 +529,6 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                           ],
                         ),
                       ),
-                      SizedBox(height: media.height * 0.02,),
 
                       // Social section
                       Column(
@@ -537,20 +536,37 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                         children: [
                           MainWrapper(
                             topMargin: 0,
-                            child: GestureDetector(
-                              onTap: () {
+                            child: CustomTextButton(
+                              onPressed: () {
                                 Navigator.pushNamed(context, '/feed_comment', arguments: {
                                   "id": activityRecord?.id,
                                   "checkRequestUser": checkRequestUser,
                                 });
                               },
-                              child: Text(
-                                "0 comment",
-                                style: TxtStyle.normalTextDesc,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.thumb_up,
+                                        color: TColor.THIRD,
+                                      ),
+                                      SizedBox(width: media.width * 0.01,),
+                                      Text(
+                                        "${activityRecord?.totalLikes}",
+                                        style: TxtStyle.normalTextDesc,
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    "${activityRecord?.totalComments} comment",
+                                    style: TxtStyle.normalTextDesc,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                          SizedBox(height: media.height * 0.015,),
 
                           Container(
                             padding: const EdgeInsets.symmetric(
@@ -569,24 +585,27 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                   {
                                     "icon": Icons.thumb_up_alt_outlined,
                                     "text": "Like",
+                                    "onPressed": () {}
                                   },
                                   {
                                     "icon": Icons.mode_comment_outlined,
                                     "text": "Comment",
+                                    "onPressed": () {
+                                      Navigator.pushNamed(context, '/feed_comment', arguments: {
+                                        "id": activityRecord?.id,
+                                        "checkRequestUser": checkRequestUser,
+                                      });
+                                    }
                                   },
                                   (checkRequestUser == true) ? {
                                     "icon": Icons.ios_share_rounded,
                                     "text": "Share",
+                                    "onPressed": () {}
                                   } : null,
                                 ])...[
                                   if(x != null)...[
                                     CustomTextButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(context, '/feed_comment', arguments: {
-                                          "id": activityRecord?.id,
-                                          "checkRequestUser": checkRequestUser,
-                                        });
-                                      },
+                                      onPressed: x["onPressed"] as VoidCallback,
                                       child: Row(
                                         children: [
                                           Icon(

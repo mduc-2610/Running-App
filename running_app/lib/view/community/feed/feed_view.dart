@@ -40,7 +40,8 @@ class _FeedViewState extends State<FeedView> {
         'activity/activity-record/feed',
         DetailActivityRecord.fromJson,
         token,
-        pagination: true
+        pagination: true,
+        queryParams: "?exclude=likes,comments"
     );
     setState(() {
       activityRecords = data;
@@ -99,9 +100,8 @@ class _FeedViewState extends State<FeedView> {
   }
   @override
   Widget build(BuildContext context) {
-    print(isVisible);
+    print(activityRecords);
     var media = MediaQuery.sizeOf(context);
-    print('Activity Record: ${activityRecords?.length}');
     return Stack(
       children: [
         Column(

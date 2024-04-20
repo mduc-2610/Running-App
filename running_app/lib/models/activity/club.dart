@@ -14,7 +14,7 @@ class Club {
   final int? numberOfParticipants;
   final String? privacy;
   final String? organization;
-
+  final int? totalPosts;
   Club({
      required this.id,
      required this.name,
@@ -24,6 +24,7 @@ class Club {
      required this.numberOfParticipants,
      required this.privacy,
      required this.organization,
+     required this.totalPosts,
   });
 
   Club.fromJson(Map<String, dynamic> json)
@@ -34,7 +35,8 @@ class Club {
       weekActivities = json['week_activities'],
       numberOfParticipants = json['number_of_participants'],
       privacy = json['privacy'],
-      organization = json['organization'];
+      organization = json['organization'],
+      totalPosts = json['total_posts'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -46,6 +48,7 @@ class Club {
       'number_of_participants': numberOfParticipants,
       'privacy' : privacy,
       'organization' : organization,
+      'total_posts': totalPosts,
     };
   }
 
@@ -70,6 +73,7 @@ class DetailClub extends Club {
     String? organization,
     int? weekActivities,
     int? numberOfParticipants,
+    int? totalPosts,
     required this.posts,
     required this.participants,
     required this.description,
@@ -83,6 +87,7 @@ class DetailClub extends Club {
     numberOfParticipants: numberOfParticipants,
     privacy: privacy,
     organization: organization,
+    totalPosts: totalPosts
   );
 
   DetailClub.fromJson(Map<String, dynamic> json)

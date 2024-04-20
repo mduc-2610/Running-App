@@ -65,17 +65,26 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
         return instance.user.user.id
     
     def get_likes(self, instance):
-        queryset = instance.likes.all()
-        paginator = CommonPagination(page_size=6)
-        paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
-        return LikeSerializer(paginated_queryset, many=True, read_only=True).data
+        context = self.context
+        exclude = context.get('exclude', [])
+        print({'exclude': exclude})
+        if 'likes' not in exclude:
+            queryset = instance.likes.all()
+            paginator = CommonPagination(page_size=100)
+            paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
+            return LikeSerializer(paginated_queryset, many=True, read_only=True).data
+        return None
     
     def get_comments(self, instance):
-        queryset = instance.comments.all()
-        paginator = CommonPagination(page_size=5)
-        paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
-        return ActivityRecordPostCommentSerializer(paginated_queryset, many=True, read_only=True).data
-        
+        context = self.context
+        exclude = context.get('exclude', [])
+        if 'comments' not in exclude:
+            queryset = instance.comments.all()
+            paginator = CommonPagination(page_size=5)
+            paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
+            return ActivityRecordPostCommentSerializer(paginated_queryset, many=True, read_only=True).data
+        return None
+
     def get_completed_at(self, instance):
         return instance.get_readable_date_time('completed_at')
 

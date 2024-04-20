@@ -106,7 +106,7 @@ class _ClubViewState extends State<ClubView> {
       },
       {
         "type": "Posts",
-        "amount": (i) => "10",
+        "amount": (i) => "${userClubs?[i].totalPosts}",
       }
     ];
     return Column(

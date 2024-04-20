@@ -45,7 +45,6 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
 
   @override
   Widget build(BuildContext context) {
-    print("Detail: ${widget.detail}");
     List statsList = [
       {
         "type": "Distance",
@@ -208,13 +207,12 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
             ),
           ),
         ),
-        SizedBox(height: media.height * 0.005,),
-
 
         // Stats section
         MainWrapper(
-          child: GestureDetector(
-            onTap: () {
+          topMargin: 0,
+          child: CustomTextButton(
+            onPressed: () {
               Navigator.pushNamed(context, '/activity_record_detail', arguments: {
                 "id": widget.activityRecord?.id,
                 "checkRequestUser": widget.checkRequestUser

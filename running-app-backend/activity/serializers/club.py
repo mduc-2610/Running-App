@@ -18,6 +18,11 @@ class ClubSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='get_sport_type_display')
     organization = serializers.CharField(source='get_organization_display')
     privacy = serializers.CharField(source='get_privacy_display') 
+    total_posts = serializers.SerializerMethodField()
+
+    def get_total_posts(self, instance):
+        return instance.club_posts.count()
+    
     class Meta:
         model = Club
         fields = (
@@ -28,7 +33,8 @@ class ClubSerializer(serializers.ModelSerializer):
             "privacy", 
             "organization",
             "week_activities", 
-            "number_of_participants"
+            "number_of_participants",
+            "total_posts"
         )
         extra_kwargs = {
             "id": {"read_only": True}
@@ -41,8 +47,8 @@ class DetailClubSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='get_sport_type_display')
     organization = serializers.CharField(source='get_organization_display')
     privacy = serializers.CharField(source='get_privacy_display') 
-    posts = serializers.SerializerMethodField()
     total_posts = serializers.SerializerMethodField()
+    posts = serializers.SerializerMethodField()
 
     def get_week_activites(self, instance):
         return instance.week_activities()
@@ -87,14 +93,14 @@ class DetailClubSerializer(serializers.ModelSerializer):
             'sport_type': sport_type,
         }).data
     
+    def get_total_posts(self, instance):
+        return instance.club_posts.count()
+    
     def get_posts(self, instance):
         queryset = instance.club_posts.all()
         paginator = CommonPagination(page_size=5)
         paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
         return ClubPostSerializer(paginated_queryset, many=True, read_only=True).data
-    
-    def get_total_posts(self, instance):
-        return instance.club_posts.count()
 
     class Meta:
         model = Club

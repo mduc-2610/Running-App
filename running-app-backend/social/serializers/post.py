@@ -49,7 +49,7 @@ class DetailClubPostSerializer(serializers.ModelSerializer):
     
     def get_likes(self, instance):
         queryset = instance.likes.all()
-        paginator = CommonPagination(page_size=6)
+        paginator = CommonPagination(page_size=100)
         paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
         return LikeSerializer(paginated_queryset, many=True, read_only=True).data
     
@@ -103,7 +103,7 @@ class DetailEventPostSerializer(serializers.ModelSerializer):
         
     def get_likes(self, instance):
         queryset = instance.likes.all()
-        paginator = CommonPagination(page_size=6)
+        paginator = CommonPagination(page_size=100)
         paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
         return LikeSerializer(paginated_queryset, many=True, read_only=True).data
     

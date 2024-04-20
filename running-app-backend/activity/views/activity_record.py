@@ -38,6 +38,15 @@ class ActivityRecordViewSet(
             return UpdateActivityRecordSerializer
         return super().get_serializer_class()
     
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if self.action == "feed":
+            exclude = [param.strip().lower() for param in self.request.query_params.get('exclude', "").split(',')]
+            context.update({
+                'exclude': exclude
+            })
+        return context
+    
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.get_serializer_class()
         kwargs["context"] = self.get_serializer_context()
@@ -48,7 +57,6 @@ class ActivityRecordViewSet(
     def feed(self, request):
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
-
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)

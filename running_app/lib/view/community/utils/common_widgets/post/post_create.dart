@@ -7,6 +7,7 @@ import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
@@ -113,6 +114,7 @@ class _PostCreateState extends State<PostCreate> {
                                   onChanged: (_) => checkFormData(),
                                   controller: titleTextController,
                                   decoration: CustomInputDecoration(
+
                                     borderSide: 0,
                                     borderRadius: BorderRadius.circular(0),
                                   ),
@@ -143,6 +145,10 @@ class _PostCreateState extends State<PostCreate> {
                           controller: contentTextController,
                           decoration: CustomInputDecoration(
                             hintText: "What do you want to post?",
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 15,
+                                horizontal: media.height * 0.015
+                            ),
                             borderSide: 0,
                             borderRadius: BorderRadius.circular(0),
                           ),
@@ -157,33 +163,35 @@ class _PostCreateState extends State<PostCreate> {
                           }
                         ),
                       ),
-                      SizedBox(height: media.height * 0.01,),
                       MainWrapper(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Choose an image",
-                              style: TxtStyle.largeTextDesc,
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.picture_in_picture_alt,
-                                  color: TColor.SECONDARY,
-                                ),
-                                SizedBox(width: media.width * 0.02,),
-                                Text(
-                                  "Images",
-                                  style: TextStyle(
-                                      color: TColor.SECONDARY,
-                                      fontSize: FontSize.NORMAL,
-                                      fontWeight: FontWeight.w700
+                        child: CustomTextButton(
+                          onPressed: () {},
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Choose an image",
+                                style: TxtStyle.largeTextDesc,
+                              ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.picture_in_picture_alt,
+                                    color: TColor.SECONDARY,
                                   ),
-                                ),
-                              ],
-                            )
-                          ],
+                                  SizedBox(width: media.width * 0.02,),
+                                  Text(
+                                    "Images",
+                                    style: TextStyle(
+                                        color: TColor.SECONDARY,
+                                        fontSize: FontSize.NORMAL,
+                                        fontWeight: FontWeight.w700
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       )
                     ],

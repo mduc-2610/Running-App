@@ -51,7 +51,12 @@ class _ClubDetailViewState extends State<ClubDetailView> {
     });
   }
 
-  Future<void> delayedInit() async {
+  Future<void> delayedInit({bool reload = false}) async {
+    if(reload) {
+      setState(() {
+        isLoading = false;
+      });
+    }
     await initClub();
     await Future.delayed(Duration(seconds: 1),);
 
@@ -291,7 +296,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      "3061",
+                                                      "0",
                                                       textAlign: TextAlign.center,
                                                       style: TextStyle(
                                                         color: TColor.PRIMARY_TEXT,
@@ -359,7 +364,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                                       ),
                                                     ),
                                                     Text(
-                                                      "0",
+                                                      "${club?.totalPosts}",
                                                       textAlign: TextAlign.center,
                                                       style: TextStyle(
                                                         color: TColor.PRIMARY_TEXT,
@@ -414,7 +419,13 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                       (club?.numberOfParticipants != 0)
                                           ? ScrollSynchronized(
                                         parentScrollController: parentScrollController,
-                                        child: AthleteTable(participants: club?.participants, tableHeight: media.height - media.height * 0.15, controller: childScrollController, startIndex: 1,),
+                                        child: AthleteTable(
+                                          participants: club?.participants,
+                                          tableHeight: media.height - media.height * 0.15,
+                                          controller: childScrollController,
+                                          startIndex: 1,
+                                          isLoading: isLoading
+                                        ),
                                       )
                                           : const EmptyListNotification(
                                         title: "No users joined yet!",

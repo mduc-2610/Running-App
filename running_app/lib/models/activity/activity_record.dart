@@ -1,8 +1,6 @@
-import 'package:running_app/models/account/author.dart';
-import 'package:running_app/models/account/like.dart';
-import 'package:running_app/models/social/post_comment.dart';
-
-import '../account/user.dart';
+import "package:running_app/models/account/author.dart";
+import "package:running_app/models/account/like.dart";
+import "package:running_app/models/social/post_comment.dart";
 
 class ActivityRecord {
   final String? id;
@@ -36,40 +34,40 @@ class ActivityRecord {
   });
 
   ActivityRecord.fromJson(Map<String, dynamic> json)
-    : id = json['id'],
-      title = json['title'],
-      sportType = json['sport_type'],
-      privacy = json['privacy'],
-      distance = json['distance'].toString(),
-      steps = json['steps'],
-      points = json['points'],
-      kcal = json['kcal'],
-      user = Author.fromJson(json['user']),
-      completedAt = json['completed_at'],
-      avgMovingPace = json['avg_moving_pace'],
-      totalLikes = json['total_likes'],
-      totalComments = json['total_comments'];
+    : id = json["id"],
+      title = json["title"],
+      sportType = json["sport_type"],
+      privacy = json["privacy"],
+      distance = json["distance"].toString(),
+      steps = json["steps"],
+      points = json["points"],
+      kcal = json["kcal"],
+      user = Author.fromJson(json["user"]),
+      completedAt = json["completed_at"],
+      avgMovingPace = json["avg_moving_pace"],
+      totalLikes = json["total_likes"],
+      totalComments = json["total_comments"];
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'sport_type': sportType,
-      'privacy': privacy,
-      'distance': distance,
-      'steps': steps,
-      'points_earned': points,
-      'kcal': kcal,
-      'completed_at': completedAt,
-      'avg_moving_pace': avgMovingPace,
-      'user': user,
-      'total_likes': totalLikes,
-      'total_comments': totalComments,
+      "id": id,
+      "sport_type": sportType,
+      "privacy": privacy,
+      "distance": distance,
+      "steps": steps,
+      "points_earned": points,
+      "kcal": kcal,
+      "completed_at": completedAt,
+      "avg_moving_pace": avgMovingPace,
+      "user": user,
+      "total_likes": totalLikes,
+      "total_comments": totalComments,
     };
   }
 
   @override
   String toString() {
-    return 'ActivityRecord{id: $id, sportType: $sportType, privacy: $privacy, distance: $distance, steps: $steps, kcal: $kcal, completedAt: $completedAt}';
+    return "ActivityRecord{id: $id, sportType: $sportType, privacy: $privacy, distance: $distance, steps: $steps, kcal: $kcal, completedAt: $completedAt}";
   }
 }
 
@@ -114,28 +112,28 @@ class DetailActivityRecord extends ActivityRecord {
   );
 
   DetailActivityRecord.fromJson(Map<String, dynamic> json)
-    : duration = json['duration'],
-      description = json['description'],
-      likes = (json['likes'] as List<dynamic>)
+    : duration = json["duration"],
+      description = json["description"],
+      likes = (json["likes"] != null) ? (json["likes"] as List<dynamic>)
         .map((likeJson) => Like.fromJson(likeJson))
-        .toList(),
-      comments = (json['comments'] as List<dynamic>)
+        .toList() : null,
+      comments = (json["comments"] != null) ? (json["comments"] as List<dynamic>)
         .map((commentJson) => ActivityRecordPostComment.fromJson(commentJson))
-        .toList(),
+        .toList() : null,
       super.fromJson(json);
 
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
-    data['duration'] = duration;
-    data['description'] = description;
-    data['user'] = user?.toJson();
+    data["duration"] = duration;
+    data["description"] = description;
+    data["user"] = user?.toJson();
     return data;
   }
 
   @override
   String toString() {
-    return 'DetailActivityRecord{${super.toString()}, duration: $duration, description: $description, user: $user}';
+    return "DetailActivityRecord{${super.toString()}, duration: $duration, description: $description, user: $user}";
   }
 }
 
@@ -162,20 +160,20 @@ class CreateActivityRecord {
 
   Map<String, dynamic> toJson() {
     return {
-      'privacy': privacy,
-      'distance': distance,
-      'duration': duration,
-      'sport_type': sportType,
-      'title': title,
-      'description': description,
-      'completed_at': completedAt,
-      'user_id': userId,
+      "privacy": privacy,
+      "distance": distance,
+      "duration": duration,
+      "sport_type": sportType,
+      "title": title,
+      "description": description,
+      "completed_at": completedAt,
+      "user_id": userId,
     };
   }
 
   @override
   String toString() {
-    return '${toJson()}';
+    return "${toJson()}";
   }
 }
 
@@ -192,9 +190,9 @@ class UpdateActivityRecord {
 
   Map<String, dynamic> toJson() {
     return {
-      'title': title,
-      'description': description,
-      'privacy': privacy
+      "title": title,
+      "description": description,
+      "privacy": privacy
     };
   }
 

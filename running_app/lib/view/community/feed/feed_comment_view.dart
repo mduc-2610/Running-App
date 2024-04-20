@@ -93,7 +93,6 @@ class _FeedCommentViewState extends State<FeedCommentView> {
 
   @override
   Widget build(BuildContext context) {
-    print(comments);
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
