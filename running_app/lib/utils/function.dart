@@ -89,10 +89,13 @@ String formatDateTimeQuery(DateTime x) {
 
 
 
-String formatDateTimeEnUS(DateTime x, {bool shortcut = false, bool time = false}) {
+String formatDateTimeEnUS(DateTime x, {bool shortcut = false, bool time = false, bool timeFirst = false}) {
   String monthFormat = shortcut ? 'MMM' : 'MMMM';
   String dateFormat = '$monthFormat dd, yyyy';
   String timeFormat = time ? 'hh:mm' : '';
-
-  return DateFormat('$dateFormat $timeFormat', 'en_US').format(x);
+  String format = '$dateFormat $timeFormat';
+  if(timeFirst == true) {
+    format = '$timeFormat $dateFormat';
+  }
+  return DateFormat('${format}', 'en_US').format(x);
 }

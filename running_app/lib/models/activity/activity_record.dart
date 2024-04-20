@@ -1,3 +1,7 @@
+import 'package:running_app/models/account/author.dart';
+import 'package:running_app/models/account/like.dart';
+import 'package:running_app/models/social/post_comment.dart';
+
 import '../account/user.dart';
 
 class ActivityRecord {
@@ -11,6 +15,9 @@ class ActivityRecord {
   final int? kcal;
   final String? completedAt;
   final String? avgMovingPace;
+  final Author? user;
+  final int? totalLikes;
+  final int? totalComments;
 
   ActivityRecord({
      required this.title,
@@ -23,6 +30,9 @@ class ActivityRecord {
      required this.kcal,
      required this.completedAt,
      required this.avgMovingPace,
+     required this.user,
+     required this.totalLikes,
+     required this.totalComments,
   });
 
   ActivityRecord.fromJson(Map<String, dynamic> json)
@@ -34,8 +44,11 @@ class ActivityRecord {
       steps = json['steps'],
       points = json['points'],
       kcal = json['kcal'],
+      user = Author.fromJson(json['user']),
       completedAt = json['completed_at'],
-      avgMovingPace = json['avg_moving_pace'];
+      avgMovingPace = json['avg_moving_pace'],
+      totalLikes = json['total_likes'],
+      totalComments = json['total_comments'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -47,7 +60,10 @@ class ActivityRecord {
       'points_earned': points,
       'kcal': kcal,
       'completed_at': completedAt,
-      'avgMovingPace': avgMovingPace,
+      'avg_moving_pace': avgMovingPace,
+      'user': user,
+      'total_likes': totalLikes,
+      'total_comments': totalComments,
     };
   }
 
@@ -60,7 +76,9 @@ class ActivityRecord {
 class DetailActivityRecord extends ActivityRecord {
   final String? duration;
   final String? description;
-  final User? user;
+  final List<Like>? likes;
+  final List<ActivityRecordPostComment>? comments;
+
   DetailActivityRecord({
     String? id,
     String? title,
@@ -72,9 +90,13 @@ class DetailActivityRecord extends ActivityRecord {
     int? kcal,
     String? completedAt,
     String? avgMovingPace,
+    Author? user,
+    int? totalLikes,
+    int? totalComments,
     required this.duration,
     required this.description,
-    required this.user,
+    required this.likes,
+    required this.comments,
   }) : super(
     id: id,
     title: title,
@@ -85,13 +107,21 @@ class DetailActivityRecord extends ActivityRecord {
     points: points,
     kcal: kcal,
     completedAt: completedAt,
-    avgMovingPace: avgMovingPace
+    avgMovingPace: avgMovingPace,
+    user: user,
+    totalLikes: totalLikes,
+    totalComments: totalComments,
   );
 
   DetailActivityRecord.fromJson(Map<String, dynamic> json)
     : duration = json['duration'],
       description = json['description'],
-      user = User.fromJson(json['user']),
+      likes = (json['likes'] as List<dynamic>)
+        .map((likeJson) => Like.fromJson(likeJson))
+        .toList(),
+      comments = (json['comments'] as List<dynamic>)
+        .map((commentJson) => ActivityRecordPostComment.fromJson(commentJson))
+        .toList(),
       super.fromJson(json);
 
   @override

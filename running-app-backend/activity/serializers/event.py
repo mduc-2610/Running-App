@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from activity.models import Event
 from account.serializers import DetailUserSerializer, LeaderboardSerializer
+from social.serializers import EventPostSerializer
 from activity.serializers.group import GroupSerializer
 
 from utils.function import get_start_of_day, \
@@ -13,6 +14,7 @@ from utils.function import get_start_of_day, \
                             get_start_date_of_year, \
                             get_end_date_of_year
 
+from utils.pagination import CommonPagination
 class EventSerializer(serializers.ModelSerializer):
     competition = serializers.CharField(source='get_competition_display')
 
@@ -41,6 +43,17 @@ class DetailEventSerializer(serializers.ModelSerializer):
     started_at = serializers.SerializerMethodField()
     ended_at = serializers.SerializerMethodField()
     regulations = serializers.SerializerMethodField()
+    total_posts = serializers.SerializerMethodField()
+    posts = serializers.SerializerMethodField()
+    
+    def get_total_posts(self, instance):
+        return instance.event_posts.count()
+    
+    def get_posts(self, instance):
+        queryset = instance.event_posts.all()
+        paginator = CommonPagination(page_size=5)
+        paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
+        return EventPostSerializer(paginated_queryset, many=True, read_only=True).data
     
     def get_days_remain(self, instance):
         return instance.days_remain()

@@ -25,6 +25,7 @@ import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/event/utils/common_widgets/event_leaderboard.dart';
+import 'package:running_app/view/community/utils/common_widgets/post/post_layout.dart';
 
 class EventDetailView extends StatefulWidget {
   const EventDetailView({super.key});
@@ -633,9 +634,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                     ),
                     // SizedBox(height: media.height * 0.01,),
                     _showLayout == "Information"
-                        ? MainWrapper(
-                      child: InformationLayout(event: event,),
-                    )
+                        ? InformationLayout(event: event,)
                         : (event?.participants?.length == 0)
                         ? EmptyListNotification(
                             title: (event?.competition == "Group") ? "No groups created yet!" : "No users joined yet!",
@@ -703,52 +702,63 @@ class _InformationLayoutState extends State<InformationLayout> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            for (var x in ["General information", "Post"]) ...[
-              SizedBox(
-                width: media.width * 0.46,
-                child: CustomTextButton(
-                  onPressed: () {
-                    setState(() {
-                      _showLayout = x;
-                    });
-                  },
-                  style: ButtonStyle(
-                      padding: MaterialStateProperty.all(
-                        const EdgeInsets.all(0),
-                      ),
-                      backgroundColor: MaterialStateProperty.all<Color?>(
-                          _showLayout == x ? Colors.transparent : TColor.SECONDARY_BACKGROUND
-                      ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10))),
-                      side: MaterialStateProperty.all(
-                          _showLayout == x
-                              ? BorderSide(
-                                  color: TColor.PRIMARY,
-                                  width: 2.0,
-                                )
-                              : BorderSide.none)),
-                  child: Text(x,
-                      style: TextStyle(
-                        color: TColor.PRIMARY_TEXT,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      )),
+        MainWrapper(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (var x in ["General information", "Post"]) ...[
+                SizedBox(
+                  width: media.width * 0.46,
+                  child: CustomTextButton(
+                    onPressed: () {
+                      setState(() {
+                        _showLayout = x;
+                      });
+                    },
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all(
+                          const EdgeInsets.all(0),
+                        ),
+                        backgroundColor: MaterialStateProperty.all<Color?>(
+                            _showLayout == x ? Colors.transparent : TColor.SECONDARY_BACKGROUND
+                        ),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                        side: MaterialStateProperty.all(
+                            _showLayout == x
+                                ? BorderSide(
+                                    color: TColor.PRIMARY,
+                                    width: 2.0,
+                                  )
+                                : BorderSide.none)),
+                    child: Text(x,
+                        style: TextStyle(
+                          color: TColor.PRIMARY_TEXT,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        )),
+                  ),
                 ),
-              ),
+              ],
             ],
-          ],
+          ),
         ),
         SizedBox(
           height: media.height * 0.015,
         ),
         _showLayout == "General information"
-            ? GeneralInformationLayout(event: widget.event,)
-            : const PostLayout(),
+            ? MainWrapper(child: GeneralInformationLayout(event: widget.event,))
+            : SizedBox(
+          height: media.height * 0.8,
+              child: (
+              PostLayout(
+                  posts: widget.event?.posts,
+                  isLoading: false,
+                  postType: "event"
+              )
+                      ),
+            ),
       ],
     );
   }
@@ -1343,33 +1353,6 @@ class GeneralInformationLayout extends StatelessWidget {
             ]
           ],
         ),
-      ),
-    );
-  }
-}
-
-class PostLayout extends StatelessWidget {
-  const PostLayout({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var media = MediaQuery.sizeOf(context);
-    return Center(
-      child: Column(
-        children: [
-          Image.asset(
-            "assets/img/community/post.png",
-            width: media.width * 0.4,
-            height: media.height * 0.2,
-          ),
-          Text(
-            "There's no blog yet",
-            style: TextStyle(
-                color: TColor.PRIMARY_TEXT,
-                fontSize: FontSize.LARGE,
-                fontWeight: FontWeight.w800),
-          )
-        ],
       ),
     );
   }

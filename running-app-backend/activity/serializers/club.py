@@ -3,7 +3,7 @@ from rest_framework import serializers
 from activity.models import Club
 from account.serializers import LeaderboardSerializer 
 from account.serializers import DetailUserSerializer
-
+from social.serializers import ClubPostSerializer
 from utils.function import get_start_of_day, \
                             get_end_of_day, \
                             get_start_date_of_week, \
@@ -12,6 +12,8 @@ from utils.function import get_start_of_day, \
                             get_end_date_of_month, \
                             get_start_date_of_year, \
                             get_end_date_of_year
+
+from utils.pagination import CommonPagination
 class ClubSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='get_sport_type_display')
     organization = serializers.CharField(source='get_organization_display')
@@ -39,7 +41,9 @@ class DetailClubSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='get_sport_type_display')
     organization = serializers.CharField(source='get_organization_display')
     privacy = serializers.CharField(source='get_privacy_display') 
-    
+    posts = serializers.SerializerMethodField()
+    total_posts = serializers.SerializerMethodField()
+
     def get_week_activites(self, instance):
         return instance.week_activities()
     
@@ -82,6 +86,15 @@ class DetailClubSerializer(serializers.ModelSerializer):
             'end_date': end_date,
             'sport_type': sport_type,
         }).data
+    
+    def get_posts(self, instance):
+        queryset = instance.club_posts.all()
+        paginator = CommonPagination(page_size=5)
+        paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
+        return ClubPostSerializer(paginated_queryset, many=True, read_only=True).data
+    
+    def get_total_posts(self, instance):
+        return instance.club_posts.count()
 
     class Meta:
         model = Club

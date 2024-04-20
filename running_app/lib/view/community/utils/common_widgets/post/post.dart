@@ -3,29 +3,33 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:running_app/models/activity/activity_record.dart';
+import 'package:running_app/models/social/post.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/icon_button.dart';
 import 'package:running_app/utils/common_widgets/limit_text_line.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/show_action_list.dart';
-import 'package:running_app/utils/common_widgets/show_notification.dart';
 import 'package:running_app/utils/common_widgets/show_user_list.dart';
+import 'package:running_app/utils/common_widgets/show_month_year.dart';
+import 'package:running_app/utils/common_widgets/show_notification.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 
 
-class ActivityRecordPost extends StatefulWidget {
+class PostWidget extends StatefulWidget {
   final String token;
-  final DetailActivityRecord? activityRecord;
+  final dynamic post;
   final bool? checkRequestUser;
   final bool socialSection;
   final bool detail;
+  final String postType;
 
-  const ActivityRecordPost({
+  const PostWidget({
     required this.token,
-    required this.activityRecord,
+    required this.post,
+    required this.postType,
     this.checkRequestUser,
     this.socialSection = true,
     this.detail = false,
@@ -33,10 +37,10 @@ class ActivityRecordPost extends StatefulWidget {
   });
 
   @override
-  State<ActivityRecordPost> createState() => _ActivityRecordPostState();
+  State<PostWidget> createState() => _PostWidgetState();
 }
 
-class _ActivityRecordPostState extends State<ActivityRecordPost> {
+class _PostWidgetState extends State<PostWidget> {
   bool showFullTitle = false;
   bool showFullDescription = false;
   bool showViewMoreDescriptionButton = false;
@@ -44,22 +48,12 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
   int currentSlide = 0;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print("Detail: ${widget.detail}");
-    List statsList = [
-      {
-        "type": "Distance",
-        "figure": "${widget.activityRecord?.distance ?? 0} km",
-      },
-      {
-        "type": "Avg. pace",
-        "figure": "${widget.activityRecord?.avgMovingPace ?? "00:00"}/km",
-      },
-      {
-        "type": "Time",
-        "figure": "${formatTimeDuration(widget.activityRecord?.duration ?? "", type: 3)}",
-      }
-    ];
     var media = MediaQuery.sizeOf(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +67,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
               CustomTextButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/user', arguments: {
-                    "id": widget.activityRecord?.user?.id,
+                    "id": widget.post?.user?.id,
                   });
                 },
                 child: Row(
@@ -93,7 +87,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                         SizedBox(
                           width: media.width * 0.75,
                           child: Text(
-                            '${widget.activityRecord?.user?.name ?? ""}',
+                            '${widget.post?.user?.name ?? ""}',
                             style: TxtStyle.headSection,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
@@ -101,14 +95,8 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                         ),
                         Row(
                           children: [
-                            Icon(
-                              ActIcon.sportTypeIcon['${widget.activityRecord?.sportType ?? "Running"}'],
-                              color: TColor.DESCRIPTION,
-                              size: 20,
-                            ),
-                            SizedBox(width: media.width * 0.02,),
                             Text(
-                              '${widget.activityRecord?.completedAt ?? ""}',
+                              '${formatDateTimeEnUS(DateTime.parse(widget.post?.createdAt ?? ""), timeFirst: true, time: true)}',
                               style: TxtStyle.descSection,
                             )
                           ],
@@ -133,7 +121,8 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                             "onPressed": () {
                               Navigator.pop(context);
                               Navigator.pushNamed(context, '/activity_record_edit', arguments: {
-                                "id": widget.activityRecord?.id                              });
+                                "id": widget.post?.id
+                              });
                             }
                           },
                           {
@@ -143,7 +132,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                               showNotificationDecision(context, 'Notice', "Are you sure to delete this activity", "No", "Yes", onPressed2: () async {
                                 await callDestroyAPI(
                                     'activity/activity-record',
-                                    widget.activityRecord?.id,
+                                    widget.post?.id,
                                     widget.token
                                 );
                               });
@@ -164,19 +153,20 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
           topMargin: 0,
           child: GestureDetector(
             onTap: (widget.detail == false) ? () {
-              Navigator.pushNamed(context, '/activity_record_detail', arguments: {
-                "id": widget.activityRecord?.id,
+              Navigator.pushNamed(context, '/post_detail', arguments: {
+                "id": widget.post?.id,
                 "checkRequestUser": widget.checkRequestUser,
+                "postType": widget.postType
               });
             } : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if(widget.activityRecord?.title != "")...[
+                if(widget.post?.title != "")...[
                   LimitTextLine(
                     showFullText: showFullTitle,
                     showViewMoreButton: showViewMoreTitleButton,
-                    description: '${widget.activityRecord?.title}',
+                    description: '${widget.post?.title}',
                     onTap: () {
                       setState(() {
                         showFullTitle = (showFullTitle) ? false : true;
@@ -191,11 +181,11 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                   ),
                   SizedBox(height: media.height * 0.01,),
                 ],
-                if(widget.activityRecord?.description != "")...[
+                if(widget.post?.content != "")...[
                   LimitTextLine(
                     showFullText: showFullDescription,
                     showViewMoreButton: showViewMoreDescriptionButton,
-                    description: "${widget.activityRecord?.description}",
+                    description: "${widget.post?.content}",
                     onTap: () {
                       setState(() {
                         showFullDescription = (showFullDescription) ? false : true;
@@ -210,63 +200,15 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
         ),
         SizedBox(height: media.height * 0.005,),
 
-
-        // Stats section
-        MainWrapper(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, '/activity_record_detail', arguments: {
-                "id": widget.activityRecord?.id,
-                "checkRequestUser": widget.checkRequestUser
-              });
-            },
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                for (int i = 0; i < 3; i++) ...[
-                  Row(
-                    children: [
-                      if (i != 0) ...[
-                        SeparateBar(
-                            width: 2, height: 40),
-                        SizedBox(width: media.width * 0.03)
-                      ],
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            statsList[i]["type"],
-                            style: TextStyle(
-                                color: TColor.DESCRIPTION,
-                                fontSize: FontSize.SMALL,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          Text(
-                            statsList[i]["figure"],
-                            style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.LARGE,
-                                fontWeight: FontWeight.w800),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ]
-              ],
-            ),
-          ),
-        ),
-        SizedBox(height: media.height * 0.01,),
-
         // Image section
         Column(
           children: [
             GestureDetector(
               onTap: (widget.detail == false) ? () {
-                Navigator.pushNamed(context, '/activity_record_detail', arguments: {
-                  "id": widget.activityRecord?.id,
+                Navigator.pushNamed(context, '/post_detail', arguments: {
+                  "id": widget.post?.id,
                   "checkRequestUser": widget.checkRequestUser,
+                  "postType": widget.postType
                 });
               } : null,
               child: SizedBox(
@@ -315,9 +257,10 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                         padding: MaterialStateProperty.all(EdgeInsets.all(0))
                     ),
                     onPressed: (widget.detail == false) ? () {
-                      Navigator.pushNamed(context, '/feed_comment', arguments: {
-                        "id": widget.activityRecord?.id,
+                      Navigator.pushNamed(context, '/post_detail', arguments: {
+                        "id": widget.post?.id,
                         "checkRequestUser": widget.checkRequestUser,
+                        "postType": widget.postType
                       });
                     } : null,
                     child: Container(
@@ -333,13 +276,13 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                               ),
                               SizedBox(width: media.width * 0.01,),
                               Text(
-                                "${widget.activityRecord?.totalLikes}",
+                                "${widget.post?.totalLikes}",
                                 style: TxtStyle.normalTextDesc,
                               ),
                             ],
                           ),
                           Text(
-                            "${widget.activityRecord?.totalComments} comment",
+                            "${widget.post?.totalComments} comment",
                             style: TxtStyle.normalTextDesc,
                           ),
                         ],
@@ -368,16 +311,17 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                       {
                         "icon": Icons.thumb_up_alt_outlined,
                         "text": "Like",
-                        "onPressed": () {}
+                        "onPressed": () {},
                       },
                       {
                         "icon": Icons.mode_comment_outlined,
                         "text": "Comment",
                         "onPressed": () {
                           if(widget.detail == false) {
-                            Navigator.pushNamed(context, '/feed_comment', arguments: {
-                              "id": widget.activityRecord?.id,
+                            Navigator.pushNamed(context, '/post_detail', arguments: {
+                              "id": widget.post?.id,
                               "checkRequestUser": widget.checkRequestUser,
+                              "postType": widget.postType
                             });
                           }
                         }
@@ -420,9 +364,10 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                         padding: MaterialStateProperty.all(EdgeInsets.all(0))
                     ),
                     onPressed: (widget.detail == false) ? () {
-                      Navigator.pushNamed(context, '/activity_record_detail', arguments: {
-                        "id": widget.activityRecord?.id,
+                      Navigator.pushNamed(context, '/post_detail', arguments: {
+                        "id": widget.post?.id,
                         "checkRequestUser": widget.checkRequestUser,
+                        "postType": widget.postType
                       });
                     } : null,
                     child: Container(
@@ -434,7 +379,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                             onTap: () {
                               showUserList(
                                 context,
-                                widget.activityRecord?.likes ?? [] ,
+                                widget.post?.likes,
                                 title: Row(
                                   children: [
                                     Icon(
@@ -443,7 +388,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                                     ),
                                     SizedBox(width: media.width * 0.01,),
                                     Text(
-                                      "${widget.activityRecord?.totalLikes}",
+                                      "${widget.post?.totalLikes}",
                                       style: TxtStyle.normalTextDesc,
                                     ),
                                   ],
@@ -458,7 +403,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                                 ),
                                 SizedBox(width: media.width * 0.01,),
                                 Text(
-                                  "${widget.activityRecord?.totalLikes}",
+                                  "${widget.post?.totalLikes}",
                                   style: TxtStyle.normalTextDesc,
                                 ),
                               ],

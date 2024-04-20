@@ -1,6 +1,7 @@
 import 'package:running_app/models/account/leaderboard.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/group.dart';
+import 'package:running_app/models/social/post.dart';
 
 class Event {
   final String? id;
@@ -53,6 +54,8 @@ class DetailEvent extends Event {
   final String? sportType;
   final List<Leaderboard>? participants;
   final List<Group>? groups;
+  final List<EventPost>? posts;
+
 
   DetailEvent({
     String? id,
@@ -70,6 +73,7 @@ class DetailEvent extends Event {
     required this.sportType,
     required this.participants,
     required this.groups,
+    required this.posts,
   }) : super(
     id: id,
     name: name,
@@ -91,6 +95,7 @@ class DetailEvent extends Event {
     data['competition'] = competition;
     data['participants'] = participants;
     data['groups'] = groups;
+    data['posts'] = posts;
     return data;
   }
 
@@ -104,6 +109,7 @@ class DetailEvent extends Event {
         sportType = json['sportType'],
         participants = (json['participants'] as List<dynamic>).map((e) => Leaderboard.fromJson(e)).toList(),
         groups = (json['groups'] as List<dynamic>).map((e) => Group.fromJson(e)).toList(),
+        posts = (json['posts'] as List<dynamic>).map((e) => EventPost.fromJson(e)).toList(),
         super.fromJson(json);
 
   @override
@@ -118,7 +124,8 @@ class DetailEvent extends Event {
         'sportType: $sportType,\n\t '
         'competition: $competition,\n\t '
         'privacy: $privacy,\n\t'
-        'participants: $participants\n'
+        'participants: $participants,\n'
+        'posts: $posts'
         '}\n';
   }
 }

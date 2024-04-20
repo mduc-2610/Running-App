@@ -1,12 +1,14 @@
 import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/author.dart';
+import 'package:running_app/models/account/like.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/models/social/post.dart';
 
 class PostComment {
-  final String id; // Assuming UUIDField is mapped to a String UUID in Dart
-  final Activity user;
-  final String content;
-  final DateTime createdAt;
+  final String? id;
+  final Author? user;
+  final String? content;
+  final String? createdAt;
 
   PostComment({
     required this.id,
@@ -17,16 +19,16 @@ class PostComment {
 
   PostComment.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        user = Activity.fromJson(json['user']),
+        user = Author.fromJson(json['user']),
         content = json['content'],
-        createdAt = DateTime.parse(json['created_at']);
+        createdAt = json['created_at'];
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user': user.toJson(),
+      'user': user?.toJson(),
       'content': content,
-      'created_at': createdAt.toIso8601String(),
+      'created_at': createdAt,
     };
   }
 
@@ -37,64 +39,78 @@ class PostComment {
 }
 
 class ClubPostComment extends PostComment {
-  final ClubPost post;
+  final String? post;
 
   ClubPostComment({
-    required String id,
-    required Activity user,
-    required String content,
-    required DateTime createdAt,
+    String? id,
+    Author? user,
+    String? content,
+    String? createdAt,
     required this.post,
-  }) : super(id: id, user: user, content: content, createdAt: createdAt);
+  }) : super(
+      id: id,
+      user: user,
+      content: content,
+      createdAt: createdAt);
 
   ClubPostComment.fromJson(Map<String, dynamic> json)
-      : post = ClubPost.fromJson(json['post']),
+      : post = json['post'],
         super.fromJson(json);
 
   @override
   String toString() {
-    return '${user} - $createdAt - Post: ${post.id}';
+    return '${user} - $createdAt - Post: ${post}';
   }
 }
 
 class EventPostComment extends PostComment {
-  final EventPost post;
+  final String? post;
 
   EventPostComment({
-    required String id,
-    required Activity user,
-    required String content,
-    required DateTime createdAt,
+    String? id,
+    Author? user,
+    String? content,
+    String? createdAt,
     required this.post,
-  }) : super(id: id, user: user, content: content, createdAt: createdAt);
+  }) : super(
+      id: id,
+      user: user,
+      content: content,
+      createdAt: createdAt
+  );
 
   EventPostComment.fromJson(Map<String, dynamic> json)
-      : post = EventPost.fromJson(json['post']),
+      : post = json['post'],
         super.fromJson(json);
 
   @override
   String toString() {
-    return '${user} - $createdAt - Post: ${post.id}';
+    return '${user} - $createdAt - Post: ${post}';
   }
 }
 
 class ActivityRecordPostComment extends PostComment {
-  final ActivityRecord post;
+  final String? post;
 
   ActivityRecordPostComment({
-    required String id,
-    required Activity user,
-    required String content,
-    required DateTime createdAt,
+    String? id,
+    Author? user,
+    String? content,
+    String? createdAt,
     required this.post,
-  }) : super(id: id, user: user, content: content, createdAt: createdAt);
+  }) : super(
+      id: id,
+      user: user,
+      content: content,
+      createdAt: createdAt
+  );
 
   ActivityRecordPostComment.fromJson(Map<String, dynamic> json)
-      : post = ActivityRecord.fromJson(json['post']),
+      : post = json['post'],
         super.fromJson(json);
 
   @override
   String toString() {
-    return '${user} - $createdAt - Activity Record: ${post.id}';
+    return '${user} - $createdAt - Activity Record: ${post}';
   }
 }

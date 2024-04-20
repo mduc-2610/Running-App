@@ -79,22 +79,34 @@ class ClubViewSet(
             return DetailClubSerializer
         return super().get_serializer_class()
     
-    def retrieve(self, request, * args, **kwargs):
-        query_params = self.request.query_params
-        start_date = query_params.get('start_date', get_start_date_of_month())
-        end_date = query_params.get('end_date', get_end_date_of_month())
-        sort_by = query_params.get('sort_by', 'Distance')
-        gender = query_params.get('gender', None)
-        limit_user = query_params.get('limit_user', None)
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        if self.action == "retrieve":
+            query_params = self.request.query_params
+            start_date = query_params.get('start_date', get_start_date_of_month())
+            end_date = query_params.get('end_date', get_end_date_of_month())
+            sort_by = query_params.get('sort_by', 'Distance')
+            gender = query_params.get('gender', None)
+            limit_user = query_params.get('limit_user', None)
 
+            context.update({
+                'request': self.request,
+                'start_date': start_date, 
+                'end_date': end_date,
+                'sort_by': sort_by,
+                'gender': gender,
+                'limit_user': limit_user
+            })
+        return context
+    
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        kwargs["context"] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
+
+    def retrieve(self, request, * args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, context={
-            'start_date': start_date, 
-            'end_date': end_date,
-            'sort_by': sort_by,
-            'gender': gender,
-            'limit_user': limit_user
-        })
+        serializer = self.get_serializer(instance)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
     
     # def get_queryset(self):

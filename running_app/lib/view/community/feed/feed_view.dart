@@ -36,7 +36,12 @@ class _FeedViewState extends State<FeedView> {
 
 
   Future<void> initActivityRecord() async {
-    final data = await callListAPI('activity/activity-record/feed', DetailActivityRecord.fromJson, token, pagination: true);
+    final data = await callListAPI(
+        'activity/activity-record/feed',
+        DetailActivityRecord.fromJson,
+        token,
+        pagination: true
+    );
     setState(() {
       activityRecords = data;
     });

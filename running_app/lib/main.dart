@@ -17,6 +17,7 @@ import 'package:running_app/view/activity/activity_record_stats_view.dart';
 import 'package:running_app/view/activity/activity_record_view.dart';
 import 'package:running_app/view/community/club/club_create_view.dart';
 import 'package:running_app/view/community/club/club_detail_information_view.dart';
+import 'package:running_app/view/community/club/club_post_view.dart';
 import 'package:running_app/view/community/event/create/event_advanced_option_create_view.dart';
 import 'package:running_app/view/community/event/create/event_feature_create_view.dart';
 import 'package:running_app/view/community/event/create/event_information_create_view.dart';
@@ -30,6 +31,8 @@ import 'package:running_app/view/community/utils/common_widgets/member_managemen
 import 'package:running_app/view/community/club/club_member_view.dart';
 import 'package:running_app/view/community/event/utils/provider/event_advanced_option_create_provider.dart';
 import 'package:running_app/view/community/event/utils/provider/event_feature_create_provider.dart';
+import 'package:running_app/view/community/utils/common_widgets/post/post_create.dart';
+import 'package:running_app/view/community/utils/common_widgets/post/post_detail.dart';
 import 'package:running_app/view/user/other_user_view.dart';
 import 'package:running_app/view/user/setting/change_password_setting_view.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
@@ -188,7 +191,10 @@ class MyApp extends StatelessWidget {
         '/club_detail': (context) => const ClubDetailView(),
         '/club_detail_information': (context) => const ClubDetailInformationView(),
         '/club_create': (context) => const ClubCreateView(),
+        '/club_post': (context) => const ClubPostView(),
         '/club_member': (context) => const ClubMemberView(),
+        '/post_detail': (context) => const PostDetail(),
+        '/post_create': (context) => PostCreate(),
         // Event
         '/event_list': (context) => const EventListView(),
         '/event_filter': (context) => const EventFilterView(),

@@ -179,3 +179,5 @@ class ActIcon {
     "Swimming": Icons.pool_rounded
   };
 }
+
+const IconData paperplane = IconData(0xf733);

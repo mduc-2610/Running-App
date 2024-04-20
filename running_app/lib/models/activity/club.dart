@@ -1,6 +1,7 @@
 import 'package:running_app/models/account/leaderboard.dart';
 
 import 'package:running_app/models/account/leaderboard.dart';
+import 'package:running_app/models/social/post.dart';
 
 import '../account/user.dart';
 
@@ -58,6 +59,7 @@ class DetailClub extends Club {
   final List<Leaderboard> participants;
   final String? description;
   final String? coverPhoto;
+  final List<ClubPost>? posts;
 
   DetailClub({
     String? id,
@@ -68,6 +70,7 @@ class DetailClub extends Club {
     String? organization,
     int? weekActivities,
     int? numberOfParticipants,
+    required this.posts,
     required this.participants,
     required this.description,
     required this.coverPhoto,
@@ -86,6 +89,7 @@ class DetailClub extends Club {
       : description = json['description'],
         participants = (json['participants'] as List<dynamic>).map((e) => Leaderboard.fromJson(e)).toList(),
         coverPhoto = json['cover_photo'],
+        posts = (json['posts'] as List<dynamic>).map((e) => ClubPost.fromJson(e)).toList(),
         super.fromJson(json);
 
   @override

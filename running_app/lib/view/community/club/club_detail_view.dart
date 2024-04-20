@@ -319,7 +319,9 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                       SizedBox(
                                         child: CustomTextButton(
                                           onPressed: () {
-                        
+                                            Navigator.pushNamed(context, '/club_post', arguments: {
+                                              "id": club?.id,
+                                            });
                                           },
                                           child: Stack(
                                             children: [

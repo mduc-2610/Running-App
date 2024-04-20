@@ -11,6 +11,7 @@ class EmptyListNotification extends StatelessWidget {
   final double? addButtonWidth;
   final String? image;
   final double? marginTop;
+  final Widget? imageWidget;
 
   const EmptyListNotification({
     this.marginTop,
@@ -21,6 +22,7 @@ class EmptyListNotification extends StatelessWidget {
     this.addButtonWidth,
     this.onPressed,
     this.image,
+    this.imageWidget,
     super.key
   });
 
@@ -36,7 +38,7 @@ class EmptyListNotification extends StatelessWidget {
         children: [
           Stack(
             children: [
-              if(image == null)...[
+              if(image == null && imageWidget == null)...[
                 Image.asset(
                   "assets/img/community/athlete_on_fire.png",
                   width: 80,
@@ -57,12 +59,16 @@ class EmptyListNotification extends StatelessWidget {
                 )
               ]
               else...[
-                Image.asset(
-                  image!,
-                  width: 120,
-                  height: 120,
-                  fit: BoxFit.cover,
-                ),
+                if(imageWidget == null)...[
+                  Image.asset(
+                    image!,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ] else...[
+                  imageWidget!
+                ]
               ]
             ],
           ),

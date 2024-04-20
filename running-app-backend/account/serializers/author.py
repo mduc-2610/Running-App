@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from account.models import Activity
 
-class LikeSerializer(serializers.ModelSerializer):
+class AuthorSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()

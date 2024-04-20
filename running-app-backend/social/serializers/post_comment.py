@@ -1,10 +1,13 @@
 from rest_framework import serializers
+from account.serializers.author import AuthorSerializer
 from social.models import ClubPostComment,\
                             EventPostComment, \
                             ActivityRecordPostComment
 
         
-class ClubPostCommentSerializer(serializers.ModelSerializer):   
+class ClubPostCommentSerializer(serializers.ModelSerializer):
+    user = AuthorSerializer()
+
     class Meta:
         model = ClubPostComment
         fields = '__all__'
@@ -13,6 +16,7 @@ class ClubPostCommentSerializer(serializers.ModelSerializer):
         }
 
 class EventPostCommentSerializer(serializers.ModelSerializer):
+    user = AuthorSerializer()
     class Meta:
         model = EventPostComment
         fields = '__all__'
@@ -21,6 +25,8 @@ class EventPostCommentSerializer(serializers.ModelSerializer):
         }
 
 class ActivityRecordPostCommentSerializer(serializers.ModelSerializer):
+    user = AuthorSerializer()
+
     class Meta:
         model = ActivityRecordPostComment
         fields = '__all__'
