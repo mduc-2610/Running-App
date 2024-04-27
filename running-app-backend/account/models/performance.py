@@ -17,7 +17,9 @@ class Performance(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     user = models.OneToOneField("account.User", related_name="performance", on_delete=models.CASCADE)
     activity = models.OneToOneField("account.Activity", related_name="activity_performances", on_delete=models.CASCADE)
-
+    total_points = models.IntegerField(default=0, null=True)
+    total_steps = models.IntegerField(default=0, null=True)
+    
     def get_username(self):
         return self.user.username
     
@@ -33,8 +35,8 @@ class Performance(models.Model):
         pace_seconds = round((avg_moving_pace - pace_minutes) * 60)
         return f"{pace_minutes:02d}:{pace_seconds:02d}"
     
-    def total_steps(self):
-        return sum([act.steps() for act in self.activity.activity_records.all()]) 
+    # def total_steps(self):
+    #     return sum([act.steps() for act in self.activity.activity_records.all()]) 
     
     def total_distance(self):
         return self.total_stats()[0]
@@ -44,7 +46,7 @@ class Performance(models.Model):
 
     def level_up(self):
         cnt = 1
-        steps = self.total_steps()
+        steps = self.total_steps
         base_step = 1000
         steps_done_this_level = 0
         total_steps_this_level = 0

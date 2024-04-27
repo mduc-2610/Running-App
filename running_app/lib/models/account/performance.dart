@@ -4,6 +4,8 @@ class Performance {
   final String? id;
   final User? user;
   final int? level;
+  final int? totalPoints;
+  final int? totalSteps;
   final int? stepsDoneThisLevel;
   final int? totalStepsThisLevel;
   final double? periodDistance;
@@ -19,6 +21,8 @@ class Performance {
     required this.id,
     required this.user,
     required this.level,
+    required this.totalPoints,
+    required this.totalSteps,
     required this.stepsDoneThisLevel,
     required this.totalStepsThisLevel,
     required this.periodDistance,
@@ -35,6 +39,8 @@ class Performance {
       : id = json['id'],
         user = User.fromJson(json['user']),
         level = json['level'],
+        totalPoints = json['total_points'],
+        totalSteps = json['total_steps'],
         stepsDoneThisLevel = json['steps_done_this_level'],
         totalStepsThisLevel = json['total_steps_this_level'],
         periodDistance = json['period_distance'],

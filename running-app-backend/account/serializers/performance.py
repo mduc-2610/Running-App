@@ -83,7 +83,6 @@ class PerformanceSerializer(serializers.ModelSerializer):
     level = serializers.SerializerMethodField()
     steps_done_this_level = serializers.SerializerMethodField()
     total_steps_this_level = serializers.SerializerMethodField()
-    
     period_distance = serializers.SerializerMethodField()
     period_steps = serializers.SerializerMethodField()
     period_points = serializers.SerializerMethodField()

@@ -15,11 +15,11 @@ class Activity(models.Model):
         "product.Product", through="product.UserProduct", related_name="products", blank=True)
     follow = models.ManyToManyField('self', through="social.Follow", symmetrical=False)
     
-    def followers_(self):
-        return [follow.follower for follow in self.followers.all()]
+    # def followers_(self):
+    #     return [follow.follower for follow in self.followers.all()]
     
-    def followees(self):
-        return [follow.followee for follow in self.following.all()]
+    # def followees(self):
+    #     return [follow.followee for follow in self.following.all()]
 
     def __str__(self):
         return f"{self.user}"

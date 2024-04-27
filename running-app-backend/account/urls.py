@@ -1,14 +1,12 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from account.views import UserViewSet, \
-                        ProfileViewSet, \
-                        PrivacyViewSet, \
-                        PerformanceViewSet, \
-                        ActivityViewSet, \
-                        LoginViewSet, \
-                        NotificationSettingViewSet
-
+from account.views import (
+    UserViewSet, ProfileViewSet,
+    PrivacyViewSet, PerformanceViewSet,
+    ActivityViewSet, LoginViewSet,
+    NotificationSettingViewSet
+)
 router = routers.DefaultRouter()
 router.register(r"user", UserViewSet)
 router.register(r"login", LoginViewSet)

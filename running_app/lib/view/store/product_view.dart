@@ -216,7 +216,11 @@ class _ProductViewState extends State<ProductView> {
                                   children: [
                                     for(var product in productList ?? [])
                                       CustomTextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.pushNamed(context, '/product_detail', arguments: {
+                                            "id": product?.id
+                                          });
+                                        },
                                         child: Container(
                                           padding: EdgeInsets.all(media.width * 0.025),
                                           // width: media.width * 0.45,

@@ -83,16 +83,18 @@ void showNotificationDecision(
                       "text": deny,
                       "color": TColor.WARNING,
                       "background": TColor.BACKGROUND_WARNING,
-                      "onPressed": onPressed1 ?? () {
+                      "onPressed": () {
                         Navigator.pop(context);
+                        onPressed1?.call();
                       },
                     },
                     {
                       "text": accept,
                       "color": TColor.PRIMARY_TEXT,
                       "background": TColor.PRIMARY,
-                      "onPressed": onPressed2 ?? () {
-
+                      "onPressed": () {
+                        Navigator.pop(context);
+                        onPressed2?.call();
                       },
                     }
                   ])...[
@@ -101,7 +103,8 @@ void showNotificationDecision(
                       child: CustomMainButton(
                         verticalPadding: 8,
                         horizontalPadding: 0,
-                        onPressed: x["onPressed"],
+                        borderRadius: 8,
+                        onPressed: x["onPressed"] as VoidCallback,
                         child: Text(
                           x["text"] as String,
                           style: TextStyle(

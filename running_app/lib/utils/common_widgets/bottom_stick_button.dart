@@ -7,11 +7,15 @@ import 'package:running_app/utils/constants.dart';
 class BottomStickButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
-  final Color? changePasswordButtonState;
+  final Color? buttonState;
+  final double? horizontalPadding;
+  final double? verticalPadding;
   const BottomStickButton({
     required this.text,
     this.onPressed,
-    this.changePasswordButtonState,
+    this.horizontalPadding,
+    this.verticalPadding,
+    this.buttonState,
     super.key});
 
   @override
@@ -21,10 +25,10 @@ class BottomStickButton extends StatelessWidget {
         child: Container(
           margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.04),
           child: CustomMainButton(
-            horizontalPadding: 0,
-            verticalPadding: 20,
-            background: changePasswordButtonState,
-            onPressed: (changePasswordButtonState == TColor.BUTTON_DISABLED) ? null : (onPressed ?? () {
+            horizontalPadding: horizontalPadding ?? 0,
+            verticalPadding: verticalPadding ?? 20,
+            background: buttonState,
+            onPressed: (buttonState == TColor.BUTTON_DISABLED) ? null : (onPressed ?? () {
               Navigator.pushNamed(context, '/home');
             }),
             child: Text(

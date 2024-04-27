@@ -10,15 +10,19 @@ import 'package:running_app/models/product/product.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
+import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/icon_box.dart';
+import 'package:running_app/utils/common_widgets/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_button.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/search_filter.dart';
+import 'package:running_app/utils/common_widgets/show_filter.dart';
 import 'package:running_app/utils/common_widgets/stats_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
+import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
@@ -33,13 +37,18 @@ class UserView extends StatefulWidget {
 
 class _UserViewState extends State<UserView> {
   String _showLayout = "Total stats";
-  String _showStatsType = "All time";
+  String _showStatsType = "Week";
   String token = "";
   DetailUser? user;
   String? requestUserId;
   Performance? userPerformance;
   Activity? userActivity;
-  int? points;
+  bool isLoading = true, isLoading2 = false;
+
+  bool showClearButton = false;
+  String brandFilter = "";
+  String categoryFilter = "";
+  TextEditingController searchTextController = TextEditingController();
 
   void getProviderData() {
     setState(() {
@@ -77,7 +86,14 @@ class _UserViewState extends State<UserView> {
   }
 
   Future<void> initUserActivity() async {
-    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    final data = await callRetrieveAPI(
+        null, null,
+        user?.activity,
+        Activity.fromJson,
+        token,
+        queryParams: "?fields=products&"
+            "product_q=${searchTextController.text}"
+    );
     setState(() {
       userActivity = data;
     });
@@ -85,17 +101,30 @@ class _UserViewState extends State<UserView> {
 
 
   Future<void> delayedInit() async {
-    await Future.delayed(Duration(seconds: 1));
     await initUser();
     await initUserPerformance();
     await initUserActivity();
+    await Future.delayed(Duration(milliseconds: 500));
 
     setState(() {
       isLoading = false;
     });
   }
 
-  bool isLoading = true;
+  Future<void> delayedInitUserActivity({ bool reload = false }) async {
+    if(reload) {
+      setState(() {
+        isLoading2 = true;
+      });
+    }
+    await initUserActivity();
+    await Future.delayed(Duration(milliseconds: 500));
+
+    setState(() {
+      isLoading2 = false;
+    });
+  }
+
   @override
   void didChangeDependencies() async{
     super.didChangeDependencies();
@@ -105,9 +134,6 @@ class _UserViewState extends State<UserView> {
   
   @override
   Widget build(BuildContext context) {
-    if(points == null) {
-      points = userPerformance?.periodPoints;
-    }
     var media = MediaQuery.of(context).size;
     List<Product>? productList = userActivity?.products;
     return Scaffold(
@@ -179,7 +205,7 @@ class _UserViewState extends State<UserView> {
                                                 fontWeight: FontWeight.w500),
                                           ),
                                           Text(
-                                            "• ${points} points",
+                                            "• ${userPerformance?.totalPoints} points",
                                             style: TextStyle(
                                                 color: TColor.PRIMARY_TEXT,
                                                 fontSize: FontSize.SMALL,
@@ -378,7 +404,7 @@ class _UserViewState extends State<UserView> {
                               ),
                               child: Row(
                                 children: [
-                                  for (var x in ["All time", "Week", "Month", "Year"])...[
+                                  for (var x in ["Week", "Month", "Year", "All time"])...[
                                     SizedBox(
                                       // width: media.width * 0.25,
                                       child: CustomTextButton(
@@ -469,7 +495,46 @@ class _UserViewState extends State<UserView> {
                             SizedBox(height: media.height * 0.02,),
 
                           ],
-                        ) : InventoryLayout(productList: productList),
+                        ) : Column(
+                          children: [
+                            // Search bar
+                            SizedBox(
+                              child: CustomTextFormField(
+                                controller: searchTextController,
+                                decoration: CustomInputDecoration(
+                                  hintText: "Search products",
+                                  prefixIcon: Icon(
+                                      Icons.search,
+                                      color: TColor.DESCRIPTION
+                                  ),
+                                ),
+                                keyboardType: TextInputType.text,
+                                showClearButton: showClearButton,
+                                onClearChanged: () {
+                                  searchTextController.clear();
+                                  setState(() {
+                                    showClearButton = false;
+                                    delayedInitUserActivity(reload: true);
+                                  });
+                                },
+                                onFieldSubmitted: (String x) {
+                                  delayedInitUserActivity(reload: true);
+                                },
+                                onPrefixPressed: () {
+                                  delayedInitUserActivity(reload: true);
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: media.height * 0.012,
+                            ),
+
+                            InventoryLayout(
+                                productList: productList,
+                                isLoading: isLoading2,
+                            ),
+                          ],
+                        ),
 
                       ])
                     ],
@@ -489,76 +554,90 @@ class _UserViewState extends State<UserView> {
 
 class InventoryLayout extends StatelessWidget {
   final List<Product>? productList;
+  final bool isLoading;
 
-  const InventoryLayout({required this.productList, super.key});
+  const InventoryLayout({
+    required this.isLoading,
+    required this.productList,
+    super.key
+  });
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return Column(
       children: [
-        // Search bar
-        SearchFilter(hintText: "Search items"),
-        SizedBox(
-          height: media.height * 0.015,
-        ),
-
-        // Product
-        SingleChildScrollView(
-          child: SizedBox(
-            height: media.height, // Set a specific height
-            child: GridView.count(
-                padding: const EdgeInsets.all(0),
-                crossAxisCount: 2,
-                crossAxisSpacing: media.width * 0.03,
-                mainAxisSpacing: media.height * 0.016,
-                children: [
-                  for (var product in productList ?? [])
-                    CustomTextButton(
-                      onPressed: () {},
-                      child: Container(
-                        padding: EdgeInsets.all(media.width * 0.025),
-                        // width: media.width * 0.45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.0),
-                          color: TColor.SECONDARY_BACKGROUND,
-                          border: Border.all(
-                            color: const Color(0xff495466),
-                            width: 2.0,
+        if(isLoading)...[
+          Loading(
+            marginTop: media.height * 0.15,
+            backgroundColor: Colors.transparent,
+          )
+        ]
+        else...[
+          if(productList?.length == 0)...[
+            SizedBox(height: media.height * 0.1,),
+            EmptyListNotification(
+              title: "No products found",
+              image: "assets/img/store/product/no_items_found.png",
+            )
+          ]
+          else...[
+            // Product
+            SingleChildScrollView(
+              child: SizedBox(
+                height: media.height * 0.72,
+                child: GridView.count(
+                  padding: const EdgeInsets.all(0),
+                  crossAxisCount: 2,
+                  crossAxisSpacing: media.width * 0.03,
+                  mainAxisSpacing: media.height * 0.016,
+                  children: [
+                    for (var product in productList ?? [])
+                      CustomTextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/product_detail', arguments: {
+                            "id": product?.id
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(media.width * 0.025),
+                          // width: media.width * 0.45,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.0),
+                            color: TColor.SECONDARY_BACKGROUND,
+                            border: Border.all(
+                              color: const Color(0xff495466),
+                              width: 2.0,
+                            ),
                           ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    child: Image.asset(
+                                      "assets/img/store/product/air_force_1.png",
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                  child: Image.asset(
-                                    "assets/img/store/product/air_force_1.png",
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Column(
+                                  Positioned(
+                                    top: 5,
+                                    right: 5,
+                                    child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                          margin: EdgeInsets.fromLTRB(
-                                              media.width * 0.18, 5, 0, 0),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 5),
+                                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                           decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(15.0),
-                                            color: TColor.SECONDARY_BACKGROUND
-                                                .withOpacity(0.7),
+                                            borderRadius: BorderRadius.circular(12.0),
+                                            color: TColor.SECONDARY_BACKGROUND.withOpacity(0.7),
                                           ),
                                           child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               SvgPicture.asset(
                                                 "assets/img/home/coin_icon.svg",
@@ -567,7 +646,7 @@ class InventoryLayout extends StatelessWidget {
                                                 fit: BoxFit.contain,
                                               ),
                                               Text(
-                                                "1200",
+                                                product.price.toString() ?? "",
                                                 style: TextStyle(
                                                   color: TColor.PRIMARY_TEXT,
                                                   fontSize: FontSize.NORMAL,
@@ -578,39 +657,40 @@ class InventoryLayout extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                  ],
-                                )
-                              ],
-                            ),
-                            SizedBox(height: media.height * 0.01),
-                            Text(
-                              product.brand.name,
-                              style: TextStyle(
-                                color: TColor.DESCRIPTION,
-                                fontSize: FontSize.SMALL,
+                                  )
+                                ],
                               ),
-                            ),
-                            // SizedBox(height: media.height * 0.005),
-                            Text(
-                              product.name,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: TextStyle(
-                                color: TColor.PRIMARY_TEXT,
-                                fontSize: FontSize.SMALL,
-                                fontWeight: FontWeight.w600,
+                              SizedBox(height: media.height * 0.01),
+                              Text(
+                                product.brand.name ?? "",
+                                style: TextStyle(
+                                  color: TColor.DESCRIPTION,
+                                  fontSize: FontSize.SMALL,
+                                ),
                               ),
-                            )
-                          ],
+                              // SizedBox(height: media.height * 0.005),
+                              Text(
+                                product.name ?? "",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: TextStyle(
+                                  color: TColor.PRIMARY_TEXT,
+                                  fontSize: FontSize.SMALL,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
 
-                ],
+                  ],
 
+                ),
+              ),
             ),
-          ),
-        ),
+          ]
+        ]
       ],
     );
   }

@@ -29,7 +29,10 @@ class _LimitTextLineState extends State<LimitTextLine> {
   @override
   Widget build(BuildContext context) {
     print(countTextLines(widget.description, charInLine: widget.charInLine));
-    if(countTextLines(widget.description, charInLine: widget.charInLine) > (widget.maxLines ?? 2)) {
+    if(countTextLines(
+        widget.description,
+        charInLine: widget.charInLine
+    ) > (widget.maxLines ?? 2)) {
       widget.showViewMoreButton = true;
     }
     return Column(

@@ -53,6 +53,9 @@ class ActivityViewSet(
                 "page_size": int(query_params.get("club_pg_sz", 5)),
             }
 
+            product_params = {
+                "product_q": query_params.get("product_q", ""),
+            }
             # activity_record_params = {
             #     "page": int(query_params.get("act_rec_pg", 1)),
             #     "page_size": int(query_params.get("act_rec_pg_sz", 5)),
@@ -68,6 +71,7 @@ class ActivityViewSet(
             "fields": fields,
             "event_params": event_params, 
             "club_params": club_params,
+            "product_params": product_params,
             # "activity_record_params": activity_record_params
         }
         return context

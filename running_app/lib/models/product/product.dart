@@ -1,4 +1,5 @@
 import 'package:running_app/models/product/brand.dart';
+import 'package:running_app/models/product/category.dart';
 
 class Product {
   final String? id;
@@ -35,7 +36,7 @@ class Product {
 }
 
 class DetailProduct extends Product {
-  final Map<String, dynamic>? category;
+  final Category? category;
   final String? description;
   final String? uploadedAt;
   final String? updatedAt;
@@ -57,14 +58,14 @@ class DetailProduct extends Product {
   );
 
   DetailProduct.fromJson(Map<String, dynamic> json)
-      : category = json['category'],
+      : category = Category.fromJson(json['category']),
         description = json['description'],
         uploadedAt = json['uploaded_at'],
         updatedAt = json['updated_at'],
         super(
           id: json['id'],
           name: json['name'],
-          brand: json['brand'],
+          brand: Brand.fromJson(json['brand']),
           price: json['price']
         );
 

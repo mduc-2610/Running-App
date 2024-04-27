@@ -87,6 +87,14 @@ class TxtStyle {
       letterSpacing: 0.95
   );
 
+  static TextStyle get headSectionExtraThird => TextStyle(
+      color: TColor.THIRD,
+      fontSize: FontSize.EXTRA_LARGE,
+      fontWeight: FontWeight.w900,
+      letterSpacing: 0.95
+  );
+
+
   static TextStyle get headSectionWarning => TextStyle(
       color: TColor.WARNING,
       fontSize: FontSize.LARGE,
@@ -105,6 +113,13 @@ class TxtStyle {
   static TextStyle get descSectionNormal => TextStyle(
     color: TColor.DESCRIPTION,
     fontSize: FontSize.SMALL,
+  );
+
+  static TextStyle get titleSection => TextStyle(
+    color: TColor.PRIMARY_TEXT,
+    fontSize: FontSize.TITLE,
+    fontWeight: FontWeight.w900,
+    letterSpacing: 0.85
   );
 }
 

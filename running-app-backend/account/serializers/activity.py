@@ -73,7 +73,18 @@ class ActivitySerializer(serializers.ModelSerializer):
         
         if not fields or "products" in fields:
             queryset = instance.products.all()
-            queryset = self.get_paginated_queryset(queryset)
+
+            context = self.context
+            product_params = context.get("product_params")
+            q = product_params.get("product_q")
+            if q:
+                queryset = queryset.filter(
+                    Q(name__icontains=q) |
+                    Q(brand__name__icontains=q) |
+                    Q(price__startswith=q)
+                )
+            
+            # queryset = self.get_paginated_queryset(queryset)
             return ProductSerializer(queryset, many=True, read_only=True).data
         return None
     

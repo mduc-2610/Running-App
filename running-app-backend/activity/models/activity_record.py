@@ -1,7 +1,10 @@
 import uuid
 import random
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.db import models
 from django.core.validators import MaxLengthValidator
+from account.models import Performance
 
 class ActivityRecord(models.Model):
     class Meta:
@@ -70,7 +73,7 @@ class ActivityRecord(models.Model):
         points_per_100_steps = 1
         points = self.steps() // 100 * points_per_100_steps
         return points
-    
+
     def steps(self):
         conversion_data = {
             "CYCLING": 800,
@@ -108,7 +111,23 @@ class ActivityRecord(models.Model):
             return getattr(self, key)
         else:
             raise KeyError(f"{key} attribute not found")
-    
+
+@receiver(post_save, sender=ActivityRecord)
+def update_performance_points(sender, instance, created, **kwargs):
+    if created:
+        points = instance.points()
+        performance = instance.user.user.performance
+        performance.total_points += points
+        performance.save()
+
+@receiver(post_save, sender=ActivityRecord)
+def update_performance_steps(sender, instance, created, **kwargs):
+    if created:
+        steps = instance.steps()
+        performance = instance.user.user.performance
+        performance.total_steps += steps
+        performance.save()
+
 class ActivityRecordImage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     activity_record = models.ForeignKey('activity.ActivityRecord', related_name='activity_record_images', on_delete=models.CASCADE)

@@ -3,3 +3,4 @@ from .category import CategoryViewSet
 from .product import ProductViewSet, \
                     ProductImageViewSet
 from .user_product import UserProductViewSet
+from .product_buy import ProductBuyView

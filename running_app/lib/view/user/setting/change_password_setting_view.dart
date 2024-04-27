@@ -174,7 +174,7 @@ class _ChangePasswordSettingViewState extends State<ChangePasswordSettingView> {
       bottomNavigationBar: BottomStickButton(
         text: "Change password",
         onPressed: changePassword,
-        changePasswordButtonState: changePasswordButtonState,
+        buttonState: changePasswordButtonState,
       ),
     );
   }

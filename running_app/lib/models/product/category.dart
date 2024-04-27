@@ -1,13 +1,19 @@
 class Category {
+  final String? id;
   final String? name;
 
-  Category({required this.name});
+  Category({
+    required this.id,
+    required this.name
+  });
 
   Category.fromJson(Map<String, dynamic> json)
-      : name = json['name'];
+      : id = json['id'],
+        name = json['name'];
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
     };
   }

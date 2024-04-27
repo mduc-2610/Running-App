@@ -33,8 +33,6 @@ class _ClubViewState extends State<ClubView> {
   String sportTypeFilter = "";
   String clubModeFilter = "";
   String organizationTypeFilter = "";
-
-
   TextEditingController searchTextController = TextEditingController();
 
   void getProviderData() {

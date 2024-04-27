@@ -151,7 +151,6 @@ class _StoreViewState extends State<StoreView> {
                               // Banner
                               CustomTextButton(
                                 onPressed: () {
-
                                 },
                                 child: SvgPicture.asset(
                                   'assets/img/home/event_banner.svg',
@@ -212,7 +211,7 @@ class _StoreViewState extends State<StoreView> {
                                           child: Text(
                                             "${(index < 7) ? brand.name : "All"}",
                                             style: TextStyle(
-                                              color: TColor.DESCRIPTION,
+                                              color: TColor.PRIMARY_TEXT,
                                               fontSize: FontSize.SMALL,
                                               fontWeight: FontWeight.w500,
                                             ),
@@ -260,6 +259,7 @@ class _StoreViewState extends State<StoreView> {
                                     else...[
                                       ScrollSynchronized(
                                         parentScrollController: parentScrollController,
+                                        childScrollController: childScrollController,
                                         child: SizedBox (
                                           height: media.height * 0.71,
                                           child: GridView.count(
@@ -270,7 +270,11 @@ class _StoreViewState extends State<StoreView> {
                                               children: [
                                                 for(var product in productList ?? [])
                                                   CustomTextButton(
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      Navigator.pushNamed(context, '/product_detail', arguments: {
+                                                        "id": product?.id
+                                                      });
+                                                    },
                                                     child: Container(
                                                       padding: EdgeInsets.all(media.width * 0.025),
                                                       // width: media.width * 0.45,
