@@ -38,7 +38,10 @@ class _ClubPostViewState extends State<ClubPostView> {
   Future<void> initClub() async {
     final data = await callRetrieveAPI(
         'activity/club',
-        clubId, null, DetailClub.fromJson, token);
+        clubId, null,
+        DetailClub.fromJson, token,
+        queryParams: "?exclude=participants"
+    );
     setState(() {
       club = data;
       posts = club?.posts;

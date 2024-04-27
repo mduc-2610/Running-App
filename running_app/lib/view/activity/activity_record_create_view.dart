@@ -538,6 +538,8 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                   width: media.width * 0.46,
                   child: CustomMainButton(
                     horizontalPadding: 0,
+                    verticalPadding: 14,
+                    borderRadius: 10,
                     onPressed: () {
                       showActionList(
                         context,
@@ -570,6 +572,8 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
                   width: media.width * 0.46,
                   child: CustomMainButton(
                     horizontalPadding: 0,
+                    verticalPadding: 14,
+                    borderRadius: 10,
                     onPressed: () {
                       showActionList(
                           context,

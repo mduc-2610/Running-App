@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/services/api_service.dart';
+import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
@@ -23,9 +24,11 @@ class FeedView extends StatefulWidget {
 class _FeedViewState extends State<FeedView> {
   String token = "";
   DetailUser? user;
-  List<dynamic>? activityRecords;
+  List<dynamic> activityRecords = [];
   bool isLoading = true;
   String showView = "Explore";
+  double previousScrollOffset = 0;
+  int page = 1;
 
   void getProviderData() {
     setState(() {
@@ -34,17 +37,16 @@ class _FeedViewState extends State<FeedView> {
     });
   }
 
-
   Future<void> initActivityRecord() async {
     final data = await callListAPI(
         'activity/activity-record/feed',
         DetailActivityRecord.fromJson,
         token,
-        pagination: true,
-        queryParams: "?exclude=likes,comments"
+        queryParams: "?exclude=comments,likes&"
+            "page=${page}"
     );
     setState(() {
-      activityRecords = data;
+      activityRecords.addAll(data as List<dynamic>);
     });
   }
 
@@ -52,9 +54,14 @@ class _FeedViewState extends State<FeedView> {
     delayedInit();
   }
 
-  void delayedInit() async {
+  void delayedInit({bool reload = false}) async {
+    if(reload) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     await initActivityRecord();
-    await Future.delayed(Duration(milliseconds: 1500),);
+    await Future.delayed(Duration(milliseconds: 500),);
 
     setState(() {
       isLoading = false;
@@ -87,10 +94,23 @@ class _FeedViewState extends State<FeedView> {
   }
 
 
+  void scrollListenerOffSet() {
+    double currentScrollOffset = scrollController.offset;
+    if ((currentScrollOffset - previousScrollOffset).abs() > 2000) {
+      print('Loading page ${page + 1}');
+      previousScrollOffset = currentScrollOffset;
+      setState(() {
+        page += 1;
+      });
+      delayedInit();
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     scrollController.addListener(scrollListener);
+    scrollController.addListener(scrollListenerOffSet);
   }
 
   @override
@@ -98,9 +118,9 @@ class _FeedViewState extends State<FeedView> {
     scrollController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    print(activityRecords);
     var media = MediaQuery.sizeOf(context);
     return Stack(
       children: [
@@ -180,16 +200,24 @@ class _FeedViewState extends State<FeedView> {
               child: SizedBox(
                 height: media.height * 0.73,
                 child: SingleChildScrollView(
-                  controller: scrollController, // Attach the scroll controller
+                  controller: scrollController,
                   child: Column(
                     children: [
                       if (isLoading == false) ...[
-                        for (var activityRecord in activityRecords ?? []) ...[
-                          ActivityRecordPost(
-                            token: token,
-                            activityRecord: activityRecord,
-                            checkRequestUser: user?.id == activityRecord?.user?.id,
-                          ),
+                        if(activityRecords.length == 0)...[
+                          EmptyListNotification(
+                            marginTop: media.height * 0.15,
+                            title: "No activities found",
+                          )
+                        ]
+                        else...[
+                          for (var activityRecord in activityRecords ?? []) ...[
+                            ActivityRecordPost(
+                              token: token,
+                              activityRecord: activityRecord,
+                              checkRequestUser: user?.id == activityRecord?.user?.id,
+                            ),
+                          ]
                         ]
                       ]
                     ],

@@ -36,8 +36,11 @@ class _PostDetailState extends State<PostDetail> {
     bool showFullText = false;
     bool showViewMoreButton = false;
     bool checkRequestUser = false;
-    List<Map<String, dynamic>>? comments;
+    List<Map<String, dynamic>> comments = [];
     String postType = "";
+    double previousScrollOffset = 0;
+    ScrollController scrollController = ScrollController();
+    int page = 1;
 
     void getSideData() {
       setState(() {
@@ -57,19 +60,19 @@ class _PostDetailState extends State<PostDetail> {
           (postType == "club"
               ? DetailClubPost.fromJson
               : DetailEventPost.fromJson),
-          token
+          token,
+          queryParams: "?cmt_pg=$page"
       );
 
       setState(() {
         post = data;
-        print(post.runtimeType);
-        comments = ((postType == "club")
+        comments.addAll(((postType == "club")
             ? (post as DetailClubPost?)?.comments
             : (post as DetailEventPost?)?.comments)?.map((e) => {
           "showViewMoreButton": false,
           "showFullText": false,
           "comment": e
-        }).toList();
+        }).toList() ?? []);
       });
     }
 
@@ -100,10 +103,36 @@ class _PostDetailState extends State<PostDetail> {
     delayedInit();
   }
 
+    void scrollListenerOffSet() {
+      double currentScrollOffset = scrollController.offset;
+      if ((currentScrollOffset - previousScrollOffset).abs() > (page == 1 ? 600 : 450)) {
+        // print("Previous: ${previousScrollOffset}, Current: ${currentScrollOffset}");
+        // print('Loading page ${page + 1}');
+        previousScrollOffset = currentScrollOffset;
+        setState(() {
+          page += 1;
+        });
+        print("Page limit: ${pageLimit(post?.totalComments ?? 0, 5)}");
+        if(page <= pageLimit(post?.totalComments ?? 0, 5)) {
+          delayedInit();
+        }
+      }
+    }
+
+    @override
+    void initState() {
+      super.initState();
+      scrollController.addListener(scrollListenerOffSet);
+    }
+
+    @override
+    void dispose() {
+      scrollController.dispose();
+      super.dispose();
+    }
+
   @override
   Widget build(BuildContext context) {
-    print(comments);
-    print(post.runtimeType);
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -113,6 +142,7 @@ class _PostDetailState extends State<PostDetail> {
       body: RefreshIndicator(
         onRefresh: handleRefresh,
         child: SingleChildScrollView(
+          controller: scrollController,
           child: DefaultBackgroundLayout(
             child: Stack(
               children: [

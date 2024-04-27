@@ -15,14 +15,6 @@ from utils.pagination import CommonPagination
 
 class ClubPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
-    total_likes = serializers.SerializerMethodField()
-    total_comments = serializers.SerializerMethodField()
-
-    def get_total_likes(self, instance):
-        return instance.total_likes()
-    
-    def get_total_comments(self, instance):
-        return instance.total_comments()
     
     class Meta:
         model = ClubPost
@@ -35,17 +27,8 @@ class ClubPostSerializer(serializers.ModelSerializer):
 
 class DetailClubPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
-    total_likes = serializers.SerializerMethodField()
-    total_comments = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
-
-    def get_total_likes(self, instance):
-        return instance.total_likes()
-    
-    def get_total_comments(self, instance):
-        return instance.total_comments()
-
     
     def get_likes(self, instance):
         queryset = instance.likes.all()
@@ -55,7 +38,7 @@ class DetailClubPostSerializer(serializers.ModelSerializer):
     
     def get_comments(self, instance):
         queryset = instance.comments.all()
-        paginator = CommonPagination(page_size=5)
+        paginator = CommonPagination(page_size=5, page_query_param="cmt_pg")
         paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
         return ClubPostCommentSerializer(paginated_queryset, many=True, read_only=True).data
         
@@ -70,14 +53,6 @@ class DetailClubPostSerializer(serializers.ModelSerializer):
 
 class EventPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
-    total_likes = serializers.SerializerMethodField()
-    total_comments = serializers.SerializerMethodField()
-
-    def get_total_likes(self, instance):
-        return instance.total_likes()
-    
-    def get_total_comments(self, instance):
-        return instance.total_comments()
     
     class Meta:
         model = ClubPost
@@ -90,17 +65,9 @@ class EventPostSerializer(serializers.ModelSerializer):
 
 class DetailEventPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
-    total_likes = serializers.SerializerMethodField()
-    total_comments = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
-
-    def get_total_likes(self, instance):
-        return instance.total_likes()
     
-    def get_total_comments(self, instance):
-        return instance.total_comments()
-        
     def get_likes(self, instance):
         queryset = instance.likes.all()
         paginator = CommonPagination(page_size=100)
@@ -109,7 +76,7 @@ class DetailEventPostSerializer(serializers.ModelSerializer):
     
     def get_comments(self, instance):
         queryset = instance.comments.all()
-        paginator = CommonPagination(page_size=5)
+        paginator = CommonPagination(page_size=5, page_query_param="cmt_pg")
         paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
         return EventPostCommentSerializer(paginated_queryset, many=True, read_only=True).data
     

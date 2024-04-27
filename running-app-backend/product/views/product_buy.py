@@ -18,7 +18,7 @@ class ProductBuyView(views.APIView):
         
         product = Product.objects.get(id=product_id)
         if user.performance.total_points >= product.price:
-            user.performance.points -= product.price
+            user.performance.total_points -= product.price
             user.performance.save()
             user.activity.products.add(product)
             return response.Response(

@@ -63,7 +63,7 @@ def run():
     MAX_NUMBER_USERS = 100
     MAX_NUMBER_USERS_FOLLOWERS = 50
     
-    MAX_ACTIVITY_RECORDS = 500
+    MAX_ACTIVITY_RECORDS = 800
     MAX_COMMENTS_PER_ACTIVITY_RECORDS_POST = 30
     MAX_LIKES_PER_ACTIVITY_RECORDS_POST = 30
 
@@ -396,7 +396,7 @@ def run():
             "name": product_,
             "brand": random.choice(brand_list),
             "category": random.choice(category_list),
-            "price": random.randint(10000, 50000),
+            "price": random.randint(0, 1000),
             "description": fake.text(max_nb_chars=250),
         }
         product = Product.objects.create(**data)

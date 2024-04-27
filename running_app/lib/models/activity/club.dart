@@ -59,7 +59,7 @@ class Club {
 }
 
 class DetailClub extends Club {
-  final List<Leaderboard> participants;
+  final List<Leaderboard>? participants;
   final String? description;
   final String? coverPhoto;
   final List<ClubPost>? posts;
@@ -92,7 +92,7 @@ class DetailClub extends Club {
 
   DetailClub.fromJson(Map<String, dynamic> json)
       : description = json['description'],
-        participants = (json['participants'] as List<dynamic>).map((e) => Leaderboard.fromJson(e)).toList(),
+        participants = (json['participants'] as List<dynamic>?)?.map((e) => Leaderboard.fromJson(e)).toList(),
         coverPhoto = json['cover_photo'],
         posts = (json['posts'] as List<dynamic>).map((e) => ClubPost.fromJson(e)).toList(),
         super.fromJson(json);
@@ -100,7 +100,7 @@ class DetailClub extends Club {
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = super.toJson();
-    data['participants'] = participants.map((e) => e.toJson());
+    data['participants'] = participants?.map((e) => e.toJson());
     data['description'] = description;
     data['cover_photo'] = coverPhoto;
     return data;

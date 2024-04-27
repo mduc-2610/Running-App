@@ -47,7 +47,6 @@ class _PostLayoutState extends State<PostLayout> {
     });
   }
 
-
   Future<void> handleRefresh() async {
 
   }

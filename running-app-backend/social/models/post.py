@@ -1,18 +1,15 @@
 import uuid
 from django.db import models
 
+
 class Post(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     title = models.CharField(max_length=100)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    total_likes = models.IntegerField(default=0, null=True)
+    total_comments = models.IntegerField(default=0, null=True)
     # likes = models.ManyToManyField("account.activity")
-
-    def total_comments(self):
-        return self.comments.count()
-    
-    def total_likes(self):
-        return self.likes.count()
     
     class Meta:
         abstract = True
@@ -45,3 +42,4 @@ class EventPost(Post):
 
     def __str__(self):
         return f"{self.title}"
+    

@@ -1,6 +1,8 @@
 import uuid
 from django.db import models
 from django.core.validators import MaxLengthValidator
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 class PostComment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
@@ -37,3 +39,42 @@ class ActivityRecordPostComment(PostComment):
         
     def __str__(self):
         return f"{self.user.user.name} - {self.created_at} - Activity Record: {self.post.id}"
+
+@receiver(post_save, sender=ClubPostComment)
+def update_club_post_comments(sender, instance, created, **kwargs):
+    if created:
+        post = instance.post
+        post.total_comments += 1
+        post.save()
+
+@receiver(post_save, sender=EventPostComment)
+def update_event_post_comments(sender, instance, created, **kwargs):
+    if created:
+        post = instance.post
+        post.total_comments += 1
+        post.save()
+
+@receiver(post_save, sender=ActivityRecordPostComment)
+def update_activity_record_post_comments(sender, instance, created, **kwargs):
+    if created:
+        post = instance.post
+        post.total_comments += 1
+        post.save()
+
+@receiver(post_delete, sender=ClubPostComment)
+def update_club_post_comments_on_delete(sender, instance, **kwargs):
+    post = instance.post
+    post.total_comments -= 1
+    post.save()
+
+@receiver(post_delete, sender=EventPostComment)
+def update_event_post_comments_on_delete(sender, instance, **kwargs):
+    post = instance.post
+    post.total_comments -= 1
+    post.save()
+
+@receiver(post_delete, sender=ActivityRecordPostComment)
+def update_activity_record_post_comments_on_delete(sender, instance, **kwargs):
+    post = instance.post
+    post.total_comments -= 1
+    post.save()

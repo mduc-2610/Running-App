@@ -271,8 +271,8 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                 height: media.height * 0.27,
                 child: CarouselSlider(
                   options: CarouselOptions(
-                      autoPlay: true,
-                      autoPlayInterval: const Duration(seconds: 3),
+                      // autoPlay: true,
+                      // autoPlayInterval: const Duration(seconds: 3),
                       scrollDirection: Axis.horizontal,
                       viewportFraction: 1
                   ),

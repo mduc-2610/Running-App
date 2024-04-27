@@ -87,8 +87,6 @@ String formatDateTimeQuery(DateTime x) {
   return DateFormat('yyyy-MM-dd hh:mm').format(x);
 }
 
-
-
 String formatDateTimeEnUS(DateTime x, {bool shortcut = false, bool time = false, bool timeFirst = false}) {
   String monthFormat = shortcut ? 'MMM' : 'MMMM';
   String dateFormat = '$monthFormat dd, yyyy';
@@ -98,4 +96,9 @@ String formatDateTimeEnUS(DateTime x, {bool shortcut = false, bool time = false,
     format = '$timeFormat $dateFormat';
   }
   return DateFormat('${format}', 'en_US').format(x);
+}
+
+int pageLimit(int record, int page_size) {
+  return record ~/ page_size +
+      (record % page_size == 0 ? 0 : 1);
 }

@@ -10,6 +10,7 @@ from activity.serializers import ActivityRecordSerializer, \
                             DetailActivityRecordSerializer, \
                             CreateActivityRecordSerializer, \
                             UpdateActivityRecordSerializer
+from utils.pagination import CommonPagination
 
 class ActivityRecordPagination(PageNumberPagination):
     page_size = 10
@@ -55,11 +56,8 @@ class ActivityRecordViewSet(
     
     @action(detail=False, methods=['get'], url_path='feed', name='feed')
     def feed(self, request):
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
+        queryset = self.get_queryset()
+        paginator = CommonPagination(page_size=5)
+        paginated_queryset = paginator.paginate_queryset(queryset, self.request)
+        serializer = self.get_serializer(paginated_queryset, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)

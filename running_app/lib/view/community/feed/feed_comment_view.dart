@@ -34,7 +34,10 @@ class _FeedCommentViewState extends State<FeedCommentView> {
   bool showFullText = false;
   bool showViewMoreButton = false;
   bool checkRequestUser = false;
-  List<Map<String, dynamic>>? comments;
+  List<Map<String, dynamic>> comments = [];
+  double previousScrollOffset = 0;
+  ScrollController scrollController = ScrollController();
+  int page = 1;
 
   void getSideData() {
     setState(() {
@@ -51,16 +54,17 @@ class _FeedCommentViewState extends State<FeedCommentView> {
         activityRecordId,
         null,
         DetailActivityRecord.fromJson,
-        token
+        token,
+        queryParams: "?cmt_pg=$page"
     );
 
     setState(() {
       activityRecord = data;
-      comments = activityRecord?.comments?.map((e) => {
+      comments.addAll(activityRecord?.comments?.map((e) => {
         "showViewMoreButton": false,
         "showFullText": false,
-        "comment": e
-      }).toList();
+        "comment": e as dynamic
+      }).toList() ?? []);
     });
   }
 
@@ -80,6 +84,22 @@ class _FeedCommentViewState extends State<FeedCommentView> {
     "Swimming": Icons.pool_rounded
   };
 
+  void scrollListenerOffSet() {
+    double currentScrollOffset = scrollController.offset;
+    if ((currentScrollOffset - previousScrollOffset).abs() > (page == 1 ? 600 : 450)) {
+      // print("Previous: ${previousScrollOffset}, Current: ${currentScrollOffset}");
+      // print('Loading page ${page + 1}');
+      previousScrollOffset = currentScrollOffset;
+      setState(() {
+        page += 1;
+      });
+      print("Page limit: ${pageLimit(activityRecord?.totalComments ?? 0, 5)}");
+      if(page <= pageLimit(activityRecord?.totalComments ?? 0, 5)) {
+        delayedInit();
+      }
+    }
+  }
+
   @override
   void didChangeDependencies() {
     getSideData();
@@ -89,6 +109,18 @@ class _FeedCommentViewState extends State<FeedCommentView> {
 
   Future<void> handleRefresh() async {
     delayedInit();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(scrollListenerOffSet);
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -103,6 +135,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
         onRefresh: handleRefresh,
         child: SizedBox(
           child: SingleChildScrollView(
+            controller: scrollController,
             child: DefaultBackgroundLayout(
               child: Stack(
                 children: [

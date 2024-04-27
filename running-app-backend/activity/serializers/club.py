@@ -58,49 +58,56 @@ class DetailClubSerializer(serializers.ModelSerializer):
     
     def get_participants(self, instance):
         context = self.context
-        sport_type = instance.sport_type
-        club_id = instance.id
-        type = "club"
+        exclude = context.get('exclude', [])
+        if 'participants' not in exclude:
+            sport_type = instance.sport_type
+            club_id = instance.id
+            type = "club"
 
-        start_date = context.get('start_date')
-        end_date = context.get('end_date')
-        gender = context.get('gender')
-        sort_by = context.get('sort_by')
-        limit_user = context.get('limit_user')
+            start_date = context.get('start_date')
+            end_date = context.get('end_date')
+            gender = context.get('gender')
+            sort_by = context.get('sort_by')
+            limit_user = context.get('limit_user')
 
-        print({'start_date': start_date, 'end_date': end_date, 'sort_by': sort_by})
+            print({'start_date': start_date, 'end_date': end_date, 'sort_by': sort_by})
 
-        users = [instance.user.performance for instance in instance.clubs.all()]
-        
-        if gender:
-            users = [user for user in users if user.user.profile.gender == gender]
+            users = [instance.user.performance for instance in instance.clubs.all()]
+            
+            if gender:
+                users = [user for user in users if user.user.profile.gender == gender]
 
-        def sort_cmp(x, sort_by):
-            stats = x.range_stats(start_date, end_date, sport_type=sport_type)
-            if sort_by == 'Time':
-                return (-stats[3], -stats[0])
-            return (-stats[0], -stats[3])
-        users = sorted(users, key=lambda x: sort_cmp(x, sort_by))
-        
-        if limit_user:
-            users = users[:int(limit_user)]
+            def sort_cmp(x, sort_by):
+                stats = x.range_stats(start_date, end_date, sport_type=sport_type)
+                if sort_by == 'Time':
+                    return (-stats[3], -stats[0])
+                return (-stats[0], -stats[3])
+            users = sorted(users, key=lambda x: sort_cmp(x, sort_by))
+            
+            if limit_user:
+                users = users[:int(limit_user)]
 
-        return LeaderboardSerializer(users, many=True, context={
-            'id': club_id,
-            'type': type,
-            'start_date': start_date,
-            'end_date': end_date,
-            'sport_type': sport_type,
-        }).data
+            return LeaderboardSerializer(users, many=True, context={
+                'id': club_id,
+                'type': type,
+                'start_date': start_date,
+                'end_date': end_date,
+                'sport_type': sport_type,
+            }).data
+        return None
     
     def get_total_posts(self, instance):
         return instance.club_posts.count()
     
     def get_posts(self, instance):
-        queryset = instance.club_posts.all()
-        paginator = CommonPagination(page_size=5)
-        paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
-        return ClubPostSerializer(paginated_queryset, many=True, read_only=True).data
+        context = self.context
+        exclude = context.get('exclude', [])
+        if 'posts' not in exclude:
+            queryset = instance.club_posts.all()
+            paginator = CommonPagination(page_size=5)
+            paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
+            return ClubPostSerializer(paginated_queryset, many=True, read_only=True).data
+        return None
 
     class Meta:
         model = Club

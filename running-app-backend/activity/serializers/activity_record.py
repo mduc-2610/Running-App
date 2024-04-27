@@ -12,14 +12,6 @@ class ActivityRecordSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
     completed_at = serializers.SerializerMethodField()
     avg_moving_pace = serializers.SerializerMethodField()
-    total_likes = serializers.SerializerMethodField()
-    total_comments = serializers.SerializerMethodField()
-
-    def get_total_likes(self, instance):
-        return instance.total_likes()
-    
-    def get_total_comments(self, instance):
-        return instance.total_comments()
     
     def get_avg_moving_pace(self, instance):
         return instance.avg_moving_pace_readable()
@@ -50,16 +42,8 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
     privacy = serializers.CharField(source='get_privacy_display')
     avg_moving_pace = serializers.SerializerMethodField()
     kcal = serializers.SerializerMethodField()
-    total_likes = serializers.SerializerMethodField()
-    total_comments = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
-
-    def get_total_likes(self, instance):
-        return instance.total_likes()
-    
-    def get_total_comments(self, instance):
-        return instance.total_comments()
     
     def get_author_id(self, instance):
         return instance.user.user.id
@@ -80,7 +64,7 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
         exclude = context.get('exclude', [])
         if 'comments' not in exclude:
             queryset = instance.comments.all()
-            paginator = CommonPagination(page_size=5)
+            paginator = CommonPagination(page_size=5, page_query_param="cmt_pg")
             paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
             return ActivityRecordPostCommentSerializer(paginated_queryset, many=True, read_only=True).data
         return None
