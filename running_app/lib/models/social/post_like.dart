@@ -43,6 +43,14 @@ class EventPostLike extends PostLike {
         super.fromJson(json);
 
   @override
+  Map<String, dynamic> toJson() {
+    return {
+      'post_id': postId,
+      'user_id': userId,
+    };
+  }
+
+  @override
   String toString() {
     return '$postId - $userId';
   }
@@ -62,6 +70,14 @@ class ClubPostLike extends PostLike {
       : postId = json['post_id'],
         userId = json['user_id'],
         super.fromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'post_id': postId,
+      'user_id': userId,
+    };
+  }
 
   @override
   String toString() {
@@ -85,7 +101,37 @@ class ActivityRecordPostLike extends PostLike {
         super.fromJson(json);
 
   @override
+  Map<String, dynamic> toJson() {
+    return {
+      'post_id': postId,
+      'user_id': userId,
+    };
+  }
+
+  @override
   String toString() {
     return '$postId - $userId';
+  }
+}
+
+class CreatePostLike {
+  final String? userId;
+  final String? postId;
+
+  CreatePostLike({
+    required this.userId,
+    required this.postId,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user_id': userId,
+      'post_id': postId,
+    };
+  }
+
+  @override
+  String toString() {
+    return "${toJson()}";
   }
 }

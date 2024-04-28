@@ -19,7 +19,7 @@ router.register(r"event-post-comment", EventPostCommentViewSet)
 router.register(r"act-rec-post-comment", ActivityRecordPostCommentViewSet)
 router.register(r'event-post-like', EventPostLikeViewSet)
 router.register(r'club-post-like', ClubPostLikeViewSet)
-router.register(r'activity-record-post-like', ActivityRecordPostLikeViewSet)
+router.register(r'act-rec-post-like', ActivityRecordPostLikeViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

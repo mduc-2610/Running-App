@@ -4,9 +4,11 @@ import 'package:loading_indicator/loading_indicator.dart';
 class Loading extends StatelessWidget {
   Color? backgroundColor;
   double? marginTop;
+  double? height;
   Loading({
     this.backgroundColor,
     this.marginTop,
+    this.height,
     super.key
   });
 
@@ -17,7 +19,7 @@ class Loading extends StatelessWidget {
       children: [
         Container(
           width: media.width,
-          height: media.height,
+          height: height ?? media.height,
           // width: media.w,
           decoration: BoxDecoration(
             color: backgroundColor ?? Colors.black.withOpacity(0.2),

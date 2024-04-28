@@ -216,6 +216,8 @@ class _FeedViewState extends State<FeedView> {
                               token: token,
                               activityRecord: activityRecord,
                               checkRequestUser: user?.id == activityRecord?.user?.id,
+                              like: false,
+                              likeOnPressed: () {},
                             ),
                           ]
                         ]

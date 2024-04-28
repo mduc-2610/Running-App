@@ -14,8 +14,8 @@ class ActivityRecord {
   final String? completedAt;
   final String? avgMovingPace;
   final Author? user;
-  final int? totalLikes;
-  final int? totalComments;
+  int totalLikes;
+  int totalComments;
 
   ActivityRecord({
      required this.title,
@@ -33,6 +33,25 @@ class ActivityRecord {
      required this.totalComments,
   });
 
+  void increaseTotalLikes() {
+    totalLikes += 1;
+    print("Total likes: ${totalLikes}");
+
+  }
+
+  void increaseTotalComments() {
+    totalComments += 1;
+  }
+
+  void decreaseTotalLikes() {
+    totalLikes -= 1;
+    print("Total likes: ${totalLikes}");
+  }
+
+  void decreaseTotalComments() {
+    totalComments -= 1;
+  }
+
   ActivityRecord.fromJson(Map<String, dynamic> json)
     : id = json["id"],
       title = json["title"],
@@ -45,8 +64,8 @@ class ActivityRecord {
       user = Author.fromJson(json["user"]),
       completedAt = json["completed_at"],
       avgMovingPace = json["avg_moving_pace"],
-      totalLikes = json["total_likes"],
-      totalComments = json["total_comments"];
+      totalLikes = json["total_likes"] ?? 0,
+      totalComments = json["total_comments"] ?? 0;
 
   Map<String, dynamic> toJson() {
     return {
@@ -89,8 +108,8 @@ class DetailActivityRecord extends ActivityRecord {
     String? completedAt,
     String? avgMovingPace,
     Author? user,
-    int? totalLikes,
-    int? totalComments,
+    required int totalLikes,
+    required int totalComments,
     required this.duration,
     required this.description,
     required this.likes,

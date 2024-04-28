@@ -22,10 +22,14 @@ class ActivityRecordPost extends StatefulWidget {
   final bool? checkRequestUser;
   final bool socialSection;
   final bool detail;
+  final bool like;
+  final VoidCallback likeOnPressed;
 
   const ActivityRecordPost({
     required this.token,
     required this.activityRecord,
+    required this.like,
+    required this.likeOnPressed,
     this.checkRequestUser,
     this.socialSection = true,
     this.detail = false,
@@ -364,9 +368,11 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                   children: [
                     for(var x in [
                       {
-                        "icon": Icons.thumb_up_alt_outlined,
+                        "icon": (widget.like)
+                            ? Icons.thumb_up
+                            : Icons.thumb_up_alt_outlined,
                         "text": "Like",
-                        "onPressed": () {}
+                        "onPressed": widget.likeOnPressed
                       },
                       {
                         "icon": Icons.mode_comment_outlined,
@@ -393,12 +399,20 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                             children: [
                               Icon(
                                 x["icon"] as IconData,
-                                color: TColor.PRIMARY_TEXT,
+                                color: (widget.like && x["text"] == "Like")
+                                    ? TColor.THIRD
+                                    : TColor.PRIMARY_TEXT,
                               ),
                               SizedBox(width: media.width * 0.02,),
                               Text(
                                 x["text"] as String,
-                                style: TxtStyle.normalText,
+                                style: TextStyle(
+                                  color: (widget.like && x["text"] == "Like")
+                                      ? TColor.THIRD
+                                      : TColor.PRIMARY_TEXT,
+                                  fontSize: FontSize.NORMAL,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               )
                             ],
                           ),

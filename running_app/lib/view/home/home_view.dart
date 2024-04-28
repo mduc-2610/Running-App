@@ -65,7 +65,13 @@ class _HomeViewState extends State<HomeView> {
   }
 
  Future<void> initUserActivity() async {
-    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    final data = await callRetrieveAPI(
+        null, null,
+        user?.activity,
+        Activity.fromJson,
+        token,
+        queryParams: "?fields=activity_records"
+    );
     setState(() {
       userActivity = data;
       activityRecords = userActivity?.activityRecords;

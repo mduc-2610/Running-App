@@ -48,20 +48,21 @@ class _EventViewState extends State<EventView> {
         user?.activity,
         Activity.fromJson,
         token,
-        queryParams: "?event_state=joined"
+        queryParams: "?event_state=joined&"
+            "fields=events"
     );
     final activity2 = await callRetrieveAPI(
         null, null,
         user?.activity,
         Activity.fromJson,
         token,
-        queryParams: "?event_state=ended"
+        queryParams: "?event_state=ended&"
+            "fields=events"
     );
     setState(() {
       upcomingEvent = activity?.events.length;
       endedEvent = activity2?.events.length;
     });
-
   }
 
   Future<void> initEvents() async{
@@ -76,7 +77,7 @@ class _EventViewState extends State<EventView> {
   Future<void> delayedInit() async {
     await initEvents();
     await initUserActivity();
-    await Future.delayed(Duration(seconds: 1),);
+    await Future.delayed(Duration(milliseconds: 500),);
 
     setState(() {
       isLoading = false;

@@ -8,11 +8,17 @@ from .post import ClubPostSerializer, \
 
 from .post_like import ClubPostLikeSerializer, \
                         EventPostLikeSerializer, \
-                        ActivityRecordPostLikeSerializer
+                        ActivityRecordPostLikeSerializer, \
+                        CreateClubPostLikeSerializer, \
+                        CreateEventPostLikeSerializer, \
+                        CreateActivityRecordPostLikeSerializer
 
 from .post_comment import ClubPostCommentSerializer, \
                     EventPostCommentSerializer, \
-                    ActivityRecordPostCommentSerializer
+                    ActivityRecordPostCommentSerializer, \
+                    CreateClubPostCommentSerializer, \
+                    CreateEventPostCommentSerializer, \
+                    CreateActivityRecordPostCommentSerializer
 
 from .post_image import ClubPostImageSerializer, \
                         EventPostImageSerializer 

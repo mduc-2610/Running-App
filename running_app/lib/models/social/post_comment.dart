@@ -26,9 +26,8 @@ class PostComment {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user': user?.toJson(),
+      'user': user?.id,
       'content': content,
-      'created_at': createdAt,
     };
   }
 
@@ -58,6 +57,13 @@ class ClubPostComment extends PostComment {
         super.fromJson(json);
 
   @override
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> superJson = super.toJson();
+    superJson['post_id'] = post;
+    return superJson;
+  }
+
+  @override
   String toString() {
     return '${user} - $createdAt - Post: ${post}';
   }
@@ -82,6 +88,13 @@ class EventPostComment extends PostComment {
   EventPostComment.fromJson(Map<String, dynamic> json)
       : post = json['post'],
         super.fromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> superJson = super.toJson();
+    superJson['post_id'] = post;
+    return superJson;
+  }
 
   @override
   String toString() {
@@ -110,7 +123,39 @@ class ActivityRecordPostComment extends PostComment {
         super.fromJson(json);
 
   @override
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> superJson = super.toJson();
+    superJson['post_id'] = post;
+    return superJson;
+  }
+
+  @override
   String toString() {
     return '${user} - $createdAt - Activity Record: ${post}';
+  }
+}
+
+class CreatePostComment {
+  final String? userId;
+  final String? postId;
+  final String? content;
+
+  CreatePostComment({
+    required this.userId,
+    required this.postId,
+    required this.content,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user_id': userId,
+      'post_id': postId,
+      'content': content,
+    };
+  }
+
+  @override
+  String toString() {
+    return "${toJson()}";
   }
 }

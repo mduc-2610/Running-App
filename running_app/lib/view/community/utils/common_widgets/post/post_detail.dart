@@ -38,9 +38,10 @@ class _PostDetailState extends State<PostDetail> {
     bool checkRequestUser = false;
     List<Map<String, dynamic>> comments = [];
     String postType = "";
+    int page = 1;
     double previousScrollOffset = 0;
     ScrollController scrollController = ScrollController();
-    int page = 1;
+    TextEditingController submitTextController = TextEditingController();
 
     void getSideData() {
       setState(() {
@@ -262,7 +263,13 @@ class _PostDetailState extends State<PostDetail> {
           ),
         ),
       ),
-      bottomSheet: Wrapper(child: CommentCreate()),
+      bottomSheet: Wrapper(
+        child: CommentCreate(
+          controller: submitTextController,
+          chooseImageOnPressed: () {},
+          submitOnPressed: () {},
+        ),
+      ),
     );
   }
 }
