@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/social/post.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/bottom_stick_button.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
@@ -12,6 +17,8 @@ import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/common_widgets/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class PostCreate extends StatefulWidget {
   const PostCreate({super.key});
@@ -21,6 +28,12 @@ class PostCreate extends StatefulWidget {
 }
 
 class _PostCreateState extends State<PostCreate> {
+  String token = "";
+  DetailUser? user;
+  String? postType;
+  String? postTypeId;
+  bool? userInEvent;
+  Activity? userActivity;
   TextEditingController titleTextController = TextEditingController();
   TextEditingController contentTextController = TextEditingController();
 
@@ -28,12 +41,74 @@ class _PostCreateState extends State<PostCreate> {
   bool titleClearButton = false;
   bool contentClearButton = false;
 
+  void getProviderData() {
+    setState(() {
+      Map<String, dynamic>? arguments = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?);
+      token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
+      postType = arguments?["postType"];
+      postTypeId = arguments?["postTypeId"];
+      userInEvent = arguments?["userInEvent"];
+    });
+  }
+
   void checkFormData() {
     setState(() {
       postButtonState =
       (titleTextController.text.isNotEmpty)
           ? TColor.PRIMARY : TColor.BUTTON_DISABLED;
     });
+  }
+
+
+  void submitPost() async {
+    dynamic crePost;
+    if(postType == "club") {
+      crePost = CreateClubPost(
+        userId: getUrlId(user?.activity ?? ""),
+        clubId: postTypeId,
+        title: titleTextController.text,
+        content: contentTextController.text,
+      );
+    }
+    else {
+      crePost = CreateEventPost(
+        userId: getUrlId(user?.activity ?? ""),
+        eventId: postTypeId,
+        title: titleTextController.text,
+        content: contentTextController.text,
+      );
+    }
+    print(crePost);
+
+    final data = await callCreateAPI(
+        'social/${postType}-post',
+        crePost.toJson(),
+        token
+    );
+    print(data);
+    Navigator.pop(context);
+    // if(postType == "club") {
+    //   // Navigator.pop(context);
+    //   Navigator.pop(context);
+    //   Navigator.pushNamed(context, '/club_post', arguments: {
+    //     "id": postTypeId,
+    //   });
+    // }
+    // else {
+    //   Navigator.pop(context);
+    //   Navigator.pop(context);
+    //   Navigator.pushNamed(context, '/event_detail', arguments: {
+    //     "id": postTypeId,
+    //     "userInEvent": userInEvent,
+    //   });
+    // }
+  }
+  
+  @override
+  void didChangeDependencies() {
+    getProviderData();
+    super.didChangeDependencies();
   }
 
   @override
@@ -70,7 +145,7 @@ class _PostCreateState extends State<PostCreate> {
                             SizedBox(
                               width: media.width * 0.75,
                               child: Text(
-                                'Dang Minh Duc',
+                                '${user?.name}',
                                 style: TxtStyle.headSection,
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
@@ -208,7 +283,7 @@ class _PostCreateState extends State<PostCreate> {
             margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
-              onPressed: (postButtonState == TColor.BUTTON_DISABLED) ? null : () {},
+              onPressed: (postButtonState == TColor.BUTTON_DISABLED) ? null : submitPost,
               background: postButtonState,
               child: Text(
                 "Post",

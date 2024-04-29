@@ -15,8 +15,8 @@ class ClubPostCommentSerializer(serializers.ModelSerializer):
             "id": {"read_only": True},
         }
 class CreateClubPostCommentSerializer(serializers.ModelSerializer):
-    user_id = serializers.UUIDField()
-    post_id = serializers.UUIDField()
+    user_id = serializers.UUIDField(write_only=True)
+    post_id = serializers.UUIDField(write_only=True)
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):
@@ -53,8 +53,8 @@ class EventPostCommentSerializer(serializers.ModelSerializer):
         }
 
 class CreateEventPostCommentSerializer(serializers.ModelSerializer):
-    user_id = serializers.UUIDField()
-    post_id = serializers.UUIDField()
+    user_id = serializers.UUIDField(write_only=True)
+    post_id = serializers.UUIDField(write_only=True)
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):

@@ -4,7 +4,9 @@ from .follow import FollowSerializer
 from .post import ClubPostSerializer, \
                 EventPostSerializer, \
                 DetailClubPostSerializer, \
-                DetailEventPostSerializer
+                DetailEventPostSerializer, \
+                CreateClubPostSerializer, \
+                CreateEventPostSerializer
 
 from .post_like import ClubPostLikeSerializer, \
                         EventPostLikeSerializer, \

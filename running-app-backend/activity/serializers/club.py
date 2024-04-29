@@ -18,10 +18,6 @@ class ClubSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='get_sport_type_display')
     organization = serializers.CharField(source='get_organization_display')
     privacy = serializers.CharField(source='get_privacy_display') 
-    total_posts = serializers.SerializerMethodField()
-
-    def get_total_posts(self, instance):
-        return instance.club_posts.count()
     
     class Meta:
         model = Club
@@ -47,7 +43,6 @@ class DetailClubSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source='get_sport_type_display')
     organization = serializers.CharField(source='get_organization_display')
     privacy = serializers.CharField(source='get_privacy_display') 
-    total_posts = serializers.SerializerMethodField()
     posts = serializers.SerializerMethodField()
 
     def get_week_activites(self, instance):
@@ -96,8 +91,6 @@ class DetailClubSerializer(serializers.ModelSerializer):
             }).data
         return None
     
-    def get_total_posts(self, instance):
-        return instance.club_posts.count()
     
     def get_posts(self, instance):
         context = self.context

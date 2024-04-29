@@ -638,7 +638,7 @@ class _EventDetailViewState extends State<EventDetailView> {
                     ),
                     // SizedBox(height: media.height * 0.01,),
                     _showLayout == "Information"
-                        ? InformationLayout(event: event,)
+                        ? InformationLayout(event: event, userInEvent: userInEvent,)
                         : (event?.participants?.length == 0)
                         ? EmptyListNotification(
                             title: (event?.competition == "Group") ? "No groups created yet!" : "No users joined yet!",
@@ -687,8 +687,10 @@ class _EventDetailViewState extends State<EventDetailView> {
 
 class InformationLayout extends StatefulWidget {
   final DetailEvent? event;
+  final bool? userInEvent;
   const InformationLayout({
     this.event,
+    this.userInEvent,
     super.key
   });
 
@@ -753,7 +755,7 @@ class _InformationLayoutState extends State<InformationLayout> {
         ),
         _showLayout == "General information"
             ? MainWrapper(child: GeneralInformationLayout(event: widget.event,))
-            : EventPostLayout(event: widget.event,),
+            : EventPostLayout(event: widget.event, userIntEvent: widget.userInEvent,),
       ],
     );
   }
@@ -761,7 +763,9 @@ class _InformationLayoutState extends State<InformationLayout> {
 
 class EventPostLayout extends StatefulWidget {
   final DetailEvent? event;
+  final bool? userIntEvent;
   const EventPostLayout({
+    this.userIntEvent,
     required this.event,
     super.key
   });
@@ -800,7 +804,7 @@ class _EventPostLayoutState extends State<EventPostLayout> {
     });
   }
 
-  Future<void> initEvent() async {
+  Future<void> initDetailEvent() async {
     final data = await callRetrieveAPI(
         'activity/event',
         widget.event?.id, null,
@@ -841,7 +845,7 @@ class _EventPostLayoutState extends State<EventPostLayout> {
     if(initSide == true) {
       await initUserActivity();
     }
-    await initEvent();
+    await initDetailEvent();
     await Future.delayed(Duration(milliseconds: 500),);
 
     setState(() {
@@ -861,6 +865,15 @@ class _EventPostLayoutState extends State<EventPostLayout> {
         delayedInit(initSide: false);
       }
     }
+  }
+
+  Future<void> handleRefresh() async{
+    setState(() {
+      posts = [];
+      page = 1;
+    });
+    delayedInit(reload: true, initSide: false);
+    // delayedInit();
   }
 
   @override
@@ -889,10 +902,13 @@ class _EventPostLayoutState extends State<EventPostLayout> {
       height: media.height * 0.8,
       child: (
           PostLayout(
-              scrollController: scrollController,
-              posts: posts,
-              isLoading: isLoading,
-              postType: "event"
+            userInEvent: widget.userIntEvent,
+            postTypeId: widget.event?.id ?? "",
+            scrollController: scrollController,
+            posts: posts,
+            isLoading: isLoading,
+            postType: "event",
+            handleRefresh: handleRefresh,
           )
       ),
     );

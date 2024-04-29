@@ -33,6 +33,7 @@ class Club(models.Model):
         null=True,
         validators=[MaxLengthValidator(255, 'The field can contain at most 200 characters')]
     )
+    total_posts = models.IntegerField(default=0, null=True)
 
     def week_activities(self):
         # last_week = datetime.datetime.now() - datetime.timedelta(days=7)

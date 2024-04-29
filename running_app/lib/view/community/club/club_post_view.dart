@@ -89,7 +89,11 @@ class _ClubPostViewState extends State<ClubPostView> {
   }
 
   Future<void> handleRefresh() async {
-    delayedInit();
+    setState(() {
+      posts = [];
+      page = 1;
+    });
+    delayedInit(reload: true, initSide: false);
   }
 
   void scrollListenerOffSet() {
@@ -150,10 +154,12 @@ class _ClubPostViewState extends State<ClubPostView> {
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: PostLayout(
+        handleRefresh: handleRefresh,
         posts: posts,
         isLoading: isLoading,
         postType: "club",
         scrollController: scrollController,
+        postTypeId: clubId!,
       ),
     );
   }

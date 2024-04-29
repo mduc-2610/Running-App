@@ -25,13 +25,19 @@ class PostLayout extends StatefulWidget {
   List<dynamic>? posts;
   bool isLoading;
   String postType;
+  String postTypeId;
+  bool? userInEvent;
   ScrollController scrollController;
+  Future<void> Function() handleRefresh;
 
   PostLayout({
     required this.posts,
     required this.isLoading,
     required this.postType,
+    required this.postTypeId,
     required this.scrollController,
+    required this.handleRefresh,
+    this.userInEvent,
     super.key
   });
 
@@ -50,10 +56,6 @@ class _PostLayoutState extends State<PostLayout> {
       token = Provider.of<TokenProvider>(context).token;
       user = Provider.of<UserProvider>(context).user;
     });
-  }
-
-  Future<void> handleRefresh() async {
-
   }
 
   @override
@@ -75,7 +77,13 @@ class _PostLayoutState extends State<PostLayout> {
             Column(
               children: [
                 if(widget.postType == "club")...[
-                  PostWriteButton(),
+                  PostCreateButton(
+                    argumentsOnPressed: {
+                      "postType": widget.postType,
+                      "postTypeId": widget.postTypeId,
+                      "userInEvent": widget.userInEvent,
+                    },
+                  ),
                 ],
                 if(widget.isLoading)...[
                   Loading(
@@ -85,7 +93,7 @@ class _PostLayoutState extends State<PostLayout> {
                 ]
                 else...[
                   RefreshIndicator(
-                    onRefresh: handleRefresh,
+                    onRefresh: widget.handleRefresh,
                     child: SizedBox(
                       height: media.height * ((widget.postType == "club") ? 0.71 : 0.8),
                       child: SingleChildScrollView(
@@ -93,7 +101,13 @@ class _PostLayoutState extends State<PostLayout> {
                         child: Column(
                           children: [
                             if(widget.postType == "event")...[
-                              PostWriteButton()
+                              PostCreateButton(
+                                argumentsOnPressed: {
+                                  "postType": widget.postType,
+                                  "postTypeId": widget.postTypeId,
+                                  "userInEvent": widget.userInEvent,
+                                },
+                              )
                             ],
                             if(widget.posts == null)...[
                               EmptyListNotification(

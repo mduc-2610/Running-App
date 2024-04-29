@@ -45,6 +45,7 @@ class Event(models.Model):
     total_accumulated_distance = models.BooleanField(default=False, null=True)
     total_money_donated = models.BooleanField(default=False, null=True)
     donated_money_exchange = models.DecimalField(max_digits=5, decimal_places=3, default=0.5)
+    total_posts = models.IntegerField(default=0, null=True)
     
     def days_remain(self):
         return (self.ended_at.date() - self.started_at.date()).days

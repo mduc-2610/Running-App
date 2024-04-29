@@ -226,3 +226,59 @@ class DetailEventPost extends EventPost {
     return '$title by $user $likes $comments';
   }
 }
+
+class CreateClubPost {
+  final String? title;
+  final String? content;
+  final String? userId;
+  final String? clubId;
+
+  CreateClubPost({
+    required this.userId,
+    required this.clubId,
+    required this.title,
+    required this.content,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user_id': userId,
+      'club_id': clubId,
+      'title': title,
+      'content': content,
+    };
+  }
+
+  @override
+  String toString() {
+    return "${toJson()}";
+  }
+}
+
+class CreateEventPost {
+  final String? title;
+  final String? content;
+  final String? userId;
+  final String? eventId;
+
+  CreateEventPost({
+    required this.userId,
+    required this.eventId,
+    required this.title,
+    required this.content,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user_id': userId,
+      'event_id': eventId,
+      'title': title,
+      'content': content,
+    };
+  }
+
+  @override
+  String toString() {
+    return "${toJson()}";
+  }
+}

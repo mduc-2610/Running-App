@@ -62,19 +62,19 @@ def update_activity_record_post_comments(sender, instance, created, **kwargs):
         post.save()
 
 @receiver(post_delete, sender=ClubPostComment)
-def update_club_post_comments_on_delete(sender, instance, **kwargs):
+def delete_club_post_comments(sender, instance, **kwargs):
     post = instance.post
     post.total_comments -= 1
     post.save()
 
 @receiver(post_delete, sender=EventPostComment)
-def update_event_post_comments_on_delete(sender, instance, **kwargs):
+def delete_event_post_comments(sender, instance, **kwargs):
     post = instance.post
     post.total_comments -= 1
     post.save()
 
 @receiver(post_delete, sender=ActivityRecordPostComment)
-def update_activity_record_post_comments_on_delete(sender, instance, **kwargs):
+def delete_activity_record_post_comments(sender, instance, **kwargs):
     post = instance.post
     post.total_comments -= 1
     post.save()

@@ -43,11 +43,7 @@ class DetailEventSerializer(serializers.ModelSerializer):
     started_at = serializers.SerializerMethodField()
     ended_at = serializers.SerializerMethodField()
     regulations = serializers.SerializerMethodField()
-    total_posts = serializers.SerializerMethodField()
     posts = serializers.SerializerMethodField()
-    
-    def get_total_posts(self, instance):
-        return instance.event_posts.count()
     
     def get_posts(self, instance):
         context = self.context

@@ -5,15 +5,19 @@ import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 
-class PostWriteButton extends StatelessWidget {
-  const PostWriteButton({super.key});
+class PostCreateButton extends StatelessWidget {
+  final Map<String, dynamic> argumentsOnPressed;
+  const PostCreateButton({
+    required this.argumentsOnPressed,
+    super.key
+  });
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
     return CustomTextButton(
       onPressed: () {
-        Navigator.pushNamed(context, '/post_create');
+        Navigator.pushNamed(context, '/post_create', arguments: argumentsOnPressed);
       },
       child: Container(
         padding: EdgeInsets.symmetric(
