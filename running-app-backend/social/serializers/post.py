@@ -15,12 +15,20 @@ from utils.pagination import CommonPagination
 
 class ClubPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
+    likes = serializers.SerializerMethodField()
+    
+    def get_likes(self, instance):
+        queryset = instance.likes.all()
+        # paginator = CommonPagination(page_size=100)
+        # paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
+        # return LikeSerializer(paginated_queryset, many=True, read_only=True).data
+        return LikeSerializer(queryset, many=True, read_only=True).data
     
     class Meta:
         model = ClubPost
         # exclude = ("likes", "user")
         fields = (
-            "id", "user", "total_likes", "total_comments",
+            "id", "user", "total_likes", "likes", "total_comments",
             "title", "content", "created_at"
         )
         read_only_fields = ("id", 'created_at')
@@ -53,12 +61,19 @@ class DetailClubPostSerializer(serializers.ModelSerializer):
 
 class EventPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
+    likes = serializers.SerializerMethodField()
     
+    def get_likes(self, instance):
+        queryset = instance.likes.all()
+        # paginator = CommonPagination(page_size=100)
+        # paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
+        # return LikeSerializer(paginated_queryset, many=True, read_only=True).data
+        return LikeSerializer(queryset, many=True, read_only=True).data
     class Meta:
         model = ClubPost
         # exclude = ("likes", "user")
         fields = (
-            "id", "user", "total_likes", "total_comments",
+            "id", "user", "total_likes", "likes", "total_comments",
             "title", "content", "created_at"
         )
         read_only_fields = ("id", 'created_at')

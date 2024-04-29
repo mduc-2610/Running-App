@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/like.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/activity_record.dart';
+import 'package:running_app/models/social/post_like.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
@@ -10,6 +13,7 @@ import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/feed/utils/common_widget/activity_record_post.dart';
@@ -24,6 +28,7 @@ class FeedView extends StatefulWidget {
 class _FeedViewState extends State<FeedView> {
   String token = "";
   DetailUser? user;
+  Activity? userActivity;
   List<dynamic> activityRecords = [];
   bool isLoading = true;
   String showView = "Explore";
@@ -37,28 +42,60 @@ class _FeedViewState extends State<FeedView> {
     });
   }
 
+  Future<void> initUserActivity() async {
+    final data = await callRetrieveAPI(
+        null, null,
+        user?.activity,
+        Activity.fromJson,
+        token,
+        queryParams: "?fields=activity_record_post_likes"
+    );
+    setState(() {
+      userActivity = data;
+    });
+  }
+
   Future<void> initActivityRecord() async {
     final data = await callListAPI(
         'activity/activity-record/feed',
         DetailActivityRecord.fromJson,
         token,
-        queryParams: "?exclude=comments,likes&"
-            "page=${page}"
+        queryParams: "?exclude=comments&"
+            "feed_pg=${page}"
     );
     setState(() {
-      activityRecords.addAll(data as List<dynamic>);
+      activityRecords.addAll(data.map((e) {
+        String result = checkUserLike(e.id);
+        return {
+          "activityRecord": e as dynamic,
+          "like": (result == "") ? false : true,
+          "postLikeId": result,
+        };
+      }).toList() ?? []);
     });
+  }
+
+  String checkUserLike(String activityRecordId) {
+    String result = "";
+    for(var activity in userActivity?.activityRecordPostLikes ?? []) {
+      if(activity.id == activityRecordId) {
+        result = activity.postLikeId;
+      }
+    }
+    return result;
   }
 
   Future<void> handleRefresh() async {
     delayedInit();
   }
 
-  void delayedInit({bool reload = false}) async {
+  void delayedInit({bool reload = false, bool initSide = true}) async {
     if(reload) {
       setState(() {
         isLoading = true;
       });
+    } else if(initSide) {
+      await initUserActivity();
     }
     await initActivityRecord();
     await Future.delayed(Duration(milliseconds: 500),);
@@ -96,13 +133,13 @@ class _FeedViewState extends State<FeedView> {
 
   void scrollListenerOffSet() {
     double currentScrollOffset = scrollController.offset;
-    if ((currentScrollOffset - previousScrollOffset).abs() > 2000) {
-      print('Loading page ${page + 1}');
+    if ((currentScrollOffset - previousScrollOffset).abs() > 800) {
+      print("Loading page $page");
       previousScrollOffset = currentScrollOffset;
       setState(() {
         page += 1;
       });
-      delayedInit();
+      delayedInit(initSide: false);
     }
   }
 
@@ -214,10 +251,59 @@ class _FeedViewState extends State<FeedView> {
                           for (var activityRecord in activityRecords ?? []) ...[
                             ActivityRecordPost(
                               token: token,
-                              activityRecord: activityRecord,
-                              checkRequestUser: user?.id == activityRecord?.user?.id,
-                              like: false,
-                              likeOnPressed: () {},
+                              activityRecord: activityRecord["activityRecord"],
+                              checkRequestUser: user?.id == activityRecord["activityRecord"]?.user?.id,
+                              like: activityRecord["like"],
+                              likeOnPressed: () async {
+                                if(activityRecord["like"] == false) {
+                                  CreatePostLike postLike = CreatePostLike(
+                                    userId: getUrlId(user?.activity ?? ""),
+                                    postId: activityRecord["activityRecord"].id,
+                                  );
+                                  final data = await callCreateAPI(
+                                      'social/act-rec-post-like',
+                                      postLike.toJson(),
+                                      token
+                                  );
+                                  setState(() {
+                                    activityRecord["activityRecord"]?.increaseTotalLikes();
+                                    activityRecord["like"] = (activityRecord["like"]) ? false : true;
+                                    activityRecord["postLikeId"] = data["id"];
+                                    Like author = Like(
+                                        id: user?.id,
+                                        name: user?.name,
+                                        avatar: ""
+                                    );
+                                    activityRecord["activityRecord"].likes.insert(0, author);
+                                  });
+                                }
+                                else {
+                                  await callDestroyAPI(
+                                    'social/act-rec-post-like',
+                                    activityRecord["postLikeId"],
+                                    token
+                                  );
+                                  int index = activityRecord["activityRecord"].likes
+                                      ?.indexWhere((like) => like.id == user?.id) ?? -1;
+                                  setState(() {
+                                    if(index != - 1) {
+                                      activityRecord["activityRecord"].likes.removeAt(index);
+                                    }
+                                    activityRecord["activityRecord"]?.decreaseTotalLikes();
+                                    activityRecord["like"] = (activityRecord["like"]) ? false : true;
+                                  });
+                                }
+                                // await initUserActivity();
+                              },
+                              // getArguments: (result)  {
+                              //   setState(() {
+                              //     arguments = result;
+                              //     if(activityRecord["activityRecord"].id == arguments?["activityRecordId"]) {
+                              //       activityRecord["like"] = arguments?["like"];
+                              //       activityRecord["postLikeId"] = arguments?["postLikeId"];
+                              //     }
+                              //   });
+                              // },
                             ),
                           ]
                         ]

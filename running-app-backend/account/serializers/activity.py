@@ -6,9 +6,12 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 
 from account.models import Activity
+from activity.models import UserParticipationEvent, Event
+from social.models import ClubPostLike, \
+                        EventPostLike, \
+                        ActivityRecordPostLike
 from account.serializers import UserSerializer
 from account.serializers.like import LikeSerializer
-from activity.models import UserParticipationEvent, Event
 from activity.serializers.event import EventSerializer
 from activity.serializers.club import ClubSerializer
 from activity.serializers.activity_record import ActivityRecordSerializer
@@ -22,6 +25,71 @@ from social.serializers import ClubPostSerializer, \
                             EventPostLikeSerializer, \
                             ActivityRecordPostLikeSerializer
 from utils.pagination import CommonPagination
+
+class ClubPostLikeActReprSerializer(serializers.ModelSerializer):
+    post_like_id = serializers.SerializerMethodField()
+    post = ClubPostSerializer()
+
+    def get_post_like_id(self, instance):
+        return instance.id
+    
+    def to_representation(self, instance):
+        instance = super().to_representation(instance)
+        post_like_id = instance.pop("post_like_id", None)
+        instance["post"].update({
+            "post_like_id": post_like_id
+        })
+        return instance["post"]
+
+    class Meta:
+        model = ClubPostLike
+        fields = (
+            "post_like_id",
+            "post"
+        )
+
+class EventPostLikeActReprSerializer(serializers.ModelSerializer):
+    post_like_id = serializers.SerializerMethodField()
+    post = EventPostSerializer()
+
+    def get_post_like_id(self, instance):
+        return instance.id
+    
+    def to_representation(self, instance):
+        instance = super().to_representation(instance)
+        post_like_id = instance.pop("post_like_id", None)
+        instance["post"].update({
+            "post_like_id": post_like_id
+        })
+        return instance["post"]
+
+    class Meta:
+        model = EventPostLike
+        fields = (
+            "post_like_id",
+            "post"
+        )
+class ActivityRecordPostLikeActReprSerializer(serializers.ModelSerializer):
+    post_like_id = serializers.SerializerMethodField()
+    post = ActivityRecordSerializer()
+
+    def get_post_like_id(self, instance):
+        return instance.id
+    
+    def to_representation(self, instance):
+        instance = super().to_representation(instance)
+        post_like_id = instance.pop("post_like_id", None)
+        instance["post"].update({
+            "post_like_id": post_like_id
+        })
+        return instance["post"]
+
+    class Meta:
+        model = ActivityRecordPostLike
+        fields = (
+            "post_like_id",
+            "post"
+        )
 
 class ActivitySerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -181,9 +249,16 @@ class ActivitySerializer(serializers.ModelSerializer):
         fields = context.get("fields")
         
         if not fields or "activity_record_post_likes" in fields:
-            queryset = [x.post for x in  instance.act_rec_post_likes.all()]
+            # queryset = []
+            # for ins in instance.act_rec_post_likes.all():
+            #     ins_ = ins.post
+            #     ins_.update({
+            #         'id': ins.id
+            #     })
+            #     queryset.append(ins_)
+            queryset = instance.act_rec_post_likes.all()
             queryset = self.get_paginated_queryset(queryset)
-            return ActivityRecordSerializer(queryset, many=True, read_only=True).data
+            return ActivityRecordPostLikeActReprSerializer(queryset, many=True, read_only=True).data
         return None
 
     def get_club_post_likes(self, instance):
@@ -191,9 +266,9 @@ class ActivitySerializer(serializers.ModelSerializer):
         fields = context.get("fields")
         
         if not fields or "club_post_likes" in fields:
-            queryset = [x.post for x in instance.club_post_likes.all()]
+            queryset = instance.club_post_likes.all()
             queryset = self.get_paginated_queryset(queryset)
-            return ClubPostSerializer(queryset, many=True, read_only=True).data
+            return ClubPostLikeActReprSerializer(queryset, many=True, read_only=True).data
         return None
     
     def get_event_post_likes(self, instance):
@@ -201,9 +276,9 @@ class ActivitySerializer(serializers.ModelSerializer):
         fields = context.get("fields")
         
         if not fields or "event_post_likes" in fields:
-            queryset = [x.post for x in instance.event_post_likes.all()]
+            queryset = instance.event_post_likes.all()
             queryset = self.get_paginated_queryset(queryset)
-            return EventPostSerializer(queryset, many=True, read_only=True).data
+            return EventPostLikeActReprSerializer(queryset, many=True, read_only=True).data
         return None
 
     def get_activity_record_post_comments(self, instance):

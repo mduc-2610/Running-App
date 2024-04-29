@@ -36,7 +36,7 @@ class DetailEventSerializer(serializers.ModelSerializer):
     days_remain = serializers.SerializerMethodField()
     number_of_participants = serializers.SerializerMethodField()
     participants = serializers.SerializerMethodField()
-    groups = GroupSerializer(many=True)
+    groups = serializers.SerializerMethodField()
     privacy = serializers.CharField(source='get_privacy_display')
     competition = serializers.CharField(source='get_competition_display')
     sport_type = serializers.CharField(source='get_sport_type_display')
@@ -50,10 +50,21 @@ class DetailEventSerializer(serializers.ModelSerializer):
         return instance.event_posts.count()
     
     def get_posts(self, instance):
-        queryset = instance.event_posts.all()
-        paginator = CommonPagination(page_size=5)
-        paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
-        return EventPostSerializer(paginated_queryset, many=True, read_only=True).data
+        context = self.context
+        exclude = context.get('exclude', [])
+        if 'posts' not in exclude:
+            queryset = instance.event_posts.all()
+            paginator = CommonPagination(page_size=5)
+            paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
+            return EventPostSerializer(paginated_queryset, many=True, read_only=True).data
+        return None
+    
+    def get_groups(self, instance):
+        context = self.context
+        exclude = context.get('exclude', [])
+        if 'groups' not in exclude:
+            queryset = instance.groups.all()
+            return GroupSerializer(queryset, many=True, read_only=True).data
     
     def get_days_remain(self, instance):
         return instance.days_remain()
@@ -68,39 +79,42 @@ class DetailEventSerializer(serializers.ModelSerializer):
 
     def get_participants(self, instance):
         context = self.context
-        sport_type = instance.sport_type
-        event_id = instance.id
-        type = "event"
+        exclude = context.get('exclude', [])
+        if 'participants' not in exclude:
+            sport_type = instance.sport_type
+            event_id = instance.id
+            type = "event"
+            
+            start_date = context.get('start_date')
+            end_date = context.get('end_date')
+            gender = context.get('gender')
+            sort_by = context.get('sort_by')
+            limit_user = context.get('limit_user')
 
-        start_date = context.get('start_date')
-        end_date = context.get('end_date')
-        gender = context.get('gender')
-        sort_by = context.get('sort_by')
-        limit_user = context.get('limit_user')
+            print({'start_date': start_date, 'end_date': end_date, 'sort_by': sort_by, 'limit_user': limit_user})
 
-        print({'start_date': start_date, 'end_date': end_date, 'sort_by': sort_by, 'limit_user': limit_user})
+            users = [instance.user.performance for instance in instance.events.all()]
+            if gender:
+                users = [user for user in users if user.user.profile.gender == gender]
 
-        users = [instance.user.performance for instance in instance.events.all()]
-        if gender:
-            users = [user for user in users if user.user.profile.gender == gender]
+            def sort_cmp(x, sort_by):
+                stats = x.range_stats(start_date, end_date, sport_type=sport_type)
+                if sort_by == 'Time':
+                    return (-stats[3], -stats[0])
+                return (-stats[0], -stats[3])
+            users = sorted(users, key=lambda x: sort_cmp(x, sort_by))
 
-        def sort_cmp(x, sort_by):
-            stats = x.range_stats(start_date, end_date, sport_type=sport_type)
-            if sort_by == 'Time':
-                return (-stats[3], -stats[0])
-            return (-stats[0], -stats[3])
-        users = sorted(users, key=lambda x: sort_cmp(x, sort_by))
+            if limit_user:
+                users = users[:int(limit_user)]
 
-        if limit_user:
-            users = users[:int(limit_user)]
-
-        return LeaderboardSerializer(users, many=True, context={
-            'id': event_id,
-            'type': type,
-            'start_date': start_date,
-            'end_date': end_date,
-            'sport_type': sport_type,
-        }).data
+            return LeaderboardSerializer(users, many=True, context={
+                'id': event_id,
+                'type': type,
+                'start_date': start_date,
+                'end_date': end_date,
+                'sport_type': sport_type,
+            }).data
+        return None
     
     def get_started_at(self, instance):
         return instance.get_readable_time('started_at')

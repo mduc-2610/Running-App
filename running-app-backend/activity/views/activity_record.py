@@ -57,7 +57,7 @@ class ActivityRecordViewSet(
     @action(detail=False, methods=['get'], url_path='feed', name='feed')
     def feed(self, request):
         queryset = self.get_queryset()
-        paginator = CommonPagination(page_size=5)
+        paginator = CommonPagination(page_size=3, page_query_param="feed_pg")
         paginated_queryset = paginator.paginate_queryset(queryset, self.request)
         serializer = self.get_serializer(paginated_queryset, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)

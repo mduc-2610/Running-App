@@ -91,7 +91,6 @@ class ClubViewSet(
             exclude = [x.strip().lower() for x in query_params.get('exclude', '').split(',')]
 
             context.update({
-                'request': self.request,
                 'start_date': start_date, 
                 'end_date': end_date,
                 'sort_by': sort_by,
@@ -99,6 +98,8 @@ class ClubViewSet(
                 'limit_user': limit_user,
                 'exclude': exclude
             })
+            
+        context.update({'request': self.request,})
         return context
     
     def get_serializer(self, *args, **kwargs):

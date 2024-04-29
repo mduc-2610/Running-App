@@ -44,7 +44,8 @@ class _ClubDetailViewState extends State<ClubDetailView> {
         null,
         DetailClub.fromJson,
         token,
-        queryParams: "?limit_user=20"
+        queryParams: "?limit_user=20&"
+            "exclude=posts"
     );
     setState(() {
       club = data;

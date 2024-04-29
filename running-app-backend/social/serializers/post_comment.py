@@ -17,7 +17,11 @@ class ClubPostCommentSerializer(serializers.ModelSerializer):
 class CreateClubPostCommentSerializer(serializers.ModelSerializer):
     user_id = serializers.UUIDField()
     post_id = serializers.UUIDField()
+    user = serializers.SerializerMethodField()
 
+    def get_user(self, instance):
+        return AuthorSerializer(instance.user).data
+    
     def create(self, validated_data):
         user_id = validated_data.pop('user_id')
         post_id = validated_data.pop('post_id')
@@ -28,11 +32,15 @@ class CreateClubPostCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClubPostComment
         fields = (
-            "id", "user_id",
-            "post_id", "content"
+            "id", "user", "content",
+            "created_at", "post", "post_id", "user_id"
         )
         extra_kwargs = {
             "id": {"read_only": True},
+            "post": {"read_only": True},
+            "user": {"read_only": True},
+            "post_id": {"write_only": True},
+            "user_id": {"write_only": True},
         }
 
 class EventPostCommentSerializer(serializers.ModelSerializer):
@@ -47,7 +55,11 @@ class EventPostCommentSerializer(serializers.ModelSerializer):
 class CreateEventPostCommentSerializer(serializers.ModelSerializer):
     user_id = serializers.UUIDField()
     post_id = serializers.UUIDField()
+    user = serializers.SerializerMethodField()
 
+    def get_user(self, instance):
+        return AuthorSerializer(instance.user).data
+    
     def create(self, validated_data):
         user_id = validated_data.pop('user_id')
         post_id = validated_data.pop('post_id')
@@ -58,11 +70,15 @@ class CreateEventPostCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventPostComment
         fields = (
-            "id", "user_id",
-            "post_id", "content"
+            "id", "user", "content",
+            "created_at", "post", "post_id", "user_id"
         )
         extra_kwargs = {
             "id": {"read_only": True},
+            "post": {"read_only": True},
+            "user": {"read_only": True},
+            "post_id": {"write_only": True},
+            "user_id": {"write_only": True},
         }
 
 class ActivityRecordPostCommentSerializer(serializers.ModelSerializer):
@@ -79,7 +95,11 @@ class ActivityRecordPostCommentSerializer(serializers.ModelSerializer):
 class CreateActivityRecordPostCommentSerializer(serializers.ModelSerializer):
     user_id = serializers.UUIDField()
     post_id = serializers.UUIDField()
+    user = serializers.SerializerMethodField()
 
+    def get_user(self, instance):
+        return AuthorSerializer(instance.user).data
+    
     def create(self, validated_data):
         user_id = validated_data.pop('user_id')
         post_id = validated_data.pop('post_id')
@@ -90,9 +110,13 @@ class CreateActivityRecordPostCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActivityRecordPostComment
         fields = (
-            "id", "user_id",
-            "post_id", "content"
+            "id", "user", "content",
+            "created_at", "post", "post_id", "user_id"
         )
         extra_kwargs = {
             "id": {"read_only": True},
+            "post": {"read_only": True},
+            "user": {"read_only": True},
+            "post_id": {"write_only": True},
+            "user_id": {"write_only": True},
         }

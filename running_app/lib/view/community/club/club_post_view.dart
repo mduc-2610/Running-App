@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/club.dart';
 import 'package:running_app/models/social/post.dart';
 import 'package:running_app/services/api_service.dart';
@@ -8,7 +10,9 @@ import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/utils/common_widgets/post/post_layout.dart';
 import 'package:running_app/view/community/utils/common_widgets/post/post_create_button.dart';
 
@@ -21,17 +25,35 @@ class ClubPostView extends StatefulWidget {
 
 class _ClubPostViewState extends State<ClubPostView> {
   String token = "";
+  DetailUser? user;
+  Activity? userActivity;
   bool isLoading = true;
   String? clubId;
   DetailClub? club;
-  List<ClubPost>? posts;
-
+  List<dynamic> posts = [];
+  int page = 1;
+  double previousScrollOffset = 0;
+  ScrollController scrollController = ScrollController();
 
   void getData() {
     Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
       clubId = arguments?["id"];
+    });
+  }
+
+  Future<void> initUserActivity() async {
+    final data = await callRetrieveAPI(
+        null, null,
+        user?.activity,
+        Activity.fromJson,
+        token,
+        queryParams: "?fields=club_post_likes"
+    );
+    setState(() {
+      userActivity = data;
     });
   }
 
@@ -41,20 +63,72 @@ class _ClubPostViewState extends State<ClubPostView> {
         clubId, null,
         DetailClub.fromJson, token,
         queryParams: "?exclude=participants"
+            "&page=$page"
     );
     setState(() {
       club = data;
-      posts = club?.posts;
+      posts.addAll(data.posts.map((e) {
+        String result = checkUserLike(e.id!);
+        return {
+          "post": e as dynamic,
+          "like": (result == "") ? false : true,
+          "postLikeId": result,
+        };
+      }).toList() ?? []);
     });
+  }
+
+  String checkUserLike(String postId) {
+    String result = "";
+    for(var activity in userActivity?.clubPostLikes ?? []) {
+      if(activity.id == postId) {
+        result = activity.postLikeId;
+      }
+    }
+    return result;
   }
 
   Future<void> handleRefresh() async {
     delayedInit();
   }
 
-  void delayedInit() async {
+  void scrollListenerOffSet() {
+    double currentScrollOffset = scrollController.offset;
+    if ((currentScrollOffset - previousScrollOffset).abs() > 1000) {
+      print("Loading page $page");
+      previousScrollOffset = currentScrollOffset;
+      setState(() {
+        page += 1;
+      });
+      if(page <= pageLimit(club?.totalPosts ?? 0, 5)) {
+        delayedInit(initSide: false);
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(scrollListenerOffSet);
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  void delayedInit({bool reload = false, bool initSide = true}) async {
+    if(reload == true) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+    if(initSide == true) {
+      await initUserActivity();
+    }
     await initClub();
-    await Future.delayed(Duration(milliseconds: 1500),);
+    await Future.delayed(Duration(milliseconds: 500),);
 
     setState(() {
       isLoading = false;
@@ -78,7 +152,8 @@ class _ClubPostViewState extends State<ClubPostView> {
       body: PostLayout(
         posts: posts,
         isLoading: isLoading,
-        postType: "club"
+        postType: "club",
+        scrollController: scrollController,
       ),
     );
   }

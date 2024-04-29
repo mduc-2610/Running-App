@@ -94,7 +94,7 @@ class DetailClub extends Club {
       : description = json['description'],
         participants = (json['participants'] as List<dynamic>?)?.map((e) => Leaderboard.fromJson(e)).toList(),
         coverPhoto = json['cover_photo'],
-        posts = (json['posts'] as List<dynamic>).map((e) => ClubPost.fromJson(e)).toList(),
+        posts = (json['posts'] as List<dynamic>?)?.map((e) => ClubPost.fromJson(e)).toList(),
         super.fromJson(json);
 
   @override

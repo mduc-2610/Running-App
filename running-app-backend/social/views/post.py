@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, response, status
 from social.models import EventPost, ClubPost
 from social.serializers import EventPostSerializer, \
                                 ClubPostSerializer, \
@@ -24,6 +24,9 @@ class EventPostViewSet(viewsets.ModelViewSet):
         #         "page": query_params.get("pg", 1),
         #         "page_size": query_params.get("pg_size", 1)
         #     })
+        context.update({
+            'request': self.request
+        })
         return context
         
     def get_serializer(self, *args, **kwargs):
@@ -40,3 +43,15 @@ class ClubPostViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             return DetailClubPostSerializer
         return ClubPostSerializer
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context.update({
+            'request': self.request
+        })
+        return context
+
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        kwargs["context"] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)

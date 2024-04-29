@@ -55,7 +55,7 @@ class DetailEvent extends Event {
   final List<Leaderboard>? participants;
   final List<Group>? groups;
   final List<EventPost>? posts;
-
+  final int? totalPosts;
 
   DetailEvent({
     String? id,
@@ -74,6 +74,7 @@ class DetailEvent extends Event {
     required this.participants,
     required this.groups,
     required this.posts,
+    required this.totalPosts,
   }) : super(
     id: id,
     name: name,
@@ -107,9 +108,10 @@ class DetailEvent extends Event {
         contactInformation = json['contact_information'],
         privacy = json['privacy'],
         sportType = json['sportType'],
-        participants = (json['participants'] as List<dynamic>).map((e) => Leaderboard.fromJson(e)).toList(),
-        groups = (json['groups'] as List<dynamic>).map((e) => Group.fromJson(e)).toList(),
-        posts = (json['posts'] as List<dynamic>).map((e) => EventPost.fromJson(e)).toList(),
+        participants = (json['participants'] as List<dynamic>?)?.map((e) => Leaderboard.fromJson(e)).toList(),
+        groups = (json['groups'] as List<dynamic>?)?.map((e) => Group.fromJson(e)).toList(),
+        posts = (json['posts'] as List<dynamic>?)?.map((e) => EventPost.fromJson(e)).toList(),
+        totalPosts = json['total_posts'],
         super.fromJson(json);
 
   @override

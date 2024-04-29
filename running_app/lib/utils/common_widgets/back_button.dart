@@ -5,10 +5,12 @@ import 'package:running_app/utils/constants.dart';
 class CustomBackButton extends StatelessWidget {
   final BuildContext context;
   final VoidCallback? onPressed;
+  final argumentsOnPressed;
 
   const CustomBackButton({
     Key? key,
     required this.context,
+    this.argumentsOnPressed,
     this.onPressed,
   }) : super(key: key);
 
@@ -23,7 +25,7 @@ class CustomBackButton extends StatelessWidget {
         if(onPressed != null) {
           onPressed?.call();
         }
-        Navigator.pop(context);
+        Navigator.pop(context, argumentsOnPressed);
       },
     );
   }

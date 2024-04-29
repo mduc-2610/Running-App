@@ -13,6 +13,7 @@ class Header extends StatelessWidget {
   final bool backButton;
   final bool noIcon;
   final VoidCallback? backButtonOnPressed;
+  final argumentsOnPressed;
 
   const Header({
     this.title,
@@ -22,6 +23,7 @@ class Header extends StatelessWidget {
     this.backButton = true,
     this.noIcon = false,
     this.backButtonOnPressed,
+    this.argumentsOnPressed,
     Key? key,
   }) : super(key: key);
 
@@ -65,6 +67,7 @@ class Header extends StatelessWidget {
                   CustomBackButton(
                     context: context,
                     onPressed: () => backButtonOnPressed,
+                    argumentsOnPressed: argumentsOnPressed,
                   ),
                 SizedBox(width: media.width * 0.02,),
                 Text(
@@ -75,7 +78,11 @@ class Header extends StatelessWidget {
             )]
             else...[
               if(backButton)
-                CustomBackButton(context: context, onPressed: backButtonOnPressed),
+                CustomBackButton(
+                    context: context,
+                    onPressed: backButtonOnPressed,
+                    argumentsOnPressed: argumentsOnPressed,
+                ),
             Text(
               "$title",
               style: TxtStyle.headSectionExtra

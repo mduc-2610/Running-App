@@ -105,8 +105,9 @@ class DetailClubSerializer(serializers.ModelSerializer):
         if 'posts' not in exclude:
             queryset = instance.club_posts.all()
             paginator = CommonPagination(page_size=5)
-            paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
-            return ClubPostSerializer(paginated_queryset, many=True, read_only=True).data
+            paginated_queryset = paginator.paginate_queryset(queryset, context['request'])
+            return ClubPostSerializer(
+                paginated_queryset, many=True, context={'request', context["request"]}, read_only=True).data
         return None
 
     class Meta:

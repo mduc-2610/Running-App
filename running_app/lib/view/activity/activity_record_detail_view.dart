@@ -530,104 +530,104 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                         ),
                       ),
 
-                      // Social section
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          MainWrapper(
-                            topMargin: 0,
-                            child: CustomTextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/feed_comment', arguments: {
-                                  "id": activityRecord?.id,
-                                  "checkRequestUser": checkRequestUser,
-                                });
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.thumb_up,
-                                        color: TColor.THIRD,
-                                      ),
-                                      SizedBox(width: media.width * 0.01,),
-                                      Text(
-                                        "${activityRecord?.totalLikes}",
-                                        style: TxtStyle.normalTextDesc,
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    "${activityRecord?.totalComments} comment",
-                                    style: TxtStyle.normalTextDesc,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 0
-                            ),
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    top: BorderSide(width: 1, color: TColor.BORDER_COLOR),
-                                    bottom: BorderSide(width: 1, color: TColor.BORDER_COLOR)
-                                )
-                            ),
-                            child: Row(
-                              mainAxisAlignment:  MainAxisAlignment.spaceAround,
-                              children: [
-                                for(var x in [
-                                  {
-                                    "icon": Icons.thumb_up_alt_outlined,
-                                    "text": "Like",
-                                    "onPressed": () {}
-                                  },
-                                  {
-                                    "icon": Icons.mode_comment_outlined,
-                                    "text": "Comment",
-                                    "onPressed": () {
-                                      Navigator.pushNamed(context, '/feed_comment', arguments: {
-                                        "id": activityRecord?.id,
-                                        "checkRequestUser": checkRequestUser,
-                                      });
-                                    }
-                                  },
-                                  (checkRequestUser == true) ? {
-                                    "icon": Icons.ios_share_rounded,
-                                    "text": "Share",
-                                    "onPressed": () {}
-                                  } : null,
-                                ])...[
-                                  if(x != null)...[
-                                    CustomTextButton(
-                                      onPressed: x["onPressed"] as VoidCallback,
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            x["icon"] as IconData,
-                                            color: TColor.PRIMARY_TEXT,
-                                          ),
-                                          SizedBox(width: media.width * 0.02,),
-                                          Text(
-                                            x["text"] as String,
-                                            style: TxtStyle.normalText,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    // if(x["text"] != "Share") SeparateBar(width: 1, height: 45, color: TColor.BORDER_COLOR,)
-                                  ]
-                                ]
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+                      // // Social section
+                      // Column(
+                      //   crossAxisAlignment: CrossAxisAlignment.end,
+                      //   children: [
+                      //     MainWrapper(
+                      //       topMargin: 0,
+                      //       child: CustomTextButton(
+                      //         onPressed: () {
+                      //           Navigator.pushNamed(context, '/feed_comment', arguments: {
+                      //             "id": activityRecord?.id,
+                      //             "checkRequestUser": checkRequestUser,
+                      //           });
+                      //         },
+                      //         child: Row(
+                      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //           children: [
+                      //             Row(
+                      //               children: [
+                      //                 Icon(
+                      //                   Icons.thumb_up,
+                      //                   color: TColor.THIRD,
+                      //                 ),
+                      //                 SizedBox(width: media.width * 0.01,),
+                      //                 Text(
+                      //                   "${activityRecord?.totalLikes}",
+                      //                   style: TxtStyle.normalTextDesc,
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //             Text(
+                      //               "${activityRecord?.totalComments} comment",
+                      //               style: TxtStyle.normalTextDesc,
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //
+                      //     Container(
+                      //       padding: const EdgeInsets.symmetric(
+                      //           vertical: 0
+                      //       ),
+                      //       decoration: BoxDecoration(
+                      //           border: Border(
+                      //               top: BorderSide(width: 1, color: TColor.BORDER_COLOR),
+                      //               bottom: BorderSide(width: 1, color: TColor.BORDER_COLOR)
+                      //           )
+                      //       ),
+                      //       child: Row(
+                      //         mainAxisAlignment:  MainAxisAlignment.spaceAround,
+                      //         children: [
+                      //           for(var x in [
+                      //             {
+                      //               "icon": Icons.thumb_up_alt_outlined,
+                      //               "text": "Like",
+                      //               "onPressed": () {}
+                      //             },
+                      //             {
+                      //               "icon": Icons.mode_comment_outlined,
+                      //               "text": "Comment",
+                      //               "onPressed": () {
+                      //                 Navigator.pushNamed(context, '/feed_comment', arguments: {
+                      //                   "id": activityRecord?.id,
+                      //                   "checkRequestUser": checkRequestUser,
+                      //                 });
+                      //               }
+                      //             },
+                      //             (checkRequestUser == true) ? {
+                      //               "icon": Icons.ios_share_rounded,
+                      //               "text": "Share",
+                      //               "onPressed": () {}
+                      //             } : null,
+                      //           ])...[
+                      //             if(x != null)...[
+                      //               CustomTextButton(
+                      //                 onPressed: x["onPressed"] as VoidCallback,
+                      //                 child: Row(
+                      //                   children: [
+                      //                     Icon(
+                      //                       x["icon"] as IconData,
+                      //                       color: TColor.PRIMARY_TEXT,
+                      //                     ),
+                      //                     SizedBox(width: media.width * 0.02,),
+                      //                     Text(
+                      //                       x["text"] as String,
+                      //                       style: TxtStyle.normalText,
+                      //                     )
+                      //                   ],
+                      //                 ),
+                      //               ),
+                      //               // if(x["text"] != "Share") SeparateBar(width: 1, height: 45, color: TColor.BORDER_COLOR,)
+                      //             ]
+                      //           ]
+                      //         ],
+                      //       ),
+                      //     )
+                      //   ],
+                      // ),
                       SizedBox(height: media.height * 0.02,),
 
                       // View Analysis
@@ -667,7 +667,8 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                             ],
                           ),
                         ),
-                      )
+                      ),
+                      SizedBox(height: media.height * 0.02,),
                     ],
                   )
                 ]

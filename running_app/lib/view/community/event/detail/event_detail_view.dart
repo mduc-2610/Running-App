@@ -38,6 +38,7 @@ class _EventDetailViewState extends State<EventDetailView> {
   bool isLoading = true;
   bool isLoadingLeaderboard = false;
   String _showLayout = "Information";
+  String exclude = "exclude=participants,groups";
   String token = "";
   String eventId = "";
   DetailEvent? event;
@@ -66,7 +67,8 @@ class _EventDetailViewState extends State<EventDetailView> {
         DetailEvent.fromJson,
         token,
         queryParams: "?limit_user=20&"
-            "sort_by=${sort_by}"
+            "sort_by=${sort_by}&"
+            "$exclude"
     );
     setState(() {
       event = data;
@@ -597,13 +599,15 @@ class _EventDetailViewState extends State<EventDetailView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          for (var x in ["Information", "Leaderboard"]) ...[
+                          for (var x in ["Information", "Leaderboard"])...[
                             SizedBox(
                               width: media.width * 0.46,
                               child: CustomTextButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   setState(() {
                                     _showLayout = x;
+                                    exclude = (_showLayout == "Information") ? "participants,groups" : "posts";
+                                    delayedDetailEvent();
                                   });
                                 },
                                 style: ButtonStyle(
@@ -749,20 +753,152 @@ class _InformationLayoutState extends State<InformationLayout> {
         ),
         _showLayout == "General information"
             ? MainWrapper(child: GeneralInformationLayout(event: widget.event,))
-            : SizedBox(
-          height: media.height * 0.8,
-              child: (
-              PostLayout(
-                  posts: widget.event?.posts,
-                  isLoading: false,
-                  postType: "event"
-              )
-                      ),
-            ),
+            : EventPostLayout(event: widget.event,),
       ],
     );
   }
 }
+
+class EventPostLayout extends StatefulWidget {
+  final DetailEvent? event;
+  const EventPostLayout({
+    required this.event,
+    super.key
+  });
+
+  @override
+  State<EventPostLayout> createState() => _EventPostLayoutState();
+}
+
+class _EventPostLayoutState extends State<EventPostLayout> {
+  String token = "";
+  DetailUser? user;
+  Activity? userActivity;
+  bool isLoading = true;
+  List<dynamic> posts = [];
+  int page = 1;
+  double previousScrollOffset = 0;
+  ScrollController scrollController = ScrollController();
+
+  void getData() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+  Future<void> initUserActivity() async {
+    final data = await callRetrieveAPI(
+        null, null,
+        user?.activity,
+        Activity.fromJson,
+        token,
+        queryParams: "?fields=event_post_likes"
+    );
+    setState(() {
+      userActivity = data;
+    });
+  }
+
+  Future<void> initEvent() async {
+    final data = await callRetrieveAPI(
+        'activity/event',
+        widget.event?.id, null,
+        DetailEvent.fromJson, token,
+        queryParams: "?exclude=participants,groups"
+            "&page=$page"
+    );
+    setState(() {
+      posts.addAll(data.posts.map((e) {
+        String result = checkUserLike(e.id!);
+        print("Check result ${e.title} $result");
+        return {
+          "post": e as dynamic,
+          "like": (result == "") ? false : true,
+          "postLikeId": result,
+        };
+      }).toList() ?? []);
+    });
+  }
+
+  String checkUserLike(String postId) {
+    String result = "";
+    for(var activity in userActivity?.eventPostLikes ?? []) {
+      print("User like post event: ${activity?.title}");
+      if(activity.id == postId) {
+        result = activity.postLikeId;
+      }
+    }
+    return result;
+  }
+
+  void delayedInit({bool reload = false, bool initSide = true}) async {
+    if(reload == true) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+    if(initSide == true) {
+      await initUserActivity();
+    }
+    await initEvent();
+    await Future.delayed(Duration(milliseconds: 500),);
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void scrollListenerOffSet() {
+    double currentScrollOffset = scrollController.offset;
+    if ((currentScrollOffset - previousScrollOffset).abs() > 1000) {
+      print("Loading page $page");
+      previousScrollOffset = currentScrollOffset;
+      setState(() {
+        page += 1;
+      });
+      if(page <= pageLimit(widget.event?.totalPosts ?? 0, 5)) {
+        delayedInit(initSide: false);
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(scrollListenerOffSet);
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getData();
+    delayedInit();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var media = MediaQuery.sizeOf(context);
+    return SizedBox(
+      height: media.height * 0.8,
+      child: (
+          PostLayout(
+              scrollController: scrollController,
+              posts: posts,
+              isLoading: isLoading,
+              postType: "event"
+          )
+      ),
+    );
+  }
+}
+
 
 class LeaderBoardLayout extends StatefulWidget {
   final ScrollController parentScrollController;
