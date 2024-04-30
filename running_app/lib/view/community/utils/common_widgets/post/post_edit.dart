@@ -20,16 +20,17 @@ import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 
-class PostCreate extends StatefulWidget {
-  const PostCreate({super.key});
+class PostEdit extends StatefulWidget {
+  const PostEdit({super.key});
 
   @override
-  State<PostCreate> createState() => _PostCreateState();
+  State<PostEdit> createState() => _PostEditState();
 }
 
-class _PostCreateState extends State<PostCreate> {
+class _PostEditState extends State<PostEdit> {
   String token = "";
   DetailUser? user;
+  String? postId;
   String? postType;
   String? postTypeId;
   bool? userInEvent;
@@ -37,7 +38,7 @@ class _PostCreateState extends State<PostCreate> {
   TextEditingController titleTextController = TextEditingController();
   TextEditingController contentTextController = TextEditingController();
 
-  Color postButtonState = TColor.BUTTON_DISABLED;
+  Color postButtonState = TColor.PRIMARY;
   bool titleClearButton = false;
   bool contentClearButton = false;
 
@@ -49,6 +50,9 @@ class _PostCreateState extends State<PostCreate> {
       postType = arguments?["postType"];
       postTypeId = arguments?["postTypeId"];
       userInEvent = arguments?["userInEvent"];
+      postId = arguments?["id"];
+      titleTextController.text = arguments?["title"] ?? "";
+      contentTextController.text = arguments?["content"] ?? "";
     });
   }
 
@@ -62,34 +66,22 @@ class _PostCreateState extends State<PostCreate> {
 
 
   void submitPost() async {
-    dynamic crePost;
-    if(postType == "club") {
-      crePost = CreateClubPost(
-        userId: getUrlId(user?.activity ?? ""),
-        clubId: postTypeId,
+    UpdatePost updatePost = UpdatePost(
         title: titleTextController.text,
         content: contentTextController.text,
-      );
-    }
-    else {
-      crePost = CreateEventPost(
-        userId: getUrlId(user?.activity ?? ""),
-        eventId: postTypeId,
-        title: titleTextController.text,
-        content: contentTextController.text,
-      );
-    }
-    print(crePost);
+    );
+    print(updatePost);
 
-    final data = await callCreateAPI(
+    final data = await callUpdateAPI(
         'social/${postType}-post',
-        crePost.toJson(),
+        postId,
+        updatePost.toJson(),
         token
     );
     print(data);
     Navigator.pop(context);
     if(postType == "club") {
-    //   // Navigator.pop(context);
+      // Navigator.pop(context);
       Navigator.pop(context);
       Navigator.pushNamed(context, '/club_post', arguments: {
         "id": postTypeId,
@@ -104,7 +96,7 @@ class _PostCreateState extends State<PostCreate> {
     //   });
     // }
   }
-  
+
   @override
   void didChangeDependencies() {
     getProviderData();
@@ -113,10 +105,11 @@ class _PostCreateState extends State<PostCreate> {
 
   @override
   Widget build(BuildContext context) {
+    print(titleTextController.text);
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "Create a post", noIcon: true),
+        title: Header(title: "Edit post", noIcon: true),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -171,9 +164,9 @@ class _PostCreateState extends State<PostCreate> {
                       Container(
                         width: media.width,
                         decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(width: 1, color: TColor.BORDER_COLOR)
-                          )
+                            border: Border(
+                                bottom: BorderSide(width: 1, color: TColor.BORDER_COLOR)
+                            )
                         ),
                         child: MainWrapper(
                           topMargin: 0,
@@ -186,22 +179,22 @@ class _PostCreateState extends State<PostCreate> {
                               SizedBox(
                                 width: media.width * 0.8,
                                 child: CustomTextFormField(
-                                  onChanged: (_) => checkFormData(),
-                                  controller: titleTextController,
-                                  decoration: CustomInputDecoration(
+                                    onChanged: (_) => checkFormData(),
+                                    controller: titleTextController,
+                                    decoration: CustomInputDecoration(
 
-                                    borderSide: 0,
-                                    borderRadius: BorderRadius.circular(0),
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  showClearButton: titleClearButton,
-                                  onClearChanged: () {
-                                    titleTextController.clear();
-                                    setState(() {
-                                      titleClearButton = false;
-                                      postButtonState = TColor.BUTTON_DISABLED;
-                                    });
-                                  }
+                                      borderSide: 0,
+                                      borderRadius: BorderRadius.circular(0),
+                                    ),
+                                    keyboardType: TextInputType.text,
+                                    showClearButton: titleClearButton,
+                                    onClearChanged: () {
+                                      titleTextController.clear();
+                                      setState(() {
+                                        titleClearButton = false;
+                                        postButtonState = TColor.BUTTON_DISABLED;
+                                      });
+                                    }
                                 ),
                               ),
                             ],
@@ -217,25 +210,25 @@ class _PostCreateState extends State<PostCreate> {
                             )
                         ),
                         child: CustomTextFormField(
-                          controller: contentTextController,
-                          decoration: CustomInputDecoration(
-                            hintText: "What do you want to post?",
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 15,
-                                horizontal: media.height * 0.015
+                            controller: contentTextController,
+                            decoration: CustomInputDecoration(
+                              hintText: "What do you want to post?",
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 15,
+                                  horizontal: media.height * 0.015
+                              ),
+                              borderSide: 0,
+                              borderRadius: BorderRadius.circular(0),
                             ),
-                            borderSide: 0,
-                            borderRadius: BorderRadius.circular(0),
-                          ),
-                          keyboardType: TextInputType.text,
-                          maxLines: 100,
-                          showClearButton: contentClearButton,
-                          onClearChanged: () {
-                            contentTextController.clear();
-                            setState(() {
-                              contentClearButton = false;
-                            });
-                          }
+                            keyboardType: TextInputType.text,
+                            maxLines: 100,
+                            showClearButton: contentClearButton,
+                            onClearChanged: () {
+                              contentTextController.clear();
+                              setState(() {
+                                contentClearButton = false;
+                              });
+                            }
                         ),
                       ),
                       MainWrapper(
@@ -283,10 +276,10 @@ class _PostCreateState extends State<PostCreate> {
             margin: EdgeInsets.fromLTRB(media.width * 0.025, 15, media.width * 0.025, media.width * 0.025),
             child: CustomMainButton(
               horizontalPadding: 0,
-              onPressed: (postButtonState == TColor.BUTTON_DISABLED) ? null : submitPost,
+              onPressed: (postButtonState == TColor.PRIMARY) ? submitPost : null,
               background: postButtonState,
               child: Text(
-                "Post",
+                "Save",
                 style: TextStyle(
                     color: TColor.PRIMARY_TEXT,
                     fontSize: FontSize.LARGE,

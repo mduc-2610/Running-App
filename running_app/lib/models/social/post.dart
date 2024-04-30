@@ -12,6 +12,7 @@ class Post {
   final String? title;
   final String? content;
   final String? createdAt;
+  final String? updatedAt;
   final String? postLikeId;
 
   Post({
@@ -20,6 +21,7 @@ class Post {
     required this.title,
     required this.content,
     required this.createdAt,
+    required this.updatedAt,
     required this.postLikeId,
   });
 
@@ -29,6 +31,7 @@ class Post {
         title = json['title'],
         content = json['content'],
         createdAt = json['created_at'],
+        updatedAt = json['updated_at'],
         postLikeId = json['post_like_id'];
 
   Map<String, dynamic> toJson() {
@@ -73,6 +76,7 @@ class ClubPost extends Post {
     Author? user,
     String? title,
     String? content,
+    String? updatedAt,
     String? createdAt,
     String? postLikeId,
     required this.likes,
@@ -84,6 +88,7 @@ class ClubPost extends Post {
       title: title,
       content: content,
       createdAt: createdAt,
+      updatedAt: updatedAt,
       postLikeId: postLikeId
   );
 
@@ -164,6 +169,7 @@ class EventPost extends Post {
     String? title,
     String? content,
     String? createdAt,
+    String? updatedAt,
     String? postLikeId,
     required this.likes,
     required this.totalLikes,
@@ -174,6 +180,7 @@ class EventPost extends Post {
       title: title,
       content: content,
       createdAt: createdAt,
+      updatedAt: updatedAt,
       postLikeId: postLikeId
   );
 
@@ -282,3 +289,28 @@ class CreateEventPost {
     return "${toJson()}";
   }
 }
+
+
+class UpdatePost {
+  final String? title;
+  final String? content;
+
+  UpdatePost({
+    required this.title,
+    required this.content,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'content': content,
+    };
+  }
+
+  @override
+  String toString() {
+    return "${toJson()}";
+  }
+}
+
+

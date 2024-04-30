@@ -6,7 +6,9 @@ from .post import ClubPostSerializer, \
                 DetailClubPostSerializer, \
                 DetailEventPostSerializer, \
                 CreateClubPostSerializer, \
-                CreateEventPostSerializer
+                CreateEventPostSerializer, \
+                UpdateClubPostSerializer, \
+                UpdateEventPostSerializer
 
 from .post_like import ClubPostLikeSerializer, \
                         EventPostLikeSerializer, \

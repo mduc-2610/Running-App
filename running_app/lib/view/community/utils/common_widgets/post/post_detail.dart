@@ -46,6 +46,7 @@ class _PostDetailState extends State<PostDetail> {
     bool checkRequestUser = false;
     List<Map<String, dynamic>> comments = [];
     String postType = "";
+    String postTypeId = "";
     int page = 1;
     double previousScrollOffset = 0;
     ScrollController scrollController = ScrollController();
@@ -96,12 +97,13 @@ class _PostDetailState extends State<PostDetail> {
 
     void getSideData() {
       setState(() {
-        Map<String, dynamic> arguments = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>);
+        Map<String, dynamic>? arguments = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?);
         token = Provider.of<TokenProvider>(context).token;
         user = Provider.of<UserProvider>(context).user;
-        postId = arguments["id"];
-        checkRequestUser = arguments["checkRequestUser"];
-        postType = arguments["postType"];
+        postId = arguments?["id"];
+        checkRequestUser = arguments?["checkRequestUser"];
+        postType = arguments?["postType"];
+        postTypeId = arguments?["postTypeId"];
       });
     }
 
@@ -268,11 +270,37 @@ class _PostDetailState extends State<PostDetail> {
                     Column(
                       children: [
                         PostWidget(
+                          deleteOnPressed: () async {
+                            showNotificationDecision(context, 'Notice', "Are you sure to delete this post?", "No", "Yes", onPressed2: () async {
+                              await callDestroyAPI(
+                                  'social/${postType}-post',
+                                  postId,
+                                  token
+                              );
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, '/club_post', arguments: {
+                                "id": post,
+                              });
+                            });
+                          },
+                          editOnPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, '/post_edit', arguments: {
+                              "postType": postType,
+                              "postTypeId": postTypeId,
+                              "userInEvent": false,
+                              "id": postId,
+                              "title": post.title,
+                              "content": post.content,
+                            });
+                          },
                           token: token,
                           post: post,
                           detail: true,
                           checkRequestUser: checkRequestUser,
                           postType: postType,
+                          postTypeId: postTypeId,
                           like: like,
                           likeOnPressed: submitLike,
                         ),

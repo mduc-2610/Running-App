@@ -12,6 +12,7 @@ import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
 import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
+import 'package:running_app/utils/common_widgets/show_notification.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
@@ -122,18 +123,47 @@ class _PostLayoutState extends State<PostLayout> {
                               )
                             ]
                             else...[
-                              for (var post in widget.posts ?? []) ...[
+                              for (int i = 0; i < widget.posts!.length; i++) ...[
                                 PostWidget(
                                   token: token,
-                                  post: post["post"],
-                                  checkRequestUser: user?.id == post["post"]?.user?.id,
+                                  post: widget.posts?[i]["post"],
+                                  checkRequestUser: user?.id == widget.posts?[i]["post"]?.user?.id,
                                   postType: widget.postType,
-                                  like: post["like"],
+                                  postTypeId: widget.postTypeId,
+                                  like: widget.posts?[i]["like"],
+                                  deleteOnPressed: () async {
+                                    showNotificationDecision(
+                                        context, 'Notice',
+                                        "Are you sure to delete this post?",
+                                        "No", "Yes", onPressed2: () async {
+                                      await callDestroyAPI(
+                                          'social/${widget.postType}-post',
+                                          widget.posts?[i]["post"].id,
+                                          token
+                                      );
+                                      print("Post id $i");
+                                      setState(() {
+                                        widget.posts?.removeAt(i);
+                                      });
+                                      Navigator.pop(context);
+                                    });
+                                  },
+                                  editOnPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.pushNamed(context, '/post_edit', arguments: {
+                                      "postType": widget.postType,
+                                      "postTypeId": widget.postTypeId,
+                                      "userInEvent": widget.userInEvent,
+                                      "id": widget.posts?[i]["post"].id,
+                                      "title": widget.posts?[i]["post"].title,
+                                      "content": widget.posts?[i]["post"].content,
+                                    });
+                                  },
                                   likeOnPressed: () async {
-                                    if(post["like"] == false) {
+                                    if(widget.posts?[i]["like"] == false) {
                                       CreatePostLike postLike = CreatePostLike(
                                         userId: getUrlId(user?.activity ?? ""),
-                                        postId: post["post"].id,
+                                        postId: widget.posts?[i]["post"].id,
                                       );
                                       final data = await callCreateAPI(
                                           'social/${widget.postType}-post-like',
@@ -141,31 +171,29 @@ class _PostLayoutState extends State<PostLayout> {
                                           token
                                       );
                                       setState(() {
-                                        post["post"]?.increaseTotalLikes();
-                                        post["like"] = (post["like"]) ? false : true;
-                                        post["postLikeId"] = data["id"];
+                                        widget.posts?[i]["post"]?.increaseTotalLikes();
+                                        widget.posts?[i]["like"] = (widget.posts?[i]["like"]) ? false : true;
+                                        widget.posts?[i]["postLikeId"] = data["id"];
                                         Like author = Like(
                                             id: user?.id,
                                             name: user?.name,
                                             avatar: ""
                                         );
-                                        post["post"].likes.insert(0, author);
+                                        widget.posts?[i]["post"].likes.insert(0, author);
                                       });
                                     }
                                     else {
                                       await callDestroyAPI(
                                           'social/${widget.postType}-post-like',
-                                          post["postLikeId"],
+                                          widget.posts?[i]["postLikeId"],
                                           token
                                       );
-                                      int index = post["post"].likes
-                                          ?.indexWhere((like) => like.id == user?.id) ?? -1;
+                                      // int index = widget.posts?[i]["post"].likes
+                                      //     ?.indexWhere((like) => like.id == user?.id) ?? -1;
                                       setState(() {
-                                        if(index != - 1) {
-                                          post["post"].likes.removeAt(index);
-                                        }
-                                        post["post"]?.decreaseTotalLikes();
-                                        post["like"] = (post["like"]) ? false : true;
+                                        widget.posts?[i]["post"].likes.removeAt(i);
+                                        widget.posts?[i]["post"]?.decreaseTotalLikes();
+                                        widget.posts?[i]["like"] = (widget.posts?[i]["like"]) ? false : true;
                                       });
                                     }
                                     // await initUserActivity();

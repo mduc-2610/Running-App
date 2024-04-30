@@ -150,7 +150,10 @@ class _ClubPostViewState extends State<ClubPostView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(title: "Club posts", noIcon: true),
+        title: Header(
+            title: "Club posts",
+            noIcon: true,
+        ),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: PostLayout(

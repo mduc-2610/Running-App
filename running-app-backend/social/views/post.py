@@ -5,7 +5,9 @@ from social.serializers import EventPostSerializer, \
                                 DetailClubPostSerializer, \
                                 DetailEventPostSerializer, \
                                 CreateClubPostSerializer, \
-                                CreateEventPostSerializer
+                                CreateEventPostSerializer, \
+                                UpdateClubPostSerializer, \
+                                UpdateEventPostSerializer
 
 from utils.pagination import CommonPagination
 
@@ -19,6 +21,8 @@ class ClubPostViewSet(viewsets.ModelViewSet):
             return DetailClubPostSerializer
         elif self.action == "create":
             return CreateClubPostSerializer
+        elif self.action == "update":
+            return UpdateClubPostSerializer
         return ClubPostSerializer
     
     def get_serializer_context(self):
@@ -43,6 +47,8 @@ class EventPostViewSet(viewsets.ModelViewSet):
             return DetailEventPostSerializer
         elif self.action == "create":
             return CreateEventPostSerializer
+        elif self.action == "update":
+            return UpdateEventPostSerializer
         return EventPostSerializer
     
     def get_serializer_context(self):

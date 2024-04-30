@@ -58,6 +58,10 @@ void showNotificationDecision(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 35,
+          vertical: 25
+        ),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12)
         ),

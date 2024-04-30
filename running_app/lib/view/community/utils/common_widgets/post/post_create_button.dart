@@ -7,6 +7,7 @@ import 'package:running_app/utils/constants.dart';
 
 class PostCreateButton extends StatelessWidget {
   final Map<String, dynamic> argumentsOnPressed;
+
   const PostCreateButton({
     required this.argumentsOnPressed,
     super.key

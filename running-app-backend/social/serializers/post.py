@@ -77,7 +77,7 @@ class CreateClubPostSerializer(serializers.ModelSerializer):
         model = ClubPost
         fields = (
             "id", "user", "title", "content",
-            "created_at", "club_id", "user_id", "total_likes", "total_comments",
+            "created_at", "updated_at", "club_id", "user_id", "total_likes", "total_comments",
         )
         extra_kwargs = {
             "id": {"read_only": True},
@@ -87,6 +87,25 @@ class CreateClubPostSerializer(serializers.ModelSerializer):
             "total_comments": {"read_only": True},
             # "user_id": {"write_only": True},
         }
+
+class UpdateClubPostSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    def get_user(self, instance):
+        return AuthorSerializer(instance.user).data
+    
+    class Meta:
+        model = ClubPost
+        fields = (
+            "id", "user", "created_at", "updated_at", 
+            "total_likes", "total_comments",
+            "title", "content"
+        )
+        read_only_fields = (
+            "id", "user",
+            "created_at", "updated_at", 
+            "total_likes", "total_comments"
+        )
 
 class EventPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
@@ -103,8 +122,7 @@ class EventPostSerializer(serializers.ModelSerializer):
         # exclude = ("likes", "user")
         fields = (
             "id", "user", "total_likes", "likes", "total_comments",
-            "title", "content", "created_at"
-        )
+            "title", "content", "created_at", "updated_at",)
         read_only_fields = ("id", 'created_at')
 
 class DetailEventPostSerializer(serializers.ModelSerializer):
@@ -128,8 +146,7 @@ class DetailEventPostSerializer(serializers.ModelSerializer):
         model = EventPost
         fields = (
             "id", "user", "total_likes", "total_comments", "likes", "comments",
-            "title", "content", "created_at"
-        )
+            "title", "content", "created_at", "updated_at",)
         read_only_fields = ('created_at', "id", "author_id")
         
 
@@ -152,7 +169,7 @@ class CreateEventPostSerializer(serializers.ModelSerializer):
         model = EventPost
         fields = (
             "id", "user", "title", "content",
-            "created_at", "event_id", "user_id", "total_likes", "total_comments",
+            "created_at", "updated_at", "event_id", "user_id", "total_likes", "total_comments",
         )
         extra_kwargs = {
             "id": {"read_only": True},
@@ -162,3 +179,22 @@ class CreateEventPostSerializer(serializers.ModelSerializer):
             "total_comments": {"read_only": True},
             # "user_id": {"write_only": True},
         }
+
+class UpdateEventPostSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    def get_user(self, instance):
+        return AuthorSerializer(instance.user).data
+    
+    class Meta:
+        model = EventPost
+        fields = (
+            "id", "user", "created_at", "updated_at", 
+            "total_likes", "total_comments",
+            "title", "content"
+        )
+        read_only_fields = (
+            "id", "user",
+            "created_at", "updated_at", 
+            "total_likes", "total_comments"
+        )

@@ -25,14 +25,20 @@ class PostWidget extends StatefulWidget {
   final bool socialSection;
   final bool detail;
   final String postType;
+  final String postTypeId;
   final bool like;
+  final VoidCallback deleteOnPressed;
+  final VoidCallback editOnPressed;
   final VoidCallback likeOnPressed;
 
   const PostWidget({
     required this.token,
     required this.post,
     required this.postType,
+    required this.postTypeId,
     required this.like,
+    required this.deleteOnPressed,
+    required this.editOnPressed,
     required this.likeOnPressed,
     this.checkRequestUser,
     this.socialSection = true,
@@ -55,6 +61,15 @@ class _PostWidgetState extends State<PostWidget> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void postDetailRedirect() {
+    Navigator.pushNamed(context, '/post_detail', arguments: {
+      "id": widget.post?.id,
+      "checkRequestUser": widget.checkRequestUser,
+      "postType": widget.postType,
+      "postTypeId": widget.postTypeId,
+    });
   }
 
   @override
@@ -123,26 +138,13 @@ class _PostWidgetState extends State<PostWidget> {
                         context,
                         [
                           {
-                            "text": "Edit Activity",
-                            "onPressed": () {
-                              Navigator.pop(context);
-                              Navigator.pushNamed(context, '/activity_record_edit', arguments: {
-                                "id": widget.post?.id
-                              });
-                            }
+                            "text": "Edit post",
+                            "onPressed": widget.editOnPressed
                           },
                           {
-                            "text": "Delete Activity",
+                            "text": "Delete post",
                             "textColor": Colors.red,
-                            "onPressed": () async {
-                              showNotificationDecision(context, 'Notice', "Are you sure to delete this activity", "No", "Yes", onPressed2: () async {
-                                await callDestroyAPI(
-                                    'activity/activity-record',
-                                    widget.post?.id,
-                                    widget.token
-                                );
-                              });
-                            }
+                            "onPressed": widget.deleteOnPressed
                           }
                         ],
                         "Options");
@@ -159,11 +161,7 @@ class _PostWidgetState extends State<PostWidget> {
           topMargin: 0,
           child: GestureDetector(
             onTap: (widget.detail == false) ? () {
-              Navigator.pushNamed(context, '/post_detail', arguments: {
-                "id": widget.post?.id,
-                "checkRequestUser": widget.checkRequestUser,
-                "postType": widget.postType
-              });
+              postDetailRedirect();
             } : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -211,11 +209,7 @@ class _PostWidgetState extends State<PostWidget> {
           children: [
             GestureDetector(
               onTap: (widget.detail == false) ? () {
-                Navigator.pushNamed(context, '/post_detail', arguments: {
-                  "id": widget.post?.id,
-                  "checkRequestUser": widget.checkRequestUser,
-                  "postType": widget.postType
-                });
+                postDetailRedirect();
               } : null,
               child: SizedBox(
                 height: media.height * 0.27,
@@ -310,7 +304,8 @@ class _PostWidgetState extends State<PostWidget> {
                             Map<String, dynamic> x = await Navigator.pushNamed(context, '/post_detail', arguments: {
                               "id": widget.post.id,
                               "checkRequestUser": widget.checkRequestUser,
-                              "postType": widget.postType
+                              "postType": widget.postType,
+                              "postTypeId": widget.postTypeId,
                             }) as Map<String, dynamic>;
                             setState(() {
                               popArguments = x;
@@ -356,11 +351,7 @@ class _PostWidgetState extends State<PostWidget> {
                           "text": "Comment",
                           "onPressed": () {
                             if(widget.detail == false) {
-                              Navigator.pushNamed(context, '/post_detail', arguments: {
-                                "id": widget.post.id,
-                                "checkRequestUser": widget.checkRequestUser,
-                                "postType": widget.postType
-                              });
+                              postDetailRedirect();
                             }
                           }
                         },

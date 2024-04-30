@@ -9,6 +9,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     total_likes = models.IntegerField(default=0, null=True)
     total_comments = models.IntegerField(default=0, null=True)
     # likes = models.ManyToManyField("account.activity")
@@ -56,7 +57,7 @@ def update_club_post(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=ClubPost)
 def delete_club_post(sender, instance, **kwargs):
     club = instance.club
-    club.total_posts += 1
+    club.total_posts -= 1
     club.save()
 
 @receiver(post_save, sender=EventPost)
@@ -69,5 +70,5 @@ def update_event_post(sender, instance, created, **kwargs):
 @receiver(post_delete, sender=EventPost)
 def delete_event_post(sender, instance, **kwargs):
     event = instance.event
-    event.total_posts += 1
+    event.total_posts -= 1
     event.save()
