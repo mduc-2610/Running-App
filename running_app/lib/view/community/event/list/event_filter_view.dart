@@ -81,12 +81,18 @@ class _EventFilterViewState extends State<EventFilterView> {
             "competition=${competitionFilter}"
     );
     setState(() {
-      events.addAll(data.map((e) {
+      // events.addAll(data.map((e) {
+      //   return {
+      //     "event": e as dynamic,
+      //     "joined": checkUserInEvent(e.id)
+      //   };
+      // }).toList() ?? []);
+      events = data.map((e) {
         return {
           "event": e as dynamic,
           "joined": checkUserInEvent(e.id)
         };
-      }).toList() ?? []);;
+      }).toList();
     });
   }
 

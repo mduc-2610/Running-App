@@ -51,12 +51,18 @@ class _YourEventListViewState extends State<YourEventListView> {
     );
     setState(() {
       userActivity = activity;
-      events.addAll(userActivity?.events?.map((e) {
+      // events.addAll(userActivity?.events?.map((e) {
+      //   return {
+      //     "event": e as dynamic,
+      //     "joined": true,
+      //   };
+      // }).toList() ?? []);
+      events = userActivity?.events?.map((e) {
         return {
           "event": e as dynamic,
           "joined": true,
         };
-      }).toList() ?? []);;
+      }).toList() ?? [];
     });
   }
 

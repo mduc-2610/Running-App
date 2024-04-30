@@ -62,12 +62,18 @@ class _EventListViewState extends State<EventListView> {
             "name=${searchTextController.text}"
     );
     setState(() {
-      events.addAll(data.map((e) {
+      // events.addAll(data.map((e) {
+      //   return {
+      //     "event": e as dynamic,
+      //     "joined": checkUserInEvent(e.id)
+      //   };
+      // }).toList());
+      events = data.map((e) {
         return {
           "event": e as dynamic,
           "joined": checkUserInEvent(e.id)
         };
-      }).toList() ?? []);;
+      }).toList();
     });
   }
 
