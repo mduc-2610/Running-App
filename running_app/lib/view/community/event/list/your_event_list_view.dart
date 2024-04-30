@@ -28,7 +28,7 @@ class _YourEventListViewState extends State<YourEventListView> {
   String eventType = "Joined";
   DetailUser? user;
   Activity? userActivity;
-  List<dynamic>? events;
+  List<dynamic> events = [];
   String token = "";
   bool showClearButton = true;
   TextEditingController searchTextController = TextEditingController();
@@ -51,9 +51,15 @@ class _YourEventListViewState extends State<YourEventListView> {
     );
     setState(() {
       userActivity = activity;
-      events = userActivity?.events;
+      events.addAll(userActivity?.events?.map((e) {
+        return {
+          "event": e as dynamic,
+          "joined": true,
+        };
+      }).toList() ?? []);;
     });
   }
+
 
   Future<void> delayedInit({ bool reload = false}) async {
     if(reload) {

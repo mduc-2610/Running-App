@@ -8,6 +8,7 @@ class EventList extends StatelessWidget {
   final String eventType;
   final List<dynamic>? events;
   final double? scrollHeight;
+
   const EventList({
     required this.eventType,
     required this.events,
@@ -47,7 +48,10 @@ class EventList extends StatelessWidget {
               child: Column(
                 children: [
                   for(var event in events ?? [])...[
-                    EventBox(event: event),
+                    EventBox(
+                      event: event["event"],
+                      joined: event["joined"],
+                    ),
                     SizedBox(height: media.height * 0.025,),
                   ]
                 ],

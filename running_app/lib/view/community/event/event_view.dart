@@ -25,11 +25,12 @@ class EventView extends StatefulWidget {
 }
 
 class _EventViewState extends State<EventView> {
-  List<dynamic>? popularEvents;
-  List<dynamic>? allEvents;
+  List<dynamic> popularEvents = [];
+  List<dynamic> allEvents = [];
   String token = "";
   DetailUser? user;
-  int upcomingEvent = 0;
+  Activity? userActivity;
+  int joinedEvent = 0;
   int endedEvent = 0;
   bool isLoading = true;
   bool showClearButton = false;
@@ -60,7 +61,8 @@ class _EventViewState extends State<EventView> {
             "fields=events"
     );
     setState(() {
-      upcomingEvent = activity?.events.length;
+      userActivity = activity;
+      joinedEvent = activity?.events.length;
       endedEvent = activity2?.events.length;
     });
   }
@@ -69,9 +71,24 @@ class _EventViewState extends State<EventView> {
     final data1 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?sort=-participants&limit=10");
     final data2 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?limit=20");
     setState(() {
-      popularEvents = data1;
-      allEvents = data2;
+      popularEvents.addAll(data1.map((e) {
+        return {
+          "event": e as dynamic,
+          "joined": checkUserInEvent(e.id)
+        };
+      }).toList() ?? []);
+
+      allEvents.addAll(data2.map((e) {
+        return {
+          "event": e as dynamic,
+          "joined": checkUserInEvent(e.id)
+        };
+      }).toList() ?? []);;
     });
+  }
+
+  bool checkUserInEvent(String eventId) {
+    return (userActivity?.events ?? []).where((e) => e.id == eventId).toList().length != 0;
   }
 
   Future<void> delayedInit() async {
@@ -102,7 +119,7 @@ class _EventViewState extends State<EventView> {
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    List text = ["Joined: $upcomingEvent", "Ended: $endedEvent"];
+    List text = ["Joined: $joinedEvent", "Ended: $endedEvent"];
     return (isLoading == false) ? Column(
       children: [
         // Search events section
@@ -267,7 +284,10 @@ class _EventViewState extends State<EventView> {
                           for(var event in popularEvents ?? [])...[
                             Container(
                                 margin: const EdgeInsets.only(right: 15),
-                                child: EventBox(event: event,)
+                                child: EventBox(
+                                  event: event["event"],
+                                  joined: event["joined"]
+                                )
                             ),
                           ]
                         ],
@@ -314,7 +334,9 @@ class _EventViewState extends State<EventView> {
                           children: [
                             for(var event in allEvents ?? [])...[
                               IntrinsicHeight(
-                                  child: EventBox(event: event, width: 200,
+                                  child: EventBox(
+                                    joined: event["joined"],
+                                    event: event["event"], width: 200,
                                     buttonMargin: const EdgeInsets.fromLTRB(12, 0, 12, 12), small: true,)
                               ),
                               const SizedBox(width: 10,)

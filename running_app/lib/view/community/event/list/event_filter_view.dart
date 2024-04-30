@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
@@ -14,6 +16,7 @@ import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/event/utils/common_widgets/event_list.dart';
 
 class EventFilterView extends StatefulWidget {
@@ -24,9 +27,11 @@ class EventFilterView extends StatefulWidget {
 }
 
 class _EventFilterViewState extends State<EventFilterView> {
+  DetailUser? user;
+  Activity? userActivity;
   bool isLoading = true;
   String eventType = "Ongoing";
-  List<dynamic>? events;
+  List<dynamic> events = [];
   String token = "";
   bool showClearButton = false;
   String stateFilter = "All";
@@ -35,10 +40,11 @@ class _EventFilterViewState extends State<EventFilterView> {
   bool allowInitByArgument = true;
   TextEditingController searchTextController = TextEditingController();
 
-  void initToken() {
+  void getData() {
     setState(() {
       Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
       if(allowInitByArgument) {
         searchTextController.text = arguments?["searchText"] ?? "";
         Map<String, String?>? filterArgument = arguments?["filterArgument"];
@@ -49,6 +55,18 @@ class _EventFilterViewState extends State<EventFilterView> {
         }
       }
       allowInitByArgument = false;
+    });
+  }
+
+  Future<void> initUserActivity() async {
+    final data = await callRetrieveAPI(
+        null, null,
+        user?.activity,
+        Activity.fromJson,
+        token
+    );
+    setState(() {
+      userActivity = data;
     });
   }
 
@@ -63,15 +81,27 @@ class _EventFilterViewState extends State<EventFilterView> {
             "competition=${competitionFilter}"
     );
     setState(() {
-      events = data;
+      events.addAll(data.map((e) {
+        return {
+          "event": e as dynamic,
+          "joined": checkUserInEvent(e.id)
+        };
+      }).toList() ?? []);;
     });
   }
 
-  Future<void> delayedInit({ bool reload = false}) async {
+  bool checkUserInEvent(String eventId) {
+    return (userActivity?.events ?? []).where((e) => e.id == eventId).toList().length != 0;
+  }
+
+  Future<void> delayedInit({ bool reload = false, bool initSide = false}) async {
     if(reload) {
       setState(() {
         isLoading = true;
       });
+    }
+    if(initSide) {
+      await initUserActivity();
     }
     await initEvents();
     await Future.delayed(Duration(seconds: 1));
@@ -83,8 +113,8 @@ class _EventFilterViewState extends State<EventFilterView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    initToken();
-    delayedInit();
+    getData();
+    delayedInit(initSide: true);
     // filter();
   }
 

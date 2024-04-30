@@ -16,6 +16,7 @@ class EventBox extends StatefulWidget {
   final String? buttonText;
   final Event? event;
   final bool? small;
+  final bool joined;
 
   const EventBox({
     this.buttonMargin,
@@ -23,6 +24,7 @@ class EventBox extends StatefulWidget {
     this.buttonText,
     this.event,
     this.small = false,
+    required this.joined,
     super.key
   });
 
@@ -31,62 +33,68 @@ class EventBox extends StatefulWidget {
 }
 
 class _EventBoxState extends State<EventBox> {
-  String token = "";
-  DetailUser? user;
-  Activity? userActivity;
-  bool userInEvent = false;
-  bool _disposed = false;
+  bool joined = false;
 
   @override
-  void dispose() {
-    _disposed = true;
-    super.dispose();
+  void initState() {
+    joined = widget.joined;
+    super.initState();
   }
-
-  void initToken() {
-    if (!_disposed) {
-      setState(() {
-        token = Provider.of<TokenProvider>(context).token;
-      });
-    }
-  }
-
-  void initUser() {
-    if (!_disposed) {
-      setState(() {
-        user = Provider.of<UserProvider>(context).user;
-      });
-    }
-  }
-
-  void initUserActivity() async {
-    if (!_disposed) {
-      final data = await callRetrieveAPI(
-          null,
-          null,
-          user?.activity,
-          Activity.fromJson,
-          token
-      );
-      setState(() {
-        userActivity = data;
-        userInEvent = checkUserInEvent();
-      });
-    }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    initToken();
-    initUser();
-    initUserActivity();
-  }
-
-  bool checkUserInEvent() {
-    return (userActivity?.events ?? []).where((e) => e.id == widget.event?.id).toList().length != 0;
-  }
-
+  // String token = "";
+  // DetailUser? user;
+  // Activity? userActivity;
+  // bool userInEvent = false;
+  // bool _disposed = false;
+  //
+  // @override
+  // void dispose() {
+  //   _disposed = true;
+  //   super.dispose();
+  // }
+  //
+  // void initToken() {
+  //   if (!_disposed) {
+  //     setState(() {
+  //       token = Provider.of<TokenProvider>(context).token;
+  //     });
+  //   }
+  // }
+  //
+  // void initUser() {
+  //   if (!_disposed) {
+  //     setState(() {
+  //       user = Provider.of<UserProvider>(context).user;
+  //     });
+  //   }
+  // }
+  //
+  // void initUserActivity() async {
+  //   if (!_disposed) {
+  //     final data = await callRetrieveAPI(
+  //         null,
+  //         null,
+  //         user?.activity,
+  //         Activity.fromJson,
+  //         token
+  //     );
+  //     setState(() {
+  //       userActivity = data;
+  //       userInEvent = checkUserInEvent();
+  //     });
+  //   }
+  // }
+  //
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   initToken();
+  //   initUser();
+  //   initUserActivity();
+  // }
+  //
+  // bool checkUserInEvent() {
+  //   return (userActivity?.events ?? []).where((e) => e.id == widget.event?.id).toList().length != 0;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +103,7 @@ class _EventBoxState extends State<EventBox> {
       onPressed: () {
         Navigator.pushNamed(context, '/event_detail', arguments: {
           "id": widget.event?.id,
-          "userInEvent": userInEvent,
+          "userInEvent": joined,
         });
       },
       child: Container(
@@ -195,16 +203,16 @@ class _EventBoxState extends State<EventBox> {
               width: media.width,
               margin: widget.buttonMargin ?? const EdgeInsets.fromLTRB(12, 0, 12, 20),
               child: CustomMainButton(
-                background: userInEvent ? TColor.BUTTON_DISABLED : TColor.PRIMARY,
+                background: joined ? TColor.BUTTON_DISABLED : TColor.PRIMARY,
                 horizontalPadding: 0,
                 verticalPadding: 12,
-                onPressed: userInEvent ? null : () {
+                onPressed: joined ? null : () {
                   Navigator.pushNamed(context, '/event_detail', arguments: {
                     "id": widget.event?.id,
                   });
                 },
                 child: Text(
-                  widget.buttonText ?? (userInEvent ? "Joined" : "Join now"),
+                  widget.buttonText ?? (joined ? "Joined" : "Join now"),
                   style: TextStyle(
                       color: TColor.PRIMARY_TEXT,
                       fontSize: FontSize.LARGE,
