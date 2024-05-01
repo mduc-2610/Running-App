@@ -100,3 +100,10 @@ class LoginViewSet(viewsets.GenericViewSet):
             return response.Response({'token': token.key}, status=status.HTTP_200_OK)
         else:
             return response.Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+class LogoutView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        request.user.auth_token.delete()
+        return response.Response({'message': "You are logged out"}, status=status.HTTP_200_OK)

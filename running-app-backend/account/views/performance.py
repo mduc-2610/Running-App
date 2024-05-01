@@ -54,6 +54,7 @@ class PerformanceViewSet(
         return queryset
 
     def get_serializer_class(self):
+        print("Acessing User:", self.request.user)
         if self.action == "create":
             return CreatePerformanceSerializer
         elif self.action == 'leaderboard': 

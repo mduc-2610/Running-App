@@ -59,6 +59,10 @@ class UserProvider with ChangeNotifier {
     // _userPerformance = userPerformance;
     // notifyListeners();
   }
+  void resetUser() {
+    _user = null;
+    notifyListeners();
+  }
 
   //
   // Future<Activity> initUserActivity(String token) async {

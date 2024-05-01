@@ -81,25 +81,27 @@ void main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? '';
   String userPref = prefs.getString('user') ?? '';
-  String userPerformancePref = prefs.getString('userPerformance') ?? '';
-  String userActivityPref = prefs.getString('userActivity') ?? '';
-  String userProfilePref = prefs.getString('userProfile') ?? '';
-  String userPrivacyPref = prefs.getString('userPrivacy') ?? '';
   bool logged = prefs.getBool('logged') ?? false;
   DetailUser? user = userPref != "" ? DetailUser.fromJson(json.decode(userPref) ?? "") : null ;
-  Performance? userPerformance = userPerformancePref != "" ? Performance.fromJson(json.decode(userPerformancePref) ?? "") : null ;
-  Profile? userProfile = userProfilePref != "" ? DetailProfile.fromJson(json.decode(userProfilePref) ?? "") : null ;
-  Privacy? userPrivacy = userPrivacyPref != "" ? Privacy.fromJson(json.decode(userPrivacyPref) ?? "") : null ;
-  Activity? userActivity = userActivityPref != "" ? Activity.fromJson(json.decode(userActivityPref) ?? "") : null ;
+  // String userPerformancePref = prefs.getString('userPerformance') ?? '';
+  // String userActivityPref = prefs.getString('userActivity') ?? '';
+  // String userProfilePref = prefs.getString('userProfile') ?? '';
+  // String userPrivacyPref = prefs.getString('userPrivacy') ?? '';
+  // Performance? userPerformance = userPerformancePref != "" ? Performance.fromJson(json.decode(userPerformancePref) ?? "") : null ;
+  // Profile? userProfile = userProfilePref != "" ? DetailProfile.fromJson(json.decode(userProfilePref) ?? "") : null ;
+  // Privacy? userPrivacy = userPrivacyPref != "" ? Privacy.fromJson(json.decode(userPrivacyPref) ?? "") : null ;
+  // Activity? userActivity = userActivityPref != "" ? Activity.fromJson(json.decode(userActivityPref) ?? "") : null ;
 
-
-  Widget homeScreen = token != "" ? const HomeView() : (logged == false) ? const GetStartedView() : const SignInView();
+  Widget homeScreen = token != "" || logged == true
+      ? const HomeView()
+      : (logged == false)
+      ? const SignInView()
+      : const GetStartedView();
   try {
     final data = await callRetrieveAPI('account/user', user?.id, null, DetailUser.fromJson, token);
   }
   catch (e) {
     homeScreen = const GetStartedView();
-
   }
 
   runApp(
@@ -107,10 +109,10 @@ void main() async {
       providers: [
         ChangeNotifierProvider<UserProvider>(
           create: (_) => UserProvider()..setUser(user,
-               userPerformance: userPerformance,
-               userProfile: userProfile,
-           userPrivacy: userPrivacy,
-           userActivity: userActivity,
+           //     userPerformance: userPerformance,
+           //     userProfile: userProfile,
+           // userPrivacy: userPrivacy,
+           // userActivity: userActivity,
         ),
         ),
         ChangeNotifierProvider<TokenProvider>(

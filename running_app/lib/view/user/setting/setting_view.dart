@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 
 import 'package:running_app/utils/common_widgets/header.dart';
@@ -13,21 +17,26 @@ import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void signOut(BuildContext context) async {
+  String token = Provider.of<TokenProvider>(context, listen: false).token;
   SharedPreferences prefs = await SharedPreferences.getInstance();
+  final data = await callCreateAPI('account/logout', {'': null}, token);
+  print("Response: ${data}");
+  bool logged = prefs.getBool('logged') ?? false;
+  await prefs.setBool('logged', false);
+  // print("Logged out $logged");
   await prefs.remove('token');
   await prefs.remove('user');
+
   // await prefs.remove('userPerformance');
   // await prefs.remove('userPrivacy');
   // await prefs.remove('userProfile');
   // await prefs.remove('userActivity');
-
-  Provider.of<TokenProvider>(context, listen: false).setToken('');
-  Provider.of<UserProvider>(context, listen: false).setUser(null);
+  // Provider.of<TokenProvider>(context, listen: false).resetToken();
+  // Provider.of<UserProvider>(context, listen: false).resetUser();
   // Provider.of<UserProvider>(context, listen: false).userActivity = null;
   // Provider.of<UserProvider>(context, listen: false).userProfile = null;
   // Provider.of<UserProvider>(context, listen: false).userPerformance = null;
   // Provider.of<UserProvider>(context, listen: false).userProfile = null;
-
   Navigator.pushReplacementNamed(context, '/sign_in');
 }
 

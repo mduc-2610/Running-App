@@ -9,4 +9,9 @@ class TokenProvider extends ChangeNotifier {
     _token = token;
     notifyListeners();
   }
+
+  void resetToken() {
+    _token = "";
+    notifyListeners();
+  }
 }

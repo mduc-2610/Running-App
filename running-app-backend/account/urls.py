@@ -4,7 +4,7 @@ from rest_framework import routers
 from account.views import (
     UserViewSet, ProfileViewSet,
     PrivacyViewSet, PerformanceViewSet,
-    ActivityViewSet, LoginViewSet,
+    ActivityViewSet, LoginViewSet, LogoutView,
     NotificationSettingViewSet
 )
 router = routers.DefaultRouter()
@@ -19,6 +19,7 @@ router.register(r"notification-setting", NotificationSettingViewSet)
 
 urlpatterns = [
     # path('login/', LoginViewSet.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
 
 urlpatterns += router.urls
