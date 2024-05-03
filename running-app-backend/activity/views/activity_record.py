@@ -44,15 +44,19 @@ class ActivityRecordViewSet(
         if self.action == "feed":
             exclude = [param.strip().lower() for param in self.request.query_params.get('exclude', "").split(',')]
             context.update({
-                'exclude': exclude
+                'exclude': exclude,
             })
+        context.update({
+            'request': self.request,
+            'user': self.request.user.activity
+        })
+        print("CONTEXT:", context)
         return context
     
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.get_serializer_class()
         kwargs["context"] = self.get_serializer_context()
         return serializer_class(*args, **kwargs)
-    
     
     @action(detail=False, methods=['get'], url_path='feed', name='feed')
     def feed(self, request):

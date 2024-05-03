@@ -1,7 +1,9 @@
 from rest_framework import serializers
 
 from social.models import EventPost,\
-                        ClubPost
+                        ClubPost, \
+                        EventPostLike, \
+                        ClubPostLike
 
 from account.serializers.like import LikeSerializer
 from account.serializers.author import AuthorSerializer
@@ -16,7 +18,15 @@ from utils.pagination import CommonPagination
 class ClubPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
     likes = serializers.SerializerMethodField()
-    
+    check_user_like = serializers.SerializerMethodField()
+
+    def get_check_user_like(self, instance):
+        user_id = self.context['user'].id
+        post_id = instance.id
+        instance =  ClubPostLike.objects\
+            .filter(user_id=user_id, post_id=post_id).first()
+        return instance.id if instance else None
+
     def get_likes(self, instance):
         queryset = instance.likes.all()
         # paginator = CommonPagination(page_size=100)
@@ -29,7 +39,7 @@ class ClubPostSerializer(serializers.ModelSerializer):
         # exclude = ("likes", "user")
         fields = (
             "id", "user", "total_likes", "likes", "total_comments",
-            "title", "content", "created_at"
+            "title", "content", "created_at", "check_user_like"
         )
         read_only_fields = ("id", 'created_at')
 
@@ -37,6 +47,14 @@ class DetailClubPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
     likes = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    check_user_like = serializers.SerializerMethodField()
+
+    def get_check_user_like(self, instance):
+        user_id = self.context['user'].id
+        post_id = instance.id
+        instance =  ClubPostLike.objects\
+            .filter(user_id=user_id, post_id=post_id).first()
+        return instance.id if instance else None
     
     def get_likes(self, instance):
         queryset = instance.likes.all()
@@ -54,7 +72,7 @@ class DetailClubPostSerializer(serializers.ModelSerializer):
         model = ClubPost
         fields = (
             "id", "user", "total_likes", "total_comments", "likes", "comments",
-            "title", "content", "created_at"
+            "title", "content", "created_at", "check_user_like"
         )
         read_only_fields = ('created_at', "id", "author_id")
 
@@ -62,7 +80,7 @@ class CreateClubPostSerializer(serializers.ModelSerializer):
     user_id = serializers.UUIDField(write_only=True)
     club_id = serializers.UUIDField(write_only=True)
     user = serializers.SerializerMethodField()
-
+    
     def get_user(self, instance):
         return AuthorSerializer(instance.user).data
     
@@ -110,6 +128,14 @@ class UpdateClubPostSerializer(serializers.ModelSerializer):
 class EventPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
     likes = serializers.SerializerMethodField()
+    check_user_like = serializers.SerializerMethodField()
+
+    def get_check_user_like(self, instance):
+        user_id = self.context['user'].id
+        post_id = instance.id
+        instance =  EventPostLike.objects\
+            .filter(user_id=user_id, post_id=post_id).first()
+        return instance.id if instance else None
     
     def get_likes(self, instance):
         queryset = instance.likes.all()
@@ -122,13 +148,21 @@ class EventPostSerializer(serializers.ModelSerializer):
         # exclude = ("likes", "user")
         fields = (
             "id", "user", "total_likes", "likes", "total_comments",
-            "title", "content", "created_at", "updated_at",)
+            "title", "content", "created_at", "updated_at", "check_user_like")
         read_only_fields = ("id", 'created_at')
 
 class DetailEventPostSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
     likes = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    check_user_like = serializers.SerializerMethodField()
+
+    def get_check_user_like(self, instance):
+        user_id = self.context['user'].id
+        post_id = instance.id
+        instance =  EventPostLike.objects\
+            .filter(user_id=user_id, post_id=post_id).first()
+        return instance.id if instance else None
     
     def get_likes(self, instance):
         queryset = instance.likes.all()
@@ -146,7 +180,7 @@ class DetailEventPostSerializer(serializers.ModelSerializer):
         model = EventPost
         fields = (
             "id", "user", "total_likes", "total_comments", "likes", "comments",
-            "title", "content", "created_at", "updated_at",)
+            "title", "content", "created_at", "updated_at", "check_user_like")
         read_only_fields = ('created_at', "id", "author_id")
         
 

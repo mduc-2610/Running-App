@@ -15,9 +15,9 @@ from utils.function import get_start_of_day, \
 
 from utils.pagination import CommonPagination
 class ClubSerializer(serializers.ModelSerializer):
-    sport_type = serializers.CharField(source='get_sport_type_display')
-    organization = serializers.CharField(source='get_organization_display')
-    privacy = serializers.CharField(source='get_privacy_display') 
+    sport_type = serializers.CharField(source="get_sport_type_display")
+    organization = serializers.CharField(source="get_organization_display")
+    privacy = serializers.CharField(source="get_privacy_display") 
     
     class Meta:
         model = Club
@@ -40,9 +40,9 @@ class DetailClubSerializer(serializers.ModelSerializer):
     week_activites = serializers.SerializerMethodField()
     number_of_participants = serializers.SerializerMethodField()
     participants = serializers.SerializerMethodField()
-    sport_type = serializers.CharField(source='get_sport_type_display')
-    organization = serializers.CharField(source='get_organization_display')
-    privacy = serializers.CharField(source='get_privacy_display') 
+    sport_type = serializers.CharField(source="get_sport_type_display")
+    organization = serializers.CharField(source="get_organization_display")
+    privacy = serializers.CharField(source="get_privacy_display") 
     posts = serializers.SerializerMethodField()
 
     def get_week_activites(self, instance):
@@ -53,19 +53,19 @@ class DetailClubSerializer(serializers.ModelSerializer):
     
     def get_participants(self, instance):
         context = self.context
-        exclude = context.get('exclude', [])
-        if 'participants' not in exclude:
+        exclude = context.get("exclude", [])
+        if "participants" not in exclude:
             sport_type = instance.sport_type
             club_id = instance.id
             type = "club"
 
-            start_date = context.get('start_date')
-            end_date = context.get('end_date')
-            gender = context.get('gender')
-            sort_by = context.get('sort_by')
-            limit_user = context.get('limit_user')
+            start_date = context.get("start_date")
+            end_date = context.get("end_date")
+            gender = context.get("gender")
+            sort_by = context.get("sort_by")
+            limit_user = context.get("limit_user")
 
-            print({'start_date': start_date, 'end_date': end_date, 'sort_by': sort_by})
+            print({"start_date": start_date, "end_date": end_date, "sort_by": sort_by})
 
             users = [instance.user.performance for instance in instance.clubs.all()]
             
@@ -74,7 +74,7 @@ class DetailClubSerializer(serializers.ModelSerializer):
 
             def sort_cmp(x, sort_by):
                 stats = x.range_stats(start_date, end_date, sport_type=sport_type)
-                if sort_by == 'Time':
+                if sort_by == "Time":
                     return (-stats[3], -stats[0])
                 return (-stats[0], -stats[3])
             users = sorted(users, key=lambda x: sort_cmp(x, sort_by))
@@ -83,24 +83,27 @@ class DetailClubSerializer(serializers.ModelSerializer):
                 users = users[:int(limit_user)]
 
             return LeaderboardSerializer(users, many=True, context={
-                'id': club_id,
-                'type': type,
-                'start_date': start_date,
-                'end_date': end_date,
-                'sport_type': sport_type,
+                "id": club_id,
+                "type": type,
+                "start_date": start_date,
+                "end_date": end_date,
+                "sport_type": sport_type,
             }).data
         return None
     
     
     def get_posts(self, instance):
         context = self.context
-        exclude = context.get('exclude', [])
-        if 'posts' not in exclude:
+        exclude = context.get("exclude", [])
+        if "posts" not in exclude:
             queryset = instance.club_posts.all()
             paginator = CommonPagination(page_size=5)
-            paginated_queryset = paginator.paginate_queryset(queryset, context['request'])
+            paginated_queryset = paginator.paginate_queryset(queryset, context["request"])
             return ClubPostSerializer(
-                paginated_queryset, many=True, context={'request', context["request"]}, read_only=True).data
+                paginated_queryset, many=True, context={
+                    "request": context["request"],
+                    "user": context["user"],
+                }, read_only=True).data
         return None
 
     class Meta:

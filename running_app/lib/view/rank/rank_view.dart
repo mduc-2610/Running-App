@@ -164,8 +164,13 @@ class _RankViewState extends State<RankView> {
     return DateFormat('yyyy').format(date!);
   }
 
-  void initToken() {
-    token = Provider.of<TokenProvider>(context).token;
+  void getSideData() {
+    setState(() {
+      Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      token = Provider.of<TokenProvider>(context).token;
+      rankType = arguments?["rankType"] ?? "";
+      rankTypeId = arguments?["id"] ?? "";
+    });
   }
 
   Future<void> initUser() async {
@@ -173,7 +178,8 @@ class _RankViewState extends State<RankView> {
     String queryParams = "?gender=${gender}"
         "&sort_by=${sort_by}"
         "&start_date=${formatDateQuery(getStartDate())}"
-        "&end_date=${formatDateQuery(getEndDate())}";
+        "&end_date=${formatDateQuery(getEndDate())}"
+        "&page=1";
     final data =
     (rankType == "") ? await callListAPI(
         'account/performance/leaderboard',
@@ -196,26 +202,18 @@ class _RankViewState extends State<RankView> {
         DetailEvent.fromJson,
         token,
         queryParams: queryParams
-    )).participants
-    ;
+    )).participants;
+    print("RANK TYPE: $rankType, $data");
     setState(() {
-      userList = data;
+      userList = [];
       if (userList!.length >= 2) {
         dynamic temp = userList?[0];
         userList?[0] = userList?[1];
         userList?[1] = temp;
-
       }
     });
   }
 
-  void getArguments() {
-    setState(() {
-      Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-      rankType = arguments?["rankType"] ?? "";
-      rankTypeId = arguments?["id"] ?? "";
-    });
-  }
 
   @override
   void initState() {
@@ -224,12 +222,14 @@ class _RankViewState extends State<RankView> {
   }
   bool isLoading = true;
 
-  void delayedUser() async {
-    setState(() {
-      isLoading = true;
-    });
+  void delayedUser({ bool reload = false}) async {
+    if(reload) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     await initUser();
-    await Future.delayed(Duration(milliseconds: 1000),);
+    await Future.delayed(Duration(milliseconds: 500),);
 
     setState(() {
       isLoading = false;
@@ -238,8 +238,7 @@ class _RankViewState extends State<RankView> {
 
   @override
   void didChangeDependencies() async {
-    initToken();
-    getArguments();
+    getSideData();
     delayedUser();
     super.didChangeDependencies();
   }
@@ -267,9 +266,7 @@ class _RankViewState extends State<RankView> {
 
   @override
   Widget build(BuildContext context) {
-    print(rankTypeId);
     print(userList);
-    print('Rank type: ${(startDateOfWeek!.isAtSameMomentAs(weekList?[weekList!.length - 1]["startDate"]))} ${weekList?[weekList!.length - 1]["startDate"]}');
     print('queryParams: ${"?gender=${gender}"
         "&sort_by=${sort_by}"
         "&start_date=${formatDateQuery(getStartDate())}"
@@ -317,7 +314,7 @@ class _RankViewState extends State<RankView> {
                                       setState(() {
                                         period = time;
                                         initTime();
-                                        delayedUser();
+                                        delayedUser(reload: true);
                                       });
                                     },
                                     style: ButtonStyle(
@@ -356,7 +353,7 @@ class _RankViewState extends State<RankView> {
                                     startDateOfWeek = date["startDate"];
                                     endDateOfWeek = date["endDate"];
                                     setDateRepresent();
-                                    delayedUser();
+                                    delayedUser(reload: true);
                                   });
                                 } else if(period == "Month") {
                                   dynamic date = await showDate(context, monthList!);
@@ -364,7 +361,7 @@ class _RankViewState extends State<RankView> {
                                     startDateOfMonth = date["startDate"];
                                     endDateOfMonth = date["endDate"];
                                     setDateRepresent();
-                                    delayedUser();
+                                    delayedUser(reload: true);
                                   });
                                 } else if(period == "Year") {
                                   dynamic date = await showDate(context, yearList!);
@@ -372,7 +369,7 @@ class _RankViewState extends State<RankView> {
                                     startDateOfYear = date["startDate"];
                                     endDateOfYear = date["endDate"];
                                     setDateRepresent();
-                                    delayedUser();
+                                    delayedUser(reload: true);
                                   });
                                 }
                               },
@@ -406,7 +403,7 @@ class _RankViewState extends State<RankView> {
                                               endDateOfYear = DateTime(endDateOfYear!.year - 1, endDateOfYear!.month, endDateOfYear!.day);
                                             }
                                             setDateRepresent();
-                                            delayedUser();
+                                            delayedUser(reload: true);
                                           });
                                         } : null,
                                         icon: const Icon(
@@ -440,7 +437,7 @@ class _RankViewState extends State<RankView> {
                                               endDateOfYear = DateTime(endDateOfYear!.year + 1, endDateOfYear!.month, endDateOfYear!.day);
                                             }
                                             setDateRepresent();
-                                            delayedUser();
+                                            delayedUser(reload: true);
                                           });
                                         } : null,
                                         icon: const Icon(
@@ -459,7 +456,7 @@ class _RankViewState extends State<RankView> {
                                       setState(() {
                                         gender = "";
                                       });
-                                      delayedUser();
+                                      delayedUser(reload: true);
                                       Navigator.pop(context);
                                     }
                                   },
@@ -469,7 +466,7 @@ class _RankViewState extends State<RankView> {
                                       setState(() {
                                         gender = "MALE";
                                       });
-                                      delayedUser();
+                                      delayedUser(reload: true);
                                       Navigator.pop(context);
                                     }
                                   },
@@ -479,7 +476,7 @@ class _RankViewState extends State<RankView> {
                                       setState(() {
                                         gender = "FEMALE";
                                       });
-                                      delayedUser();
+                                      delayedUser(reload: true);
                                       Navigator.pop(context);
                                     }
                                   },
@@ -679,14 +676,14 @@ class _RankViewState extends State<RankView> {
                       distanceOnPressed: () {
                         setState(() {
                           sort_by = "Distance";
-                          delayedUser();
+                          delayedUser(reload: true);
                           print(sort_by);
                         });
                       },
                       timeOnPressed: () {
                         setState(() {
                           sort_by = "Time";
-                          delayedUser();
+                          delayedUser(reload: true);
                           print(sort_by);
                         });
                       },

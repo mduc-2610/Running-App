@@ -99,7 +99,10 @@ class ClubViewSet(
                 'exclude': exclude
             })
             
-        context.update({'request': self.request,})
+        context.update({
+            'request': self.request,
+            'user': self.request.user.activity
+        })
         return context
     
     def get_serializer(self, *args, **kwargs):

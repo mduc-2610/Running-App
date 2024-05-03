@@ -814,26 +814,12 @@ class _EventPostLayoutState extends State<EventPostLayout> {
     );
     setState(() {
       posts.addAll(data.posts.map((e) {
-        String result = checkUserLike(e.id!);
-        print("Check result ${e.title} $result");
         return {
           "post": e as dynamic,
-          "like": (result == "") ? false : true,
-          "postLikeId": result,
+          "like": (e.checkUserLike == null) ? false : true,
         };
       }).toList() ?? []);
     });
-  }
-
-  String checkUserLike(String postId) {
-    String result = "";
-    for(var activity in userActivity?.eventPostLikes ?? []) {
-      print("User like post event: ${activity?.title}");
-      if(activity.id == postId) {
-        result = activity.postLikeId;
-      }
-    }
-    return result;
   }
 
   void delayedInit({bool reload = false, bool initSide = true}) async {

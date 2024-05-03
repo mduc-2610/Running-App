@@ -332,11 +332,11 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                         SizedBox(
                                           child: CustomTextButton(
                                             onPressed: () async {
-                                              Map<String, dynamic> result = await Navigator.pushNamed(context, '/club_post', arguments: {
+                                              Map<String, dynamic>? result = await Navigator.pushNamed(context, '/club_post', arguments: {
                                                 "id": club?.id,
-                                              }) as Map<String, dynamic>;
+                                              }) as Map<String, dynamic>?;
                                               setState(() {
-                                                popArguments = result;
+                                                popArguments = result ?? {};
                                                 delayedInit(reload: true);
                                               });
                                             },

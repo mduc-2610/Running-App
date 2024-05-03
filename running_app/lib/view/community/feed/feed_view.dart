@@ -65,24 +65,13 @@ class _FeedViewState extends State<FeedView> {
     );
     setState(() {
       activityRecords.addAll(data.map((e) {
-        String result = checkUserLike(e.id);
+        String result = "";
         return {
           "activityRecord": e as dynamic,
-          "like": (result == "") ? false : true,
-          "postLikeId": result,
+          "like": (e.checkUserLike == null) ? false : true,
         };
       }).toList() ?? []);
     });
-  }
-
-  String checkUserLike(String activityRecordId) {
-    String result = "";
-    for(var activity in userActivity?.activityRecordPostLikes ?? []) {
-      if(activity.id == activityRecordId) {
-        result = activity.postLikeId;
-      }
-    }
-    return result;
   }
 
   Future<void> handleRefresh() async {
@@ -268,7 +257,7 @@ class _FeedViewState extends State<FeedView> {
                                   setState(() {
                                     activityRecord["activityRecord"]?.increaseTotalLikes();
                                     activityRecord["like"] = (activityRecord["like"]) ? false : true;
-                                    activityRecord["postLikeId"] = data["id"];
+                                    activityRecord["activityRecord"].checkUserLike = data["id"];
                                     Like author = Like(
                                         id: user?.id,
                                         name: user?.name,
@@ -280,7 +269,7 @@ class _FeedViewState extends State<FeedView> {
                                 else {
                                   await callDestroyAPI(
                                     'social/act-rec-post-like',
-                                    activityRecord["postLikeId"],
+                                    activityRecord["activityRecord"].checkUserLike,
                                     token
                                   );
                                   int index = activityRecord["activityRecord"].likes

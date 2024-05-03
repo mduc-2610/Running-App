@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from account.models.activity import Activity
 from activity.models import ActivityRecord
+from social.models import ActivityRecordPostLike
 from account.serializers import UserSerializer
 from account.serializers.like import LikeSerializer
 from account.serializers.author import AuthorSerializer
@@ -12,6 +13,14 @@ class ActivityRecordSerializer(serializers.ModelSerializer):
     user = AuthorSerializer()
     completed_at = serializers.SerializerMethodField()
     avg_moving_pace = serializers.SerializerMethodField()
+    check_user_like = serializers.SerializerMethodField()
+
+    def get_check_user_like(self, instance):
+        user_id = self.context['user'].id
+        post_id = instance.id
+        instance =  ActivityRecordPostLike.objects\
+            .filter(user_id=user_id, post_id=post_id).first()
+        return instance.id if instance else None
     
     def get_avg_moving_pace(self, instance):
         return instance.avg_moving_pace_readable()
@@ -27,7 +36,7 @@ class ActivityRecordSerializer(serializers.ModelSerializer):
             "avg_moving_pace", "avg_cadence", "avg_heart_rate",
             "duration", "steps", "user",
             "kcal", "completed_at",
-            "total_likes", "total_comments",
+            "total_likes", "total_comments", "check_user_like"
         )
         extra_kwargs = {
             "id": {"read_only": True},
@@ -44,6 +53,14 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
     kcal = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
+    check_user_like = serializers.SerializerMethodField()
+
+    def get_check_user_like(self, instance):
+        user_id = self.context['user'].id
+        post_id = instance.id
+        instance =  ActivityRecordPostLike.objects\
+            .filter(user_id=user_id, post_id=post_id).first()
+        return instance.id if instance else None
     
     def get_author_id(self, instance):
         return instance.user.user.id

@@ -13,7 +13,7 @@ class Post {
   final String? content;
   final String? createdAt;
   final String? updatedAt;
-  final String? postLikeId;
+  String? checkUserLike;
 
   Post({
     required this.id,
@@ -22,7 +22,7 @@ class Post {
     required this.content,
     required this.createdAt,
     required this.updatedAt,
-    required this.postLikeId,
+    required this.checkUserLike,
   });
 
   Post.fromJson(Map<String, dynamic> json)
@@ -32,7 +32,7 @@ class Post {
         content = json['content'],
         createdAt = json['created_at'],
         updatedAt = json['updated_at'],
-        postLikeId = json['post_like_id'];
+        checkUserLike = json['check_user_like'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -78,7 +78,7 @@ class ClubPost extends Post {
     String? content,
     String? updatedAt,
     String? createdAt,
-    String? postLikeId,
+    String? checkUserLike,
     required this.likes,
     required this.totalLikes,
     required this.totalComments,
@@ -89,7 +89,7 @@ class ClubPost extends Post {
       content: content,
       createdAt: createdAt,
       updatedAt: updatedAt,
-      postLikeId: postLikeId
+      checkUserLike: checkUserLike
   );
 
   ClubPost.fromJson(Map<String, dynamic> json)
@@ -170,7 +170,7 @@ class EventPost extends Post {
     String? content,
     String? createdAt,
     String? updatedAt,
-    String? postLikeId,
+    String? checkUserLike,
     required this.likes,
     required this.totalLikes,
     required this.totalComments,
@@ -181,7 +181,7 @@ class EventPost extends Post {
       content: content,
       createdAt: createdAt,
       updatedAt: updatedAt,
-      postLikeId: postLikeId
+      checkUserLike: checkUserLike
   );
 
   EventPost.fromJson(Map<String, dynamic> json)

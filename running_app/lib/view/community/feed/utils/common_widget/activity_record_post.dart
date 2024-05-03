@@ -428,26 +428,31 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                         if(x != null)...[
                           CustomTextButton(
                             onPressed: x["onPressed"] as VoidCallback,
-                            child: Row(
-                              children: [
-                                Icon(
-                                  x["icon"] as IconData,
-                                  color: (like && x["text"] == "Like")
-                                      ? TColor.THIRD
-                                      : TColor.PRIMARY_TEXT,
-                                ),
-                                SizedBox(width: media.width * 0.02,),
-                                Text(
-                                  x["text"] as String,
-                                  style: TextStyle(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 30
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    x["icon"] as IconData,
                                     color: (like && x["text"] == "Like")
                                         ? TColor.THIRD
                                         : TColor.PRIMARY_TEXT,
-                                    fontSize: FontSize. NORMAL,
-                                    fontWeight: FontWeight.w600,
                                   ),
-                                )
-                              ],
+                                  SizedBox(width: media.width * 0.02,),
+                                  Text(
+                                    x["text"] as String,
+                                    style: TextStyle(
+                                      color: (like && x["text"] == "Like")
+                                          ? TColor.THIRD
+                                          : TColor.PRIMARY_TEXT,
+                                      fontSize: FontSize. NORMAL,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                           // if(x["text"] != "Share") SeparateBar(width: 1, height: 45, color: TColor.BORDER_COLOR,)

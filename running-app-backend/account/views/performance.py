@@ -22,6 +22,7 @@ from utils.function import get_start_of_day, \
 
 from rest_framework.decorators import action
 from functools import cmp_to_key
+from utils.pagination import CommonPagination
 
 class PerformanceViewSet(
     mixins.CreateModelMixin,
@@ -50,7 +51,7 @@ class PerformanceViewSet(
                     return (-stats[3], -stats[0])
                 return (-stats[0], -stats[3])
             queryset = sorted(queryset, key=lambda x: sort_cmp(x, sort_by))
-    
+
         return queryset
 
     def get_serializer_class(self):
@@ -67,8 +68,9 @@ class PerformanceViewSet(
         query_params = self.request.query_params
         start_date = query_params.get('start_date', None)
         end_date = query_params.get('end_date', None)
-        
-        serializer = self.get_serializer(queryset, many=True, context={'start_date': start_date, 'end_date': end_date})
+        paginator = CommonPagination(page_size=10)
+        paginated_queryset = paginator.paginate_queryset(queryset, self.request)
+        serializer = self.get_serializer(paginated_queryset, many=True, context={'start_date': start_date, 'end_date': end_date})
         return response.Response(serializer.data, status=status.HTTP_200_OK)
     
     # def get_serializer(self, *args, **kwargs):

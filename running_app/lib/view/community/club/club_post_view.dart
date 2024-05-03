@@ -68,24 +68,13 @@ class _ClubPostViewState extends State<ClubPostView> {
     setState(() {
       club = data;
       posts.addAll(data.posts.map((e) {
-        String result = checkUserLike(e.id!);
+        String result = "";
         return {
           "post": e as dynamic,
-          "like": (result == "") ? false : true,
-          "postLikeId": result,
+          "like": (e.checkUserLike == null) ? false : true,
         };
       }).toList() ?? []);
     });
-  }
-
-  String checkUserLike(String postId) {
-    String result = "";
-    for(var activity in userActivity?.clubPostLikes ?? []) {
-      if(activity.id == postId) {
-        result = activity.postLikeId;
-      }
-    }
-    return result;
   }
 
   Future<void> handleRefresh() async {

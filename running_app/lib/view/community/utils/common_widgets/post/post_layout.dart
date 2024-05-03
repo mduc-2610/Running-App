@@ -173,7 +173,7 @@ class _PostLayoutState extends State<PostLayout> {
                                       setState(() {
                                         widget.posts?[i]["post"]?.increaseTotalLikes();
                                         widget.posts?[i]["like"] = (widget.posts?[i]["like"]) ? false : true;
-                                        widget.posts?[i]["postLikeId"] = data["id"];
+                                        widget.posts?[i]["post"].checkUserLike = data["id"];
                                         Like author = Like(
                                             id: user?.id,
                                             name: user?.name,
@@ -185,7 +185,7 @@ class _PostLayoutState extends State<PostLayout> {
                                     else {
                                       await callDestroyAPI(
                                           'social/${widget.postType}-post-like',
-                                          widget.posts?[i]["postLikeId"],
+                                          widget.posts?[i]["post"].checkUserLike,
                                           token
                                       );
                                       // int index = widget.posts?[i]["post"].likes

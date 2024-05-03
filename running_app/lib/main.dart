@@ -92,11 +92,21 @@ void main() async {
   // Privacy? userPrivacy = userPrivacyPref != "" ? Privacy.fromJson(json.decode(userPrivacyPref) ?? "") : null ;
   // Activity? userActivity = userActivityPref != "" ? Activity.fromJson(json.decode(userActivityPref) ?? "") : null ;
 
-  Widget homeScreen = token != "" || logged == true
-      ? const HomeView()
-      : (logged == false)
-      ? const SignInView()
-      : const GetStartedView();
+  // Widget homeScreen = token != "" || logged == true
+  //     ? const HomeView()
+  //     : (logged == false)
+  //     ? const SignInView()
+  //     : const GetStartedView();
+  late Widget homeScreen;
+  if(token != "" || logged) {
+    homeScreen = HomeView();
+  }
+  else if(logged == false) {
+    homeScreen = SignInView();
+  }
+  else {
+    homeScreen = GetStartedView();
+  }
   try {
     final data = await callRetrieveAPI('account/user', user?.id, null, DetailUser.fromJson, token);
   }

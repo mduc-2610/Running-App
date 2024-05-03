@@ -52,7 +52,9 @@ class DetailEventSerializer(serializers.ModelSerializer):
             queryset = instance.event_posts.all()
             paginator = CommonPagination(page_size=5)
             paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
-            return EventPostSerializer(paginated_queryset, many=True, read_only=True).data
+            return EventPostSerializer(paginated_queryset, many=True, read_only=True, context={
+                "user": context["user"],
+            }).data
         return None
     
     def get_groups(self, instance):

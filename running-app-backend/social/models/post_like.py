@@ -10,6 +10,7 @@ class PostLike(models.Model):
     class Meta:
         abstract = True
         ordering = ['-created_at']
+        unique_together = ("post", "user",)
         
     def __str__(self):
         return f""

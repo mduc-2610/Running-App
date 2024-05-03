@@ -72,6 +72,7 @@ class ActivityViewSet(
             "event_params": event_params, 
             "club_params": club_params,
             "product_params": product_params,
+            'user': self.request.user.activity,
             # "activity_record_params": activity_record_params
         }
         return context

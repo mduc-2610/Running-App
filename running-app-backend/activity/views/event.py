@@ -109,6 +109,9 @@ class EventViewSet(
                 'limit_user': limit_user,
                 'exclude': exclude
             })
+        context.update({
+            'user': self.request.user.activity
+        })
         return context
     
     def get_serializer(self, *args, **kwargs):
