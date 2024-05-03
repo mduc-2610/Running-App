@@ -3,6 +3,8 @@ import datetime
 
 from django.db import models
 from django.core.validators import MaxLengthValidator
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 class Club(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
@@ -34,13 +36,12 @@ class Club(models.Model):
         validators=[MaxLengthValidator(255, 'The field can contain at most 200 characters')]
     )
     total_posts = models.IntegerField(default=0, null=True)
+    total_participants = models.IntegerField(default=0, null=True)
 
     def week_activities(self):
         # last_week = datetime.datetime.now() - datetime.timedelta(days=7)
         return 0
-
-    def number_of_participants(self):
-        return self.clubs.count()
     
     def __str__(self):
         return self.name
+    

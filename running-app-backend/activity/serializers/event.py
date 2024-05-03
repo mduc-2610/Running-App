@@ -17,13 +17,12 @@ from utils.function import get_start_of_day, \
 from utils.pagination import CommonPagination
 class EventSerializer(serializers.ModelSerializer):
     competition = serializers.CharField(source='get_competition_display')
-
     class Meta:
         model = Event
         fields = (
             "id",
             "name",
-            "number_of_participants",
+            "total_participants",
             "competition",
             "banner",
             "days_remain"
@@ -34,7 +33,6 @@ class EventSerializer(serializers.ModelSerializer):
     
 class DetailEventSerializer(serializers.ModelSerializer):
     days_remain = serializers.SerializerMethodField()
-    number_of_participants = serializers.SerializerMethodField()
     participants = serializers.SerializerMethodField()
     groups = serializers.SerializerMethodField()
     privacy = serializers.CharField(source='get_privacy_display')
@@ -66,9 +64,6 @@ class DetailEventSerializer(serializers.ModelSerializer):
     
     def get_days_remain(self, instance):
         return instance.days_remain()
-    
-    def get_number_of_participants(self, instance):
-        return instance.number_of_participants()
     
     # def get_participants(self, instance):
     #     request = self.context.get('request', None)

@@ -3,6 +3,8 @@ from datetime import timedelta
 
 from django.db import models
 from django.db.models import Sum
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 class UserParticipation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
@@ -36,3 +38,42 @@ class UserParticipationEvent(UserParticipation):
 class UserParticipationGroup(UserParticipation):
     group = models.ForeignKey(
         "activity.Group", on_delete=models.CASCADE)
+
+@receiver(post_save, sender=UserParticipationClub)
+def update_club_participant(sender, instance, created, **kwargs):
+    if created:
+        club = instance.club
+        club.total_participants += 1
+        club.save()
+
+@receiver(post_delete, sender=UserParticipationClub)
+def delete_club_participant(sender, instance, **kwargs):
+    club = instance.club
+    club.total_participants -= 1
+    club.save()
+
+@receiver(post_save, sender=UserParticipationEvent)
+def update_event_participant(sender, instance, created, **kwargs):
+    if created:
+        event = instance.event
+        event.total_participants += 1
+        event.save()
+
+@receiver(post_delete, sender=UserParticipationEvent)
+def delete_event_participant(sender, instance, **kwargs):
+    event = instance.event
+    event.total_participants -= 1
+    event.save()
+
+@receiver(post_save, sender=UserParticipationGroup)
+def update_group_participant(sender, instance, created, **kwargs):
+    if created:
+        group = instance.group
+        group.total_participants += 1
+        group.save()
+
+@receiver(post_delete, sender=UserParticipationGroup)
+def delete_group_participant(sender, instance, **kwargs):
+    group = instance.group
+    group.total_participants -= 1
+    group.save()

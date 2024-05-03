@@ -29,7 +29,7 @@ class ClubSerializer(serializers.ModelSerializer):
             "privacy", 
             "organization",
             "week_activities", 
-            "number_of_participants",
+            "total_participants",
             "total_posts"
         )
         extra_kwargs = {
@@ -38,7 +38,6 @@ class ClubSerializer(serializers.ModelSerializer):
 
 class DetailClubSerializer(serializers.ModelSerializer):
     week_activites = serializers.SerializerMethodField()
-    number_of_participants = serializers.SerializerMethodField()
     participants = serializers.SerializerMethodField()
     sport_type = serializers.CharField(source="get_sport_type_display")
     organization = serializers.CharField(source="get_organization_display")
@@ -47,9 +46,6 @@ class DetailClubSerializer(serializers.ModelSerializer):
 
     def get_week_activites(self, instance):
         return instance.week_activities()
-    
-    def get_number_of_participants(self, instance):
-        return instance.number_of_participants()
     
     def get_participants(self, instance):
         context = self.context

@@ -1047,7 +1047,7 @@ class GeneralInformationLayout extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "  •  ${event?.numberOfParticipants ?? 0} join",
+                          "  •  ${event?.totalParticipants ?? 0} join",
                           style: TextStyle(
                             color: TColor.DESCRIPTION,
                             fontSize: FontSize.SMALL,
@@ -1262,7 +1262,7 @@ class GeneralInformationLayout extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "${group?.numberOfParticipants}",
+                                        "${group?.totalParticipants}",
                                         style: TxtStyle.normalText,
                                       ),
                                       Text(

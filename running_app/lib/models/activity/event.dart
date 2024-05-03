@@ -6,7 +6,7 @@ import 'package:running_app/models/social/post.dart';
 class Event {
   final String? id;
   final String? name;
-  final int? numberOfParticipants;
+  final int? totalParticipants;
   final String? banner;
   final String? competition;
   final int? daysRemain;
@@ -14,7 +14,7 @@ class Event {
   Event({
     required this.id,
     required this.name,
-    required this.numberOfParticipants,
+    required this.totalParticipants,
     required this.competition,
     required this.banner,
     required this.daysRemain,
@@ -23,7 +23,7 @@ class Event {
   Event.fromJson(Map<String, dynamic> json)
     : id = json['id'],
       name = json['name'],
-      numberOfParticipants = json['number_of_participants'],
+      totalParticipants = json['total_participants'],
       competition = json['competition'],
       banner = json['banner'],
       daysRemain = json['days_remaining'];
@@ -32,7 +32,7 @@ class Event {
     return {
       'id': id,
       'name': name,
-      'number_of_participants': numberOfParticipants,
+      'total_participants': totalParticipants,
       'banner': banner,
       'days_remaining': daysRemain,
     };
@@ -40,7 +40,7 @@ class Event {
 
   @override
   String toString() {
-    return 'Event{id: $id, name: $name, numberOfParticipants: $numberOfParticipants, banner: $banner, daysRemain: $daysRemain}';
+    return 'Event{id: $id, name: $name, totalParticipants: $totalParticipants, banner: $banner, daysRemain: $daysRemain}';
   }
 }
 
@@ -60,7 +60,7 @@ class DetailEvent extends Event {
   DetailEvent({
     String? id,
     String? name,
-    int? numberOfParticipants,
+    int? totalParticipants,
     String? banner,
     int? daysRemain,
     String? competition,
@@ -78,7 +78,7 @@ class DetailEvent extends Event {
   }) : super(
     id: id,
     name: name,
-    numberOfParticipants: numberOfParticipants,
+    totalParticipants: totalParticipants,
     banner: banner,
     competition: competition,
     daysRemain: daysRemain

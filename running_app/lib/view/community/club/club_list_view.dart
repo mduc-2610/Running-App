@@ -223,7 +223,7 @@ class _ClubListViewState extends State<ClubListView> {
                                                       ),
                                                       // SizedBox(height: media.height * 0.005,),
                                                       Text(
-                                                        "Member: ${club?.numberOfParticipants}",
+                                                        "Member: ${club?.totalParticipants}",
                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 1,
                                                         style: TextStyle(

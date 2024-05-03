@@ -82,7 +82,7 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
       },
       {
         "icon": "assets/img/community/people.svg",
-        "figure": group?.numberOfParticipants ?? 0,
+        "figure": group?.totalParticipants ?? 0,
         "type": "Members"
       },
       {

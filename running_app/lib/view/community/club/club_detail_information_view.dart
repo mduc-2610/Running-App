@@ -164,7 +164,7 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                       },
                                       {
                                         "icon": Icons.people_alt_outlined,
-                                        "text": "${club?.numberOfParticipants ?? 0} Join",
+                                        "text": "${club?.totalParticipants ?? 0} Join",
                                       },
                                       {
                                         "icon": Icons.public_rounded,

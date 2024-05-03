@@ -169,7 +169,7 @@ class _EventBoxState extends State<EventBox> {
                       },
                       {
                         "icon": Icons.people_alt_outlined,
-                        "text": "Join: ${widget.event?.numberOfParticipants}"
+                        "text": "Join: ${widget.event?.totalParticipants}"
                       },
                       (widget.small == false) ?{
                         "icon": Icons.directions_run_rounded,

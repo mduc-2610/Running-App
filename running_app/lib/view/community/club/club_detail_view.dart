@@ -241,7 +241,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                           },
                                           {
                                             "icon": Icons.people_alt_outlined,
-                                            "text": "${club?.numberOfParticipants ?? 0} Join",
+                                            "text": "${club?.totalParticipants ?? 0} Join",
                                           },
                                           {
                                             "icon": Icons.public_rounded,
@@ -428,7 +428,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                             ]
                                         ),
                                         // SizedBox(height: media.height * 0.01,),
-                                        (club?.numberOfParticipants != 0)
+                                        (club?.totalParticipants != 0)
                                             ? ScrollSynchronized(
                                           parentScrollController: parentScrollController,
                                           child: AthleteTable(

@@ -22,15 +22,13 @@ class Group(models.Model):
         "activity.Event", related_name="groups", on_delete=models.CASCADE)
     users = models.ManyToManyField(
         "account.Activity", through="activity.UserParticipationGroup", blank=True)
+    total_participants = models.IntegerField(default=0, null=True)
     
     def total_distance(self):
         return 0
     
     def total_duration(self):
         return ""
-    
-    def number_of_participants(self):
-        return self.users.count()
     
     def rank(self):
         return 0

@@ -6,9 +6,6 @@ from account.serializers import UserSerializer
 # from activity.serializers.event import EventSerializer
 
 class GroupSerializer(serializers.ModelSerializer):
-    number_of_participants = serializers.SerializerMethodField()
-    def get_number_of_participants(self, instance):
-        return instance.number_of_participants()
     
     class Meta:
         model = Group
@@ -18,7 +15,7 @@ class GroupSerializer(serializers.ModelSerializer):
             "avatar",
             "total_distance",
             "total_duration",
-            "number_of_participants"
+            "total_participants"
         )
         extra_kwargs = {
             "id": {"read_only": True}
@@ -26,7 +23,6 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class DetailGroupSerializer(serializers.ModelSerializer):
     total_distance = serializers.SerializerMethodField()
-    number_of_participants = serializers.SerializerMethodField()
     total_duration = serializers.SerializerMethodField()
     rank = serializers.SerializerMethodField()
     # event = EventSerializer()
@@ -34,9 +30,6 @@ class DetailGroupSerializer(serializers.ModelSerializer):
 
     def get_total_distance(self, instance):
         return instance.total_distance()
-    
-    def get_number_of_participants(self, instance):
-        return instance.number_of_participants()
     
     def get_total_duration(self, instance):
         return instance.total_duration()

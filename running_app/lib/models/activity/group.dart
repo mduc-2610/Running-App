@@ -9,7 +9,7 @@ class Group {
   final String? avatar;
   final int? totalDistance;
   final String? totalDuration;
-  final int? numberOfParticipants;
+  final int? totalParticipants;
 
   Group({
     required this.id,
@@ -17,14 +17,14 @@ class Group {
     required this.avatar,
     required this.totalDistance,
     required this.totalDuration,
-    required this.numberOfParticipants,
+    required this.totalParticipants,
   });
 
   Group.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
         avatar = json['avatar'],
-        numberOfParticipants = json['number_of_participants'],
+        totalParticipants = json['total_participants'],
         totalDistance = json['total_distance'],
         totalDuration = json['total_duration'];
 
@@ -33,7 +33,7 @@ class Group {
       'id': id,
       'name': name,
       'avatar': avatar,
-      'number_of_participants': numberOfParticipants,
+      'total_participants': totalParticipants,
       'total_distance': totalDistance,
       'total_duration': totalDuration,
     };
@@ -41,7 +41,7 @@ class Group {
 
   @override
   String toString() {
-    return 'Group{id: $id, name: $name, avatar: $avatar, numberOfParticipants: $numberOfParticipants, totalDistance: $totalDistance, totalDuration: $totalDuration}';
+    return 'Group{id: $id, name: $name, avatar: $avatar, totalParticipants: $totalParticipants, totalDistance: $totalDistance, totalDuration: $totalDuration}';
   }
 }
 
@@ -57,7 +57,7 @@ class DetailGroup extends Group {
     String? avatar,
     int? totalDistance,
     String? totalDuration,
-    int? numberOfParticipants,
+    int? totalParticipants,
     required this.rank,
     // required this.event,
     required this.users,
@@ -66,7 +66,7 @@ class DetailGroup extends Group {
     id: id,
     name: name,
     avatar: avatar,
-    numberOfParticipants: numberOfParticipants,
+    totalParticipants: totalParticipants,
     totalDistance: totalDistance,
     totalDuration: totalDuration,
   );

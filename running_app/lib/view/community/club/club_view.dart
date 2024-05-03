@@ -67,7 +67,7 @@ class _ClubViewState extends State<ClubView> {
       });
     }
     await initUserActivity();
-    await Future.delayed(Duration(seconds: 1),);
+    await Future.delayed(Duration(milliseconds: 0),);
 
     setState(() {
       isLoading = false;
@@ -96,7 +96,7 @@ class _ClubViewState extends State<ClubView> {
     List clubStat = [
       {
         "type": "Members",
-        "amount": (i) => userClubs?[i].numberOfParticipants.toString() ?? ""
+        "amount": (i) => userClubs?[i].totalParticipants.toString() ?? ""
       },
       {
         "type": "Week activities",
@@ -297,7 +297,7 @@ class _ClubViewState extends State<ClubView> {
                                         width: media.width,
                                         height: media.height * 0.15,
                                         decoration: BoxDecoration(
-                                          color: TColor.PRIMARY,
+                                          color: TColor.SECONDARY,
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                       ),
@@ -315,7 +315,7 @@ class _ClubViewState extends State<ClubView> {
                                               bottomLeft: Radius.circular(12),
                                             ),
                                             border: Border.all(
-                                              color: TColor.PRIMARY,
+                                              color: TColor.SECONDARY,
                                               width: 1.0,
                                             )),
                                         child: Column(

@@ -11,7 +11,7 @@ class Club {
   final String? avatar;
   final String? sportType;
   final int? weekActivities;
-  final int? numberOfParticipants;
+  final int? totalParticipants;
   final String? privacy;
   final String? organization;
   final int? totalPosts;
@@ -21,7 +21,7 @@ class Club {
      required this.avatar,
      required this.sportType,
      required this.weekActivities,
-     required this.numberOfParticipants,
+     required this.totalParticipants,
      required this.privacy,
      required this.organization,
      required this.totalPosts,
@@ -33,7 +33,7 @@ class Club {
       avatar = json['avatar'],
       sportType = json['sport_type'],
       weekActivities = json['week_activities'],
-      numberOfParticipants = json['number_of_participants'],
+      totalParticipants = json['total_participants'],
       privacy = json['privacy'],
       organization = json['organization'],
       totalPosts = json['total_posts'];
@@ -45,7 +45,7 @@ class Club {
       'avatar': avatar,
       'sport_type': sportType,
       'week_activities': weekActivities,
-      'number_of_participants': numberOfParticipants,
+      'total_participants': totalParticipants,
       'privacy' : privacy,
       'organization' : organization,
       'total_posts': totalPosts,
@@ -54,7 +54,7 @@ class Club {
 
   @override
   String toString() {
-    return 'Club{id: $id, name: $name, avatar: $avatar, sportType: $sportType, weekActivities: $weekActivities, numberOfParticipants: $numberOfParticipants}';
+    return 'Club{id: $id, name: $name, avatar: $avatar, sportType: $sportType, weekActivities: $weekActivities, totalParticipants: $totalParticipants}';
   }
 }
 
@@ -72,7 +72,7 @@ class DetailClub extends Club {
     String? privacy,
     String? organization,
     int? weekActivities,
-    int? numberOfParticipants,
+    int? totalParticipants,
     int? totalPosts,
     required this.posts,
     required this.participants,
@@ -84,7 +84,7 @@ class DetailClub extends Club {
     avatar: avatar,
     sportType: sportType,
     weekActivities: weekActivities,
-    numberOfParticipants: numberOfParticipants,
+    totalParticipants: totalParticipants,
     privacy: privacy,
     organization: organization,
     totalPosts: totalPosts

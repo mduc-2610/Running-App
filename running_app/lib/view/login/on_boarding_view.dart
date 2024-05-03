@@ -57,6 +57,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
 
         MainWrapper(
           topMargin: media.height * 0.06,
+          bottomMargin: media.height * 0.015,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
