@@ -68,7 +68,7 @@ class PerformanceViewSet(
         query_params = self.request.query_params
         start_date = query_params.get('start_date', None)
         end_date = query_params.get('end_date', None)
-        paginator = CommonPagination(page_size=10)
+        paginator = CommonPagination(page_size=20)
         paginated_queryset = paginator.paginate_queryset(queryset, self.request)
         serializer = self.get_serializer(paginated_queryset, many=True, context={'start_date': start_date, 'end_date': end_date})
         return response.Response(serializer.data, status=status.HTTP_200_OK)

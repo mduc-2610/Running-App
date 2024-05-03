@@ -34,6 +34,9 @@ class _FeedViewState extends State<FeedView> {
   String showView = "Explore";
   double previousScrollOffset = 0;
   int page = 1;
+  bool isVisible = true;
+  ScrollController scrollController = ScrollController();
+
 
   void getProviderData() {
     setState(() {
@@ -101,8 +104,6 @@ class _FeedViewState extends State<FeedView> {
     delayedInit();
   }
 
-  ScrollController scrollController = ScrollController();
-  bool isVisible = true;
   void scrollListener() {
     double scrollThreshold = 100.0;
     if (scrollController.position.userScrollDirection ==

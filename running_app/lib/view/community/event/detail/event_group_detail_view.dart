@@ -459,7 +459,7 @@ class _EventGroupDetailViewState extends State<EventGroupDetailView> {
                             SizedBox(height: media.height * 0.01,),
                             ScrollSynchronized(
                               parentScrollController: parentScrollController,
-                              child: AthleteTable(participants: group?.users, tableHeight: media.height - media.height * 0.15, controller: childScrollController,),
+                              child: AthleteTable(participants: group?.users ?? [], tableHeight: media.height - media.height * 0.15, controller: childScrollController,),
                             ),
                           ],
                         )

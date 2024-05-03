@@ -54,8 +54,8 @@ class _EventDetailViewState extends State<EventDetailView> {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
       user = Provider.of<UserProvider>(context).user;
-      eventId = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?)?["id"];
-      userInEvent = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?)?["userInEvent"];
+      eventId = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?)?["id"] ?? "";
+      userInEvent = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?)?["userInEvent"] ?? false;
     });
   }
 

@@ -37,7 +37,7 @@ class CustomText extends StatelessWidget {
 }
 class AthleteTable extends StatefulWidget {
   final double? tableHeight;
-  final List<dynamic>? participants;
+  final List<dynamic> participants;
   final ScrollController? controller;
   final int startIndex;
   final VoidCallback? distanceOnPressed;
@@ -47,7 +47,7 @@ class AthleteTable extends StatefulWidget {
   AthleteTable({
     this.controller,
     this.tableHeight,
-    this.participants,
+    required this.participants,
     this.startIndex = 1,
     this.distanceOnPressed,
     this.timeOnPressed,
@@ -107,6 +107,7 @@ class _AthleteTableState extends State<AthleteTable> {
   @override
   Widget build(BuildContext context) {
     // print(participants);
+    List participants = widget.participants;
     var media = MediaQuery.sizeOf(context);
     return Column(
       children: [
@@ -205,14 +206,15 @@ class _AthleteTableState extends State<AthleteTable> {
           SizedBox(
             height: widget.tableHeight,
             child: SingleChildScrollView(
+              controller: widget.controller,
               child: Column(
                 children: [
                   // for(int i = 0; i < 30; i++)
-                  for(var participant in widget.participants ?? [])...[
+                  for(int i = widget.startIndex; i < participants.length; i++)...[
                     CustomTextButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/user', arguments: {
-                          "id": participant?.userId,
+                          "id": participants[i].userId,
                         });
                       },
                       child: Container(
@@ -233,7 +235,7 @@ class _AthleteTableState extends State<AthleteTable> {
                                 Container(
                                     alignment: Alignment.centerLeft,
                                     width: media.width * 0.08,
-                                    child: CustomText(text: " ${(widget.participants!.indexOf(participant) + widget.startIndex!).toString()}")
+                                    child: CustomText(text: " ${i}")
                                 ),
                                 SizedBox(width: media.width * 0.02,),
                                 Container(
@@ -256,7 +258,7 @@ class _AthleteTableState extends State<AthleteTable> {
                                           child: SizedBox(
                                             width: media.width * 0.25,
                                             child: CustomText(
-                                              text: participant?.name,
+                                              text: participants[i].name,
                                             ),
                                           )
                                       ),
@@ -270,13 +272,13 @@ class _AthleteTableState extends State<AthleteTable> {
                                 Container(
                                     alignment: Alignment.centerLeft,
                                     width: media.width * 0.15,
-                                    child: CustomText(text: "${participant?.totalDistance ?? 0}")
+                                    child: CustomText(text: "${participants[i].totalDistance ?? 0}")
                                 ),
                                 // SizedBox(width: media.width * 0.1,),
                                 Container(
                                     alignment: Alignment.centerLeft,
                                     width: media.width * 0.15,
-                                    child: CustomText(text: '${formatTimeDuration(participant?.totalDuration ?? "00:00:00", type: 2)}')
+                                    child: CustomText(text: '${formatTimeDuration(participants[i].totalDuration ?? "00:00:00", type: 2)}')
                                 )
                               ],
                             )
@@ -373,7 +375,7 @@ class _AthleteTableState extends State<AthleteTable> {
                   //                     child: SizedBox(
                   //                       width: media.width * 0.25,
                   //                       child: CustomText(
-                  //                           text: participant?.username,
+                  //                           text: participants[i].username,
                   //                       ),
                   //                     )),
                   //               ],

@@ -432,7 +432,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                             ? ScrollSynchronized(
                                           parentScrollController: parentScrollController,
                                           child: AthleteTable(
-                                            participants: club?.participants,
+                                            participants: club?.participants ?? [],
                                             tableHeight: media.height - media.height * 0.15,
                                             controller: childScrollController,
                                             startIndex: 1,
