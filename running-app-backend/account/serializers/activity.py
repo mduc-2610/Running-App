@@ -15,7 +15,8 @@ from account.serializers import UserSerializer
 from account.serializers.user_abbr import UserAbbrSerializer
 from activity.serializers.event import EventSerializer
 from activity.serializers.club import ClubSerializer
-from activity.serializers.activity_record import ActivityRecordSerializer
+from activity.serializers.activity_record import ActivityRecordSerializer, \
+                                                DetailActivityRecordSerializer
 from product.serializers.product import ProductSerializer
 from social.serializers import ClubPostSerializer, \
                             EventPostSerializer, \
@@ -36,6 +37,7 @@ class ActivitySerializer(serializers.ModelSerializer):
     clubs = serializers.SerializerMethodField()
     events = serializers.SerializerMethodField()
     activity_records = serializers.SerializerMethodField()
+    following_activity_records = serializers.SerializerMethodField()
     club_posts = serializers.SerializerMethodField()
     event_posts = serializers.SerializerMethodField()
     activity_record_post_likes = serializers.SerializerMethodField()
@@ -54,7 +56,6 @@ class ActivitySerializer(serializers.ModelSerializer):
             return instance.id if instance else None
         return None
 
-    
     def get_paginated_queryset(self, queryset, page_size=5, page_query_param="page"):
         paginator = CommonPagination(page_size=page_size, page_query_param=page_query_param)
         paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
@@ -175,9 +176,34 @@ class ActivitySerializer(serializers.ModelSerializer):
             #     return None  
             # return ActivityRecordSerializer(page_obj.object_list, many=True, read_only=True).data
             queryset = self.get_paginated_queryset(
-                queryset, page_query_param="act_rec_page")
-            return ActivityRecordSerializer(queryset, many=True, read_only=True, context={
-                "user": self.context["user"]
+                queryset, page_size=3, page_query_param="act_rec_page")
+            return DetailActivityRecordSerializer(queryset, many=True, read_only=True, context={
+                "request": self.context["request"],
+                "user": self.context["user"],
+                "exclude": self.context["act_rec_params"]["act_rec_exclude"],
+                # "no_comments": True,
+                # "no_likes": False,
+            }).data
+        return None
+    
+    def get_following_activity_records(self, instance):
+        context = self.context
+        fields = context.get("fields")
+        
+        if not fields or "following_activity_records" in fields:
+            following = instance.following.all()
+            # queryset = [follow.followee for follow in following]
+            queryset = []
+            for follow in following:
+                queryset.extend(follow.followee.activity_records.all())
+            queryset = self.get_paginated_queryset(
+                queryset, page_size=3, page_query_param="following_act_rec_page")
+            return DetailActivityRecordSerializer(queryset, many=True, read_only=True, context={
+                "request": self.context["request"],
+                "user": self.context["user"],
+                "exclude": self.context["act_rec_params"]["act_rec_exclude"],
+                # "no_comments": True,
+                # "no_likes": False,
             }).data
         return None
     

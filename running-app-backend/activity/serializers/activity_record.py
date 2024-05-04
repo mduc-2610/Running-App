@@ -15,7 +15,7 @@ class ActivityRecordSerializer(serializers.ModelSerializer):
     check_user_like = serializers.SerializerMethodField()
 
     def get_check_user_like(self, instance):
-        user_id = self.context['user'].id
+        user_id = self.context["user"].id
         post_id = instance.id
         instance =  ActivityRecordPostLike.objects\
             .filter(user_id=user_id, post_id=post_id).first()
@@ -25,13 +25,13 @@ class ActivityRecordSerializer(serializers.ModelSerializer):
         return instance.avg_moving_pace_readable()
 
     def get_completed_at(self, instance):
-        return instance.get_readable_date('completed_at')
+        return instance.get_readable_date("completed_at")
     
     class Meta:
         model = ActivityRecord
         fields = (
             "id", "user", "sport_type", 
-            "points", "distance", 'privacy',
+            "points", "distance", "privacy",
             "avg_moving_pace", "avg_cadence", "avg_heart_rate",
             "duration", "steps", "user",
             "kcal", "completed_at",
@@ -46,8 +46,8 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
     # user = serializers.SerializerMethodField()
     user = UserAbbrSerializer()
     completed_at = serializers.SerializerMethodField()
-    sport_type = serializers.CharField(source='get_sport_type_display')
-    privacy = serializers.CharField(source='get_privacy_display')
+    sport_type = serializers.CharField(source="get_sport_type_display")
+    privacy = serializers.CharField(source="get_privacy_display")
     avg_moving_pace = serializers.SerializerMethodField()
     kcal = serializers.SerializerMethodField()
     likes = serializers.SerializerMethodField()
@@ -55,7 +55,7 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
     check_user_like = serializers.SerializerMethodField()
 
     def get_check_user_like(self, instance):
-        user_id = self.context['user'].id
+        user_id = self.context["user"].id
         post_id = instance.id
         instance =  ActivityRecordPostLike.objects\
             .filter(user_id=user_id, post_id=post_id).first()
@@ -66,29 +66,31 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
     
     def get_likes(self, instance):
         context = self.context
-        exclude = context.get('exclude', [])
-        print({'exclude': exclude})
-        if 'likes' not in exclude:
+        exclude = context.get("exclude", [])
+        no_likes = context.get("no_likes")
+        # print({"exclude": exclude})
+        if "likes" not in exclude and not no_likes:
             queryset = instance.likes.all()
             paginator = CommonPagination(page_size=100)
-            paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
+            paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
             return UserAbbrSerializer(paginated_queryset, many=True, read_only=True, context={
-                'request_user_id': self.context['user'].id
+                "request_user_id": self.context["user"].id
             }).data
         return None
     
     def get_comments(self, instance):
         context = self.context
-        exclude = context.get('exclude', [])
-        if 'comments' not in exclude:
+        exclude = context.get("exclude", [])
+        no_comments = context.get("no_comments")
+        if "comments" not in exclude and not no_comments:
             queryset = instance.comments.all()
             paginator = CommonPagination(page_size=5, page_query_param="cmt_pg")
-            paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
+            paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
             return ActivityRecordPostCommentSerializer(paginated_queryset, many=True, read_only=True).data
         return None
 
     def get_completed_at(self, instance):
-        return instance.get_readable_date_time('completed_at')
+        return instance.get_readable_date_time("completed_at")
 
     # def get_user(self, instance):
     #     return UserSerializer(instance.user.user).data
@@ -110,7 +112,7 @@ class CreateActivityRecordSerializer(serializers.ModelSerializer):
     user_id = serializers.UUIDField()
 
     def create(self, validated_data):
-        user_id = validated_data.pop('user_id')
+        user_id = validated_data.pop("user_id")
         return ActivityRecord.objects.create(user_id=user_id, **validated_data)
 
     class Meta:

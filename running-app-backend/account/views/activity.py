@@ -61,6 +61,9 @@ class ActivityViewSet(
                 "follower_q": query_params.get("follower_q", ""),
                 "followee_q": query_params.get("followee_q", ""),
             }
+            act_rec_params = {
+                'act_rec_exclude': [param.strip().lower() for param in self.request.query_params.get('act_rec_exclude', "").split(',')],
+            }
             # activity_record_params = {
             #     "page": int(query_params.get("act_rec_pg", 1)),
             #     "page_size": int(query_params.get("act_rec_pg_sz", 5)),
@@ -78,6 +81,7 @@ class ActivityViewSet(
             "club_params": club_params,
             "product_params": product_params,
             "follow_params": follow_params,
+            "act_rec_params": act_rec_params,
     
             "user": self.request.user.activity,
             # "activity_record_params": activity_record_params

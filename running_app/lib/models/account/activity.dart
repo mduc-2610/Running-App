@@ -22,7 +22,8 @@ class Activity {
   final List<Product>? products;
   final List<Event>? events;
   final List<Club>? clubs;
-  final List<ActivityRecord>? activityRecords;
+  final List<DetailActivityRecord>? activityRecords;
+  final List<DetailActivityRecord>? followingActivityRecords;
   final List<ClubPost>? clubPostLikes;
   final List<EventPost>? eventPostLikes;
   final List<ActivityRecord>? activityRecordPostLikes;
@@ -42,6 +43,7 @@ class Activity {
     required this.events,
     required this.clubs,
     required this.activityRecords,
+    required this.followingActivityRecords,
     required this.clubPostLikes,
     required this.eventPostLikes,
     required this.activityRecordPostLikes,
@@ -61,7 +63,8 @@ class Activity {
         products = (json["products"] as List<dynamic>?)?.map((e) => Product.fromJson(e)).toList(),
         events = (json["events"] as List<dynamic>?)?.map((e) => Event.fromJson(e)).toList(),
         clubs = (json["clubs"] as List<dynamic>?)?.map((e) => Club.fromJson(e)).toList(),
-        activityRecords = (json["activity_records"] as List<dynamic>?)?.map((e) => ActivityRecord.fromJson(e)).toList(),
+        activityRecords = (json["activity_records"] as List<dynamic>?)?.map((e) => DetailActivityRecord.fromJson(e)).toList(),
+        followingActivityRecords = (json["following_activity_records"] as List<dynamic>?)?.map((e) => DetailActivityRecord.fromJson(e)).toList(),
         clubPostLikes = (json["club_post_likes"] as List<dynamic>?)?.map((e) => ClubPost.fromJson(e)).toList(),
         eventPostLikes = (json["event_post_likes"] as List<dynamic>?)?.map((e) => EventPost.fromJson(e)).toList(),
         activityRecordPostLikes = (json["activity_record_post_likes"] as List<dynamic>?)?.map((e) => ActivityRecord.fromJson(e)).toList(),
@@ -82,6 +85,6 @@ class Activity {
 
   @override
   String toString() {
-    return 'Activity{id: $id, totalFollowers: $totalFollowers, totalFollowees: $totalFollowees, followers: $followers, followees: $followees, products: $products, events: $events, clubs: $clubs, activityRecords: $activityRecords, clubPostLikes: $clubPostLikes, eventPostLikes: $eventPostLikes, activityRecordPostLikes: $activityRecordPostLikes, clubPostComments: $clubPostComments, eventPostComments: $eventPostComments, activityRecordPostComments: $activityRecordPostComments}';
+    return 'Activity{id: $id, totalFollowers: $totalFollowers, totalFollowees: $totalFollowees, followers: $followers, followees: $followees, products: $products, events: $events, clubs: $clubs, activityRecords: $activityRecords, followingActivityRecords: $followingActivityRecords, clubPostLikes: $clubPostLikes, eventPostLikes: $eventPostLikes, activityRecordPostLikes: $activityRecordPostLikes, clubPostComments: $clubPostComments, eventPostComments: $eventPostComments, activityRecordPostComments: $activityRecordPostComments}';
   }
 }

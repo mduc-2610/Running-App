@@ -36,7 +36,7 @@ class _FeedViewState extends State<FeedView> {
   int page = 1;
   bool isVisible = true;
   ScrollController scrollController = ScrollController();
-
+  bool stopLoadingPage = false;
 
   void getProviderData() {
     setState(() {
@@ -59,34 +59,68 @@ class _FeedViewState extends State<FeedView> {
   }
 
   Future<void> initActivityRecord() async {
-    final data = await callListAPI(
-        'activity/activity-record/feed',
-        DetailActivityRecord.fromJson,
-        token,
-        queryParams: "?exclude=comments&"
-            "feed_pg=${page}"
-    );
-    setState(() {
-      activityRecords.addAll(data.map((e) {
-        String result = "";
-        return {
-          "activityRecord": e as dynamic,
-          "like": (e.checkUserLike == null) ? false : true,
-        };
-      }).toList() ?? []);
-    });
+    print("THIS VIEW: $showView");
+    dynamic data;
+    try {
+      data =
+      (showView == "Explore")
+          ? await callListAPI(
+          'activity/activity-record/feed',
+          DetailActivityRecord.fromJson,
+          token,
+          queryParams: "?exclude=comments&"
+              "feed_pg=${page}"
+          )
+          : (showView == "Following")
+          ? (await callRetrieveAPI(
+          null, null,
+          user?.activity,
+          Activity.fromJson,
+          token,
+          queryParams: "?fields=following_activity_records&"
+              "act_rec_exclude=comments&"
+              "following_act_rec_page=${page}"
+          )).followingActivityRecords
+          : (await callRetrieveAPI(
+          null, null,
+          user?.activity,
+          Activity.fromJson,
+          token,
+          queryParams: "?fields=activity_records&"
+              "act_rec_exclude=comments&"
+              "act_rec_page=${page}"
+          )).activityRecords
+      ;
+    }
+    catch(e) {
+      setState(() {
+        stopLoadingPage = false;
+      });
+    }
+    if(!stopLoadingPage) {
+      setState(() {
+        activityRecords.addAll(data.map((e) {
+          String result = "";
+          return {
+            "activityRecord": e as dynamic,
+            "like": (e.checkUserLike == null) ? false : true,
+          };
+        }).toList() ?? []);
+      });
+    }
   }
 
   Future<void> handleRefresh() async {
     delayedInit();
   }
 
-  void delayedInit({bool reload = false, bool initSide = true}) async {
+  void delayedInit({bool reload = false, bool initSide = false}) async {
     if(reload) {
       setState(() {
         isLoading = true;
       });
-    } else if(initSide) {
+    }
+    if(initSide) {
       await initUserActivity();
     }
     await initActivityRecord();
@@ -101,7 +135,7 @@ class _FeedViewState extends State<FeedView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     getProviderData();
-    delayedInit();
+    delayedInit(initSide: true);
   }
 
   void scrollListener() {
@@ -129,7 +163,9 @@ class _FeedViewState extends State<FeedView> {
       setState(() {
         page += 1;
       });
-      delayedInit(initSide: false);
+      if(!stopLoadingPage) {
+        delayedInit();
+      }
     }
   }
 
@@ -182,6 +218,7 @@ class _FeedViewState extends State<FeedView> {
                             setState(() {
                               showView = x["type"] as String;
                               isLoading = true;
+                              activityRecords = [];
                             });
                             delayedInit();
                           },

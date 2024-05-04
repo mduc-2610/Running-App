@@ -50,7 +50,6 @@ class ActivityRecordViewSet(
             'request': self.request,
             'user': self.request.user.activity
         })
-        print("CONTEXT:", context)
         return context
     
     def get_serializer(self, *args, **kwargs):
