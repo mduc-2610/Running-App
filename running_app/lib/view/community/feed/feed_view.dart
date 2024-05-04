@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/activity.dart';
-import 'package:running_app/models/account/like.dart';
+import 'package:running_app/models/account/user_abbr.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/models/social/post_like.dart';
@@ -259,7 +259,7 @@ class _FeedViewState extends State<FeedView> {
                                     activityRecord["activityRecord"]?.increaseTotalLikes();
                                     activityRecord["like"] = (activityRecord["like"]) ? false : true;
                                     activityRecord["activityRecord"].checkUserLike = data["id"];
-                                    Like author = Like(
+                                    UserAbbr author = UserAbbr(
                                         id: user?.id,
                                         name: user?.name,
                                         avatar: ""

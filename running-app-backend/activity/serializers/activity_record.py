@@ -4,13 +4,12 @@ from account.models.activity import Activity
 from activity.models import ActivityRecord
 from social.models import ActivityRecordPostLike
 from account.serializers import UserSerializer
-from account.serializers.like import LikeSerializer
-from account.serializers.author import AuthorSerializer
+from account.serializers.user_abbr import UserAbbrSerializer 
 from social.serializers import ActivityRecordPostCommentSerializer
 from utils.pagination import CommonPagination
 
 class ActivityRecordSerializer(serializers.ModelSerializer):
-    user = AuthorSerializer()
+    user = UserAbbrSerializer()
     completed_at = serializers.SerializerMethodField()
     avg_moving_pace = serializers.SerializerMethodField()
     check_user_like = serializers.SerializerMethodField()
@@ -45,7 +44,7 @@ class ActivityRecordSerializer(serializers.ModelSerializer):
 
 class DetailActivityRecordSerializer(serializers.ModelSerializer):
     # user = serializers.SerializerMethodField()
-    user = AuthorSerializer()
+    user = UserAbbrSerializer()
     completed_at = serializers.SerializerMethodField()
     sport_type = serializers.CharField(source='get_sport_type_display')
     privacy = serializers.CharField(source='get_privacy_display')
@@ -73,7 +72,9 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
             queryset = instance.likes.all()
             paginator = CommonPagination(page_size=100)
             paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
-            return LikeSerializer(paginated_queryset, many=True, read_only=True).data
+            return UserAbbrSerializer(paginated_queryset, many=True, read_only=True, context={
+                'request_user_id': self.context['user'].id
+            }).data
         return None
     
     def get_comments(self, instance):

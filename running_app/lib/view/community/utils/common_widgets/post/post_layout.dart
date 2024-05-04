@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:running_app/models/account/like.dart';
+import 'package:running_app/models/account/user_abbr.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/models/social/post.dart';
@@ -174,7 +174,7 @@ class _PostLayoutState extends State<PostLayout> {
                                         widget.posts?[i]["post"]?.increaseTotalLikes();
                                         widget.posts?[i]["like"] = (widget.posts?[i]["like"]) ? false : true;
                                         widget.posts?[i]["post"].checkUserLike = data["id"];
-                                        Like author = Like(
+                                        UserAbbr author = UserAbbr(
                                             id: user?.id,
                                             name: user?.name,
                                             avatar: ""

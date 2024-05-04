@@ -9,7 +9,7 @@ class PostLike(models.Model):
     
     class Meta:
         abstract = True
-        ordering = ['-created_at']
+        ordering = ('-created_at', )
         unique_together = ("post", "user",)
         
     def __str__(self):
@@ -74,19 +74,19 @@ def update_activity_record_post_likes(sender, instance, created, **kwargs):
         post.save()
 
 @receiver(post_delete, sender=ClubPostLike)
-def update_club_post_likes_on_delete(sender, instance, **kwargs):
+def delete_club_post_likes(sender, instance, **kwargs):
     post = instance.post
     post.total_likes -= 1
     post.save()
 
 @receiver(post_delete, sender=EventPostLike)
-def update_event_post_likes_on_delete(sender, instance, **kwargs):
+def delete_event_post_likes(sender, instance, **kwargs):
     post = instance.post
     post.total_likes -= 1
     post.save()
 
 @receiver(post_delete, sender=ActivityRecordPostLike)
-def update_activity_record_post_likes_on_delete(sender, instance, **kwargs):
+def delete_activity_record_post_likes(sender, instance, **kwargs):
     post = instance.post
     post.total_likes -= 1
     post.save()

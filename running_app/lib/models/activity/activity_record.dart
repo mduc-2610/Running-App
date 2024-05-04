@@ -1,5 +1,4 @@
-import "package:running_app/models/account/author.dart";
-import "package:running_app/models/account/like.dart";
+import "package:running_app/models/account/user_abbr.dart";
 import "package:running_app/models/social/post_comment.dart";
 
 class ActivityRecord {
@@ -13,7 +12,7 @@ class ActivityRecord {
   final int? kcal;
   final String? completedAt;
   final String? avgMovingPace;
-  final Author? user;
+  final UserAbbr? user;
   String? checkUserLike;
   int totalLikes;
   int totalComments;
@@ -60,7 +59,7 @@ class ActivityRecord {
       steps = json["steps"],
       points = json["points"],
       kcal = json["kcal"],
-      user = Author.fromJson(json["user"]),
+      user = UserAbbr.fromJson(json["user"]),
       completedAt = json["completed_at"],
       avgMovingPace = json["avg_moving_pace"],
       totalLikes = json["total_likes"] ?? 0,
@@ -93,7 +92,7 @@ class ActivityRecord {
 class DetailActivityRecord extends ActivityRecord {
   final String? duration;
   final String? description;
-  final List<Like>? likes;
+  final List<UserAbbr>? likes;
   final List<ActivityRecordPostComment>? comments;
 
   DetailActivityRecord({
@@ -107,7 +106,7 @@ class DetailActivityRecord extends ActivityRecord {
     int? kcal,
     String? completedAt,
     String? avgMovingPace,
-    Author? user,
+    UserAbbr? user,
     String? checkUserLike,
     required int totalLikes,
     required int totalComments,
@@ -136,7 +135,7 @@ class DetailActivityRecord extends ActivityRecord {
     : duration = json["duration"],
       description = json["description"],
       likes = (json["likes"] != null) ? (json["likes"] as List<dynamic>)
-        .map((likeJson) => Like.fromJson(likeJson))
+        .map((likeJson) => UserAbbr.fromJson(likeJson))
         .toList() : null,
       comments = (json["comments"] != null) ? (json["comments"] as List<dynamic>)
         .map((commentJson) => ActivityRecordPostComment.fromJson(commentJson))

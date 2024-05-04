@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
+import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/show_action_list.dart';
 import 'package:running_app/utils/common_widgets/show_month_year.dart';
@@ -41,7 +42,7 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
   @override
   void initState() {
     super.initState();
-    _getLocation();
+    delayedInit();
   }
 
   @override
@@ -49,8 +50,15 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
     _timer?.cancel();
     super.dispose();
   }
+  bool isLoading = true;
+  void delayedInit() async {
+    await _getLocation();
+    setState(() {
+      isLoading = false;
+    });
+  }
 
-  void _getLocation() async {
+  Future<void> _getLocation() async {
     loc.LocationData locationData = await _location.getLocation();
     setState(() {
       // _sourceLocation = ;
@@ -59,6 +67,7 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
       _controller?.animateCamera(CameraUpdate.newLatLngZoom(_currentLocation, 20));
     });
   }
+
   final double minRadius = 0.00002;
   final double maxRadius = 0.000065;
   final Random random = Random();
@@ -176,7 +185,7 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
         ),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
-      body: Stack(
+      body: (isLoading == false) ? Stack(
         children: [
           GoogleMap(
             zoomControlsEnabled: false,
@@ -324,6 +333,9 @@ class _ActivityRecordViewState extends State<ActivityRecordView> {
             ),
           ]
         ],
+      ) : Loading(
+        marginTop: media.height * 0,
+        backgroundColor: Colors.black.withOpacity(0.5),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: Row(

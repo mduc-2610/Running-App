@@ -6,7 +6,7 @@ class Follow {
   final String? followeeId;
 
   Follow({
-    required this.id,
+    this.id,
     required this.followerId,
     required this.followeeId,
   });
@@ -18,7 +18,6 @@ class Follow {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'follower_id': followerId,
       'followee_id': followeeId,
     };

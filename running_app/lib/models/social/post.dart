@@ -1,14 +1,14 @@
 
 import 'package:running_app/models/account/activity.dart';
-import 'package:running_app/models/account/author.dart';
-import 'package:running_app/models/account/like.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/account/user_abbr.dart';
 import 'package:running_app/models/activity/club.dart';
 import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/models/social/post_comment.dart';
 
 class Post {
   final String? id;
-  final Author? user;
+  final UserAbbr? user;
   final String? title;
   final String? content;
   final String? createdAt;
@@ -27,7 +27,7 @@ class Post {
 
   Post.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        user = Author.fromJson(json['user']),
+        user = UserAbbr.fromJson(json['user']),
         title = json['title'],
         content = json['content'],
         createdAt = json['created_at'],
@@ -53,7 +53,7 @@ class Post {
 class ClubPost extends Post {
   int totalLikes;
   int totalComments;
-  final List<Like>? likes;
+  final List<UserAbbr>? likes;
 
   void increaseTotalLikes() {
     totalLikes += 1;
@@ -73,7 +73,7 @@ class ClubPost extends Post {
 
   ClubPost({
     String? id,
-    Author? user,
+    UserAbbr? user,
     String? title,
     String? content,
     String? updatedAt,
@@ -94,7 +94,7 @@ class ClubPost extends Post {
 
   ClubPost.fromJson(Map<String, dynamic> json)
       : likes = (json['likes'] as List<dynamic>)
-        .map((likeJson) => Like.fromJson(likeJson))
+        .map((likeJson) => UserAbbr.fromJson(likeJson))
         .toList(),
         totalLikes = json['total_likes'],
         totalComments = json['total_comments'],
@@ -114,10 +114,10 @@ class DetailClubPost extends ClubPost {
     String? title,
     String? content,
     String? createdAt,
-    List<Like>? likes,
+    List<UserAbbr>? likes,
     required int totalLikes,
     required int totalComments,
-    Author? user,
+    UserAbbr? user,
     required this.comments,
   }) : super(
       id: id,
@@ -145,7 +145,7 @@ class DetailClubPost extends ClubPost {
 class EventPost extends Post {
   int totalLikes;
   int totalComments;
-  final List<Like>? likes;
+  final List<UserAbbr>? likes;
 
   void increaseTotalLikes() {
     totalLikes += 1;
@@ -165,7 +165,7 @@ class EventPost extends Post {
 
   EventPost({
     String? id,
-    Author? user,
+    UserAbbr? user,
     String? title,
     String? content,
     String? createdAt,
@@ -186,7 +186,7 @@ class EventPost extends Post {
 
   EventPost.fromJson(Map<String, dynamic> json)
       : likes = (json['likes'] as List<dynamic>?)
-          ?.map((likeJson) => Like.fromJson(likeJson))
+          ?.map((likeJson) => UserAbbr.fromJson(likeJson))
           .toList(),
         totalLikes = json['total_likes'],
         totalComments = json['total_comments'],
@@ -206,10 +206,10 @@ class DetailEventPost extends EventPost {
     String? title,
     String? content,
     String? createdAt,
-    List<Like>? likes,
+    List<UserAbbr>? likes,
     required int totalLikes,
     required int totalComments,
-    Author? user,
+    UserAbbr? user,
     required this.comments,
   }) : super(
       id: id,

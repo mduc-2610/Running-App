@@ -331,7 +331,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                                     Icons.thumb_up,
                                     color: TColor.THIRD,
                                   ),
-                                  SizedBox(width: media.width * 0.01,),
+                                  // SizedBox(width: media.width * 0.01,),
                                   if(like == true)...[
                                     Text(
                                       "${widget.activityRecord.totalLikes}",
@@ -354,9 +354,9 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                                 Icons.thumb_up,
                                 color: TColor.THIRD,
                               ),
-                              SizedBox(width: media.width * 0.01,),
+                              // SizedBox(width: media.width * 0.01,),
                               Text(
-                                "${widget.activityRecord.totalLikes}",
+                                " ${widget.activityRecord.totalLikes}",
                                 style: TxtStyle.normalTextDesc,
                               ),
                             ],
@@ -430,7 +430,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                             onPressed: x["onPressed"] as VoidCallback,
                             child: Padding(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 30
+                                  horizontal: 15
                               ),
                               child: Row(
                                 children: [

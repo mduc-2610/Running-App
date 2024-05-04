@@ -366,7 +366,7 @@ class _PostWidgetState extends State<PostWidget> {
                             onPressed: x["onPressed"] as VoidCallback,
                             child: Padding(
                               padding: EdgeInsets.symmetric(
-                                horizontal: 30
+                                horizontal: 15
                               ),
                               child: Row(
                                 children: [

@@ -81,7 +81,7 @@ class _EventDetailViewState extends State<EventDetailView> {
         null,
         user?.activity,
         Activity.fromJson,
-        token
+        token,
     );
     setState(() {
       userActivity = data;
@@ -89,7 +89,7 @@ class _EventDetailViewState extends State<EventDetailView> {
   }
 
   void delayedInit() async {
-    await initUserActivity();
+    // await initUserActivity();
     await initDetailEvent();
     await Future.delayed(Duration(seconds: 1));
     setState(() {

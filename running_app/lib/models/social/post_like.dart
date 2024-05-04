@@ -1,5 +1,5 @@
 import 'package:running_app/models/account/activity.dart';
-import 'package:running_app/models/account/like.dart';
+import 'package:running_app/models/account/user_abbr.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/models/social/post.dart';
 

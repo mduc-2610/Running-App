@@ -15,6 +15,9 @@ class Activity(models.Model):
         "product.Product", through="product.UserProduct", related_name="products", blank=True)
     follow = models.ManyToManyField('self', through="social.Follow", symmetrical=False)
     
+    total_followers = models.IntegerField(default=0, null=True)
+    total_followees = models.IntegerField(default=0, null=True)
+    
     # def followers_(self):
     #     return [follow.follower for follow in self.followers.all()]
     

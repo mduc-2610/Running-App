@@ -50,7 +50,9 @@ class _EventViewState extends State<EventView> {
         Activity.fromJson,
         token,
         queryParams: "?event_state=joined&"
-            "fields=events"
+            "fields=events&"
+            "pg_sz=10000&"
+            "max_pg_sz=10000"
     );
     final activity2 = await callRetrieveAPI(
         null, null,
@@ -58,7 +60,9 @@ class _EventViewState extends State<EventView> {
         Activity.fromJson,
         token,
         queryParams: "?event_state=ended&"
-            "fields=events"
+            "fields=events&"
+            "pg_sz=10000&"
+            "max_pg_sz=10000"
     );
     setState(() {
       userActivity = activity;

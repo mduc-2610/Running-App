@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from account.serializers.author import AuthorSerializer
+from account.serializers.user_abbr import UserAbbrSerializer
 from social.models import ClubPostComment,\
                             EventPostComment, \
                             ActivityRecordPostComment
 
         
 class ClubPostCommentSerializer(serializers.ModelSerializer):
-    user = AuthorSerializer()
+    user = UserAbbrSerializer()
 
     class Meta:
         model = ClubPostComment
@@ -20,7 +20,7 @@ class CreateClubPostCommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):
-        return AuthorSerializer(instance.user).data
+        return UserAbbrSerializer(instance.user).data
     
     def create(self, validated_data):
         user_id = validated_data.pop('user_id')
@@ -44,7 +44,7 @@ class CreateClubPostCommentSerializer(serializers.ModelSerializer):
         }
 
 class EventPostCommentSerializer(serializers.ModelSerializer):
-    user = AuthorSerializer()
+    user = UserAbbrSerializer()
     class Meta:
         model = EventPostComment
         fields = '__all__'
@@ -58,7 +58,7 @@ class CreateEventPostCommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):
-        return AuthorSerializer(instance.user).data
+        return UserAbbrSerializer(instance.user).data
     
     def create(self, validated_data):
         user_id = validated_data.pop('user_id')
@@ -82,7 +82,7 @@ class CreateEventPostCommentSerializer(serializers.ModelSerializer):
         }
 
 class ActivityRecordPostCommentSerializer(serializers.ModelSerializer):
-    user = AuthorSerializer()
+    user = UserAbbrSerializer()
 
     class Meta:
         model = ActivityRecordPostComment
@@ -98,7 +98,7 @@ class CreateActivityRecordPostCommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):
-        return AuthorSerializer(instance.user).data
+        return UserAbbrSerializer(instance.user).data
     
     def create(self, validated_data):
         user_id = validated_data.pop('user_id')

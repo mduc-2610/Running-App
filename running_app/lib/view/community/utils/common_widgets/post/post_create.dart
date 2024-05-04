@@ -189,7 +189,6 @@ class _PostCreateState extends State<PostCreate> {
                                   onChanged: (_) => checkFormData(),
                                   controller: titleTextController,
                                   decoration: CustomInputDecoration(
-
                                     borderSide: 0,
                                     borderRadius: BorderRadius.circular(0),
                                   ),

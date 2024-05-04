@@ -56,6 +56,11 @@ class ActivityViewSet(
             product_params = {
                 "product_q": query_params.get("product_q", ""),
             }
+
+            follow_params = {
+                "follower_q": query_params.get("follower_q", ""),
+                "followee_q": query_params.get("followee_q", ""),
+            }
             # activity_record_params = {
             #     "page": int(query_params.get("act_rec_pg", 1)),
             #     "page_size": int(query_params.get("act_rec_pg_sz", 5)),
@@ -72,7 +77,9 @@ class ActivityViewSet(
             "event_params": event_params, 
             "club_params": club_params,
             "product_params": product_params,
-            'user': self.request.user.activity,
+            "follow_params": follow_params,
+    
+            "user": self.request.user.activity,
             # "activity_record_params": activity_record_params
         }
         return context

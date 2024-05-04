@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/models/account/activity.dart';
-import 'package:running_app/models/account/author.dart';
-import 'package:running_app/models/account/like.dart';
-import 'package:running_app/models/account/like.dart';
+import 'package:running_app/models/account/user_abbr.dart';
+import 'package:running_app/models/account/user_abbr.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/models/social/post_comment.dart';
@@ -193,7 +192,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
           postLike.toJson(),
           token
       );
-      Like author = Like(
+      UserAbbr author = UserAbbr(
           id: user?.id,
           name: user?.name,
           avatar: ""

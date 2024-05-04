@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:running_app/models/account/like.dart';
+import 'package:running_app/models/account/user_abbr.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/social/post.dart';
 import 'package:running_app/models/social/post_comment.dart';
@@ -65,7 +65,7 @@ class _PostDetailState extends State<PostDetail> {
             postLike.toJson(),
             token
         );
-        Like author = Like(
+        UserAbbr author = UserAbbr(
             id: user?.id,
             name: user?.name,
             avatar: ""

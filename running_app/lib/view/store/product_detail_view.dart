@@ -53,8 +53,10 @@ class _ProductDetailViewState extends State<ProductDetailView> {
     final data = await callRetrieveAPI(
         null, null,
         user?.activity,
-        Activity.fromJson, token);
-
+        Activity.fromJson,
+        token,
+        queryParams: "?fields=products"
+    );
     setState(() {
       userActivity = data;
     });

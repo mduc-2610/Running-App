@@ -52,7 +52,9 @@ class _ClubViewState extends State<ClubView> {
         queryParams: "?club_name=${searchTextController.text}&"
             "club_sport_type=${sportTypeFilter}&"
             "club_mode=${clubModeFilter}&"
-            "club_org_type=${organizationTypeFilter}"
+            "club_org_type=${organizationTypeFilter}&"
+            "fields=clubs&"
+            "pg_sz=100"
     );
     setState(() {
       userClubs = activity.clubs;

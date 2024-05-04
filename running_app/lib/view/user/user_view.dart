@@ -7,6 +7,7 @@ import 'package:running_app/models/account/performance.dart';
 
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/product/product.dart';
+import 'package:running_app/models/social/follow.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/background_container.dart';
@@ -44,11 +45,11 @@ class _UserViewState extends State<UserView> {
   Performance? userPerformance;
   Activity? userActivity;
   bool isLoading = true, isLoading2 = false;
-
   bool showClearButton = false;
   String brandFilter = "";
   String categoryFilter = "";
   TextEditingController searchTextController = TextEditingController();
+  Map<String, dynamic> followButtonState = {};
 
   void getProviderData() {
     setState(() {
@@ -96,6 +97,18 @@ class _UserViewState extends State<UserView> {
     );
     setState(() {
       userActivity = data;
+      if(userActivity?.checkUserFollow != null) {
+        followButtonState = {
+          "text": "Unfollow",
+          "backgroundColor": Colors.transparent,
+        };
+      }
+      else {
+        followButtonState = {
+          "text": "Follow",
+          "backgroundColor": TColor.SECONDARY,
+        };
+      }
     });
   }
 
@@ -123,6 +136,11 @@ class _UserViewState extends State<UserView> {
     setState(() {
       isLoading2 = false;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -225,10 +243,47 @@ class _UserViewState extends State<UserView> {
                               child: CustomMainButton(
                                 horizontalPadding: 0,
                                 verticalPadding: 10,
-                                onPressed: () {},
-                                background: TColor.SECONDARY,
+                                onPressed: () async {
+                                  if(userActivity?.checkUserFollow == null) {
+                                    Follow follow = Follow(
+                                        followerId: requestUserId,
+                                        followeeId: userActivity?.id
+                                    );
+                                    final data = await callCreateAPI(
+                                        'social/follow',
+                                        follow.toJson(),
+                                        token
+                                    );
+                                    print(data);
+                                    userActivity?.checkUserFollow = data["id"];
+                                  }
+                                  else {
+                                    await callDestroyAPI(
+                                        'social/follow',
+                                        userActivity?.checkUserFollow,
+                                        token
+                                    );
+                                  }
+                                  setState(() {
+                                    if(followButtonState["text"] == "Unfollow") {
+                                      followButtonState = {
+                                        "text": "Follow",
+                                        "backgroundColor": TColor.SECONDARY,
+                                      };
+                                    }
+                                    else {
+                                      followButtonState = {
+                                        "text": "Unfollow",
+                                        "backgroundColor": Colors.transparent
+                                      };
+                                    }
+                                  });
+                                },
+                                borderWidth: 2,
+                                borderWidthColor: TColor.SECONDARY,
+                                background: followButtonState["backgroundColor"],
                                 child: Text(
-                                  "Follow",
+                                  followButtonState["text"],
                                   style: TxtStyle.normalText,
                                 ),
                               ),

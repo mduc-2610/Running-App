@@ -1,5 +1,6 @@
 
-from .follow import FollowSerializer
+from .follow import FollowSerializer, \
+                    CreateFollowSerializer
 
 from .post import ClubPostSerializer, \
                 EventPostSerializer, \

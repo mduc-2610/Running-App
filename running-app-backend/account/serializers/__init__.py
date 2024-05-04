@@ -19,7 +19,6 @@ from .profile import ProfileSerializer, \
 
 from .activity import ActivitySerializer
 
-from .like import LikeSerializer
-from .author import AuthorSerializer
+from .user_abbr import UserAbbrSerializer
 
 from .notification_setting import NotificationSettingSerializer

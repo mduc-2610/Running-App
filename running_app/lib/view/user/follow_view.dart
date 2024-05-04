@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/activity.dart';
+import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/social/follow.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/app_bar.dart';
 import 'package:running_app/utils/common_widgets/header.dart';
 import 'package:running_app/utils/common_widgets/input_decoration.dart';
+import 'package:running_app/utils/common_widgets/loading.dart';
 import 'package:running_app/utils/common_widgets/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/text_button.dart';
 import 'package:running_app/utils/common_widgets/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class FollowView extends StatefulWidget {
   const FollowView({super.key});
@@ -17,9 +26,99 @@ class FollowView extends StatefulWidget {
 
 class _FollowViewState extends State<FollowView> {
   String _showLayout = "Following";
+  String field = "followees";
+  String menuButtonClicked = "/home";
+  List<dynamic>? users;
+  String token = "";
+  DetailUser? user, otherUser;
+  Activity? userActivity;
+  bool isLoading = true;
+  int page = 1;
+  TextEditingController searchTextController = TextEditingController();
+  bool showClearButton = false;
+  bool checkOtherUser = false;
+
+  void getProviderData() {
+    setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
+    });
+  }
+
+  Future<void> initUser() async {
+    Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if(arguments?["id"] != null) {
+      final data = await callRetrieveAPI(
+          'account/user',
+          arguments?["id"],
+          null, DetailUser.fromJson,  token);
+      setState(() {
+        otherUser = data;
+        checkOtherUser = true;
+      });
+    }
+    else {
+      checkOtherUser = false;
+    }
+  }
+
+  Future<void> initUserActivity() async {
+    String url = user?.activity ?? "";
+    if(checkOtherUser) {
+      url = otherUser?.activity ?? "";
+    }
+    final data = await callRetrieveAPI(
+        null, null,
+        url,
+        Activity.fromJson,
+        token,
+        queryParams: "?fields=$field&"
+            "${field == "follower"
+            ? "follower_page" : "followee_page"}=$page&"
+            "${field == "follower"
+            ? "follower_q" : "followee_q"}=${searchTextController.text}&"
+            "pg_sz=1000"
+    );
+    setState(() {
+      userActivity = data;
+    });
+  }
+
+  Future<void> delayedInit({ bool reload = false, bool initSide = false }) async {
+    if(reload) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    if(initSide) {
+      await initUser();
+    }
+
+    await initUserActivity();
+    await Future.delayed(Duration(milliseconds: 500),);
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getProviderData();
+    delayedInit(initSide: true);
+  }
+
+  Future<void> handleRefresh() async {
+    delayedInit();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("Check other user $checkOtherUser");
+    print("?fields=$field&"
+        "${field == "followers" ? "follower_page" : "followee_page"}=$page");
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -37,8 +136,9 @@ class _FollowViewState extends State<FollowView> {
                     SizedBox(
                       height: 40,
                       child: CustomTextFormField(
+                        controller: searchTextController,
                         decoration: CustomInputDecoration(
-                            hintText: "Type a name of athlete here",
+                            hintText: "Search",
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 20
                             ),
@@ -48,6 +148,20 @@ class _FollowViewState extends State<FollowView> {
                             )
                         ),
                         keyboardType: TextInputType.text,
+                        showClearButton: showClearButton,
+                        onClearChanged: () {
+                          searchTextController.clear();
+                          setState(() {
+                            showClearButton = false;
+                            delayedInit(reload: true);
+                          });
+                        },
+                        onFieldSubmitted: (String x) {
+                          delayedInit(reload: true);
+                        },
+                        onPrefixPressed: () {
+                          delayedInit(reload: true);
+                        },
                       ),
                     ),
 
@@ -62,6 +176,8 @@ class _FollowViewState extends State<FollowView> {
                               onPressed: () {
                                 setState(() {
                                   _showLayout = x;
+                                  field = (x == "Following") ? "followees" : "followers";
+                                  delayedInit(reload: true);
                                 });
                               },
                               style: ButtonStyle(
@@ -89,9 +205,37 @@ class _FollowViewState extends State<FollowView> {
                       ],
                     ),
                     SizedBox(height: media.height * 0.015,),
-                    (_showLayout == "Follower")
-                        ? const FollowLayout(layout: "Follower", amount: "0")
-                        : const FollowLayout(layout: "Following", amount: "0")
+                    if(isLoading)...[
+                      Loading(
+                        marginTop: media.height * 0.28,
+                        backgroundColor: Colors.transparent,
+                      )
+                    ]
+                    else...[
+                      (_showLayout == "Follower")
+                          ? FollowLayout(
+                        layout: "Follower",
+                        token: token,
+                        userId: ((checkOtherUser) ? getUrlId(user?.activity ?? "") : userActivity?.id) ?? "",
+                        totalFollow: userActivity?.totalFollowers ?? 0,
+                        followList: userActivity?.followers ?? [],
+                        reload: () {
+                          delayedInit(reload: true);
+                        },
+                        checkOtherUser: checkOtherUser,
+                      )
+                          : FollowLayout(
+                        layout: "Following",
+                        token: token,
+                        userId: ((checkOtherUser) ? getUrlId(user?.activity ?? "") : userActivity?.id) ?? "",
+                        totalFollow: userActivity?.totalFollowees ?? 0,
+                        followList: userActivity?.followees ?? [],
+                        reload: () {
+                          delayedInit(reload: true);
+                        },
+                        checkOtherUser: checkOtherUser,
+                      )
+                    ]
                   ],
                 ),
               )
@@ -103,11 +247,58 @@ class _FollowViewState extends State<FollowView> {
   }
 }
 
-class FollowLayout extends StatelessWidget {
+class FollowLayout extends StatefulWidget {
   final String layout;
-  final String amount;
-  const FollowLayout({super.key, required this.layout, required this.amount});
+  final String token;
+  final String userId;
+  final int totalFollow;
+  final List<dynamic> followList;
+  final VoidCallback? reload;
+  final bool checkOtherUser;
 
+  const FollowLayout({
+    required this.layout,
+    required this.token,
+    required this.userId,
+    required this.totalFollow,
+    required this.followList,
+    required this.checkOtherUser,
+    this.reload,
+    super.key,
+  });
+
+  @override
+  State<FollowLayout> createState() => _FollowLayoutState();
+}
+
+class _FollowLayoutState extends State<FollowLayout> {
+  // Map<String, dynamic> followButtonState = {};
+  List<Map<String, dynamic>> followList = [];
+  int totalFollow = 0;
+
+  @override
+  void initState() {
+    totalFollow = widget.totalFollow;
+    if(widget.layout == "Following") {
+      followList.addAll(widget.followList.map((e) => {
+        "follow": e,
+        "followButtonState": {
+          "text": (e.checkUserFollow == null) ? "Follow" : "Unfollow",
+          "backgroundColor": (e.checkUserFollow == null) ? TColor.PRIMARY : Colors.transparent,
+        }
+      }));
+    }
+    else {
+      followList.addAll(widget.followList.map((e) => {
+        "follow": e,
+        "followButtonState": {
+          "text": (e.checkUserFollow == null) ? "Follow" : "Unfollow",
+          "backgroundColor": (e.checkUserFollow == null) ? TColor.PRIMARY : Colors.transparent,
+        }
+      }));
+    }
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
@@ -122,7 +313,7 @@ class FollowLayout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                layout,
+                widget.layout,
                 style: TextStyle(
                     color: TColor.PRIMARY_TEXT,
                     fontSize: FontSize.LARGE,
@@ -130,7 +321,7 @@ class FollowLayout extends StatelessWidget {
                 ),
               ),
               Text(
-                amount,
+                "${totalFollow}",
                 style: TextStyle(
                     color: TColor.PRIMARY_TEXT,
                     fontSize: FontSize.LARGE,
@@ -146,9 +337,15 @@ class FollowLayout extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for(int i = 0; i < 30; i++)...[
+                for(int i = 0; i < followList.length; i++)...[
                   CustomTextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/user', arguments: {
+                        "id": followList[i]["follow"].id
+                      }).then((_) {
+                        widget.reload?.call();
+                      });
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10
@@ -176,7 +373,7 @@ class FollowLayout extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    layout == "Following" ? "Minh Duc" : "Dang Minh Duc",
+                                    followList[i]["follow"].name,
                                     style: TextStyle(
                                         color: TColor.PRIMARY_TEXT,
                                         fontSize: FontSize.SMALL,
@@ -204,7 +401,7 @@ class FollowLayout extends StatelessWidget {
                                         ),
                                       ),
                                       backgroundColor: MaterialStateProperty.all(
-                                          (layout == "Follower") ? TColor.PRIMARY : Colors.transparent
+                                          followList[i]["followButtonState"]["backgroundColor"]
                                       ),
                                       side: MaterialStateProperty.all(
                                           BorderSide(
@@ -213,9 +410,54 @@ class FollowLayout extends StatelessWidget {
                                           )
                                       )
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    if(followList[i]["followButtonState"]["text"] == "Unfollow") {
+                                      print("Check user follow: ${followList[i]["follow"].checkUserFollow}");
+                                      await callDestroyAPI(
+                                          'social/follow',
+                                          followList[i]["follow"].checkUserFollow,
+                                          widget.token
+                                      );
+                                      if(widget.layout == "Following" && !widget.checkOtherUser) {
+                                        setState(() {
+                                          totalFollow -= 1;
+                                        });
+                                      }
+                                    } else {
+                                      Follow follow = Follow(
+                                          followerId: widget.userId,
+                                          followeeId: followList[i]["follow"].actId
+                                      );
+                                      print(follow.toJson());
+                                      final data = await callCreateAPI(
+                                          'social/follow',
+                                          follow.toJson(),
+                                          widget.token
+                                      );
+                                      followList[i]["follow"].checkUserFollow = data["id"];
+                                      if(widget.layout == "Following" && !widget.checkOtherUser) {
+                                        setState(() {
+                                          totalFollow += 1;
+                                        });
+                                      }
+                                    }
+                                    setState(() {
+                                      if(followList[i]["followButtonState"]["text"] == "Unfollow") {
+                                        followList[i]["followButtonState"] = {
+                                          "text": "Follow",
+                                          "backgroundColor": TColor.PRIMARY
+                                        };
+                                      }
+                                      else {
+                                        followList[i]["followButtonState"] = {
+                                          "text": "Unfollow",
+                                          "backgroundColor": Colors.transparent
+                                        };
+                                      }
+                                    });
+                                  },
                                   child: Text(
-                                    (layout == "Follower") ? "Follow" : "Unfollow",
+                                    followList[i]["followButtonState"]["text"],
                                     style: TextStyle(
                                         color: TColor.PRIMARY_TEXT,
                                         fontSize: FontSize.LARGE,
@@ -230,7 +472,8 @@ class FollowLayout extends StatelessWidget {
                       ),
                     ),
                   )
-                ]
+                ],
+                SizedBox(height: media.height * 0.3,)
               ],
             ),
           ),

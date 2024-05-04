@@ -1,12 +1,11 @@
 import 'package:running_app/models/account/activity.dart';
-import 'package:running_app/models/account/author.dart';
-import 'package:running_app/models/account/like.dart';
+import 'package:running_app/models/account/user_abbr.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/models/social/post.dart';
 
 class PostComment {
   final String? id;
-  final Author? user;
+  final UserAbbr? user;
   final String? content;
   final String? createdAt;
 
@@ -19,7 +18,7 @@ class PostComment {
 
   PostComment.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        user = Author.fromJson(json['user']),
+        user = UserAbbr.fromJson(json['user']),
         content = json['content'],
         createdAt = json['created_at'];
 
@@ -42,7 +41,7 @@ class ClubPostComment extends PostComment {
 
   ClubPostComment({
     String? id,
-    Author? user,
+    UserAbbr? user,
     String? content,
     String? createdAt,
     required this.post,
@@ -74,7 +73,7 @@ class EventPostComment extends PostComment {
 
   EventPostComment({
     String? id,
-    Author? user,
+    UserAbbr? user,
     String? content,
     String? createdAt,
     required this.post,
@@ -107,7 +106,7 @@ class ActivityRecordPostComment extends PostComment {
 
   ActivityRecordPostComment({
     String? id,
-    Author? user,
+    UserAbbr? user,
     String? content,
     String? createdAt,
     required this.post,
