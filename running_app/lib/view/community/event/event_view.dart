@@ -3,17 +3,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
-import 'package:running_app/utils/common_widgets/loading.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/show_filter.dart';
+import 'package:running_app/utils/common_widgets/layout/loading.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_filter.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/event/utils/common_widgets/event_box.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/activity/event.dart';
 import 'package:running_app/services/api_service.dart';
 
-import 'package:running_app/utils/common_widgets/search_filter.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
+import 'package:running_app/utils/common_widgets/form/search_filter.dart';
+import 'package:running_app/utils/common_widgets/button/text_button.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/constants.dart';
 

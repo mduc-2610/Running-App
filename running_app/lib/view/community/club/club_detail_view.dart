@@ -4,14 +4,14 @@ import 'package:running_app/models/activity/club.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:provider/provider.dart';
 
-import 'package:running_app/utils/common_widgets/athlete_table.dart';
-import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
-import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/loading.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/scroll_synchronized.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
+import 'package:running_app/utils/common_widgets/layout/athlete_table.dart';
+import 'package:running_app/utils/common_widgets/layout/empty_list_notification.dart';
+import 'package:running_app/utils/common_widgets/layout/header.dart';
+import 'package:running_app/utils/common_widgets/layout/loading.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/layout/scroll_synchronized.dart';
+import 'package:running_app/utils/common_widgets/button/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 

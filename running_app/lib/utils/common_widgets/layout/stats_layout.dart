@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:running_app/utils/common_widgets/stats_box.dart';
+import 'package:running_app/utils/common_widgets/layout/stats_box.dart';
 
 class StatsLayout extends StatelessWidget {
   final String totalDistance;

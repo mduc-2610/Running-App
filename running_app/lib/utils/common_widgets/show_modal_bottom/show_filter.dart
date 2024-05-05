@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:running_app/utils/common_widgets/main_button.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/button/main_button.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 
 Future<Map<String, String?>> showFilter(

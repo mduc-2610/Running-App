@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/models/account/leaderboard.dart';
 import 'package:running_app/models/account/user.dart';
-import 'package:running_app/utils/common_widgets/icon_button.dart';
-import 'package:running_app/utils/common_widgets/show_action_list.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
+import 'package:running_app/utils/common_widgets/button/icon_button.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_action_list.dart';
+import 'package:running_app/utils/common_widgets/button/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 

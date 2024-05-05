@@ -6,24 +6,24 @@ import 'package:running_app/models/social/post.dart';
 import 'package:running_app/models/social/post_comment.dart';
 import 'package:running_app/models/social/post_like.dart';
 import 'package:running_app/services/api_service.dart';
-import 'package:running_app/utils/common_widgets/app_bar.dart';
-import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/empty_list_notification.dart';
-import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/limit_text_line.dart';
-import 'package:running_app/utils/common_widgets/loading.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/show_action_list.dart';
-import 'package:running_app/utils/common_widgets/show_notification.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/wrapper.dart';
+import 'package:running_app/utils/common_widgets/layout/app_bar.dart';
+import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/layout/empty_list_notification.dart';
+import 'package:running_app/utils/common_widgets/layout/header.dart';
+import 'package:running_app/utils/common_widgets/layout/limit_text_line.dart';
+import 'package:running_app/utils/common_widgets/layout/loading.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_action_list.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_notification.dart';
+import 'package:running_app/utils/common_widgets/button/text_button.dart';
+import 'package:running_app/utils/common_widgets/layout/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/feed/utils/common_widget/activity_record_post.dart';
 import 'package:running_app/view/community/utils/common_widgets/post/post.dart';
-import 'package:running_app/utils/common_widgets/comment_create.dart';
+import 'package:running_app/utils/common_widgets/layout/comment_create.dart';
 
 class PostDetail extends StatefulWidget {
   const PostDetail({

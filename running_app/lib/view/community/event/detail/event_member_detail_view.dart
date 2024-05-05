@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:running_app/models/account/user.dart';
-import 'package:running_app/utils/common_widgets/app_bar.dart';
-import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
+import 'package:running_app/utils/common_widgets/layout/app_bar.dart';
+import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/layout/header.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/button/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 
 class EventMemberDetailView extends StatefulWidget {

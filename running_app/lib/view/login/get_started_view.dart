@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:running_app/utils/common_widgets/main_button.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/button/main_button.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 
 class GetStartedView extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:running_app/utils/common_widgets/icon_box.dart';
+import 'package:running_app/utils/common_widgets/layout/icon_box.dart';
 import 'package:running_app/utils/constants.dart';
 
 

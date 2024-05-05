@@ -9,6 +9,7 @@ import 'package:running_app/models/account/privacy.dart';
 import 'package:running_app/models/account/profile.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
+import 'package:running_app/utils/common_widgets/layout/notification_box.dart';
 import 'package:running_app/utils/providers/delete_activity_state_provider.dart';
 import 'package:running_app/view/activity/activity_record_create_view.dart';
 import 'package:running_app/view/activity/activity_record_detail_view.dart';
@@ -41,8 +42,8 @@ import 'package:shared_preferences/shared_preferences.dart'; // Import shared_pr
 import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
 
 
-import 'package:running_app/utils/common_widgets/email_verification.dart';
-import 'package:running_app/utils/common_widgets/notification_box.dart';
+import 'package:running_app/utils/common_widgets/layout/email_verification.dart';
+import 'package:running_app/utils/common_widgets/layout/notification_box.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/activity/activity_record_list_view.dart';

@@ -4,16 +4,14 @@ import 'package:provider/provider.dart';
 
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
-import 'package:running_app/utils/common_widgets/main_button.dart';
-import 'package:running_app/utils/common_widgets/show_notification.dart';
+import 'package:running_app/utils/common_widgets/button/back_button.dart';
+import 'package:running_app/utils/common_widgets/button/main_button.dart';
+import 'package:running_app/utils/common_widgets/form/input_decoration.dart';
+import 'package:running_app/utils/common_widgets/form/text_form_field.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_notification.dart';
+import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
-
-import '../../utils/constants.dart';
-import '../../utils/common_widgets/input_decoration.dart';
-import '../../utils/common_widgets/back_button.dart';
-import '../../utils/common_widgets/text_form_field.dart';
-import '../../utils/common_widgets/main_wrapper.dart';
-
 
 class SignUpView extends StatefulWidget {
   const SignUpView({super.key});

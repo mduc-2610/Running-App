@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:running_app/utils/common_widgets/app_bar.dart';
-import 'package:running_app/utils/common_widgets/choice_button.dart';
-import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/main_button.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/wrapper.dart';
+import 'package:running_app/utils/common_widgets/layout/app_bar.dart';
+import 'package:running_app/utils/common_widgets/button/choice_button.dart';
+import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/layout/header.dart';
+import 'package:running_app/utils/common_widgets/button/main_button.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/layout/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/view/community/event/utils/provider/event_feature_create_provider.dart';
 

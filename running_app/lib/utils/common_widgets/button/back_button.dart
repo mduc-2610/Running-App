@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:running_app/utils/common_widgets/icon_button.dart';
+import 'package:running_app/utils/common_widgets/button/icon_button.dart';
 import 'package:running_app/utils/constants.dart';
 
 class CustomBackButton extends StatelessWidget {

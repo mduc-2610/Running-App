@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:running_app/utils/common_widgets/input_decoration.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/text_form_field.dart';
+import 'package:running_app/utils/common_widgets/form/input_decoration.dart';
+import 'package:running_app/utils/common_widgets/button/text_button.dart';
+import 'package:running_app/utils/common_widgets/form/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
 class SearchFilter extends StatefulWidget {

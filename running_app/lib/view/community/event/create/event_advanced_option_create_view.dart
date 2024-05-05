@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:running_app/utils/common_widgets/app_bar.dart';
-import 'package:running_app/utils/common_widgets/bottom_stick_button.dart';
-import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/input_decoration.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/switch_button.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/text_form_field.dart';
+import 'package:running_app/utils/common_widgets/layout/app_bar.dart';
+import 'package:running_app/utils/common_widgets/button/bottom_stick_button.dart';
+import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/layout/header.dart';
+import 'package:running_app/utils/common_widgets/form/input_decoration.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/button/switch_button.dart';
+import 'package:running_app/utils/common_widgets/button/text_button.dart';
+import 'package:running_app/utils/common_widgets/form/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/view/community/event/utils/provider/event_advanced_option_create_provider.dart';
 

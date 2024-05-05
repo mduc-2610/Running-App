@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:running_app/utils/common_widgets/app_bar.dart';
-import 'package:running_app/utils/common_widgets/header.dart';
-import 'package:running_app/utils/common_widgets/icon_button.dart';
-import 'package:running_app/utils/common_widgets/input_decoration.dart';
-import 'package:running_app/utils/common_widgets/main_button.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/default_background_layout.dart';
-import 'package:running_app/utils/common_widgets/show_action_list.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
-import 'package:running_app/utils/common_widgets/text_form_field.dart';
+import 'package:running_app/utils/common_widgets/layout/app_bar.dart';
+import 'package:running_app/utils/common_widgets/layout/header.dart';
+import 'package:running_app/utils/common_widgets/button/icon_button.dart';
+import 'package:running_app/utils/common_widgets/form/input_decoration.dart';
+import 'package:running_app/utils/common_widgets/button/main_button.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_action_list.dart';
+import 'package:running_app/utils/common_widgets/button/text_button.dart';
+import 'package:running_app/utils/common_widgets/form/text_form_field.dart';
 import 'package:running_app/utils/constants.dart';
 
 class EventGroupManagementView extends StatefulWidget {

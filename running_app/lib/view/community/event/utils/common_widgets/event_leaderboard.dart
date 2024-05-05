@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:running_app/models/activity/event.dart';
-import 'package:running_app/utils/common_widgets/athlete_table.dart';
-import 'package:running_app/utils/common_widgets/loading.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
+import 'package:running_app/utils/common_widgets/layout/athlete_table.dart';
+import 'package:running_app/utils/common_widgets/layout/loading.dart';
+import 'package:running_app/utils/common_widgets/button/text_button.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 import 'package:running_app/view/community/event/utils/common_widgets/event_leaderboard_text.dart';

@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
-import 'package:running_app/utils/common_widgets/main_button.dart';
-import 'package:running_app/utils/common_widgets/wrapper.dart';
+import 'package:running_app/utils/common_widgets/button/main_button.dart';
+import 'package:running_app/utils/common_widgets/layout/wrapper.dart';
 import 'package:running_app/utils/constants.dart';
+
 
 class BottomStickButton extends StatelessWidget {
   final String text;

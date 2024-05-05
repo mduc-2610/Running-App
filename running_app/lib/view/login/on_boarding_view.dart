@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:running_app/utils/common_widgets/main_wrapper.dart';
-import 'package:running_app/utils/common_widgets/text_button.dart';
+import 'package:running_app/utils/common_widgets/button/back_button.dart';
+import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
+import 'package:running_app/utils/common_widgets/button/text_button.dart';
+import 'package:running_app/utils/constants.dart';
 
-import '../../utils/constants.dart';
-import '../../utils/common_widgets/back_button.dart';
 
 class OnBoardingView extends StatefulWidget {
   const OnBoardingView({super.key});
