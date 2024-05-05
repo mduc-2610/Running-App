@@ -18,7 +18,7 @@ import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
-import 'package:running_app/view/community/feed/utils/common_widget/activity_record_post.dart';
+import 'package:running_app/view/community/utils/common_widgets/activity_record_post.dart';
 import 'package:running_app/view/community/utils/common_widgets/post/post.dart';
 import 'package:running_app/view/community/utils/common_widgets/post/post_create_button.dart';
 
@@ -188,10 +188,10 @@ class _PostLayoutState extends State<PostLayout> {
                                           widget.posts?[i]["post"].checkUserLike,
                                           token
                                       );
-                                      // int index = widget.posts?[i]["post"].likes
-                                      //     ?.indexWhere((like) => like.id == user?.id) ?? -1;
+                                      int index = widget.posts?[i]["post"].likes
+                                          ?.indexWhere((like) => like.id == user?.id) ?? -1;
                                       setState(() {
-                                        widget.posts?[i]["post"].likes.removeAt(i);
+                                        widget.posts?[i]["post"].likes.removeAt(index);
                                         widget.posts?[i]["post"]?.decreaseTotalLikes();
                                         widget.posts?[i]["like"] = (widget.posts?[i]["like"]) ? false : true;
                                       });

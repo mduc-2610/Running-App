@@ -1,6 +1,7 @@
 import 'package:running_app/models/account/leaderboard.dart';
 
 import 'package:running_app/models/account/leaderboard.dart';
+import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/models/social/post.dart';
 
 import '../account/user.dart';
@@ -15,6 +16,8 @@ class Club {
   final String? privacy;
   final String? organization;
   final int? totalPosts;
+  final int? totalActivityRecords;
+
   Club({
      required this.id,
      required this.name,
@@ -25,6 +28,7 @@ class Club {
      required this.privacy,
      required this.organization,
      required this.totalPosts,
+     required this.totalActivityRecords,
   });
 
   Club.fromJson(Map<String, dynamic> json)
@@ -36,7 +40,8 @@ class Club {
       totalParticipants = json['total_participants'],
       privacy = json['privacy'],
       organization = json['organization'],
-      totalPosts = json['total_posts'];
+      totalPosts = json['total_posts'],
+      totalActivityRecords = json['total_activity_records'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -63,6 +68,7 @@ class DetailClub extends Club {
   final String? description;
   final String? coverPhoto;
   final List<ClubPost>? posts;
+  final List<DetailActivityRecord>? activityRecords;
 
   DetailClub({
     String? id,
@@ -74,8 +80,10 @@ class DetailClub extends Club {
     int? weekActivities,
     int? totalParticipants,
     int? totalPosts,
+    int? totalActivityRecords,
     required this.posts,
     required this.participants,
+    required this.activityRecords,
     required this.description,
     required this.coverPhoto,
   }) : super(
@@ -87,12 +95,14 @@ class DetailClub extends Club {
     totalParticipants: totalParticipants,
     privacy: privacy,
     organization: organization,
-    totalPosts: totalPosts
+    totalPosts: totalPosts,
+    totalActivityRecords: totalActivityRecords
   );
 
   DetailClub.fromJson(Map<String, dynamic> json)
       : description = json['description'],
         participants = (json['participants'] as List<dynamic>?)?.map((e) => Leaderboard.fromJson(e)).toList(),
+        activityRecords = (json['activity_records'] as List<dynamic>?)?.map((e) => DetailActivityRecord.fromJson(e)).toList(),
         coverPhoto = json['cover_photo'],
         posts = (json['posts'] as List<dynamic>?)?.map((e) => ClubPost.fromJson(e)).toList(),
         super.fromJson(json);

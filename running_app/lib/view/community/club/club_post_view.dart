@@ -44,26 +44,13 @@ class _ClubPostViewState extends State<ClubPostView> {
     });
   }
 
-  Future<void> initUserActivity() async {
-    final data = await callRetrieveAPI(
-        null, null,
-        user?.activity,
-        Activity.fromJson,
-        token,
-        queryParams: "?fields=club_post_likes"
-    );
-    setState(() {
-      userActivity = data;
-    });
-  }
-
   Future<void> initClub() async {
     final data = await callRetrieveAPI(
         'activity/club',
         clubId, null,
         DetailClub.fromJson, token,
         queryParams: "?exclude=participants"
-            "&page=$page"
+            "&post_page=$page"
     );
     setState(() {
       club = data;
@@ -116,9 +103,6 @@ class _ClubPostViewState extends State<ClubPostView> {
       setState(() {
         isLoading = true;
       });
-    }
-    if(initSide == true) {
-      await initUserActivity();
     }
     await initClub();
     await Future.delayed(Duration(milliseconds: 500),);

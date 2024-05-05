@@ -22,7 +22,7 @@ class Group(models.Model):
         "activity.Event", related_name="groups", on_delete=models.CASCADE)
     users = models.ManyToManyField(
         "account.Activity", through="activity.UserParticipationGroup", blank=True)
-    total_participants = models.IntegerField(default=0, null=True)
+    total_participants = models.IntegerField(default=0, blank=True, null=True)
     
     def total_distance(self):
         return 0

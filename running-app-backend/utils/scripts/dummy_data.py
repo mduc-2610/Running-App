@@ -63,7 +63,7 @@ def run():
     MAX_NUMBER_USERS = 100
     MAX_NUMBER_USERS_FOLLOWERS = 50
     
-    MAX_ACTIVITY_RECORDS = 800
+    MAX_NUMBER_ACTIVITY_RECORDS = 10000
     MAX_COMMENTS_PER_ACTIVITY_RECORDS_POST = 30
     MAX_LIKES_PER_ACTIVITY_RECORDS_POST = 30
 
@@ -198,7 +198,7 @@ def run():
     print("________________________________________________________________")
     print("ACTIVITY RECORD:")
     activity_record_list = []
-    for i in range(MAX_ACTIVITY_RECORDS):
+    for i in range(MAX_NUMBER_ACTIVITY_RECORDS):
         # start_date = current_datetime - timedelta(days=3*365)
         start_date = datetime(current_year, 1, 1)
         end_date = current_datetime
@@ -495,7 +495,7 @@ def run():
     print("________________________________________________________________")
     print("ACTIVIY RECORD POST COMMENT:")
     activity_record_post_comment_list = []
-    for i in range(MAX_ACTIVITY_RECORDS):
+    for i in range(MAX_NUMBER_ACTIVITY_RECORDS):
         for _ in range(random.randint(0, MAX_COMMENTS_PER_ACTIVITY_RECORDS_POST)):
             data = {
                 "user": random.choice(user_activity_list),
@@ -541,7 +541,7 @@ def run():
     print("________________________________________________________________")
     print("ACTIVIY RECORD POST LIKE:")
     activity_record_post_like_list = []
-    for i in range(MAX_ACTIVITY_RECORDS):
+    for i in range(MAX_NUMBER_ACTIVITY_RECORDS):
         user_tmp = user_activity_list.copy()
         for _ in range(random.randint(0, MAX_LIKES_PER_ACTIVITY_RECORDS_POST)):
             random_user = user_tmp.pop(random.randint(0, len(user_tmp) - 1))

@@ -95,7 +95,7 @@ class _ProductViewState extends State<ProductView> {
       await initCategory();
     }
     await initProduct();
-    await Future.delayed(Duration(milliseconds: 700));
+    await Future.delayed(Duration(milliseconds: 500));
     setState(() {
       isLoading = false;
     });

@@ -16,7 +16,7 @@ import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
-import 'package:running_app/view/community/feed/utils/common_widget/activity_record_post.dart';
+import 'package:running_app/view/community/utils/common_widgets/activity_record_post.dart';
 
 class FeedView extends StatefulWidget {
   const FeedView({super.key});
@@ -32,10 +32,10 @@ class _FeedViewState extends State<FeedView> {
   List<dynamic> activityRecords = [];
   bool isLoading = true;
   String showView = "Explore";
-  double previousScrollOffset = 0;
-  int page = 1;
   bool isVisible = true;
   ScrollController scrollController = ScrollController();
+  double previousScrollOffset = 0;
+  int page = 1;
   bool stopLoadingPage = false;
 
   void getProviderData() {
@@ -94,7 +94,7 @@ class _FeedViewState extends State<FeedView> {
     }
     catch(e) {
       setState(() {
-        stopLoadingPage = false;
+        stopLoadingPage = true;
       });
     }
     if(!stopLoadingPage) {

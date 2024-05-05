@@ -16,6 +16,7 @@ import 'package:running_app/view/activity/activity_record_detail_view.dart';
 import 'package:running_app/view/activity/activity_record_edit_view.dart';
 import 'package:running_app/view/activity/activity_record_stats_view.dart';
 import 'package:running_app/view/activity/activity_record_view.dart';
+import 'package:running_app/view/community/club/club_activity_record_view.dart';
 import 'package:running_app/view/community/club/club_create_view.dart';
 import 'package:running_app/view/community/club/club_detail_information_view.dart';
 import 'package:running_app/view/community/club/club_post_view.dart';
@@ -208,6 +209,7 @@ class MyApp extends StatelessWidget {
         '/club_detail_information': (context) => const ClubDetailInformationView(),
         '/club_create': (context) => const ClubCreateView(),
         '/club_post': (context) => const ClubPostView(),
+        '/club_activity_record': (context) => const ClubActivityRecordView(),
         '/club_member': (context) => const ClubMemberView(),
         '/post_detail': (context) => const PostDetail(),
         '/post_create': (context) => const PostCreate(),

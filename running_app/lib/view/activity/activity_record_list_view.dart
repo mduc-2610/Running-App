@@ -36,7 +36,11 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
   String? requestUserId;
   Activity? userActivity;
   Performance? userPerformance;
-  List<ActivityRecord>? activityRecords;
+  List<ActivityRecord> activityRecords = [];
+  ScrollController scrollController = ScrollController();
+  double previousScrollOffset = 0;
+  int page = 1;
+  bool stopLoadingPage = false;
 
   void getProviderData() {
     setState(() {
@@ -60,10 +64,26 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
   }
 
   Future<void> initUserActivity() async {
-    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
+    dynamic data;
+    try {
+      data = await callRetrieveAPI(
+          null, null,
+          user?.activity,
+          Activity.fromJson,
+          token,
+          queryParams: "?fields=activity_records&"
+              "act_rec_page=$page&"
+              "act_rec_page_size=15"
+      );
+    }
+    catch(e) {
+      setState(() {
+        stopLoadingPage = true;
+      });
+    }
     setState(() {
       userActivity = data;
-      activityRecords = userActivity?.activityRecords;
+      activityRecords.addAll(userActivity?.activityRecords ?? []);
     });
   }
 
@@ -75,20 +95,53 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
   }
 
 
-  Future<void> delayedInit() async {
-    await initUser();
+  Future<void> delayedInit({ bool reload = false, bool initSide = false }) async {
+    if(reload) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+    if(initSide) {
+      await initUser();
+      await initUserPerformance();
+    }
     await initUserActivity();
-    await initUserPerformance();
-    await Future.delayed(Duration(seconds: 1),);
-
+    // await Future.delayed(Duration(seconds: 1),);
     setState(() {
       isLoading = false;
     });
   }
+
+  void scrollListenerOffSet() {
+    double currentScrollOffset = scrollController.offset;
+    if ((currentScrollOffset - previousScrollOffset).abs() > 500) {
+      print("Loading page $page");
+      previousScrollOffset = currentScrollOffset;
+      setState(() {
+        page += 1;
+      });
+      if(!stopLoadingPage) {
+        delayedInit();
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(scrollListenerOffSet);
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   void didChangeDependencies() async {
     getProviderData();
-    delayedInit();
+    delayedInit(initSide: true);
     super.didChangeDependencies();
   }
 
@@ -138,6 +191,7 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
       body: RefreshIndicator(
         onRefresh: handleRefresh,
         child: SingleChildScrollView(
+          controller: scrollController,
           child: DefaultBackgroundLayout(
             child: Stack(
               children: [

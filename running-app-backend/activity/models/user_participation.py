@@ -31,13 +31,22 @@ class UserParticipationClub(UserParticipation):
     club = models.ForeignKey(
         "activity.Club", on_delete=models.CASCADE)
     
+    class Meta:
+        unique_together = ("user", "club")
+    
 class UserParticipationEvent(UserParticipation):
     event = models.ForeignKey(
         "activity.Event", on_delete=models.CASCADE)
     
+    class Meta:
+        unique_together = ("user", "event")
+
 class UserParticipationGroup(UserParticipation):
     group = models.ForeignKey(
         "activity.Group", on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("user", "group")
 
 @receiver(post_save, sender=UserParticipationClub)
 def update_club_participant(sender, instance, created, **kwargs):
@@ -50,6 +59,21 @@ def update_club_participant(sender, instance, created, **kwargs):
 def delete_club_participant(sender, instance, **kwargs):
     club = instance.club
     club.total_participants -= 1
+    club.save()
+
+@receiver(post_save, sender=UserParticipationClub)
+def update_club_activity_record(sender, instance, created, **kwargs):
+    if created:
+        user = instance.user
+        club = instance.club
+        club.total_activity_records += user.total_activity_records
+        club.save()
+
+@receiver(post_delete, sender=UserParticipationClub)
+def delete_club_activity_record(sender, instance, **kwargs):
+    user = instance.user
+    club = instance.club
+    club.total_activity_records -= user.total_activity_records
     club.save()
 
 @receiver(post_save, sender=UserParticipationEvent)

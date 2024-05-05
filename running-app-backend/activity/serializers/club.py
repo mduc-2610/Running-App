@@ -3,6 +3,7 @@ from rest_framework import serializers
 from activity.models import Club
 from account.serializers import LeaderboardSerializer 
 from account.serializers import DetailUserSerializer
+from activity.serializers import DetailActivityRecordSerializer
 from social.serializers import ClubPostSerializer
 from utils.function import get_start_of_day, \
                             get_end_of_day, \
@@ -30,7 +31,8 @@ class ClubSerializer(serializers.ModelSerializer):
             "organization",
             "week_activities", 
             "total_participants",
-            "total_posts"
+            "total_posts",
+            "total_activity_records",
         )
         extra_kwargs = {
             "id": {"read_only": True}
@@ -43,7 +45,8 @@ class DetailClubSerializer(serializers.ModelSerializer):
     organization = serializers.CharField(source="get_organization_display")
     privacy = serializers.CharField(source="get_privacy_display") 
     posts = serializers.SerializerMethodField()
-
+    activity_records = serializers.SerializerMethodField()
+    
     def get_week_activites(self, instance):
         return instance.week_activities()
     
@@ -93,7 +96,7 @@ class DetailClubSerializer(serializers.ModelSerializer):
         exclude = context.get("exclude", [])
         if "posts" not in exclude:
             queryset = instance.club_posts.all()
-            paginator = CommonPagination(page_size=5)
+            paginator = CommonPagination(page_size=5, page_query_param="post_page")
             paginated_queryset = paginator.paginate_queryset(queryset, context["request"])
             return ClubPostSerializer(
                 paginated_queryset, many=True, context={
@@ -101,7 +104,24 @@ class DetailClubSerializer(serializers.ModelSerializer):
                     "user": context["user"],
                 }, read_only=True).data
         return None
-
+    
+    def get_activity_records(self, instance):
+        context = self.context
+        exclude = context.get("exclude", [])
+        if "activity_records" not in exclude:
+            participants = instance.clubs.all()
+            queryset = []
+            for participant in participants:
+                queryset += participant.activity_records.all()
+            paginator = CommonPagination(page_size=3, page_query_param="act_rec_page")
+            paginated_queryset = paginator.paginate_queryset(queryset, context["request"])
+            return DetailActivityRecordSerializer(
+                paginated_queryset, many=True, context={
+                    "request": context["request"],
+                    "user": context["user"],
+                }, read_only=True).data
+        return None
+    
     class Meta:
         model = Club
         fields = "__all__"

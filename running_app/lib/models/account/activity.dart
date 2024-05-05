@@ -7,7 +7,7 @@ import "package:running_app/models/product/product.dart";
 import "package:running_app/models/social/post.dart";
 import "package:running_app/models/social/post_comment.dart";
 import "package:running_app/models/social/post_image.dart";
-import "package:running_app/view/community/feed/utils/common_widget/activity_record_post.dart";
+import 'package:running_app/view/community/utils/common_widgets/activity_record_post.dart';
 
 import "user.dart";
 

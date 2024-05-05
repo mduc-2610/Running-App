@@ -276,7 +276,9 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                         SizedBox(
                                           child: CustomTextButton(
                                             onPressed: () {
-
+                                              Navigator.pushNamed(context, '/club_activity_record', arguments: {
+                                                "id": club?.id,
+                                              });
                                             },
                                             child: Stack(
                                               children: [
@@ -304,7 +306,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                        "0",
+                                                        "${club?.totalActivityRecords}",
                                                         textAlign: TextAlign.center,
                                                         style: TextStyle(
                                                           color: TColor.PRIMARY_TEXT,
@@ -313,7 +315,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        "Activities per week",
+                                                        "Total activities",
                                                         textAlign: TextAlign.center,
                                                         style: TextStyle(
                                                           color: TColor.PRIMARY_TEXT,
@@ -367,7 +369,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                                     crossAxisAlignment: CrossAxisAlignment.end,
                                                     children: [
                                                       Text(
-                                                        "Posts per week",
+                                                        "Total posts",
                                                         textAlign: TextAlign.center,
                                                         style: TextStyle(
                                                           color: TColor.PRIMARY_TEXT,

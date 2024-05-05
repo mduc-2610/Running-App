@@ -46,6 +46,8 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
     # user = serializers.SerializerMethodField()
     user = UserAbbrSerializer()
     completed_at = serializers.SerializerMethodField()
+    points = serializers.SerializerMethodField()
+    steps = serializers.SerializerMethodField()
     sport_type = serializers.CharField(source="get_sport_type_display")
     privacy = serializers.CharField(source="get_privacy_display")
     avg_moving_pace = serializers.SerializerMethodField()
@@ -53,6 +55,12 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField()
     comments = serializers.SerializerMethodField()
     check_user_like = serializers.SerializerMethodField()
+
+    def get_points(self, instance):
+        return instance.points()
+    
+    def get_steps(self, instance):
+        return instance.steps()
 
     def get_check_user_like(self, instance):
         user_id = self.context["user"].id

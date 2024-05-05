@@ -56,8 +56,15 @@ class ActivitySerializer(serializers.ModelSerializer):
             return instance.id if instance else None
         return None
 
-    def get_paginated_queryset(self, queryset, page_size=5, page_query_param="page"):
-        paginator = CommonPagination(page_size=page_size, page_query_param=page_query_param)
+    def get_paginated_queryset(
+        self, queryset, page_size=5, page_query_param="page", page_size_query_param="page_size", max_page_size_query_param="max_page_size"):
+        
+        paginator = CommonPagination(
+            page_size=page_size, 
+            page_query_param=page_query_param, 
+            page_size_query_param=page_size_query_param,
+            max_page_size_query_param=max_page_size_query_param
+        )
         paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
         return paginated_queryset
     
@@ -176,7 +183,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             #     return None  
             # return ActivityRecordSerializer(page_obj.object_list, many=True, read_only=True).data
             queryset = self.get_paginated_queryset(
-                queryset, page_size=3, page_query_param="act_rec_page")
+                queryset, page_size=3, page_query_param="act_rec_page", page_size_query_param="act_rec_page_size")
             return DetailActivityRecordSerializer(queryset, many=True, read_only=True, context={
                 "request": self.context["request"],
                 "user": self.context["user"],

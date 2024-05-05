@@ -5,6 +5,7 @@ import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/social/follow.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/layout/app_bar.dart';
+import 'package:running_app/utils/common_widgets/layout/empty_list_notification.dart';
 import 'package:running_app/utils/common_widgets/layout/header.dart';
 import 'package:running_app/utils/common_widgets/form/input_decoration.dart';
 import 'package:running_app/utils/common_widgets/layout/loading.dart';
@@ -337,143 +338,153 @@ class _FollowLayoutState extends State<FollowLayout> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for(int i = 0; i < followList.length; i++)...[
-                  CustomTextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/user', arguments: {
-                        "id": followList[i]["follow"].id
-                      }).then((_) {
-                        widget.reload?.call();
-                      });
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.asset(
-                                  "assets/img/community/ptit_logo.png",
-                                  width: 35,
-                                  height: 35,
-                                ),
-                              ),
-                              SizedBox(width: media.width * 0.02,),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    followList[i]["follow"].name,
-                                    style: TextStyle(
-                                        color: TColor.PRIMARY_TEXT,
-                                        fontSize: FontSize.SMALL,
-                                        fontWeight: FontWeight.w800
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                child: CustomTextButton(
-                                  style: ButtonStyle(
-                                      padding: MaterialStateProperty.all(
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 20,
-                                              vertical: 0
-                                          )
-                                      ),
-                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                      backgroundColor: MaterialStateProperty.all(
-                                          followList[i]["followButtonState"]["backgroundColor"]
-                                      ),
-                                      side: MaterialStateProperty.all(
-                                          BorderSide(
-                                              width: 1.0,
-                                              color: TColor.PRIMARY
-                                          )
-                                      )
-                                  ),
-                                  onPressed: () async {
-                                    if(followList[i]["followButtonState"]["text"] == "Unfollow") {
-                                      print("Check user follow: ${followList[i]["follow"].checkUserFollow}");
-                                      await callDestroyAPI(
-                                          'social/follow',
-                                          followList[i]["follow"].checkUserFollow,
-                                          widget.token
-                                      );
-                                      if(widget.layout == "Following" && !widget.checkOtherUser) {
-                                        setState(() {
-                                          totalFollow -= 1;
-                                        });
-                                      }
-                                    } else {
-                                      Follow follow = Follow(
-                                          followerId: widget.userId,
-                                          followeeId: followList[i]["follow"].actId
-                                      );
-                                      print(follow.toJson());
-                                      final data = await callCreateAPI(
-                                          'social/follow',
-                                          follow.toJson(),
-                                          widget.token
-                                      );
-                                      followList[i]["follow"].checkUserFollow = data["id"];
-                                      if(widget.layout == "Following" && !widget.checkOtherUser) {
-                                        setState(() {
-                                          totalFollow += 1;
-                                        });
-                                      }
-                                    }
-                                    setState(() {
-                                      if(followList[i]["followButtonState"]["text"] == "Unfollow") {
-                                        followList[i]["followButtonState"] = {
-                                          "text": "Follow",
-                                          "backgroundColor": TColor.PRIMARY
-                                        };
-                                      }
-                                      else {
-                                        followList[i]["followButtonState"] = {
-                                          "text": "Unfollow",
-                                          "backgroundColor": Colors.transparent
-                                        };
-                                      }
-                                    });
-                                  },
-                                  child: Text(
-                                    followList[i]["followButtonState"]["text"],
-                                    style: TextStyle(
-                                        color: TColor.PRIMARY_TEXT,
-                                        fontSize: FontSize.LARGE,
-                                        fontWeight: FontWeight.w700
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
+                if(followList.length == 0)...[
+                  Center(
+                    child: EmptyListNotification(
+                      marginTop: media.height * 0.2,
+                      title: "No users found",
                     ),
                   )
-                ],
-                SizedBox(height: media.height * 0.3,)
+                ]
+                else...[
+                  for(int i = 0; i < followList.length; i++)...[
+                    CustomTextButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/user', arguments: {
+                          "id": followList[i]["follow"].id
+                        }).then((_) {
+                          widget.reload?.call();
+                        });
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.asset(
+                                    "assets/img/community/ptit_logo.png",
+                                    width: 35,
+                                    height: 35,
+                                  ),
+                                ),
+                                SizedBox(width: media.width * 0.02,),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      followList[i]["follow"].name,
+                                      style: TextStyle(
+                                          color: TColor.PRIMARY_TEXT,
+                                          fontSize: FontSize.SMALL,
+                                          fontWeight: FontWeight.w800
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  child: CustomTextButton(
+                                    style: ButtonStyle(
+                                        padding: MaterialStateProperty.all(
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 20,
+                                                vertical: 0
+                                            )
+                                        ),
+                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                        ),
+                                        backgroundColor: MaterialStateProperty.all(
+                                            followList[i]["followButtonState"]["backgroundColor"]
+                                        ),
+                                        side: MaterialStateProperty.all(
+                                            BorderSide(
+                                                width: 1.0,
+                                                color: TColor.PRIMARY
+                                            )
+                                        )
+                                    ),
+                                    onPressed: () async {
+                                      if(followList[i]["followButtonState"]["text"] == "Unfollow") {
+                                        print("Check user follow: ${followList[i]["follow"].checkUserFollow}");
+                                        await callDestroyAPI(
+                                            'social/follow',
+                                            followList[i]["follow"].checkUserFollow,
+                                            widget.token
+                                        );
+                                        if(widget.layout == "Following" && !widget.checkOtherUser) {
+                                          setState(() {
+                                            totalFollow -= 1;
+                                          });
+                                        }
+                                      } else {
+                                        Follow follow = Follow(
+                                            followerId: widget.userId,
+                                            followeeId: followList[i]["follow"].actId
+                                        );
+                                        print(follow.toJson());
+                                        final data = await callCreateAPI(
+                                            'social/follow',
+                                            follow.toJson(),
+                                            widget.token
+                                        );
+                                        followList[i]["follow"].checkUserFollow = data["id"];
+                                        if(widget.layout == "Following" && !widget.checkOtherUser) {
+                                          setState(() {
+                                            totalFollow += 1;
+                                          });
+                                        }
+                                      }
+                                      setState(() {
+                                        if(followList[i]["followButtonState"]["text"] == "Unfollow") {
+                                          followList[i]["followButtonState"] = {
+                                            "text": "Follow",
+                                            "backgroundColor": TColor.PRIMARY
+                                          };
+                                        }
+                                        else {
+                                          followList[i]["followButtonState"] = {
+                                            "text": "Unfollow",
+                                            "backgroundColor": Colors.transparent
+                                          };
+                                        }
+                                      });
+                                    },
+                                    child: Text(
+                                      followList[i]["followButtonState"]["text"],
+                                      style: TextStyle(
+                                          color: TColor.PRIMARY_TEXT,
+                                          fontSize: FontSize.LARGE,
+                                          fontWeight: FontWeight.w700
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                  SizedBox(height: media.height * 0.3,)
+                ]
               ],
             ),
           ),

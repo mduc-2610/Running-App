@@ -25,7 +25,7 @@ import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
-import 'package:running_app/view/community/feed/utils/common_widget/activity_record_post.dart';
+import 'package:running_app/view/community/utils/common_widgets/activity_record_post.dart';
 
 class FeedCommentView extends StatefulWidget {
   const FeedCommentView({super.key});

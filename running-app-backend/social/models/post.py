@@ -10,8 +10,8 @@ class Post(models.Model):
     content = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    total_likes = models.IntegerField(default=0, null=True)
-    total_comments = models.IntegerField(default=0, null=True)
+    total_likes = models.IntegerField(default=0, blank=True, null=True)
+    total_comments = models.IntegerField(default=0, blank=True, null=True)
     # likes = models.ManyToManyField("account.activity")
     
     class Meta:

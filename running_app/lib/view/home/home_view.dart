@@ -71,6 +71,8 @@ class _HomeViewState extends State<HomeView> {
         Activity.fromJson,
         token,
         queryParams: "?fields=activity_records"
+            "&act_rec_page=1&"
+            "act_rec_page_size=5"
     );
     setState(() {
       userActivity = data;
@@ -81,7 +83,7 @@ class _HomeViewState extends State<HomeView> {
   Future<void> delayedInit() async {
     await initUserPerformance();
     await initUserActivity();
-    await Future.delayed(Duration(milliseconds: 1500),);
+    await Future.delayed(Duration(milliseconds: 500),);
 
     setState(() {
       isLoading = false;

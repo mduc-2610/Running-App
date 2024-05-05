@@ -1,6 +1,6 @@
 import uuid
 import random
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.db import models
 from django.core.validators import MaxLengthValidator
@@ -41,8 +41,8 @@ class ActivityRecord(models.Model):
             "account.Activity", related_name="activity_records", on_delete=models.CASCADE)
     likes = models.ManyToManyField(
         "account.Activity", blank=True, through="social.ActivityRecordPostLike")
-    total_likes = models.IntegerField(default=0, null=True)
-    total_comments = models.IntegerField(default=0, null=True)
+    total_likes = models.IntegerField(default=0, blank=True, null=True)
+    total_comments = models.IntegerField(default=0, blank=True, null=True)
 
     def avg_moving_pace(self):
         total_seconds = self.duration.total_seconds()
@@ -123,6 +123,19 @@ def update_performance_steps(sender, instance, created, **kwargs):
         performance = instance.user.user.performance
         performance.total_steps += steps
         performance.save()
+
+@receiver(post_save, sender=ActivityRecord)
+def update_user_activitiy_record(sender, instance, created, **kwargs):
+    if created:
+        user = instance.user
+        user.total_activity_records += 1
+        user.save()
+
+@receiver(post_delete, sender=ActivityRecord)
+def delete_user_activitiy_record(sender, instance, **kwargs):
+    user = instance.user
+    user.total_activity_records -= 1
+    user.save()
 
 class ActivityRecordImage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)

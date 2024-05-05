@@ -101,11 +101,11 @@ class _ClubViewState extends State<ClubView> {
         "amount": (i) => userClubs?[i].totalParticipants.toString() ?? ""
       },
       {
-        "type": "Week activities",
-        "amount": (i) => userClubs?[i].weekActivities.toString() ?? "",
+        "type": "Total activities",
+        "amount": (i) => userClubs?[i].totalActivityRecords.toString() ?? "",
       },
       {
-        "type": "Posts",
+        "type": "Total Posts",
         "amount": (i) => "${userClubs?[i].totalPosts}",
       }
     ];
@@ -391,7 +391,7 @@ class _ClubViewState extends State<ClubView> {
                                                           ),
                                                         ],
                                                       ),
-                                                      if(j < 2) SizedBox(width: media.width * 0.08,),
+                                                      if(j < 2) SizedBox(width: media.width * 0.06,),
                                                     ],
                                                   ),
                                                 ]
