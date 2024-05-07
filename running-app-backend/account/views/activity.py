@@ -4,6 +4,8 @@ from rest_framework import generics, \
                             mixins, \
                             response
 from rest_framework.exceptions import NotFound
+
+from account.serializers import UserAbbrSerializer
 # from activity.models import Event, \
 #                             Club
 # from product.models import Product
@@ -17,75 +19,96 @@ from account.models import Activity
 from account.serializers import ActivitySerializer
 
 from utils.function import format_choice_query_params
+from utils.pagination import CommonPagination
 
 class ActivityViewSet(
+    mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
     viewsets.GenericViewSet
 ):
     queryset = Activity.objects.all()
     serializer_class = ActivitySerializer
+    # pagination_class = CommonPagination
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.action == "list":
+            query_params = self.request.query_params
+            name = query_params.get('name')
+            queryset = queryset.filter(user__name__icontains=name)
+        return queryset
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return UserAbbrSerializer
+        return super().get_serializer_class()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         query_params = self.request.query_params
-        fields = query_params.get("fields", "")
-        try:
-            if fields:
-                fields = [field.strip() for field in fields.split(",")] 
+        if self.action == "retrieve":
+            fields = query_params.get("fields", "")
+            try:
+                if fields:
+                    fields = [field.strip() for field in fields.split(",")] 
 
-            event_params = {
-                "state": format_choice_query_params(
-                    query_params.get("event_state", "")),
-                "name": query_params.get("event_name", ""),   
-                "page": int(query_params.get("event_pg", 1)),
-                "page_size": int(query_params.get("event_pg_sz", 5)),
-            }
+                event_params = {
+                    "state": format_choice_query_params(
+                        query_params.get("event_state", "")),
+                    "name": query_params.get("event_name", ""),   
+                    "page": int(query_params.get("event_pg", 1)),
+                    "page_size": int(query_params.get("event_pg_sz", 5)),
+                }
 
-            club_params = {
-                "name": query_params.get("club_name", ""),
-                "sport_type": format_choice_query_params(
-                    query_params.get("club_sport_type", "")),
-                "mode": format_choice_query_params(
-                    query_params.get("club_mode", "")),
-                "org_type" : format_choice_query_params(
-                    query_params.get("club_org_type", "")),
-                "page": int(query_params.get("club_pg", 1)),
-                "page_size": int(query_params.get("club_pg_sz", 5)),
-            }
+                club_params = {
+                    "name": query_params.get("club_name", ""),
+                    "sport_type": format_choice_query_params(
+                        query_params.get("club_sport_type", "")),
+                    "mode": format_choice_query_params(
+                        query_params.get("club_mode", "")),
+                    "org_type" : format_choice_query_params(
+                        query_params.get("club_org_type", "")),
+                    "page": int(query_params.get("club_pg", 1)),
+                    "page_size": int(query_params.get("club_pg_sz", 5)),
+                }
 
-            product_params = {
-                "product_q": query_params.get("product_q", ""),
-            }
+                product_params = {
+                    "product_q": query_params.get("product_q", ""),
+                }
 
-            follow_params = {
-                "follower_q": query_params.get("follower_q", ""),
-                "followee_q": query_params.get("followee_q", ""),
-            }
-            act_rec_params = {
-                'act_rec_exclude': [param.strip().lower() for param in self.request.query_params.get('act_rec_exclude', "").split(',')],
-            }
-            # activity_record_params = {
-            #     "page": int(query_params.get("act_rec_pg", 1)),
-            #     "page_size": int(query_params.get("act_rec_pg_sz", 5)),
-            # }
-        except:
-            raise NotFound("Invalid type for page or page_size")
+                follow_params = {
+                    "follower_q": query_params.get("follower_q", ""),
+                    "followee_q": query_params.get("followee_q", ""),
+                }
+                act_rec_params = {
+                    'act_rec_exclude': [param.strip().lower() for param in self.request.query_params.get('act_rec_exclude', "").split(',')],
+                }
+                # activity_record_params = {
+                #     "page": int(query_params.get("act_rec_pg", 1)),
+                #     "page_size": int(query_params.get("act_rec_pg_sz", 5)),
+                # }
+            except:
+                raise NotFound("Invalid type for page or page_size")
+            
+            # print(event_params)
+            # print(club_params)
+
+            context = {
+                "request": self.request,
+                "fields": fields,
+                "event_params": event_params, 
+                "club_params": club_params,
+                "product_params": product_params,
+                "follow_params": follow_params,
+                "act_rec_params": act_rec_params,
         
-        # print(event_params)
-        # print(club_params)
+                # "activity_record_params": activity_record_params
+            }
 
-        context= {
-            "request": self.request,
-            "fields": fields,
-            "event_params": event_params, 
-            "club_params": club_params,
-            "product_params": product_params,
-            "follow_params": follow_params,
-            "act_rec_params": act_rec_params,
-    
+        context.update({
             "user": self.request.user.activity,
-            # "activity_record_params": activity_record_params
-        }
+        })
+
         return context
         
     def get_serializer(self, *args, **kwargs):

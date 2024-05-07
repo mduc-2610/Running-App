@@ -44,7 +44,7 @@ class _UserViewState extends State<UserView> {
   String? requestUserId, requestUserActId;
   Performance? userPerformance;
   Activity? userActivity;
-  bool isLoading = true, isLoading2 = false;
+  bool isLoading = true, isLoading2 = false, checkFollow = false;
   bool showClearButton = false;
   String brandFilter = "";
   String categoryFilter = "";
@@ -167,6 +167,9 @@ class _UserViewState extends State<UserView> {
               }
             }
           ] : [],
+          argumentsOnPressed: {
+            "checkFollow": checkFollow,
+          },
         ),
       ),
       body: SingleChildScrollView(
@@ -266,6 +269,7 @@ class _UserViewState extends State<UserView> {
                                     );
                                   }
                                   setState(() {
+                                    checkFollow = true;
                                     if(followButtonState["text"] == "Unfollow") {
                                       followButtonState = {
                                         "text": "Follow",

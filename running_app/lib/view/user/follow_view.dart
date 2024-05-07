@@ -33,7 +33,7 @@ class _FollowViewState extends State<FollowView> {
   String token = "";
   DetailUser? user, otherUser;
   Activity? userActivity;
-  bool isLoading = true;
+  bool isLoading = true, isLoading2 = false;
   int page = 1;
   TextEditingController searchTextController = TextEditingController();
   bool showClearButton = false;
@@ -85,13 +85,17 @@ class _FollowViewState extends State<FollowView> {
     });
   }
 
-  Future<void> delayedInit({ bool reload = false, bool initSide = false }) async {
+  Future<void> delayedInit({ bool reload = false, reload2 = false, bool initSide = false }) async {
     if(reload) {
       setState(() {
         isLoading = true;
       });
     }
-
+    if(reload2) {
+      setState(() {
+        isLoading2 = true;
+      });
+    }
     if(initSide) {
       await initUser();
     }
@@ -101,6 +105,7 @@ class _FollowViewState extends State<FollowView> {
 
     setState(() {
       isLoading = false;
+      isLoading2 = false;
     });
   }
 
@@ -239,7 +244,12 @@ class _FollowViewState extends State<FollowView> {
                     ]
                   ],
                 ),
-              )
+              ),
+              // if(isLoading)...[
+              //   Loading(
+              //     marginTop: media.height * 0.35,
+              //   )
+              // ]
             ],
           ),
         ),
@@ -276,6 +286,7 @@ class _FollowLayoutState extends State<FollowLayout> {
   // Map<String, dynamic> followButtonState = {};
   List<Map<String, dynamic>> followList = [];
   int totalFollow = 0;
+
 
   @override
   void initState() {
@@ -349,12 +360,13 @@ class _FollowLayoutState extends State<FollowLayout> {
                 else...[
                   for(int i = 0; i < followList.length; i++)...[
                     CustomTextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/user', arguments: {
+                      onPressed: () async {
+                        Map<String, dynamic> result = await Navigator.pushNamed(context, '/user', arguments: {
                           "id": followList[i]["follow"].id
-                        }).then((_) {
+                        }) as Map<String, dynamic>;
+                        if(result["checkFollow"]) {
                           widget.reload?.call();
-                        });
+                        }
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
