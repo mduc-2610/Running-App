@@ -3,9 +3,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/activity/user_participation.dart';
+import 'package:running_app/models/activity/user_participation.dart';
 import 'package:running_app/utils/common_widgets/layout/loading.dart';
 import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/show_modal_bottom/show_filter.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/user_provider.dart';
 import 'package:running_app/view/community/event/utils/common_widgets/event_box.dart';
 import 'package:provider/provider.dart';
@@ -30,11 +33,11 @@ class _EventViewState extends State<EventView> {
   String token = "";
   DetailUser? user;
   Activity? userActivity;
-  int joinedEvent = 0;
-  int endedEvent = 0;
-  bool isLoading = true;
+  bool isLoading = true, isLoading2 = false;
   bool showClearButton = false;
+  bool checkJoin = false;
   TextEditingController searchTextController = TextEditingController();
+
 
   void getProviderData() {
     setState(() {
@@ -49,25 +52,10 @@ class _EventViewState extends State<EventView> {
         user?.activity,
         Activity.fromJson,
         token,
-        queryParams: "?event_state=joined&"
-            "fields=events&"
-            "pg_sz=10000&"
-            "max_pg_sz=10000"
-    );
-    final activity2 = await callRetrieveAPI(
-        null, null,
-        user?.activity,
-        Activity.fromJson,
-        token,
-        queryParams: "?event_state=ended&"
-            "fields=events&"
-            "pg_sz=10000&"
-            "max_pg_sz=10000"
+        queryParams: "?fields=_"
     );
     setState(() {
       userActivity = activity;
-      joinedEvent = activity?.events.length;
-      endedEvent = activity2?.events.length;
     });
   }
 
@@ -75,33 +63,65 @@ class _EventViewState extends State<EventView> {
     final data1 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?sort=-participants&limit=10");
     final data2 = await callListAPI('activity/event', Event.fromJson, token, queryParams: "?limit=20");
     setState(() {
-      popularEvents.addAll(data1.map((e) {
+      // popularEvents.addAll(data1.map((e) {
+      //   return {
+      //     "event": e as dynamic,
+      //     "joinButtonState": checkUserInEvent(e.id)
+      //   };
+      // }).toList() ?? []);
+      //
+      // allEvents.addAll(data2.map((e) {
+      //   return {
+      //     "event": e as dynamic,
+      //     "joinButtonState":
+      //   };
+      // }).toList() ?? []);
+      //
+      popularEvents = data1.map((e) {
         return {
           "event": e as dynamic,
-          "joined": checkUserInEvent(e.id)
+          "joinButtonState": (e.checkUserJoin == null)
+              ? false : true,
         };
-      }).toList() ?? []);
+      }).toList();
 
-      allEvents.addAll(data2.map((e) {
+      allEvents = data2.map((e) {
         return {
           "event": e as dynamic,
-          "joined": checkUserInEvent(e.id)
+          "joinButtonState": (e.checkUserJoin == null)
+              ? false : true,
         };
-      }).toList() ?? []);;
+      }).toList();
     });
   }
 
-  bool checkUserInEvent(String eventId) {
-    return (userActivity?.events ?? []).where((e) => e.id == eventId).toList().length != 0;
-  }
+  void delayedInit ({
+    bool reload = false,
+    bool reload2 = false,
+    bool initSide = false,
+    int? milliseconds,
+  }) async {
+    if(reload) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+    if(reload2) {
+      setState(() {
+        isLoading2 = true;
+      });
+    }
 
-  Future<void> delayedInit() async {
+    if(initSide) {
+      await initUserActivity();
+    }
+
     await initEvents();
-    await initUserActivity();
-    await Future.delayed(Duration(milliseconds: 500),);
+    await Future.delayed(Duration(milliseconds: milliseconds ?? 500));
 
     setState(() {
       isLoading = false;
+      isLoading2 = false;
     });
   }
 
@@ -117,13 +137,13 @@ class _EventViewState extends State<EventView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     getProviderData();
-    delayedInit();
+    delayedInit(initSide: true);
   }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    List text = ["Joined: $joinedEvent", "Ended: $endedEvent"];
+    List text = ["Joined: ${userActivity?.totalEventJoined}", "Ended: ${userActivity?.totalEndedEventJoined}"];
     return (isLoading == false) ? Column(
       children: [
         // Search events section
@@ -289,8 +309,59 @@ class _EventViewState extends State<EventView> {
                             Container(
                                 margin: const EdgeInsets.only(right: 15),
                                 child: EventBox(
+                                  eventDetailOnPressed: () async {
+                                    Map<String, dynamic> result = await Navigator.pushNamed(context, '/event_detail', arguments: {
+                                      "id": event["event"]?.id,
+                                      "userInEvent": event["joinButtonState"],
+                                    }) as Map<String, dynamic>;
+                                    setState(() {
+                                      checkJoin = result["checkJoin"];
+                                    });
+                                    if(checkJoin) {
+                                      print("CHECK JOIN $checkJoin");
+                                      delayedInit(reload: true);
+                                    }
+                                  },
                                   event: event["event"],
-                                  joined: event["joined"]
+                                  joined: event["joinButtonState"],
+                                  joinOnPressed: (value) async {
+                                    if(!event["joinButtonState"]) {
+                                      UserParticipationEvent userParticipationClub = UserParticipationEvent(
+                                          userId: getUrlId(user?.activity ?? ""),
+                                          eventId: event["event"].id,
+                                      );
+                                      final data = await callCreateAPI(
+                                          'activity/user-participation-event',
+                                          userParticipationClub.toJson(),
+                                          token
+                                      );
+                                      delayedInit(milliseconds: 0);
+                                      event["event"].checkUserJoin = data["id"];
+                                    }
+                                    else {
+                                      // await callDestroyAPI(
+                                      //     'activity/user-participation-event',
+                                      //     event["event"].checkUserJoin,
+                                      //     token
+                                      // );
+                                      // delayedInit(milliseconds: 0);
+                                      Map<String, dynamic> result = await Navigator.pushNamed(context, '/event_detail', arguments: {
+                                        "id": event["event"]?.id,
+                                        "userInEvent": event["joinButtonState"],
+                                      }) as Map<String, dynamic>;
+                                      setState(() {
+                                        checkJoin = result["checkJoin"];
+                                      });
+                                      if(checkJoin) {
+                                        print("CHECK JOIN $checkJoin");
+                                        delayedInit(reload: true);
+                                      }
+                                    }
+                                    setState(() {
+                                      event["joinButtonState"] = value;
+                                      print("CHANGE: ${event["event"].name} 2 ${event["joinButtonState"]}");
+                                    });
+                                  },
                                 )
                             ),
                           ]
@@ -339,9 +410,60 @@ class _EventViewState extends State<EventView> {
                             for(var event in allEvents ?? [])...[
                               IntrinsicHeight(
                                   child: EventBox(
-                                    joined: event["joined"],
+                                    eventDetailOnPressed: () async {
+                                      Map<String, dynamic> result = await Navigator.pushNamed(context, '/event_detail', arguments: {
+                                        "id": event["event"]?.id,
+                                        "userInEvent": event["joinButtonState"],
+                                      }) as Map<String, dynamic>;
+                                      setState(() {
+                                        checkJoin = result["checkJoin"];
+                                      });
+                                      if(checkJoin) {
+                                        print("CHECK JOIN $checkJoin");
+                                        delayedInit(reload: true);
+                                      }
+                                    },
+                                    joined: event["joinButtonState"],
                                     event: event["event"], width: 200,
-                                    buttonMargin: const EdgeInsets.fromLTRB(12, 0, 12, 12), small: true,)
+                                    buttonMargin: const EdgeInsets.fromLTRB(12, 0, 12, 12), small: true,
+                                    joinOnPressed: (value) async {
+                                      if(!event["joinButtonState"]) {
+                                        UserParticipationEvent userParticipationClub = UserParticipationEvent(
+                                          userId: getUrlId(user?.activity ?? ""),
+                                          eventId: event["event"].id,
+                                        );
+                                        final data = await callCreateAPI(
+                                            'activity/user-participation-event',
+                                            userParticipationClub.toJson(),
+                                            token
+                                        );
+                                        delayedInit(milliseconds: 0);
+                                        event["event"].checkUserJoin = data["id"];
+                                      }
+                                      else {
+                                        // await callDestroyAPI(
+                                        //     'activity/user-participation-event',
+                                        //     event["event"].checkUserJoin,
+                                        //     token
+                                        // );
+                                        // delayedInit(milliseconds: 0);
+                                        Map<String, dynamic> result = await Navigator.pushNamed(context, '/event_detail', arguments: {
+                                          "id": event["event"]?.id,
+                                          "userInEvent": event["joinButtonState"],
+                                        }) as Map<String, dynamic>;
+                                        setState(() {
+                                          checkJoin = result["checkJoin"];
+                                        });
+                                        if(checkJoin) {
+                                          print("CHECK JOIN $checkJoin");
+                                          delayedInit(reload: true);
+                                        }
+                                      }
+                                      setState(() {
+                                        event["joinButtonState"] = value;
+                                      });
+                                    },
+                                  )
                               ),
                               const SizedBox(width: 10,)
                             ]

@@ -1,6 +1,7 @@
 import random
 from datetime import timedelta
 from faker import Faker
+from django.db import connection
 from django.contrib.auth.hashers import make_password
 
 from rest_framework.authtoken.models import Token
@@ -25,7 +26,7 @@ from social.models import (Follow, ClubPost, EventPost,
                             ActivityRecordPostComment, 
                             EventPostLike, ClubPostLike, ActivityRecordPostLike
                             )
-                
+   
 
 
 def generate_phone_number():
@@ -81,7 +82,7 @@ def run():
     MAX_NUMBER_USER_EVENT_GROUPS = 30
     MAX_NUMBER_USER_PARTICIPATION_CLUBS = 30
     MAX_NUMBER_USER_PARTICIPATION_EVENTS = 20
-    MAX_NUMBER_USER_PRODUCTS = 50
+    MAX_NUMBER_USER_PRODUCTS = 12
     MAX_NUMBER_PRODUCT_IMAGES = 30
     # MAX_NUMBER_CATEGORIES = 20
     # MAX_NUMBER_BRANDS = 20
@@ -419,14 +420,17 @@ def run():
     print("________________________________________________________________")
     print("USER PRODUCT:")
     user_product_list = []
-    for i in range(MAX_NUMBER_USER_PRODUCTS):
-        data = {
-            "user": random.choice(user_activity_list),
-            "product": random.choice(product_list),
-        }
-        user_product = UserProduct.objects.create(**data)
-        user_product_list.append(user_product)
-        print(f"\tSuccesfully created User Product: {user_product}")
+    for user in user_activity_list:
+        product_tmp = product_list.copy()
+        for i in range(random.randint(0, MAX_NUMBER_USER_PRODUCTS)):
+            random_product = product_tmp.pop(random.randint(0, len(product_tmp) - 1))
+            data = {
+                "user": user,
+                "product": random_product,
+            }
+            user_product = UserProduct.objects.create(**data)
+            user_product_list.append(user_product)
+            print(f"\tSuccesfully created User Product: {user_product}")
 
     print("________________________________________________________________")
     print("CLUB POST:")

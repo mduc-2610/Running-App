@@ -16,6 +16,8 @@ class Activity {
   // final User? user;
   int totalFollowers;
   int totalFollowees;
+  int totalEventJoined;
+  int totalEndedEventJoined;
   String? checkUserFollow;
   final List<UserAbbr>? followers;
   final List<UserAbbr>? followees;
@@ -36,6 +38,8 @@ class Activity {
     // required this.user,
     required this.totalFollowers,
     required this.totalFollowees,
+    required this.totalEventJoined,
+    required this.totalEndedEventJoined,
     this.checkUserFollow,
     required this.followers,
     required this.followees,
@@ -57,6 +61,8 @@ class Activity {
         // user = User.fromJson(json["user"]),
         totalFollowers = json["total_followers"],
         totalFollowees = json["total_followees"],
+        totalEventJoined = json["total_event_joined"],
+        totalEndedEventJoined = json["total_ended_event_joined"],
         checkUserFollow = json["check_user_follow"],
         followers = (json["followers"] as List<dynamic>?)?.map((e) => UserAbbr.fromJson(e)).toList(),
         followees = (json["followees"] as List<dynamic>?)?.map((e) => UserAbbr.fromJson(e)).toList(),
@@ -85,6 +91,13 @@ class Activity {
 
   @override
   String toString() {
-    return 'Activity{id: $id, totalFollowers: $totalFollowers, totalFollowees: $totalFollowees, followers: $followers, followees: $followees, products: $products, events: $events, clubs: $clubs, activityRecords: $activityRecords, followingActivityRecords: $followingActivityRecords, clubPostLikes: $clubPostLikes, eventPostLikes: $eventPostLikes, activityRecordPostLikes: $activityRecordPostLikes, clubPostComments: $clubPostComments, eventPostComments: $eventPostComments, activityRecordPostComments: $activityRecordPostComments}';
+    return 'Activity{id: $id, totalFollowers: $totalFollowers, totalFollowees: $totalFollowees, '
+        'totalEventJoined: $totalEventJoined, totalEndedEventJoined: $totalEndedEventJoined, '
+        'checkUserFollow: $checkUserFollow, followers: $followers, followees: $followees, '
+        'products: $products, events: $events, clubs: $clubs, activityRecords: $activityRecords, '
+        'followingActivityRecords: $followingActivityRecords, clubPostLikes: $clubPostLikes, '
+        'eventPostLikes: $eventPostLikes, activityRecordPostLikes: $activityRecordPostLikes, '
+        'clubPostComments: $clubPostComments, eventPostComments: $eventPostComments, '
+        'activityRecordPostComments: $activityRecordPostComments}';
   }
 }

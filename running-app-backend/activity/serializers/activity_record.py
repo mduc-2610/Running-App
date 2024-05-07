@@ -82,7 +82,7 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
             paginator = CommonPagination(page_size=100)
             paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
             return UserAbbrSerializer(paginated_queryset, many=True, read_only=True, context={
-                "request_user_id": self.context["user"].id
+                "user": context["user"]
             }).data
         return None
     

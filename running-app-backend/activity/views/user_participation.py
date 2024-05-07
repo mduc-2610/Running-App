@@ -26,11 +26,11 @@ from activity.serializers import EventSerializer, \
                                 
 
 class UserParticipationClubViewSet(
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
-    # viewsets.ModelViewSet
+    # mixins.ListModelMixin,
+    # mixins.CreateModelMixin,
+    # mixins.DestroyModelMixin,
+    # viewsets.GenericViewSet,
+    viewsets.ModelViewSet
 ):
     queryset = UserParticipationClub.objects.all()
     serializer_class = UserParticipationClubSerializer
@@ -80,16 +80,14 @@ class UserParticipationClubViewSet(
     #     return response.Response(serializer.data, status=status.HTTP_200_OK)
     
 class UserParticipationEventViewSet(
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    viewsets.GenericViewSet,
+    # mixins.ListModelMixin,
+    # mixins.CreateModelMixin,
+    # mixins.DestroyModelMixin,
+    # viewsets.GenericViewSet,
+    viewsets.ModelViewSet
 ):
     queryset = UserParticipationEvent.objects.all()
     serializer_class = UserParticipationEventSerializer
-    
-    def get_serializer_class(self):
-        return super().get_serializer_class()
     
     def get_serializer_class(self):
         if self.action == "create":

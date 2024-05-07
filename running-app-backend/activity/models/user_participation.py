@@ -1,6 +1,7 @@
 import datetime, uuid
 from datetime import timedelta
 
+from django.utils import timezone
 from django.db import models
 from django.db.models import Sum
 from django.db.models.signals import post_save, post_delete
@@ -33,6 +34,9 @@ class UserParticipationClub(UserParticipation):
     
     class Meta:
         unique_together = ("user", "club")
+        indexes = [
+            models.Index(fields=["user", "club"]),
+        ]
     
 class UserParticipationEvent(UserParticipation):
     event = models.ForeignKey(
@@ -40,13 +44,18 @@ class UserParticipationEvent(UserParticipation):
     
     class Meta:
         unique_together = ("user", "event")
-
+        indexes = [
+            models.Index(fields=["user", "event"]),
+        ]
 class UserParticipationGroup(UserParticipation):
     group = models.ForeignKey(
         "activity.Group", on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ("user", "group")
+        indexes = [
+            models.Index(fields=["user", "group"]),
+        ]
 
 @receiver(post_save, sender=UserParticipationClub)
 def update_club_participant(sender, instance, created, **kwargs):
@@ -88,6 +97,25 @@ def delete_event_participant(sender, instance, **kwargs):
     event = instance.event
     event.total_participants -= 1
     event.save()
+
+from pytz import utc
+@receiver(post_save, sender=UserParticipationEvent)
+def update_activity_event_joined(sender, instance, created, **kwargs):
+  if created:
+    activity = instance.user 
+    activity.total_event_joined += 1
+    if instance.event.ended_at.astimezone(utc) < timezone.now():
+      activity.total_ended_event_joined += 1
+    activity.save()
+
+
+@receiver(post_delete, sender=UserParticipationEvent)
+def delete_activity_event_joined(sender, instance, **kwargs):
+  activity = instance.user 
+  activity.total_event_joined -= 1
+  if instance.event.ended_at.astimezone(utc) < timezone.now():
+    activity.total_ended_event_joined -= 1
+  activity.save()
 
 @receiver(post_save, sender=UserParticipationGroup)
 def update_group_participant(sender, instance, created, **kwargs):

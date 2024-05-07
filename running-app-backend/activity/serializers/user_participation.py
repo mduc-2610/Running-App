@@ -12,26 +12,46 @@ from activity.serializers import ClubSerializer, \
 # from account.serializers import ActivitySerializer                  
 
 class UserParticipationClubSerializer(serializers.Serializer):
-    club = ClubSerializer()
-    user = UserSerializer()
+    user = serializers.SerializerMethodField()
+    club = serializers.SerializerMethodField()
+    is_admin = serializers.BooleanField()
 
+    def get_user(self, instance):
+        return instance.user.id
+    
+    def get_club(self, instance):
+        return instance.club.id
+    
     class Meta:
         model = UserParticipationClub
-        fields = "__all__"
+        fields = (
+             "is_admin",
+            "is_superadmin",
+            "participated_at",
+            "user",
+            "club"
+        )
 
 class CreateUserParticipationClubSerializer(serializers.Serializer):
-    user_id = serializers.UUIDField()
-    club_id = serializers.UUIDField()
+    id = serializers.SerializerMethodField()
+    user_id = serializers.UUIDField(write_only=True)
+    club_id = serializers.UUIDField(write_only=True)
 
+    def get_id(self, instance):
+        return instance.id
+    
     def create(self, validated_data):
         user_id = validated_data.pop('user_id')
         club_id = validated_data.pop('club_id')
-        return UserParticipationClub.objects.create(user_id=user_id, club_id=club_id, **validated_data)
+        return UserParticipationClub.objects.create(
+            user_id=user_id, club_id=club_id, **validated_data)
 
     class Meta:
         model = UserParticipationClub
-        fields = "__all__"
-
+        fields = ("id", "user_id", "club_id")
+        extra_kwargs = {
+            "id": {"read_only": True}
+        }
 
 class UserParticipationEventSerializer(serializers.Serializer):
     # user = ActivitySerializer(many=False)
@@ -61,7 +81,8 @@ class CreateUserParticipationEventSerializer(serializers.Serializer):
     
     class Meta:
         model = UserParticipationEvent
-        fields = "__all__"
+        fields = ("id", "user_id", "event_id")
+
 
 class UserParticipationGroupSerializer(serializers.Serializer):
     group = GroupSerializer()
@@ -82,4 +103,4 @@ class CreateUserParticipationGroupSerializer(serializers.Serializer):
 
     class Meta:
         model = UserParticipationGroup
-        fields = "__all__"
+        fields = ("id", "user_id", "group_id")

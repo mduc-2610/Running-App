@@ -9,5 +9,10 @@ class UserProduct(models.Model):
         "product.Product", on_delete=models.CASCADE)
     owned_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
+    class Meta:
+        unique_together = ("user", "product")
+        indexes = [
+            models.Index(fields=["user", "product"]),
+        ]
     # def __str__(self):
     #     return f"{self.user}"

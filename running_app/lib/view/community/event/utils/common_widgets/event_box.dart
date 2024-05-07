@@ -17,6 +17,8 @@ class EventBox extends StatefulWidget {
   final Event? event;
   final bool? small;
   final bool joined;
+  final ValueChanged<bool>? joinOnPressed;
+  final VoidCallback? eventDetailOnPressed;
 
   const EventBox({
     this.buttonMargin,
@@ -25,6 +27,8 @@ class EventBox extends StatefulWidget {
     this.event,
     this.small = false,
     required this.joined,
+    this.joinOnPressed,
+    this.eventDetailOnPressed,
     super.key
   });
 
@@ -33,13 +37,6 @@ class EventBox extends StatefulWidget {
 }
 
 class _EventBoxState extends State<EventBox> {
-  bool joined = false;
-
-  @override
-  void initState() {
-    joined = widget.joined;
-    super.initState();
-  }
   // String token = "";
   // DetailUser? user;
   // Activity? userActivity;
@@ -98,14 +95,12 @@ class _EventBoxState extends State<EventBox> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.event?.name == "Graves LLC") {
+      print("CHANGE: ${widget.event?.name}: ${widget.joined}");
+    }
     var media = MediaQuery.sizeOf(context);
     return CustomTextButton(
-      onPressed: () {
-        Navigator.pushNamed(context, '/event_detail', arguments: {
-          "id": widget.event?.id,
-          "userInEvent": joined,
-        });
-      },
+      onPressed: widget.eventDetailOnPressed,
       child: Container(
         width: widget.width,
         decoration: BoxDecoration(
@@ -203,16 +198,21 @@ class _EventBoxState extends State<EventBox> {
               width: media.width,
               margin: widget.buttonMargin ?? const EdgeInsets.fromLTRB(12, 0, 12, 20),
               child: CustomMainButton(
-                background: joined ? TColor.BUTTON_DISABLED : TColor.PRIMARY,
+                background: widget.joined ? TColor.BUTTON_DISABLED : TColor.PRIMARY,
                 horizontalPadding: 0,
                 verticalPadding: 12,
-                onPressed: joined ? null : () {
-                  Navigator.pushNamed(context, '/event_detail', arguments: {
-                    "id": widget.event?.id,
-                  });
+                onPressed:
+                // joined ? null : () {
+                //   Navigator.pushNamed(context, '/event_detail', arguments: {
+                //     "id": widget.event?.id,
+                //   });
+                // },
+                 () {
+                  // widget.joinOnPressed(joined);
+                   widget.joinOnPressed?.call(!widget.joined);
                 },
                 child: Text(
-                  widget.buttonText ?? (joined ? "Joined" : "Join now"),
+                  (widget.joined ? "Joined" : "Join now"),
                   style: TextStyle(
                       color: TColor.PRIMARY_TEXT,
                       fontSize: FontSize.LARGE,

@@ -29,7 +29,7 @@ class EventFilterView extends StatefulWidget {
 class _EventFilterViewState extends State<EventFilterView> {
   DetailUser? user;
   Activity? userActivity;
-  bool isLoading = true;
+  bool isLoading = true, isLoading2 = false;
   String eventType = "Ongoing";
   List<dynamic> events = [];
   String token = "";
@@ -37,7 +37,7 @@ class _EventFilterViewState extends State<EventFilterView> {
   String stateFilter = "All";
   String eventModeFilter = "";
   String competitionFilter = "";
-  bool allowInitByArgument = true;
+  bool allowInitByArgument = true, checkJoin = false;
   TextEditingController searchTextController = TextEditingController();
 
   void getData() {
@@ -63,7 +63,8 @@ class _EventFilterViewState extends State<EventFilterView> {
         null, null,
         user?.activity,
         Activity.fromJson,
-        token
+        token,
+        queryParams: "?fields=events"
     );
     setState(() {
       userActivity = data;
@@ -75,7 +76,8 @@ class _EventFilterViewState extends State<EventFilterView> {
         'activity/event',
         Event.fromJson,
         token,
-        queryParams: "?state=${(stateFilter != "All") ? stateFilter : ""}&"
+        queryParams: "?"
+            "state=${(stateFilter != "All") ? stateFilter : ""}&"
             "name=${searchTextController.text}&"
             "mode=${eventModeFilter}&"
             "competition=${competitionFilter}"
@@ -87,23 +89,35 @@ class _EventFilterViewState extends State<EventFilterView> {
       //     "joined": checkUserInEvent(e.id)
       //   };
       // }).toList() ?? []);
+      // events = data.map((e) {
+      //   return {
+      //     "event": e as dynamic,
+      //     "joined": (e.checkUserJoin == null) ? false : true,
+      //   };
+      // }).toList();
       events = data.map((e) {
         return {
           "event": e as dynamic,
-          "joined": checkUserInEvent(e.id)
+          "joinButtonState": (e.checkUserJoin == null)
+              ? false : true,
         };
       }).toList();
     });
   }
 
-  bool checkUserInEvent(String eventId) {
-    return (userActivity?.events ?? []).where((e) => e.id == eventId).toList().length != 0;
-  }
-
-  Future<void> delayedInit({ bool reload = false, bool initSide = false}) async {
+  Future<void> delayedInit({
+    bool reload = false,
+    bool reload2 = false,
+    bool initSide = false
+  }) async {
     if(reload) {
       setState(() {
         isLoading = true;
+      });
+    }
+    if(reload2) {
+      setState(() {
+        isLoading2 = true;
       });
     }
     if(initSide) {
@@ -113,6 +127,7 @@ class _EventFilterViewState extends State<EventFilterView> {
     await Future.delayed(Duration(seconds: 1));
     setState(() {
       isLoading = false;
+      isLoading2 = false;
     });
   }
 
@@ -225,9 +240,18 @@ class _EventFilterViewState extends State<EventFilterView> {
                     SizedBox(height: media.height * 0.015,),
                     if(isLoading == false)...[
                       EventList(
-                          scrollHeight: media.height * 0.75,
-                          eventType: "$stateFilter events",
-                          events: events
+                        scrollHeight: media.height * 0.75,
+                        eventType: "$stateFilter events",
+                        events: events,
+                        token: token,
+                        user: user,
+                        reload: delayedInit,
+                        checkJoin: checkJoin,
+                        checkJoinChange: (value) {
+                          setState(() {
+                            checkJoin = value;
+                          });
+                        },
                       )
                     ]
                     else...[
@@ -237,7 +261,12 @@ class _EventFilterViewState extends State<EventFilterView> {
                     ]
                   ],
                 ),
-              )
+              ),
+              if(isLoading2)...[
+                Loading(
+                  backgroundColor: Colors.transparent,
+                )
+              ]
             ],
           ),
         ),

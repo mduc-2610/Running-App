@@ -6,6 +6,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/event.dart';
+import 'package:running_app/models/activity/user_participation.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/layout/athlete_table.dart';
 import 'package:running_app/utils/common_widgets/layout/empty_list_notification.dart';
@@ -35,7 +36,7 @@ class EventDetailView extends StatefulWidget {
 }
 
 class _EventDetailViewState extends State<EventDetailView> {
-  bool isLoading = true;
+  bool isLoading = true, isLoading2 = false;
   bool isLoadingLeaderboard = false;
   String _showLayout = "Information";
   String exclude = "exclude=participants,groups";
@@ -48,6 +49,7 @@ class _EventDetailViewState extends State<EventDetailView> {
   bool showMilestone = false;
   bool showChooseGroup = false;
   bool userInEvent = false;
+  bool checkJoin = false;
   String sort_by = "Distance";
 
   void getData() {
@@ -88,12 +90,28 @@ class _EventDetailViewState extends State<EventDetailView> {
     });
   }
 
-  void delayedInit() async {
+  void delayedInit({
+    bool reload = false,
+    bool reload2 = false,
+    int? milliseconds
+  }) async {
+    if(reload) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    if(reload2) {
+      setState(() {
+        isLoading2 = true;
+      });
+    }
     // await initUserActivity();
     await initDetailEvent();
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: milliseconds ?? 500));
     setState(() {
       isLoading = false;
+      isLoading2 = false;
     });
   }
 
@@ -160,19 +178,40 @@ class _EventDetailViewState extends State<EventDetailView> {
                                       // );
                                     }
                                   },
+                                  (userInEvent == true) ? {
+                                    "text": "Leave event",
+                                    "onPressed": () async {
+                                      Navigator.pop(context);
+                                      await callDestroyAPI(
+                                        'activity/user-participation-event',
+                                        event?.checkUserJoin,
+                                        token
+                                      );
+                                      delayedInit(reload2: true, milliseconds: 200);
+                                      setState(() {
+                                        showMilestone = false;
+                                        userInEvent = false;
+                                        showChooseGroup = false;
+                                        checkJoin = true;
+                                      });
+                                    },
+                                  } : null,
                                   {
                                     "text": "Delete event",
                                     "onPressed": () {
 
                                     },
                                     "textColor": TColor.WARNING
-                                  }
+                                  },
                                 ],
                                 "Options"
                             );
                           },
                         }
                       ],
+                      argumentsOnPressed: {
+                        "checkJoin": checkJoin,
+                      },
                     ),
                     SizedBox(
                       height: media.height * 0.07,
@@ -566,13 +605,26 @@ class _EventDetailViewState extends State<EventDetailView> {
                                         background: TColor.ACCEPTED,
                                         horizontalPadding: 0,
                                         verticalPadding: 14,
-                                        onPressed: () {
+                                        onPressed: () async {
+                                          UserParticipationEvent userParticipationClub = UserParticipationEvent(
+                                            userId: getUrlId(user?.activity ?? ""),
+                                            eventId: event?.id,
+                                          );
+                                          final data = await callCreateAPI(
+                                              'activity/user-participation-event',
+                                              userParticipationClub.toJson(),
+                                              token
+                                          );
+                                          delayedInit(reload2: true, milliseconds: 0);
+                                          event?.checkUserJoin = data["id"];
                                           setState(() {
                                             if(event?.competition  == "Group") {
                                               showChooseGroup = true;
                                             } else {
                                               showMilestone = true;
                                             }
+                                            userInEvent = true;
+                                            checkJoin = true;
                                           });
                                         },
                                         child: Text(
@@ -673,6 +725,11 @@ class _EventDetailViewState extends State<EventDetailView> {
                   ],
                 ),
               ] else...[
+                Loading(
+                  marginTop: media.height * 0.5,
+                )
+              ],
+              if(isLoading2)...[
                 Loading(
                   marginTop: media.height * 0.5,
                 )

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/club.dart';
+import 'package:running_app/models/activity/user_participation.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/layout/app_bar.dart';
 import 'package:running_app/utils/common_widgets/layout/empty_list_notification.dart';
@@ -10,10 +12,14 @@ import 'package:running_app/utils/common_widgets/button/main_button.dart';
 import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/form/search_filter.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_action_list.dart';
 import 'package:running_app/utils/common_widgets/show_modal_bottom/show_filter.dart';
 import 'package:running_app/utils/common_widgets/button/text_button.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_join_club.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class ClubListView extends StatefulWidget {
   const ClubListView({super.key});
@@ -23,18 +29,21 @@ class ClubListView extends StatefulWidget {
 }
 
 class _ClubListViewState extends State<ClubListView> {
-  bool isLoading = true;
-  List<dynamic>? clubs;
+  bool isLoading = true, isLoading2=  false;
+  List<dynamic> clubs = [];
+  DetailUser? user;
   String token = "";
   bool showClearButton = false;
   String sportTypeFilter = "";
   String clubModeFilter = "";
   String organizationTypeFilter = "";
   TextEditingController searchTextController = TextEditingController();
+  bool checkJoin = false;
 
-  void initToken() {
+  void getProviderData() {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
     });
   }
 
@@ -49,28 +58,54 @@ class _ClubListViewState extends State<ClubListView> {
             "org_type=${organizationTypeFilter}"
     );
     setState(() {
-      clubs = data;
+      // clubs.addAll(data.map((e) => {
+      //   "club": e,
+      //   "joinButtonState": {
+      //     "text": (e.checkUserJoin == null) ? "Join" : "Joined",
+      //     "backgroundColor": (e.checkUserJoin == null) ? TColor.PRIMARY : TColor.BUTTON_DISABLED,
+      //   }
+      // }));
+      clubs = data.map((e) => {
+        "club": e,
+        "joinButtonState": {
+          "text": (e.checkUserJoin == null) ? "Join" : "Joined",
+          "backgroundColor": (e.checkUserJoin == null) ? TColor.PRIMARY : TColor.BUTTON_DISABLED,
+        }
+      }).toList();
     });
   }
 
-  void delayedInit({bool reload = false}) async {
+  void delayedInit({bool reload = false, bool reload2 = false, int? milliseconds}) async {
     if(reload) {
       setState(() {
         isLoading = true;
       });
     }
+    if(reload2) {
+      setState(() {
+        isLoading2 = true;
+      });
+    }
     await initClubs();
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: milliseconds ?? 1000));
 
     setState(() {
       isLoading = false;
+      isLoading2 = false;
     });
   }
 
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    initToken();
+    getProviderData();
+    delayedInit();
+  }
+
+  Future<void> handleRefresh() async {
+    setState(() {
+      isLoading2 = true;
+    });
     delayedInit();
   }
 
@@ -87,6 +122,7 @@ class _ClubListViewState extends State<ClubListView> {
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
         child: DefaultBackgroundLayout(
           child: Stack(
             children: [
@@ -139,11 +175,11 @@ class _ClubListViewState extends State<ClubListView> {
                           });
                         }
                     ),
-        
+
                     SizedBox(height: media.height * 0.01,),
                     // All clubs
                     if(isLoading == false)...[
-                      if(clubs?.length == 0)...[
+                      if(clubs.length == 0)...[
                         SizedBox(height: media.height * 0.25,),
                         EmptyListNotification(
                           title: "No clubs found",
@@ -152,7 +188,7 @@ class _ClubListViewState extends State<ClubListView> {
                       ]
                       else...[
                         SizedBox(
-                          height: media.height - media.height * 0.1,
+                          height: media.height * 0.83,
                           child: GridView.count(
                               padding: const EdgeInsets.all(0),
                               crossAxisCount: 2,
@@ -161,12 +197,19 @@ class _ClubListViewState extends State<ClubListView> {
                               crossAxisSpacing: media.width * 0.035,
                               mainAxisSpacing: media.height * 0.01,
                               children: [
-                                for(var club in clubs ?? [])
+                                for(int i = 0; i < clubs.length; i++)
                                   CustomTextButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, '/club_detail', arguments: {
-                                        "id": club?.id
+                                    onPressed: () async {
+                                      Map<String, dynamic> result = await Navigator.pushNamed(context, '/club_detail', arguments: {
+                                        "id": clubs[i]["club"].id
+                                      }) as Map<String, dynamic>;
+                                      setState(() {
+                                        checkJoin = result["checkJoin"];
                                       });
+                                      if(checkJoin) {
+                                        print("CHECK JOIN $checkJoin");
+                                        delayedInit(reload2: true);
+                                      }
                                     },
                                     child: IntrinsicHeight(
                                       child: Column(
@@ -201,7 +244,7 @@ class _ClubListViewState extends State<ClubListView> {
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Text(
-                                                        club?.name ?? "",
+                                                        clubs[i]["club"].name ?? "",
                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 1,
                                                         style: TextStyle(
@@ -212,7 +255,7 @@ class _ClubListViewState extends State<ClubListView> {
                                                       ),
                                                       // SizedBox(height: media.height * 0.01),
                                                       Text(
-                                                        club?.sportType ?? "",
+                                                        clubs[i]["club"].sportType ?? "",
                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 1,
                                                         style: TextStyle(
@@ -223,7 +266,7 @@ class _ClubListViewState extends State<ClubListView> {
                                                       ),
                                                       // SizedBox(height: media.height * 0.005,),
                                                       Text(
-                                                        "Member: ${club?.totalParticipants}",
+                                                        "Member: ${clubs[i]["club"].totalParticipants}",
                                                         overflow: TextOverflow.ellipsis,
                                                         maxLines: 1,
                                                         style: TextStyle(
@@ -243,9 +286,67 @@ class _ClubListViewState extends State<ClubListView> {
                                                       child: CustomMainButton(
                                                         horizontalPadding: 0,
                                                         verticalPadding: 0,
-                                                        onPressed: () {},
+                                                        borderRadius: 8,
+                                                        onPressed: () {
+                                                          if(clubs[i]["joinButtonState"]["text"] == "Join") {
+                                                            showJoinClub(
+                                                                context,
+                                                                "assets/img/community/ptit_logo.png",
+                                                                "Join",
+                                                                "Are you sure you want to join?",
+                                                                "Join",
+                                                                agreeOnPressed: () async {
+                                                                  UserParticipationClub userParticipationClub = UserParticipationClub(
+                                                                      userId: getUrlId(user?.activity ?? ""),
+                                                                      clubId: clubs[i]["club"].id
+                                                                  );
+                                                                  final data = await callCreateAPI(
+                                                                      'activity/user-participation-club',
+                                                                      userParticipationClub.toJson(),
+                                                                      token
+                                                                  );
+                                                                  delayedInit(reload2: true, milliseconds: 0);
+                                                                  clubs[i]["club"].checkUserJoin = data["id"];
+                                                                  setState(() {
+                                                                    if(clubs[i]["joinButtonState"]["text"] == "Join") {
+                                                                      clubs[i]["joinButtonState"] = {
+                                                                        "text": "Joined",
+                                                                        "backgroundColor": TColor.BUTTON_DISABLED
+                                                                      };
+                                                                    }
+                                                                  });
+                                                                }
+                                                            );
+                                                          }
+                                                          else {
+                                                            showJoinClub(
+                                                                context,
+                                                                "assets/img/community/ptit_logo.png",
+                                                                "Leave this club",
+                                                                "Are you sure you want to leave this club?",
+                                                                "Leave this club",
+                                                                agreeOnPressed: () async {
+                                                                  await callDestroyAPI(
+                                                                      'activity/user-participation-club',
+                                                                      clubs[i]["club"].checkUserJoin,
+                                                                      token
+                                                                  );
+                                                                  delayedInit(reload2: true, milliseconds: 0);
+                                                                  setState(() {
+                                                                    if(clubs[i]["joinButtonState"]["text"] == "Join") {
+                                                                      clubs[i]["joinButtonState"] = {
+                                                                        "text": "Join",
+                                                                        "backgroundColor": TColor.PRIMARY
+                                                                      };
+                                                                    }
+                                                                  });
+                                                                }
+                                                            );
+                                                          }
+                                                        },
+                                                        background: clubs[i]["joinButtonState"]["backgroundColor"],
                                                         child: Text(
-                                                          "Join",
+                                                          clubs[i]["joinButtonState"]["text"],
                                                           style: TextStyle(
                                                               color: TColor.PRIMARY_TEXT,
                                                               fontSize: FontSize.LARGE,
@@ -274,10 +375,15 @@ class _ClubListViewState extends State<ClubListView> {
                         backgroundColor: Colors.transparent,
                       )
                     ]
-        
+
                   ],
                 )
-              )
+              ),
+              if(isLoading2)...[
+                Loading(
+                  marginTop: media.height * 0.4,
+                )
+              ]
             ],
           ),
         ),

@@ -1,6 +1,9 @@
 
 import 'package:flutter/material.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/club.dart';
+import 'package:running_app/models/activity/user_participation.dart';
+import 'package:running_app/models/activity/user_participation.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:provider/provider.dart';
 
@@ -12,8 +15,11 @@ import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/layout/scroll_synchronized.dart';
 import 'package:running_app/utils/common_widgets/button/text_button.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_notification.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class ClubDetailView extends StatefulWidget {
   const ClubDetailView({super.key});
@@ -23,16 +29,18 @@ class ClubDetailView extends StatefulWidget {
 }
 
 class _ClubDetailViewState extends State<ClubDetailView> {
-  bool isLoading = true;
+  bool isLoading = true, isLoading2 = false;
+  String token = "";
+  DetailUser? user;
   DetailClub? club;
   String clubId = "";
-  String token = "";
-  bool? joinButtonState = false;
-  Map<String, dynamic> popArguments = {};
+  Map<String, dynamic> popArguments = {}, joinButtonState = {};
+  bool checkJoin = false;
 
   void getSideData() {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
       Map<String, dynamic>? arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       clubId = arguments?["id"] as String;
     });
@@ -46,24 +54,46 @@ class _ClubDetailViewState extends State<ClubDetailView> {
         DetailClub.fromJson,
         token,
         queryParams: "?limit_user=21&"
-            "exclude=posts"
+            "exclude=posts, activity_records"
     );
     setState(() {
       club = data;
+      if(club?.checkUserJoin != null) {
+        joinButtonState = {
+          "text": "Joined",
+          "backgroundColor": Colors.transparent,
+        };
+      }
+      else {
+        joinButtonState = {
+          "text": "Join",
+          "backgroundColor": TColor.PRIMARY,
+        };
+      }
     });
   }
 
-  Future<void> delayedInit({bool reload = false}) async {
+  Future<void> delayedInit({
+    bool reload = false,
+    bool reload2 = false,
+    int? milliseconds
+  }) async {
     if(reload) {
       setState(() {
-        isLoading = false;
+        isLoading = true;
+      });
+    }
+    if(reload2) {
+      setState(() {
+        isLoading2 = true;
       });
     }
     await initClub();
-    await Future.delayed(Duration(seconds: 1),);
+    await Future.delayed(Duration(milliseconds: milliseconds ?? 0),);
 
     setState(() {
       isLoading = false;
+      isLoading2 = false;
     });
   }
 
@@ -112,7 +142,11 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                           {
                             "icon": Icons.more_vert_rounded,
                           }
-                        ],),
+                        ],
+                          argumentsOnPressed: {
+                            "checkJoin": checkJoin
+                          },
+                        ),
                         SizedBox(height: media.height * 0.05,),
                         // Main section
                         MainWrapper(
@@ -140,7 +174,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                           child: CustomTextButton(
                                             style: ButtonStyle(
                                                 backgroundColor: MaterialStateProperty.all<Color?>(
-                                                    (joinButtonState!) ? Colors.transparent : TColor.PRIMARY
+                                                    joinButtonState["backgroundColor"]
                                                 ),
                                                 side: MaterialStateProperty.all(
                                                   BorderSide(width: 2, color: TColor.PRIMARY)
@@ -151,13 +185,42 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                                     )
                                                 )
                                             ),
-                                            onPressed: () {
+                                            onPressed: () async {
+                                              if((joinButtonState["text"] == "Join")) {
+                                                UserParticipationClub userParticipationClub = UserParticipationClub(
+                                                    userId: getUrlId(user?.activity ?? ""),
+                                                    clubId: club?.id
+                                                );
+                                                final data = await callCreateAPI(
+                                                    'activity/user-participation-club',
+                                                    userParticipationClub.toJson(),
+                                                    token
+                                                );
+                                                delayedInit(reload2: true, milliseconds: 0);
+                                                club?.checkUserJoin = data["id"];
+                                              }
+                                              else {
+                                                showNotificationDecision(context, "Leaving club", "Are you sure you want to leave this club", "No", "Yes", onPressed2: () async {
+                                                  await callDestroyAPI(
+                                                    'activity/user-participation-club',
+                                                    club?.checkUserJoin,
+                                                    token
+                                                  );
+                                                  delayedInit(reload2: true, milliseconds: 0);
+                                                });
+                                              }
                                               setState(() {
-                                                joinButtonState = (joinButtonState!) ? false : true;
+                                                checkJoin = true;
+                                                if(joinButtonState["text"] == "Join") {
+                                                  joinButtonState = {
+                                                    "text": "Joined",
+                                                    "backgroundColor": Colors.transparent
+                                                  };
+                                                }
                                               });
                                             },
                                             child: Text(
-                                              "${(joinButtonState!) ? "Joined" : "Join"}",
+                                              joinButtonState["text"],
                                               style: TextStyle(
                                                   color: TColor.PRIMARY_TEXT,
                                                   fontSize: FontSize.LARGE,
@@ -166,32 +229,44 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: media.width * 0.015,),
-                                        SizedBox(
-                                          width: 50,
-                                          child: CustomTextButton(
-                                              style: ButtonStyle(
-                                                  backgroundColor: MaterialStateProperty.all<Color?>(
-                                                      TColor.PRIMARY
-                                                  ),
-                                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                      RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(12)
-                                                      )
-                                                  )
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pushNamed(context, '/club_detail_information', arguments: {
-                                                  "club": club as DetailClub,
-                                                  "joinButtonState": joinButtonState,
-                                                });
-                                              },
-                                              child: Icon(
-                                                Icons.info_outline_rounded,
-                                                color: TColor.PRIMARY_TEXT,
-                                              )
+                                        if(joinButtonState["text"] == "Joined")...[
+                                          SizedBox(width: media.width * 0.015,),
+                                          SizedBox(
+                                            width: 50,
+                                            child: CustomTextButton(
+                                                style: ButtonStyle(
+                                                    backgroundColor: MaterialStateProperty.all<Color?>(
+                                                        TColor.PRIMARY
+                                                    ),
+                                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                        RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(12)
+                                                        )
+                                                    )
+                                                ),
+                                                onPressed: () async {
+                                                  Map<String, dynamic> result = await Navigator.pushNamed(context, '/club_detail_information', arguments: {
+                                                    "club": club as DetailClub,
+                                                    "joinButtonState": joinButtonState,
+                                                  }) as Map<String, dynamic>;
+                                                  if(result["check"]) {
+                                                    setState(() {
+                                                      isLoading2 = true;
+                                                    });
+                                                    delayedInit();
+                                                  }
+                                                  // setState(() {
+                                                  //   print("CHECKCHECK:");
+                                                  //   joinButtonState = result["joinButtonState"];
+                                                  // });
+                                                },
+                                                child: Icon(
+                                                  Icons.info_outline_rounded,
+                                                  color: TColor.PRIMARY_TEXT,
+                                                )
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                         SizedBox(width: media.width * 0.015,),
                                         SizedBox(
                                           width: 50,
@@ -441,7 +516,8 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                             isLoading: isLoading
                                           ),
                                         )
-                                            : const EmptyListNotification(
+                                            : EmptyListNotification(
+                                          marginTop: media.height * 0.08,
                                           title: "No users joined yet!",
                                           description: "Invite your friend for joining the club ranking right away",
                                         )
@@ -461,6 +537,11 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                     Loading(
                       marginTop: media.height * 0.45,
                     ),
+                  ],
+                  if(isLoading2)...[
+                    Loading(
+                      marginTop: media.height * 0.45,
+                    )
                   ]
                 ]
             ),

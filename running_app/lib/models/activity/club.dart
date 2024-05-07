@@ -1,10 +1,8 @@
 import 'package:running_app/models/account/leaderboard.dart';
 
-import 'package:running_app/models/account/leaderboard.dart';
 import 'package:running_app/models/activity/activity_record.dart';
 import 'package:running_app/models/social/post.dart';
 
-import '../account/user.dart';
 
 class Club {
   final String? id;
@@ -17,6 +15,7 @@ class Club {
   final String? organization;
   final int? totalPosts;
   final int? totalActivityRecords;
+  String? checkUserJoin;
 
   Club({
      required this.id,
@@ -29,6 +28,7 @@ class Club {
      required this.organization,
      required this.totalPosts,
      required this.totalActivityRecords,
+     required this.checkUserJoin,
   });
 
   Club.fromJson(Map<String, dynamic> json)
@@ -41,7 +41,8 @@ class Club {
       privacy = json['privacy'],
       organization = json['organization'],
       totalPosts = json['total_posts'],
-      totalActivityRecords = json['total_activity_records'];
+      totalActivityRecords = json['total_activity_records'],
+      checkUserJoin = json['check_user_join'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -81,6 +82,7 @@ class DetailClub extends Club {
     int? totalParticipants,
     int? totalPosts,
     int? totalActivityRecords,
+    String? checkUserJoin,
     required this.posts,
     required this.participants,
     required this.activityRecords,
@@ -96,7 +98,8 @@ class DetailClub extends Club {
     privacy: privacy,
     organization: organization,
     totalPosts: totalPosts,
-    totalActivityRecords: totalActivityRecords
+    totalActivityRecords: totalActivityRecords,
+    checkUserJoin: checkUserJoin
   );
 
   DetailClub.fromJson(Map<String, dynamic> json)

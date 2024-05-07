@@ -18,6 +18,8 @@ class Activity(models.Model):
     total_followers = models.IntegerField(default=0, blank=True, null=True)
     total_followees = models.IntegerField(default=0, blank=True, null=True)
     total_activity_records = models.IntegerField(default=0, blank=True, null=True)
+    total_event_joined = models.IntegerField(default=0, blank=True, null=True)
+    total_ended_event_joined = models.IntegerField(default=0, blank=True, null=True)
     
     # def followers_(self):
     #     return [follow.follower for follow in self.followers.all()]

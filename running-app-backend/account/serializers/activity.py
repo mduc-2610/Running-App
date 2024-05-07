@@ -50,9 +50,9 @@ class ActivitySerializer(serializers.ModelSerializer):
     check_user_follow = serializers.SerializerMethodField()
 
     def get_check_user_follow(self, instance):
-        request_user_id = self.context["user"].id
-        if request_user_id:
-            instance = Follow.objects.filter(follower=request_user_id, followee=instance.id).first()
+        user = self.context["user"].id
+        if user:
+            instance = Follow.objects.filter(follower=user, followee=instance.id).first()
             return instance.id if instance else None
         return None
 
@@ -72,12 +72,12 @@ class ActivitySerializer(serializers.ModelSerializer):
         context = self.context
         fields = context.get("fields")
         if not fields or "followers" in fields:
-            follower_q = self.context["follow_params"]["follower_q"]
+            follower_q = context["follow_params"]["follower_q"]
             queryset = [follow.follower for follow in instance.followers.filter(follower__user__name__icontains=follower_q)]
             queryset = self.get_paginated_queryset(
                 queryset, page_size=15, page_query_param="follower_page")
             return UserAbbrSerializer(queryset, many=True, read_only=True, context={
-                "request_user_id": context["user"].id,
+                "user": context["user"],
             }).data
         return None
     
@@ -91,7 +91,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             queryset = self.get_paginated_queryset(
                 queryset, page_size=15, page_query_param="followee_page")
             return UserAbbrSerializer(queryset, many=True, read_only=True, context={
-                "request_user_id": context["user"].id,
+                "user": context["user"],
             }).data
         return None
     
@@ -163,7 +163,9 @@ class ActivitySerializer(serializers.ModelSerializer):
 
             queryset = self.get_paginated_queryset(
                 queryset, page_query_param="event_page")
-            return EventSerializer(queryset, many=True, read_only=True).data
+            return EventSerializer(queryset, many=True, read_only=True, context={
+                'user': context["user"]
+            }).data
         return None
     
     def get_activity_records(self, instance):
@@ -185,9 +187,9 @@ class ActivitySerializer(serializers.ModelSerializer):
             queryset = self.get_paginated_queryset(
                 queryset, page_size=3, page_query_param="act_rec_page", page_size_query_param="act_rec_page_size")
             return DetailActivityRecordSerializer(queryset, many=True, read_only=True, context={
-                "request": self.context["request"],
-                "user": self.context["user"],
-                "exclude": self.context["act_rec_params"]["act_rec_exclude"],
+                "request": context["request"],
+                "user": context["user"],
+                "exclude": context["act_rec_params"]["act_rec_exclude"],
                 # "no_comments": True,
                 # "no_likes": False,
             }).data
@@ -207,7 +209,7 @@ class ActivitySerializer(serializers.ModelSerializer):
                 queryset, page_size=3, page_query_param="following_act_rec_page")
             return DetailActivityRecordSerializer(queryset, many=True, read_only=True, context={
                 "request": self.context["request"],
-                "user": self.context["user"],
+                "user": context["user"],
                 "exclude": self.context["act_rec_params"]["act_rec_exclude"],
                 # "no_comments": True,
                 # "no_likes": False,
@@ -222,7 +224,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             queryset = instance.club_posts.all()
             queryset = self.get_paginated_queryset(queryset)
             return ClubPostSerializer(queryset, many=True, read_only=True, context={
-                "user": self.context["user"]
+                "user": context["user"]
             }).data
         return None
     
@@ -234,7 +236,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             queryset = instance.event_posts.all()
             queryset = self.get_paginated_queryset(queryset)
             return EventPostSerializer(queryset, many=True, read_only=True, context={
-                "user": self.context["user"]
+                "user": context["user"]
             }).data
         return None
     
@@ -254,7 +256,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             queryset = [x.post for x in instance.act_rec_post_likes.all()]
             queryset = self.get_paginated_queryset(queryset)
             return ActivityRecordSerializer(queryset, many=True, read_only=True, context={
-                "user": self.context["user"]
+                "user": context["user"]
             }).data
         return None
 
@@ -267,7 +269,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             queryset = [x.post for x in instance.act_rec_post_likes.all()]
             queryset = self.get_paginated_queryset(queryset)
             return ClubPostSerializer(queryset, many=True, read_only=True, context={
-                "user": self.context["user"]
+                "user": context["user"]
             }).data
         return None
     
@@ -280,7 +282,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             queryset = [x.post for x in instance.act_rec_post_likes.all()]
             queryset = self.get_paginated_queryset(queryset)
             return EventPostSerializer(queryset, many=True, read_only=True, context={
-                "user": self.context["user"]
+                "user": context["user"]
             }).data
         return None
 

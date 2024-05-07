@@ -29,7 +29,7 @@ class _EventListViewState extends State<EventListView> {
   Activity? userActivity;
   bool isLoading = true;
   String eventType = "Ongoing";
-  bool showClearButton = false;
+  bool showClearButton = false, checkJoin = false;
   TextEditingController searchTextController = TextEditingController();
   List<dynamic> events = [];
   String token = "";
@@ -46,7 +46,8 @@ class _EventListViewState extends State<EventListView> {
         null, null,
         user?.activity,
         Activity.fromJson,
-        token
+        token,
+        queryParams: "?fields=events"
     );
     setState(() {
       userActivity = data;
@@ -68,10 +69,17 @@ class _EventListViewState extends State<EventListView> {
       //     "joined": checkUserInEvent(e.id)
       //   };
       // }).toList());
+      // events = data.map((e) {
+      //   return {
+      //     "event": e as dynamic,
+      //     "joined": checkUserInEvent(e.id)
+      //   };
+      // }).toList();
       events = data.map((e) {
         return {
           "event": e as dynamic,
-          "joined": checkUserInEvent(e.id)
+          "joinButtonState": (e.checkUserJoin == null)
+              ? false : true,
         };
       }).toList();
     });
@@ -81,7 +89,7 @@ class _EventListViewState extends State<EventListView> {
     return (userActivity?.events ?? []).where((e) => e.id == eventId).toList().length != 0;
   }
 
-  Future<void> delayedInit({ bool reload = false, initSide = false}) async {
+  void delayedInit({ bool reload = false, initSide = false, int? milliseconds}) async {
     if(reload) {
       setState(() {
         isLoading = true;
@@ -91,7 +99,7 @@ class _EventListViewState extends State<EventListView> {
       await initUserActivity();
     }
     await initEvents();
-    await Future.delayed(Duration(seconds: 1));
+    // await Future.delayed(Duration(milliseconds: milliseconds ?? 500);
     setState(() {
       isLoading = false;
     });
@@ -213,9 +221,18 @@ class _EventListViewState extends State<EventListView> {
                     SizedBox(height: media.height * 0.015,),
                     if(isLoading == false)...[
                       EventList(
-                          scrollHeight: media.height * 0.67,
-                          eventType: "$eventType Event",
-                          events: events
+                        scrollHeight: media.height * 0.71,
+                        eventType: "$eventType events",
+                        events: events,
+                        token: token,
+                        user: user,
+                        reload: delayedInit,
+                        checkJoin: checkJoin,
+                        checkJoinChange: (value) {
+                          setState(() {
+                            checkJoin = value;
+                          });
+                        },
                       )
                     ]
                     else...[

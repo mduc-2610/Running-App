@@ -30,7 +30,7 @@ class _YourEventListViewState extends State<YourEventListView> {
   Activity? userActivity;
   List<dynamic> events = [];
   String token = "";
-  bool showClearButton = true;
+  bool showClearButton = true, checkJoin = false;
   TextEditingController searchTextController = TextEditingController();
 
   void getProviderData() {
@@ -46,7 +46,8 @@ class _YourEventListViewState extends State<YourEventListView> {
         user?.activity,
         Activity.fromJson,
         token,
-        queryParams: "?event_state=${eventType.toLowerCase()}&"
+        queryParams: "?fields=events&"
+            "event_state=${eventType.toLowerCase()}&"
             "event_name=${searchTextController.text}"
     );
     setState(() {
@@ -57,24 +58,31 @@ class _YourEventListViewState extends State<YourEventListView> {
       //     "joined": true,
       //   };
       // }).toList() ?? []);
+      // events = userActivity?.events?.map((e) {
+      //   return {
+      //     "event": e as dynamic,
+      //     "joined": true,
+      //   };
+      // }).toList() ?? [];
       events = userActivity?.events?.map((e) {
         return {
           "event": e as dynamic,
-          "joined": true,
+          "joinButtonState": (e.checkUserJoin == null)
+              ? false : true,
         };
       }).toList() ?? [];
     });
   }
 
 
-  Future<void> delayedInit({ bool reload = false}) async {
+  Future<void> delayedInit({ bool reload = false, int? milliseconds}) async {
     if(reload) {
       setState(() {
         isLoading = true;
       });
     }
     await initUserActivity();
-    await Future.delayed(Duration(seconds: 1));
+    // await Future.delayed(Duration(milliseconds: milliseconds ?? 500));
     setState(() {
       isLoading = false;
     });
@@ -199,10 +207,19 @@ class _YourEventListViewState extends State<YourEventListView> {
                     SizedBox(height: media.height * 0.015,),
                     if(isLoading == false)...[
                       EventList(
-                          scrollHeight: media.height * 0.67,
-                          eventType: "$eventType Event",
-                          events: events
-                      ),
+                        scrollHeight: media.height * 0.75,
+                        eventType: "$eventType events",
+                        events: events,
+                        token: token,
+                        user: user,
+                        reload: delayedInit,
+                        checkJoin: checkJoin,
+                        checkJoinChange: (value) {
+                          setState(() {
+                            checkJoin = value;
+                          });
+                        },
+                      )
                     ]
                     else...[
                       Loading(

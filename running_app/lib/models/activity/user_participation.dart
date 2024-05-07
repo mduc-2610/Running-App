@@ -67,7 +67,7 @@ class UserParticipationEvent extends UserParticipation {
     String? userId,
     bool? isAdmin,
     String? participatedAt,
-    required this.isSuperAdmin,
+    this.isSuperAdmin,
     required this.eventId
   }) : super(
       userId: userId,

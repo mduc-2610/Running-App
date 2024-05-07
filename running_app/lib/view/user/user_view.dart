@@ -41,7 +41,7 @@ class _UserViewState extends State<UserView> {
   String _showStatsType = "Week";
   String token = "";
   DetailUser? user;
-  String? requestUserId;
+  String? requestUserId, requestUserActId;
   Performance? userPerformance;
   Activity? userActivity;
   bool isLoading = true, isLoading2 = false;
@@ -56,6 +56,7 @@ class _UserViewState extends State<UserView> {
       token = Provider.of<TokenProvider>(context).token;
       user = Provider.of<UserProvider>(context).user;
       requestUserId = user?.id;
+      requestUserActId = getUrlId(user?.activity ?? "");
     });
   }
 
@@ -244,9 +245,9 @@ class _UserViewState extends State<UserView> {
                                 horizontalPadding: 0,
                                 verticalPadding: 10,
                                 onPressed: () async {
-                                  if(userActivity?.checkUserFollow == null) {
+                                  if((followButtonState["text"] == "Follow")) {
                                     Follow follow = Follow(
-                                        followerId: requestUserId,
+                                        followerId: requestUserActId,
                                         followeeId: userActivity?.id
                                     );
                                     final data = await callCreateAPI(

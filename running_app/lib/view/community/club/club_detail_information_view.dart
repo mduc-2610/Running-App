@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/club.dart';
+import 'package:running_app/models/activity/user_participation.dart';
+import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/layout/header.dart';
 import 'package:running_app/utils/common_widgets/layout/limit_text_line.dart';
 import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/button/text_button.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_notification.dart';
 import 'package:running_app/utils/constants.dart';
+import 'package:running_app/utils/function.dart';
+import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class ClubDetailInformationView extends StatefulWidget {
   const ClubDetailInformationView({super.key});
@@ -15,12 +23,17 @@ class ClubDetailInformationView extends StatefulWidget {
 }
 
 class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
+  String token = "";
+  DetailUser? user;
   DetailClub? club;
   bool showFullText = false;
   bool showViewMoreButton = false;
-  bool? joinButtonState;
+  Map<String, dynamic> joinButtonState = {};
+
   void getArguments() {
     setState(() {
+      token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
       final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
       club = arguments["club"];
       joinButtonState = arguments["joinButtonState"];
@@ -57,11 +70,15 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                 Column(
                   children: [
                     SizedBox(height: media.height * 0.05,),
-                    const Header(title: "", iconButtons: [
+                    Header(title: "", iconButtons: [
                       {
                         "icon": Icons.more_vert_rounded,
-                      }
-                    ],),
+                      },
+                    ],
+                      argumentsOnPressed: {
+                        "joinButtonState": joinButtonState,
+                      },
+                    ),
                     SizedBox(height: media.height * 0.05,),
                     // Main section
                     MainWrapper(
@@ -89,7 +106,7 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                       child: CustomTextButton(
                                         style: ButtonStyle(
                                             backgroundColor: MaterialStateProperty.all<Color?>(
-                                                (joinButtonState!) ? Colors.transparent : TColor.PRIMARY
+                                                joinButtonState["backgroundColor"]
                                             ),
                                             side: MaterialStateProperty.all(
                                                 BorderSide(width: 2, color: TColor.PRIMARY)
@@ -100,13 +117,21 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                                 )
                                             )
                                         ),
-                                        onPressed: () {
-                                          setState(() {
-                                            joinButtonState = (joinButtonState!) ? false : true;
+                                        onPressed: () async {
+                                          showNotificationDecision(context, "Leaving club", "Are you sure you want to leave this club", "No", "Yes", onPressed2: () async {
+                                            await callDestroyAPI(
+                                                'activity/user-participation-club',
+                                                club?.checkUserJoin,
+                                                token
+                                            );
+                                            Navigator.pop(context, {
+                                              "check": true,
+                                              "joinButtonState": joinButtonState,
+                                            },);
                                           });
                                         },
                                         child: Text(
-                                          "${(joinButtonState!) ? "Joined" : "Join"}",
+                                          joinButtonState["text"],
                                           style: TextStyle(
                                               color: TColor.PRIMARY_TEXT,
                                               fontSize: FontSize.LARGE,

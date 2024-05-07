@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from activity.models import Club
+from activity.models import Club, UserParticipationClub
 from account.serializers import LeaderboardSerializer 
 from account.serializers import DetailUserSerializer
 from activity.serializers import DetailActivityRecordSerializer
@@ -19,6 +19,16 @@ class ClubSerializer(serializers.ModelSerializer):
     sport_type = serializers.CharField(source="get_sport_type_display")
     organization = serializers.CharField(source="get_organization_display")
     privacy = serializers.CharField(source="get_privacy_display") 
+    check_user_join = serializers.SerializerMethodField() 
+    
+    def get_check_user_join(self, instance):
+        request_user = self.context.get("user")
+        if request_user:
+            request_user_id = request_user.id
+            instance = UserParticipationClub.objects.filter(
+                user_id=request_user_id, club_id=instance.id).first()
+            return instance.id if instance else None
+        return None
     
     class Meta:
         model = Club
@@ -33,6 +43,7 @@ class ClubSerializer(serializers.ModelSerializer):
             "total_participants",
             "total_posts",
             "total_activity_records",
+            "check_user_join"
         )
         extra_kwargs = {
             "id": {"read_only": True}
@@ -46,6 +57,7 @@ class DetailClubSerializer(serializers.ModelSerializer):
     privacy = serializers.CharField(source="get_privacy_display") 
     posts = serializers.SerializerMethodField()
     activity_records = serializers.SerializerMethodField()
+    check_user_join = serializers.SerializerMethodField()
     
     def get_week_activites(self, instance):
         return instance.week_activities()
@@ -90,7 +102,6 @@ class DetailClubSerializer(serializers.ModelSerializer):
             }).data
         return None
     
-    
     def get_posts(self, instance):
         context = self.context
         exclude = context.get("exclude", [])
@@ -120,6 +131,14 @@ class DetailClubSerializer(serializers.ModelSerializer):
                     "request": context["request"],
                     "user": context["user"],
                 }, read_only=True).data
+        return None
+    
+    def get_check_user_join(self, instance):
+        request_user_id = self.context["user"].id
+        if request_user_id:
+            instance = UserParticipationClub.objects.filter(
+                user_id=request_user_id, club_id=instance.id).first()
+            return instance.id if instance else None
         return None
     
     class Meta:

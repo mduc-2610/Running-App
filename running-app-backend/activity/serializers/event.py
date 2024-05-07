@@ -1,10 +1,9 @@
 from rest_framework import serializers
 
-from activity.models import Event
+from activity.models import Event, UserParticipationEvent
 from account.serializers import DetailUserSerializer, LeaderboardSerializer
 from social.serializers import EventPostSerializer
 from activity.serializers.group import GroupSerializer
-
 from utils.function import get_start_of_day, \
                             get_end_of_day, \
                             get_start_date_of_week, \
@@ -13,10 +12,20 @@ from utils.function import get_start_of_day, \
                             get_end_date_of_month, \
                             get_start_date_of_year, \
                             get_end_date_of_year
-
 from utils.pagination import CommonPagination
+
 class EventSerializer(serializers.ModelSerializer):
     competition = serializers.CharField(source='get_competition_display')
+    check_user_join = serializers.SerializerMethodField()
+
+    def get_check_user_join(self, instance):
+        request_user_id = self.context["user"].id
+        if request_user_id:
+            instance = UserParticipationEvent.objects.filter(
+                user_id=request_user_id, event_id=instance.id).first()
+            return instance.id if instance else None
+        return None
+    
     class Meta:
         model = Event
         fields = (
@@ -25,7 +34,8 @@ class EventSerializer(serializers.ModelSerializer):
             "total_participants",
             "competition",
             "banner",
-            "days_remain"
+            "days_remain",
+            "check_user_join"
         )
         extra_kwargs = {
             "id": {"read_only": True}
@@ -42,6 +52,9 @@ class DetailEventSerializer(serializers.ModelSerializer):
     ended_at = serializers.SerializerMethodField()
     regulations = serializers.SerializerMethodField()
     posts = serializers.SerializerMethodField()
+    check_user_join = serializers.SerializerMethodField()
+    is_admin = serializers.SerializerMethodField()
+    is_superadmin = serializers.SerializerMethodField()
     
     def get_posts(self, instance):
         context = self.context
@@ -131,6 +144,38 @@ class DetailEventSerializer(serializers.ModelSerializer):
             regulations["max_avg_pace"] = f"{regulations.get('max_avg_pace', 'Unlimited')}{'/km' if regulations.get('max_avg_pace', 'Unlimited') != 'Unlimited' else ''}"
 
         return regulations
+    
+    def get_check_user_join(self, instance):
+        request_user_id = self.context["user"].id
+        if request_user_id:
+            instance = UserParticipationEvent.objects.filter(
+                user_id=request_user_id, event_id=instance.id).first()
+            return instance.id if instance else None
+        return None
+    
+    def get_is_admin(self, instance):
+        request_user = self.context.get("user")
+        if request_user:
+            request_user_id = request_user.id
+            instance = UserParticipationEvent.objects.filter(
+                user_id=request_user_id, event_id=instance.id).first()
+            if instance:
+                return instance.id if instance.is_admin else None
+            else:
+                return None
+        return None
+    
+    def get_is_superadmin(self, instance):
+        request_user = self.context.get("user")
+        if request_user:
+            request_user_id = request_user.id
+            instance = UserParticipationEvent.objects.filter(
+                user_id=request_user_id, event_id=instance.id).first()
+            if instance:
+                return instance.id if instance.is_superadmin else None
+            else:
+                return None
+        return None
     
     class Meta:
         model = Event

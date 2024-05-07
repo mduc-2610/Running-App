@@ -22,8 +22,9 @@ class UserAbbrSerializer(serializers.ModelSerializer):
         return None
 
     def get_check_user_follow(self, instance):
-        request_user_id = self.context.get("request_user_id")
-        if request_user_id:
+        request_user = self.context.get("user")
+        if request_user:
+            request_user_id = request_user.id
             instance = Follow.objects.filter(follower=request_user_id, followee=instance.id).first()
             return instance.id if instance else None
         return None

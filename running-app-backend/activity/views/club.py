@@ -23,7 +23,7 @@ from utils.function import get_start_of_day, \
 
 class ActivityRecordPagination(PageNumberPagination):
     page_size = 10
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 1000
 
 class ClubViewSet(
@@ -83,25 +83,25 @@ class ClubViewSet(
         context = super().get_serializer_context()
         if self.action == "retrieve":
             query_params = self.request.query_params
-            start_date = query_params.get('start_date', get_start_date_of_month())
-            end_date = query_params.get('end_date', get_end_date_of_month())
-            sort_by = query_params.get('sort_by', 'Distance')
-            gender = query_params.get('gender', None)
-            limit_user = query_params.get('limit_user', None)
-            exclude = [x.strip().lower() for x in query_params.get('exclude', '').split(',')]
+            start_date = query_params.get("start_date", get_start_date_of_month())
+            end_date = query_params.get("end_date", get_end_date_of_month())
+            sort_by = query_params.get("sort_by", "Distance")
+            gender = query_params.get("gender", None)
+            limit_user = query_params.get("limit_user", None)
+            exclude = [x.strip().lower() for x in query_params.get("exclude", "").split(",")]
 
             context.update({
-                'start_date': start_date, 
-                'end_date': end_date,
-                'sort_by': sort_by,
-                'gender': gender,
-                'limit_user': limit_user,
-                'exclude': exclude
+                "start_date": start_date, 
+                "end_date": end_date,
+                "sort_by": sort_by,
+                "gender": gender,
+                "limit_user": limit_user,
+                "exclude": exclude
             })
             
         context.update({
-            'request': self.request,
-            'user': self.request.user.activity
+            "request": self.request,
+            "user": self.request.user.activity
         })
         return context
     

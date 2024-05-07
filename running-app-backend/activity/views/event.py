@@ -93,24 +93,26 @@ class EventViewSet(
         context = super().get_serializer_context()
         if self.action == "retrieve":
             query_params = self.request.query_params
-            start_date = query_params.get('start_date', get_start_date_of_month())
-            end_date = query_params.get('end_date', get_end_date_of_month())
-            sort_by = query_params.get('sort_by', 'Distance')
-            gender = query_params.get('gender', None)
-            limit_user = query_params.get('limit_user', None)
-            exclude = [x.strip().lower() for x in query_params.get('exclude', '').split(',')]
+            start_date = query_params.get("start_date", get_start_date_of_month())
+            end_date = query_params.get("end_date", get_end_date_of_month())
+            sort_by = query_params.get("sort_by", "Distance")
+            gender = query_params.get("gender", None)
+            limit_user = query_params.get("limit_user", None)
+            exclude = [x.strip().lower() for x in query_params.get("exclude", "").split(",")]
             print("event exclude", exclude)
+            
             context.update({
-                'request': self.request,
-                'start_date': start_date, 
-                'end_date': end_date,
-                'sort_by': sort_by,
-                'gender': gender,
-                'limit_user': limit_user,
-                'exclude': exclude
+                "start_date": start_date, 
+                "end_date": end_date,
+                "sort_by": sort_by,
+                "gender": gender,
+                "limit_user": limit_user,
+                "exclude": exclude
             })
+        
         context.update({
-            'user': self.request.user.activity
+            "request": self.request,
+            "user": self.request.user.activity
         })
         return context
     

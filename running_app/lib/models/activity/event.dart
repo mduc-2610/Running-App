@@ -10,6 +10,7 @@ class Event {
   final String? banner;
   final String? competition;
   final int? daysRemain;
+  String? checkUserJoin;
 
   Event({
     required this.id,
@@ -18,6 +19,7 @@ class Event {
     required this.competition,
     required this.banner,
     required this.daysRemain,
+    required this.checkUserJoin,
   });
 
   Event.fromJson(Map<String, dynamic> json)
@@ -26,7 +28,8 @@ class Event {
       totalParticipants = json['total_participants'],
       competition = json['competition'],
       banner = json['banner'],
-      daysRemain = json['days_remaining'];
+      daysRemain = json['days_remaining'],
+      checkUserJoin = json['check_user_join'];
 
   Map<String, dynamic> toJson() {
     return {
@@ -64,6 +67,7 @@ class DetailEvent extends Event {
     String? banner,
     int? daysRemain,
     String? competition,
+    String? checkUserJoin,
     required this.startedAt,
     required this.endedAt,
     required this.regulations,
@@ -81,7 +85,8 @@ class DetailEvent extends Event {
     totalParticipants: totalParticipants,
     banner: banner,
     competition: competition,
-    daysRemain: daysRemain
+    daysRemain: daysRemain,
+    checkUserJoin: checkUserJoin,
   );
 
   @override
@@ -97,6 +102,7 @@ class DetailEvent extends Event {
     data['participants'] = participants;
     data['groups'] = groups;
     data['posts'] = posts;
+    data['check_user_join'] = checkUserJoin;
     return data;
   }
 
@@ -127,6 +133,7 @@ class DetailEvent extends Event {
         'competition: $competition,\n\t '
         'privacy: $privacy,\n\t'
         'participants: $participants,\n'
+        'checkUserJoin: $checkUserJoin, \n'
         'posts: $posts'
         '}\n';
   }
