@@ -245,11 +245,12 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                                     )
                                                 ),
                                                 onPressed: () async {
-                                                  Map<String, dynamic> result = await Navigator.pushNamed(context, '/club_detail_information', arguments: {
+                                                  Map<String, dynamic>? result = await Navigator.pushNamed(context, '/club_detail_information', arguments: {
+                                                    "id": club?.id,
                                                     "club": club as DetailClub,
                                                     "joinButtonState": joinButtonState,
-                                                  }) as Map<String, dynamic>;
-                                                  if(result["check"]) {
+                                                  }) as Map<String, dynamic>?;
+                                                  if(result?["check"] ?? false) {
                                                     setState(() {
                                                       isLoading2 = true;
                                                     });

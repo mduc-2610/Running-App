@@ -74,9 +74,9 @@ class _FollowViewState extends State<FollowView> {
         Activity.fromJson,
         token,
         queryParams: "?fields=$field&"
-            "${field == "follower"
+            "${field == "followers"
             ? "follower_page" : "followee_page"}=$page&"
-            "${field == "follower"
+            "${field == "followers"
             ? "follower_q" : "followee_q"}=${searchTextController.text}&"
             "pg_sz=1000"
     );
@@ -333,7 +333,7 @@ class _FollowLayoutState extends State<FollowLayout> {
                 ),
               ),
               Text(
-                "${totalFollow}",
+                "${followList.length}",
                 style: TextStyle(
                     color: TColor.PRIMARY_TEXT,
                     fontSize: FontSize.LARGE,

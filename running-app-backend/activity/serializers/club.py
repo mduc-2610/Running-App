@@ -99,6 +99,8 @@ class DetailClubSerializer(serializers.ModelSerializer):
                 "start_date": start_date,
                 "end_date": end_date,
                 "sport_type": sport_type,
+                "check_follow": context.get("check_follow"),
+                "user": context.get("user"),
             }).data
         return None
     

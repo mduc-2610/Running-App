@@ -88,6 +88,7 @@ class ClubViewSet(
             sort_by = query_params.get("sort_by", "Distance")
             gender = query_params.get("gender", None)
             limit_user = query_params.get("limit_user", None)
+            check_follow = query_params.get("check_follow", None)
             exclude = [x.strip().lower() for x in query_params.get("exclude", "").split(",")]
 
             context.update({
@@ -96,7 +97,8 @@ class ClubViewSet(
                 "sort_by": sort_by,
                 "gender": gender,
                 "limit_user": limit_user,
-                "exclude": exclude
+                "exclude": exclude,
+                "check_follow": check_follow
             })
             
         context.update({

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
@@ -292,7 +294,7 @@ class _ClubListViewState extends State<ClubListView> {
                                                             showJoinClub(
                                                                 context,
                                                                 "assets/img/community/ptit_logo.png",
-                                                                "Join",
+                                                                "Join ${clubs[i]["club"].name.substring(0, min(clubs[i]["club"].name.length as int, 6)).trim()}... club",
                                                                 "Are you sure you want to join?",
                                                                 "Join",
                                                                 agreeOnPressed: () async {
@@ -322,7 +324,7 @@ class _ClubListViewState extends State<ClubListView> {
                                                             showJoinClub(
                                                                 context,
                                                                 "assets/img/community/ptit_logo.png",
-                                                                "Leave this club",
+                                                                "Leave ${clubs[i]["club"].name.substring(0, min(clubs[i]["club"].name.length as int, 6)).trim()}... club",
                                                                 "Are you sure you want to leave this club?",
                                                                 "Leave this club",
                                                                 agreeOnPressed: () async {

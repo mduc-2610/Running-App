@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/activity/club.dart';
 import 'package:running_app/models/activity/user_participation.dart';
+import 'package:running_app/models/social/follow.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
 import 'package:running_app/utils/common_widgets/layout/header.dart';
 import 'package:running_app/utils/common_widgets/layout/limit_text_line.dart';
+import 'package:running_app/utils/common_widgets/layout/loading.dart';
 import 'package:running_app/utils/common_widgets/layout/main_wrapper.dart';
 import 'package:running_app/utils/common_widgets/button/text_button.dart';
 import 'package:running_app/utils/common_widgets/show_modal_bottom/show_notification.dart';
@@ -23,20 +25,66 @@ class ClubDetailInformationView extends StatefulWidget {
 }
 
 class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
+  bool isLoading = true, isLoading2 = false;
   String token = "";
+  String clubId = "";
   DetailUser? user;
   DetailClub? club;
   bool showFullText = false;
   bool showViewMoreButton = false;
   Map<String, dynamic> joinButtonState = {};
+  List<dynamic> userList = [];
 
   void getArguments() {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
       user = Provider.of<UserProvider>(context).user;
       final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+      clubId = arguments["id"];
       club = arguments["club"];
       joinButtonState = arguments["joinButtonState"];
+    });
+  }
+
+  Future<void>initClub() async {
+    final data = await callRetrieveAPI(
+        'activity/club',
+        clubId,
+        null,
+        DetailClub.fromJson,
+        token,
+        queryParams: "?"
+            "exclude=posts, activity_records&"
+            "check_follow=True"
+    );
+    setState(() {
+      userList = data.participants.map((e) => {
+        "user": e,
+        "followButtonState": {
+          "text": (e.checkUserFollow == null) ? "Follow" : "Unfollow",
+          "backgroundColor": (e.checkUserFollow == null) ? TColor.PRIMARY : Colors.transparent,
+        }
+      }).toList();
+    });
+  }
+
+  void delayedInit({ bool reload = false, reload2 = false }) async {
+    if(reload) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    if(reload2) {
+      setState(() {
+        isLoading2 = true;
+      });
+    }
+    await initClub();
+
+    setState(() {
+      isLoading = false;
+      isLoading2 = false;
     });
   }
 
@@ -44,12 +92,12 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     getArguments();
+    delayedInit();
   }
 
   @override
   Widget build(BuildContext context) {
     var media = MediaQuery.sizeOf(context);
-    print(club);
     return Scaffold(
       body: SingleChildScrollView(
         child: DefaultBackgroundLayout(
@@ -263,7 +311,7 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                     maxLines: 3,
                                 ),
                                 SizedBox(height: media.height * 0.015,),
-                      
+
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
@@ -296,92 +344,146 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    for(var participant in club?.participants ?? [])...[
-                                      CustomTextButton(
-                                        onPressed: () {},
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 10
-                                          ),
-                                          decoration: BoxDecoration(
-                                            border: Border(
-                                              bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
+                                    if(isLoading)...[
+                                      Loading(
+                                        marginTop: media.height * 0.1,
+                                        backgroundColor: Colors.transparent,
+                                      )
+                                    ]
+                                    else...[
+                                      for(int i = 0; i < userList.length; i++)...[
+                                        CustomTextButton(
+                                          onPressed: () async {
+                                            Map<String, dynamic> result = await Navigator.pushNamed(context, '/user', arguments: {
+                                              "id": userList[i]["user"].userId
+                                            }) as Map<String, dynamic>;
+                                            if(result["checkFollow"]) {
+                                              delayedInit(reload: true);
+                                            }
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10
+                                            ),
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(width: 2, color: TColor.BORDER_COLOR),
+                                              ),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    ClipRRect(
+                                                      borderRadius: BorderRadius.circular(50),
+                                                      child: Image.asset(
+                                                        "assets/img/community/ptit_logo.png",
+                                                        width: 35,
+                                                        height: 35,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: media.width * 0.025,),
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          userList[i]["user"].name ?? "",
+                                                          style: TextStyle(
+                                                              color: TColor.PRIMARY_TEXT,
+                                                              fontSize: FontSize.SMALL,
+                                                              fontWeight: FontWeight.w800
+                                                          ),
+                                                        ),
+                                                        // Text(
+                                                        //   "Nho Quan - Ninh Binh",
+                                                        //   style: TextStyle(
+                                                        //       color: TColor.DESCRIPTION,
+                                                        //       fontSize: FontSize.SMALL,
+                                                        //       fontWeight: FontWeight.w500
+                                                        //   ),
+                                                        // ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    SizedBox(
+                                                      child: CustomTextButton(
+                                                        style: ButtonStyle(
+                                                            padding: MaterialStateProperty.all(
+                                                                const EdgeInsets.symmetric(
+                                                                    horizontal: 20,
+                                                                    vertical: 0
+                                                                )
+                                                            ),
+                                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                                              RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(10.0),
+                                                              ),
+                                                            ),
+                                                            backgroundColor: MaterialStateProperty.all(
+                                                                userList[i]["followButtonState"]["backgroundColor"]
+                                                            ),
+                                                            side: MaterialStateProperty.all(
+                                                                BorderSide(width: 2, color: TColor.PRIMARY)
+                                                            )
+                                                        ),
+                                                        onPressed: () async {
+                                                          if(userList[i]["followButtonState"]["text"] == "Unfollow") {
+                                                            print("Check user follow: ${userList[i]["user"].checkUserFollow}");
+                                                            await callDestroyAPI(
+                                                                'social/follow',
+                                                                userList[i]["user"].checkUserFollow,
+                                                                token
+                                                            );
+                                                          } else {
+                                                            Follow follow = Follow(
+                                                                followerId: getUrlId(user?.activity ?? ""),
+                                                                followeeId: userList[i]["user"].actId
+                                                            );
+                                                            print(follow.toJson());
+                                                            final data = await callCreateAPI(
+                                                                'social/follow',
+                                                                follow.toJson(),
+                                                                token
+                                                            );
+                                                            userList[i]["user"].checkUserFollow = data["id"];
+                                                            print("Check check: ${data["id"]}");
+                                                          }
+                                                          setState(() {
+                                                            if(userList[i]["followButtonState"]["text"] == "Unfollow") {
+                                                              userList[i]["followButtonState"] = {
+                                                                "text": "Follow",
+                                                                "backgroundColor": TColor.PRIMARY
+                                                              };
+                                                            }
+                                                            else {
+                                                              userList[i]["followButtonState"] = {
+                                                                "text": "Unfollow",
+                                                                "backgroundColor": Colors.transparent
+                                                              };
+                                                            }
+                                                          });
+                                                        },
+                                                        child: Text(
+                                                          userList[i]["followButtonState"]["text"],
+                                                          style: TextStyle(
+                                                              color: TColor.PRIMARY_TEXT,
+                                                              fontSize: FontSize.NORMAL,
+                                                              fontWeight: FontWeight.w700
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
                                             ),
                                           ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  ClipRRect(
-                                                    borderRadius: BorderRadius.circular(50),
-                                                    child: Image.asset(
-                                                      "assets/img/community/ptit_logo.png",
-                                                      width: 35,
-                                                      height: 35,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: media.width * 0.025,),
-                                                  Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(
-                                                        participant?.name ?? "",
-                                                        style: TextStyle(
-                                                            color: TColor.PRIMARY_TEXT,
-                                                            fontSize: FontSize.SMALL,
-                                                            fontWeight: FontWeight.w800
-                                                        ),
-                                                      ),
-                                                      // Text(
-                                                      //   "Nho Quan - Ninh Binh",
-                                                      //   style: TextStyle(
-                                                      //       color: TColor.DESCRIPTION,
-                                                      //       fontSize: FontSize.SMALL,
-                                                      //       fontWeight: FontWeight.w500
-                                                      //   ),
-                                                      // ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  SizedBox(
-                                                    child: CustomTextButton(
-                                                      style: ButtonStyle(
-                                                          padding: MaterialStateProperty.all(
-                                                              const EdgeInsets.symmetric(
-                                                                  horizontal: 20,
-                                                                  vertical: 0
-                                                              )
-                                                          ),
-                                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                                            RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(10.0),
-                                                            ),
-                                                          ),
-                                                          backgroundColor: MaterialStateProperty.all(
-                                                              TColor.PRIMARY
-                                                          )
-                                                      ),
-                                                      onPressed: () {},
-                                                      child: Text(
-                                                        "Follow",
-                                                        style: TextStyle(
-                                                            color: TColor.PRIMARY_TEXT,
-                                                            fontSize: FontSize.NORMAL,
-                                                            fontWeight: FontWeight.w700
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      )
+                                        )
+                                      ]
                                     ]
                                   ],
                                 )
@@ -393,6 +495,12 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                     )
                   ],
                 ),
+                if(isLoading2)...[
+                  Loading(
+                    height: media.height,
+                    marginTop: media.height * 0.5,
+                  )
+                ]
               ]
           ),
         ),

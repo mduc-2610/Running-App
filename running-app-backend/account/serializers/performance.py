@@ -5,7 +5,7 @@ from rest_framework import serializers
 from account.models import Performance
 from activity.models import UserParticipationClub, \
                             UserParticipationEvent
-
+from social.models import Follow
 from account.serializers.user import UserSerializer
 
 from utils.function import get_start_of_day, \
@@ -20,14 +20,19 @@ from utils.function import get_start_of_day, \
 class LeaderboardSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
     user_id = serializers.SerializerMethodField()
+    act_id = serializers.SerializerMethodField()
     gender = serializers.SerializerMethodField()
     total_distance = serializers.SerializerMethodField()
     total_duration = serializers.SerializerMethodField()
     participated_at = serializers.SerializerMethodField()
-    
+    check_user_follow = serializers.SerializerMethodField()
+
     def get_user_id(self, instance):
         return instance.user.id
 
+    def get_act_id(self, instance):
+        return instance.activity.id if self.check_follow() else None
+    
     def get_name(self, instance):
         return instance.user.name
 
@@ -42,15 +47,20 @@ class LeaderboardSerializer(serializers.ModelSerializer):
         
         sport_type = context.get('sport_type') if type else "RUNNING"
         return instance.range_stats(start_date, end_date, sport_type=sport_type)[index]
-        
+    
+    def check_follow(self):
+        return bool(self.context.get("check_follow", False))
+
     def get_total_distance(self, instance):
-        return self.get_period_stats(instance, 0)
+        return self.get_period_stats(instance, 0) if not self.check_follow() else None
     
     def get_total_duration(self, instance):
-        return instance.format_duration(self.get_period_stats(instance, 3))
+        return instance.format_duration(self.get_period_stats(instance, 3)) \
+            if not self.check_follow() else None
 
     def get_total_points(self, instance):
-        return self.get_period_stats(instance, 2)
+        return self.get_period_stats(instance, 2) \
+            if not self.check_follow() else None
     
     def get_participated_at(self, instance):
         type = self.context.get("type", None)
@@ -62,16 +72,29 @@ class LeaderboardSerializer(serializers.ModelSerializer):
             return UserParticipationEvent.objects.get(user_id=user_id, event_id=id).participated_at    
         return None
 
+    def get_check_user_follow(self, instance):
+        if self.check_follow():
+            request_user = self.context.get("user")
+            if request_user:
+                request_user_id = request_user.id
+                instance = Follow.objects.\
+                    filter(follower=request_user_id, followee=instance.activity.id).first()
+                print(instance)
+                return instance.id if instance else None
+        return None
+    
     class Meta:
         model = Performance
         fields = (
             "id", 
             "user_id",
+            "act_id",
             "name",
             "gender",
             "total_duration",
             "total_distance",
-            "participated_at"
+            "participated_at",
+            "check_user_follow",
         )
         extra_kwargs = {
             "id": {"read_only": True},

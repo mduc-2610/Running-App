@@ -73,9 +73,10 @@ class ActivitySerializer(serializers.ModelSerializer):
         fields = context.get("fields")
         if not fields or "followers" in fields:
             follower_q = context["follow_params"]["follower_q"]
-            queryset = [follow.follower for follow in instance.followers.filter(follower__user__name__icontains=follower_q)]
-            queryset = self.get_paginated_queryset(
-                queryset, page_size=15, page_query_param="follower_page")
+            queryset = [follow.follower for follow \
+                        in instance.followers.filter(follower__user__name__icontains=follower_q)]
+            # queryset = self.get_paginated_queryset(
+            #     queryset, page_size=15, page_query_param="follower_page")
             return UserAbbrSerializer(queryset, many=True, read_only=True, context={
                 "user": context["user"],
             }).data
@@ -87,9 +88,10 @@ class ActivitySerializer(serializers.ModelSerializer):
         
         if not fields or "followees" in fields:
             followee_q = self.context["follow_params"]["followee_q"]
-            queryset = [follow.followee for follow in instance.following.filter(followee__user__name__icontains=followee_q)]
-            queryset = self.get_paginated_queryset(
-                queryset, page_size=15, page_query_param="followee_page")
+            queryset = [follow.followee for follow \
+                        in instance.following.filter(followee__user__name__icontains=followee_q)]
+            # queryset = self.get_paginated_queryset(
+            #     queryset, page_size=15, page_query_param="followee_page")
             return UserAbbrSerializer(queryset, many=True, read_only=True, context={
                 "user": context["user"],
             }).data
@@ -139,8 +141,8 @@ class ActivitySerializer(serializers.ModelSerializer):
 
             queryset = queryset.filter(filters)
             
-            queryset = self.get_paginated_queryset(
-                queryset, page_query_param="club_page")
+            # queryset = self.get_paginated_queryset(
+            #     queryset, page_query_param="club_page")
             return ClubSerializer(queryset, many=True, read_only=True).data
         return None
     
