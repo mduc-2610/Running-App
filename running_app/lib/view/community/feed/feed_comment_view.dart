@@ -44,7 +44,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
   DetailActivityRecord? activityRecord;
   bool showFullText = false;
   bool showViewMoreButton = false;
-  bool checkRequestUser = false;
+  bool checkRequestUser = false, checkCommentPressed = false;
   List<Map<String, dynamic>> comments = [];
   int page = 1;
   bool like = false;
@@ -240,6 +240,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
       await Future.delayed(Duration(milliseconds: 500));
       setState(() {
         activityRecord?.increaseTotalComments();
+        checkCommentPressed = true;
         isLoading2 = false;
       });
     }
@@ -283,6 +284,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
               "postLikeId": activityRecord?.checkUserLike,
               "activityRecordId": activityRecordId,
               "like": like,
+              "checkCommentPressed": checkCommentPressed,
             },
         ),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
@@ -368,6 +370,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
                                                         token
                                                     );
                                                     setState(() {
+                                                      checkCommentPressed = true;
                                                       comments.removeAt(i);
                                                       activityRecord?.decreaseTotalComments();
                                                     });

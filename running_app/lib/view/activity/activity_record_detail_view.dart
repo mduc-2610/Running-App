@@ -110,6 +110,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
               "id": activityRecord?.id,
               "checkLikePressed": checkLikePressed,
               "totalComments": popArguments["totalComments"],
+              "checkCommentPressed": popArguments["checkCommentPressed"] ?? false,
             },
         ),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,

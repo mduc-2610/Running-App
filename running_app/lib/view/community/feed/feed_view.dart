@@ -275,40 +275,38 @@ class _FeedViewState extends State<FeedView> {
                                   "id": activityRecord["activityRecord"].id,
                                   "checkRequestUser": user?.id == activityRecord["activityRecord"]?.user?.id,
                                 }) as Map<String, dynamic>;
-                                delayedInit(reload2: true);
-                                setState(() {
-                                  popArguments = result;
-                                });
-                                print("Total Comments${popArguments["totalComments"]}");
-                                if(popArguments["id"] == activityRecord["activityRecord"].id) {
-                                  if(result["checkLikePressed"]) {
-                                    setState(() {
-                                      activityRecord["activityRecord"].totalComments = popArguments["totalComments"];
-                                      if(activityRecord["like"]) {
-                                        int index = activityRecord["activityRecord"].likes
-                                            ?.indexWhere((like) => like.id == user?.id) ?? -1;
-                                        if(index != -1) {
-                                          activityRecord["activityRecord"].likes.removeAt(index);
-                                        }
-                                        activityRecord["like"] = false ;
-                                        activityRecord["activityRecord"]?.decreaseTotalLikes();
+                                print("Check comment on pressed: ${result["checkCommentPressed"]}");
+                                print("Check like on on pressed ${result["checkLikePressed"]}");
+                                if(result["checkCommentPressed"]) {
+                                  setState(() {
+                                    activityRecord["activityRecord"].totalComments = result["totalComments"];
+                                  });
+                                }
+                                if(result["checkLikePressed"]) {
+                                  delayedInit(reload2: true);
+                                  setState(() {
+                                    if(activityRecord["like"]) {
+                                      int index = activityRecord["activityRecord"].likes
+                                          ?.indexWhere((like) => like.id == user?.id) ?? -1;
+                                      if(index != -1) {
+                                        activityRecord["activityRecord"].likes.removeAt(index);
                                       }
-                                      else {
-                                        UserAbbr author = UserAbbr(
-                                            id: user?.id,
-                                            name: user?.name,
-                                            avatar: ""
-                                        );
-                                        activityRecord["activityRecord"].likes.insert(0, author);
-                                        activityRecord["like"] = true ;
-                                        activityRecord["activityRecord"]?.increaseTotalLikes();
-                                      }
-                                    });
-                                  }
+                                      activityRecord["like"] = false ;
+                                      activityRecord["activityRecord"]?.decreaseTotalLikes();
+                                    }
+                                    else {
+                                      UserAbbr author = UserAbbr(
+                                          id: user?.id,
+                                          name: user?.name,
+                                          avatar: ""
+                                      );
+                                      activityRecord["activityRecord"].likes.insert(0, author);
+                                      activityRecord["like"] = true ;
+                                      activityRecord["activityRecord"]?.increaseTotalLikes();
+                                    }
+                                  });
                                 }
                               },
-                              totalComments: (popArguments["id"] == activityRecord["activityRecord"].id)
-                                  ? popArguments["totalComments"] : null,
                               activityRecord: activityRecord["activityRecord"],
                               checkRequestUser: user?.id == activityRecord["activityRecord"]?.user?.id,
                               like: activityRecord["like"],
