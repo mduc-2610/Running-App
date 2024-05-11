@@ -25,15 +25,19 @@ class ActivityRecordPost extends StatefulWidget {
   final bool detail;
   final bool like;
   final VoidCallback likeOnPressed;
+  final VoidCallback? detailOnPressed;
+  final int? totalComments;
 
   ActivityRecordPost({
     required this.token,
     required this.activityRecord,
     required this.like,
     required this.likeOnPressed,
+    this.detailOnPressed,
     this.checkRequestUser,
     this.socialSection = true,
     this.detail = false,
+    this.totalComments,
     super.key
   });
 
@@ -170,10 +174,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
           topMargin: 0,
           child: GestureDetector(
             onTap: (widget.detail == false) ? () {
-              Navigator.pushNamed(context, '/activity_record_detail', arguments: {
-                "id": widget.activityRecord.id,
-                "checkRequestUser": widget.checkRequestUser,
-              });
+              widget.detailOnPressed?.call();
             } : null,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,10 +221,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
           topMargin: 0,
           child: CustomTextButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/activity_record_detail', arguments: {
-                "id": widget.activityRecord.id,
-                "checkRequestUser": widget.checkRequestUser
-              });
+              widget.detailOnPressed?.call();
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -269,10 +267,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
           children: [
             GestureDetector(
               onTap: (widget.detail == false) ? () {
-                Navigator.pushNamed(context, '/activity_record_detail', arguments: {
-                  "id": widget.activityRecord.id,
-                  "checkRequestUser": widget.checkRequestUser,
-                });
+                widget.detailOnPressed?.call();
               } : null,
               child: SizedBox(
                 height: media.height * 0.27,
@@ -373,7 +368,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                             });
                           },
                           child: Text(
-                            "${popArguments["totalComments"] ?? widget.activityRecord.totalComments} comment",
+                            "${widget.totalComments ?? popArguments["totalComments"] ?? widget.activityRecord.totalComments} comment",
                             style: TxtStyle.normalTextDesc,
                           ),
                         ),
@@ -410,11 +405,14 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                         {
                           "icon": Icons.mode_comment_outlined,
                           "text": "Comment",
-                          "onPressed": () {
+                          "onPressed": () async {
                             if(widget.detail == false) {
-                              Navigator.pushNamed(context, '/feed_comment', arguments: {
+                              Map<String, dynamic> x = await Navigator.pushNamed(context, '/feed_comment', arguments: {
                                 "id": widget.activityRecord.id,
                                 "checkRequestUser": widget.checkRequestUser,
+                              }) as Map<String, dynamic>;
+                              setState(() {
+                                popArguments = x;
                               });
                             }
                           }

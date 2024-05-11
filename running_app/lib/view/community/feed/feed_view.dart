@@ -28,15 +28,15 @@ class FeedView extends StatefulWidget {
 class _FeedViewState extends State<FeedView> {
   String token = "";
   DetailUser? user;
-  Activity? userActivity;
   List<dynamic> activityRecords = [];
-  bool isLoading = true;
+  bool isLoading = true, isLoading2 = false, reachEnd = false;
   String showView = "Explore";
   bool isVisible = true;
   ScrollController scrollController = ScrollController();
   double previousScrollOffset = 0;
   int page = 1;
   bool stopLoadingPage = false;
+  Map<String, dynamic> popArguments = {};
 
   void getProviderData() {
     setState(() {
@@ -45,21 +45,8 @@ class _FeedViewState extends State<FeedView> {
     });
   }
 
-  Future<void> initUserActivity() async {
-    final data = await callRetrieveAPI(
-        null, null,
-        user?.activity,
-        Activity.fromJson,
-        token,
-        queryParams: "?fields=activity_record_post_likes"
-    );
-    setState(() {
-      userActivity = data;
-    });
-  }
-
   Future<void> initActivityRecord() async {
-    print("THIS VIEW: $showView");
+    // print("THIS VIEW: $showView");
     dynamic data;
     try {
       data =
@@ -114,20 +101,26 @@ class _FeedViewState extends State<FeedView> {
     delayedInit();
   }
 
-  void delayedInit({bool reload = false, bool initSide = false}) async {
+  void delayedInit({bool reload = false, reload2 = false, bool initSide = false}) async {
     if(reload) {
       setState(() {
         isLoading = true;
       });
     }
-    if(initSide) {
-      await initUserActivity();
+
+    if(reload2) {
+      setState(() {
+        isLoading2 = true;
+      });
     }
+
     await initActivityRecord();
-    await Future.delayed(Duration(milliseconds: 500),);
+    // await Future.delayed(Duration(milliseconds: 500),);
 
     setState(() {
       isLoading = false;
+      isLoading2 = false;
+      reachEnd = false;
     });
   }
 
@@ -135,7 +128,7 @@ class _FeedViewState extends State<FeedView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     getProviderData();
-    delayedInit(initSide: true);
+    delayedInit();
   }
 
   void scrollListener() {
@@ -156,12 +149,11 @@ class _FeedViewState extends State<FeedView> {
 
 
   void scrollListenerOffSet() {
-    double currentScrollOffset = scrollController.offset;
-    if ((currentScrollOffset - previousScrollOffset).abs() > 800) {
-      print("Loading page $page");
-      previousScrollOffset = currentScrollOffset;
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
       setState(() {
         page += 1;
+        reachEnd = true;
       });
       if(!stopLoadingPage) {
         delayedInit();
@@ -278,6 +270,45 @@ class _FeedViewState extends State<FeedView> {
                           for (var activityRecord in activityRecords ?? []) ...[
                             ActivityRecordPost(
                               token: token,
+                              detailOnPressed: () async {
+                                Map<String, dynamic> result = await Navigator.pushNamed(context, '/activity_record_detail', arguments: {
+                                  "id": activityRecord["activityRecord"].id,
+                                  "checkRequestUser": user?.id == activityRecord["activityRecord"]?.user?.id,
+                                }) as Map<String, dynamic>;
+                                delayedInit(reload2: true);
+                                setState(() {
+                                  popArguments = result;
+                                });
+                                print("Total Comments${popArguments["totalComments"]}");
+                                if(popArguments["id"] == activityRecord["activityRecord"].id) {
+                                  if(result["checkLikePressed"]) {
+                                    setState(() {
+                                      activityRecord["activityRecord"].totalComments = popArguments["totalComments"];
+                                      if(activityRecord["like"]) {
+                                        int index = activityRecord["activityRecord"].likes
+                                            ?.indexWhere((like) => like.id == user?.id) ?? -1;
+                                        if(index != -1) {
+                                          activityRecord["activityRecord"].likes.removeAt(index);
+                                        }
+                                        activityRecord["like"] = false ;
+                                        activityRecord["activityRecord"]?.decreaseTotalLikes();
+                                      }
+                                      else {
+                                        UserAbbr author = UserAbbr(
+                                            id: user?.id,
+                                            name: user?.name,
+                                            avatar: ""
+                                        );
+                                        activityRecord["activityRecord"].likes.insert(0, author);
+                                        activityRecord["like"] = true ;
+                                        activityRecord["activityRecord"]?.increaseTotalLikes();
+                                      }
+                                    });
+                                  }
+                                }
+                              },
+                              totalComments: (popArguments["id"] == activityRecord["activityRecord"].id)
+                                  ? popArguments["totalComments"] : null,
                               activityRecord: activityRecord["activityRecord"],
                               checkRequestUser: user?.id == activityRecord["activityRecord"]?.user?.id,
                               like: activityRecord["like"],
@@ -313,7 +344,7 @@ class _FeedViewState extends State<FeedView> {
                                   int index = activityRecord["activityRecord"].likes
                                       ?.indexWhere((like) => like.id == user?.id) ?? -1;
                                   setState(() {
-                                    if(index != - 1) {
+                                    if(index != -1) {
                                       activityRecord["activityRecord"].likes.removeAt(index);
                                     }
                                     activityRecord["activityRecord"]?.decreaseTotalLikes();
@@ -333,6 +364,9 @@ class _FeedViewState extends State<FeedView> {
                               // },
                             ),
                           ]
+                        ],
+                        if(reachEnd)...[
+                          Loading(reachEnd: true,)
                         ]
                       ]
                     ],
@@ -342,12 +376,18 @@ class _FeedViewState extends State<FeedView> {
             ),
           ],
         ),
-        if(isLoading == true)...[
+        if(isLoading)...[
           Loading(
             marginTop: media.height * 0.35,
             backgroundColor: Colors.transparent,
           )
+        ],
+        if(isLoading2)...[
+          Loading(
+            marginTop: media.height * 0.35,
+          )
         ]
+
       ],
     );
   }

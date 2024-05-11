@@ -36,7 +36,7 @@ class FeedCommentView extends StatefulWidget {
 
 class _FeedCommentViewState extends State<FeedCommentView> {
   int currentSlide = 0;
-  bool isLoading = true, isLoading2 = false;
+  bool isLoading = true, isLoading2 = false, reachEnd = false;
   String token = "";
   DetailUser? user;
   Activity? userActivity;
@@ -70,25 +70,23 @@ class _FeedCommentViewState extends State<FeedCommentView> {
         user?.activity,
         Activity.fromJson,
         token,
-        queryParams: "?fields=activity_record_post_likes,"
-            "activity_record_post_comments"
+        queryParams: "?fields=activity_record_post_comments"
     );
     setState(() {
       userActivity = data;
-      postLikeId = checkUserLike();
-      like = (postLikeId == "") ? false : true;
+      like = (activityRecord?.checkUserLike == null) ? false : true;
     });
   }
   
-  String checkUserLike() {
-    String result = "";
-    for(var activity in userActivity?.activityRecordPostLikes ?? []) {
-      if(activity.id == activityRecordId) {
-        result = activity.postLikeId;
-      }
-    }
-    return result;
-  }
+  // String checkUserLike() {
+  //   String result = "";
+  //   for(var activity in userActivity?.activityRecordPostLikes ?? []) {
+  //     if(activity.id == activityRecordId) {
+  //       result = activity.postLikeId;
+  //     }
+  //   }
+  //   return result;
+  // }
 
   Future<void> initActivityRecord() async {
     final data = await callRetrieveAPI(
@@ -118,12 +116,19 @@ class _FeedCommentViewState extends State<FeedCommentView> {
     return user?.name == cmt.user?.name;
   }
 
-  Future<void> delayedInit({bool reload = false, bool initSide = true}) async {
-    if(reload == true) {
+  Future<void> delayedInit({bool reload = false, reload2 = false, bool initSide = true}) async {
+    if(reload) {
       setState(() {
         isLoading = true;
       });
     }
+
+    if(reload) {
+      setState(() {
+        isLoading2 = true;
+      });
+    }
+
     else if(initSide) {
       await initUserActivity();
     }
@@ -132,6 +137,8 @@ class _FeedCommentViewState extends State<FeedCommentView> {
 
     setState(() {
       isLoading = false;
+      isLoading2 = false;
+      reachEnd = false;
     });
   }
 
@@ -143,14 +150,19 @@ class _FeedCommentViewState extends State<FeedCommentView> {
   };
 
   void scrollListenerOffSet() {
-    double currentScrollOffset = scrollController.offset;
-    if ((currentScrollOffset - previousScrollOffset).abs() > (page == 1 ? 450 : 350)) {
-      previousScrollOffset = currentScrollOffset;
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
       setState(() {
+        reachEnd = true;
         page += 1;
       });
       if(page <= pageLimit(activityRecord?.totalComments ?? 0, 5)) {
         delayedInit(initSide: false);
+      }
+      else {
+        setState(() {
+          reachEnd = false;
+        });
       }
     }
   }
@@ -200,14 +212,14 @@ class _FeedCommentViewState extends State<FeedCommentView> {
       setState(() {
         activityRecord?.likes?.insert(0, author);
         activityRecord?.increaseTotalLikes();
-        postLikeId = data["id"];
+        activityRecord?.checkUserLike = data["id"];
         like = (like) ? false : true;
       });
     }
     else {
       await callDestroyAPI(
           'social/act-rec-post-like',
-          postLikeId,
+          activityRecord?.checkUserLike,
           token
       );
       setState(() {
@@ -223,7 +235,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
   }
 
   void submit() async {
-    if(submitTextController.text != "") {
+    if(submitTextController.text.trim() != "") {
       await submitComment(reload: true);
       await Future.delayed(Duration(milliseconds: 500));
       setState(() {
@@ -258,6 +270,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
 
   @override
   Widget build(BuildContext context) {
+    print("Check: ${activityRecord?.totalComments}");
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
@@ -267,7 +280,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
             argumentsOnPressed: {
               "totalLikes": activityRecord?.totalLikes,
               "totalComments": activityRecord?.totalComments,
-              "postLikeId": postLikeId,
+              "postLikeId": activityRecord?.checkUserLike,
               "activityRecordId": activityRecordId,
               "like": like,
             },
@@ -420,6 +433,9 @@ class _FeedCommentViewState extends State<FeedCommentView> {
                                   ],
                                 ),
                                 SizedBox(height: media.height * 0.02,)
+                              ],
+                              if(reachEnd)...[
+                                Loading(reachEnd: true,)
                               ]
                             ],
                             SizedBox(height: media.height * 0.07,),
@@ -428,6 +444,11 @@ class _FeedCommentViewState extends State<FeedCommentView> {
                       )
                     ],
                   ) : Loading(),
+                  // if(isLoading2)...[
+                  //   Loading(
+                  //     marginTop: media.height * 0.25,
+                  //   )
+                  // ]
                 ],
               ),
             ),

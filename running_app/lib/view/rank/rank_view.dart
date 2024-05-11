@@ -36,7 +36,7 @@ class RankView extends StatefulWidget {
 
 class _RankViewState extends State<RankView> {
   String menuButtonClicked = "/rank";
-  bool isLoading = false;
+  bool isLoading = false, reachEnd = false, stopLoading = false;
   List timeList = ["Week", "Month", "Year"];
   String period = "Week";
   String gender = "";
@@ -186,51 +186,60 @@ class _RankViewState extends State<RankView> {
         "&start_date=${formatDateQuery(getStartDate())}"
         "&end_date=${formatDateQuery(getEndDate())}"
         "&page=$page";
-    final data =
-    (rankType == "") ? await callListAPI(
-        'account/performance/leaderboard',
-        Leaderboard.fromJson,
-        token,
-        queryParams: queryParams
-    ) : (rankType == "Club")
-        ?(await callRetrieveAPI(
-        'activity/club',
-        rankTypeId,
-        null,
-        DetailClub.fromJson,
-        token,
-        queryParams: queryParams
-    )).participants
-        : (await callRetrieveAPI(
-        'activity/event',
-        rankTypeId,
-        null,
-        DetailEvent.fromJson,
-        token,
-        queryParams: queryParams
-    )).participants;
-    setState(() {
-      userList.addAll(data);
-      if(userList.length == 1) {
-        userList.insert(0, null);
-      }
-      else if (userList.length >= 2) {
-        dynamic temp = userList[0];
-        userList[0] = userList[1];
-        userList[1] = temp;
-      }
-    });
+    dynamic data;
+    try {
+      data =
+      (rankType == "") ? await callListAPI(
+          'account/performance/leaderboard',
+          Leaderboard.fromJson,
+          token,
+          queryParams: queryParams
+      ) : (rankType == "Club")
+          ?(await callRetrieveAPI(
+          'activity/club',
+          rankTypeId,
+          null,
+          DetailClub.fromJson,
+          token,
+          queryParams: queryParams
+      )).participants
+          : (await callRetrieveAPI(
+          'activity/event',
+          rankTypeId,
+          null,
+          DetailEvent.fromJson,
+          token,
+          queryParams: queryParams
+      )).participants;
+    }
+    catch(e) {
+      setState(() {
+        stopLoading = true;
+      });
+    }
+    if(!stopLoading) {
+      setState(() {
+        userList.addAll(data);
+        if(userList.length == 1) {
+          userList.insert(0, null);
+        }
+        else if (userList.length >= 2) {
+          dynamic temp = userList[0];
+          userList[0] = userList[1];
+          userList[1] = temp;
+        }
+      });
+    }
   }
 
   void scrollListenerOffSet() {
-    double currentScrollOffset = childScrollController.offset;
-    if ((currentScrollOffset - previousScrollOffset).abs() >= (page == 1 ? 0 : 300)) {
-      print("Loading page $page");
-      previousScrollOffset = currentScrollOffset;
+    if (childScrollController.position.pixels ==
+        childScrollController.position.maxScrollExtent && !stopLoading) {
       setState(() {
+        reachEnd = true;
         page += 1;
       });
-      if(page <= pageLimit(100, 20)) {
+      if(!stopLoading) {
         delayedUser(milliseconds: 500);
       }
     }
@@ -261,6 +270,7 @@ class _RankViewState extends State<RankView> {
 
     setState(() {
       isLoading = false;
+      reachEnd = false;
     });
   }
 
@@ -340,6 +350,7 @@ class _RankViewState extends State<RankView> {
                                           initTime();
                                           page = 1;
                                           userList = [];
+                                          stopLoading = false;
                                           delayedUser(reload: true);
                                         });
                                       },
@@ -709,8 +720,9 @@ class _RankViewState extends State<RankView> {
                           });
                         },
                         isLoading: isLoading,
+                        reachEnd: (reachEnd && !stopLoading) ? true : false,
                       ),
-                    )
+                    ),
                   ]
               ),
             ],

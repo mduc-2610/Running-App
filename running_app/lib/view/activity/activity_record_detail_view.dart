@@ -4,7 +4,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/user.dart';
+import 'package:running_app/models/account/user_abbr.dart';
 import 'package:running_app/models/activity/activity_record.dart';
+import 'package:running_app/models/social/post_like.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/layout/app_bar.dart';
 import 'package:running_app/utils/common_widgets/layout/default_background_layout.dart';
@@ -17,9 +19,11 @@ import 'package:running_app/utils/common_widgets/layout/separate_bar.dart';
 import 'package:running_app/utils/common_widgets/show_modal_bottom/show_action_list.dart';
 import 'package:running_app/utils/common_widgets/show_modal_bottom/show_notification.dart';
 import 'package:running_app/utils/common_widgets/button/text_button.dart';
+import 'package:running_app/utils/common_widgets/show_modal_bottom/show_user_list.dart';
 import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/function.dart';
 import 'package:running_app/utils/providers/token_provider.dart';
+import 'package:running_app/utils/providers/user_provider.dart';
 
 class ActivityRecordDetailView extends StatefulWidget {
   const ActivityRecordDetailView({super.key});
@@ -32,6 +36,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
   int currentSlide = 0;
   bool isLoading = true;
   String token = "";
+  DetailUser? user;
   String? activityRecordId;
   DetailActivityRecord? activityRecord;
   bool showFullTitle = false;
@@ -39,11 +44,14 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
   bool showViewMoreDescriptionButton = false;
   bool showViewMoreTitleButton = false;
   bool checkRequestUser = false;
+  bool like = false, checkLikePressed = false;
+  Map<String, dynamic> popArguments = {};
 
   void getSideData() {
     setState(() {
       Map<String, dynamic> arguments = (ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>);
       token = Provider.of<TokenProvider>(context).token;
+      user = Provider.of<UserProvider>(context).user;
       activityRecordId = arguments["id"];
       checkRequestUser = arguments["checkRequestUser"] ?? true;
     });
@@ -59,6 +67,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
 
     setState(() {
       activityRecord = data;
+      like = (activityRecord?.checkUserLike != null) ? true : false;
     });
   }
 
@@ -94,7 +103,15 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Header(title: "Activity", noIcon: true),
+        title: Header(
+            title: "Activity",
+            noIcon: true,
+            argumentsOnPressed: {
+              "id": activityRecord?.id,
+              "checkLikePressed": checkLikePressed,
+              "totalComments": popArguments["totalComments"],
+            },
+        ),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: RefreshIndicator(
@@ -529,105 +546,185 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                           ],
                         ),
                       ),
+                      SizedBox(height: media.height * 0.015,),
 
                       // // Social section
-                      // Column(
-                      //   crossAxisAlignment: CrossAxisAlignment.end,
-                      //   children: [
-                      //     MainWrapper(
-                      //       topMargin: 0,
-                      //       child: CustomTextButton(
-                      //         onPressed: () {
-                      //           Navigator.pushNamed(context, '/feed_comment', arguments: {
-                      //             "id": activityRecord?.id,
-                      //             "checkRequestUser": checkRequestUser,
-                      //           });
-                      //         },
-                      //         child: Row(
-                      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //           children: [
-                      //             Row(
-                      //               children: [
-                      //                 Icon(
-                      //                   Icons.thumb_up,
-                      //                   color: TColor.THIRD,
-                      //                 ),
-                      //                 SizedBox(width: media.width * 0.01,),
-                      //                 Text(
-                      //                   "${activityRecord?.totalLikes}",
-                      //                   style: TxtStyle.normalTextDesc,
-                      //                 ),
-                      //               ],
-                      //             ),
-                      //             Text(
-                      //               "${activityRecord?.totalComments} comment",
-                      //               style: TxtStyle.normalTextDesc,
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //     ),
-                      //
-                      //     Container(
-                      //       padding: const EdgeInsets.symmetric(
-                      //           vertical: 0
-                      //       ),
-                      //       decoration: BoxDecoration(
-                      //           border: Border(
-                      //               top: BorderSide(width: 1, color: TColor.BORDER_COLOR),
-                      //               bottom: BorderSide(width: 1, color: TColor.BORDER_COLOR)
-                      //           )
-                      //       ),
-                      //       child: Row(
-                      //         mainAxisAlignment:  MainAxisAlignment.spaceAround,
-                      //         children: [
-                      //           for(var x in [
-                      //             {
-                      //               "icon": Icons.thumb_up_alt_outlined,
-                      //               "text": "Like",
-                      //               "onPressed": () {}
-                      //             },
-                      //             {
-                      //               "icon": Icons.mode_comment_outlined,
-                      //               "text": "Comment",
-                      //               "onPressed": () {
-                      //                 Navigator.pushNamed(context, '/feed_comment', arguments: {
-                      //                   "id": activityRecord?.id,
-                      //                   "checkRequestUser": checkRequestUser,
-                      //                 });
-                      //               }
-                      //             },
-                      //             (checkRequestUser == true) ? {
-                      //               "icon": Icons.ios_share_rounded,
-                      //               "text": "Share",
-                      //               "onPressed": () {}
-                      //             } : null,
-                      //           ])...[
-                      //             if(x != null)...[
-                      //               CustomTextButton(
-                      //                 onPressed: x["onPressed"] as VoidCallback,
-                      //                 child: Row(
-                      //                   children: [
-                      //                     Icon(
-                      //                       x["icon"] as IconData,
-                      //                       color: TColor.PRIMARY_TEXT,
-                      //                     ),
-                      //                     SizedBox(width: media.width * 0.02,),
-                      //                     Text(
-                      //                       x["text"] as String,
-                      //                       style: TxtStyle.normalText,
-                      //                     )
-                      //                   ],
-                      //                 ),
-                      //               ),
-                      //               // if(x["text"] != "Share") SeparateBar(width: 1, height: 45, color: TColor.BORDER_COLOR,)
-                      //             ]
-                      //           ]
-                      //         ],
-                      //       ),
-                      //     )
-                      //   ],
-                      // ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          MainWrapper(
+                            topMargin: 0,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    showUserList(
+                                      context,
+                                      activityRecord?.likes ?? [] ,
+                                      title: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.thumb_up,
+                                            color: TColor.THIRD,
+                                          ),
+                                          // SizedBox(width: media.width * 0.01,),
+                                          Text(
+                                            "${activityRecord?.totalLikes}",
+                                            style: TxtStyle.normalTextDesc,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.thumb_up,
+                                        color: TColor.THIRD,
+                                      ),
+                                      // SizedBox(width: media.width * 0.01,),
+                                      Text(
+                                        " ${activityRecord?.totalLikes}",
+                                        style: TxtStyle.normalTextDesc,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () async {
+                                    Map<String, dynamic> x = await Navigator.pushNamed(context, '/feed_comment', arguments: {
+                                      "id": activityRecord?.id,
+                                      "checkRequestUser": checkRequestUser,
+                                    }) as Map<String, dynamic>;
+                                    setState(() {
+                                      popArguments = x;
+                                    });
+                                  },
+                                  child: Text(
+                                    "${popArguments["totalComments"] ?? activityRecord?.totalComments} comment",
+                                    style: TxtStyle.normalTextDesc,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: media.height * 0.015,),
+
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 0
+                            ),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    top: BorderSide(width: 1, color: TColor.BORDER_COLOR),
+                                    bottom: BorderSide(width: 1, color: TColor.BORDER_COLOR)
+                                )
+                            ),
+                            child: Row(
+                              mainAxisAlignment:  MainAxisAlignment.spaceAround,
+                              children: [
+                                for(var x in [
+                                  {
+                                    "icon": (like)
+                                        ? Icons.thumb_up
+                                        : Icons.thumb_up_alt_outlined,
+                                    "text": "Like",
+                                    "onPressed": () async {
+                                      if(like == false) {
+                                        CreatePostLike postLike = CreatePostLike(
+                                          userId: getUrlId(user?.activity ?? ""),
+                                          postId: activityRecord?.id,
+                                        );
+                                        final data = await callCreateAPI(
+                                            'social/act-rec-post-like',
+                                            postLike.toJson(),
+                                            token
+                                        );
+                                        setState(() {
+                                          checkLikePressed = true;
+                                          activityRecord?.increaseTotalLikes();
+                                          like = (like) ? false : true;
+                                          activityRecord?.checkUserLike = data["id"];
+                                          UserAbbr author = UserAbbr(
+                                              id: user?.id,
+                                              name: user?.name,
+                                              avatar: ""
+                                          );
+                                          activityRecord?.likes?.insert(0, author);
+                                        });
+                                      }
+                                      else {
+                                        await callDestroyAPI(
+                                          'social/act-rec-post-like',
+                                          activityRecord?.checkUserLike,
+                                          token
+                                        );
+                                        int index = activityRecord?.likes
+                                            ?.indexWhere((like) => like.id == user?.id) ?? -1;
+                                        setState(() {
+                                          checkLikePressed = true;
+                                          if(index != - 1) {
+                                            activityRecord?.likes?.removeAt(index);
+                                          }
+                                          activityRecord?.decreaseTotalLikes();
+                                          like = (like) ? false : true;
+                                        });
+                                      }
+                                    }
+                                  },
+                                  {
+                                    "icon": Icons.mode_comment_outlined,
+                                    "text": "Comment",
+                                    "onPressed": () async {
+                                      Map<String, dynamic> x = await Navigator.pushNamed(context, '/feed_comment', arguments: {
+                                        "id": activityRecord?.id,
+                                        "checkRequestUser": checkRequestUser,
+                                      }) as Map<String, dynamic>;
+                                      setState(() {
+                                        popArguments = x;
+                                      });
+                                    }
+                                  },
+                                  (checkRequestUser == true) ? {
+                                    "icon": Icons.ios_share_rounded,
+                                    "text": "Share",
+                                    "onPressed": () {}
+                                  } : null,
+                                ])...[
+                                  if(x != null)...[
+                                    CustomTextButton(
+                                      onPressed: x["onPressed"] as VoidCallback,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            x["icon"] as IconData,
+                                            color: (like && x["text"] == "Like")
+                                                ? TColor.THIRD
+                                                : TColor.PRIMARY_TEXT,
+                                          ),
+                                          SizedBox(width: media.width * 0.02,),
+                                          Text(
+                                            x["text"] as String,
+                                            style: TextStyle(
+                                              color: (like && x["text"] == "Like")
+                                                  ? TColor.THIRD
+                                                  : TColor.PRIMARY_TEXT,
+                                              fontSize: FontSize. NORMAL,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    // if(x["text"] != "Share") SeparateBar(width: 1, height: 45, color: TColor.BORDER_COLOR,)
+                                  ]
+                                ]
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                       SizedBox(height: media.height * 0.02,),
 
                       // View Analysis

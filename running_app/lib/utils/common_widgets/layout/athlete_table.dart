@@ -43,6 +43,7 @@ class AthleteTable extends StatefulWidget {
   final VoidCallback? distanceOnPressed;
   final VoidCallback? timeOnPressed;
   final bool? isLoading;
+  final bool reachEnd;
 
   AthleteTable({
     this.controller,
@@ -52,6 +53,7 @@ class AthleteTable extends StatefulWidget {
     this.distanceOnPressed,
     this.timeOnPressed,
     this.isLoading,
+    this.reachEnd = false,
     super.key
   });
 
@@ -286,6 +288,9 @@ class _AthleteTableState extends State<AthleteTable> {
                         ),
                       ),
                     )
+                  ],
+                  if(widget.reachEnd)...[
+                    Loading(reachEnd: true,)
                   ]
                   // DataTable(
                   //     border: const TableBorder(
@@ -400,6 +405,7 @@ class _AthleteTableState extends State<AthleteTable> {
               ),
             ),
           ),
+
         ]
         else...[
           Loading(

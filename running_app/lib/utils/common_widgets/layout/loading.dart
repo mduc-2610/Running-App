@@ -5,10 +5,12 @@ class Loading extends StatelessWidget {
   Color? backgroundColor;
   double? marginTop;
   double? height;
+  bool reachEnd;
   Loading({
     this.backgroundColor,
     this.marginTop,
     this.height,
+    this.reachEnd = false,
     super.key
   });
 
@@ -19,15 +21,21 @@ class Loading extends StatelessWidget {
       children: [
         Container(
           width: media.width,
-          height: height ?? media.height,
+          height: (reachEnd)
+              ? (media.height * 0.06)
+              : (height ?? media.height),
           // width: media.w,
           decoration: BoxDecoration(
-            color: backgroundColor ?? Colors.black.withOpacity(0.2),
+            color: (reachEnd)
+                ? (Colors.transparent)
+                : (backgroundColor ?? Colors.black.withOpacity(0.2)),
           ),
         ),
         Container(
           margin: EdgeInsets.only(
-            top: marginTop ?? media.height * 0.37,
+            top: (reachEnd)
+                ? (media.height * 0)
+                : (marginTop ?? media.height * 0.37),
           ),
           child: Center(
             child: SizedBox(
