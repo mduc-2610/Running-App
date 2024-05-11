@@ -278,6 +278,7 @@ class _FeedViewState extends State<FeedView> {
                                 print("Check comment on pressed: ${result["checkCommentPressed"]}");
                                 print("Check like on on pressed ${result["checkLikePressed"]}");
                                 if(result["checkCommentPressed"]) {
+                                  delayedInit(reload2: true);
                                   setState(() {
                                     activityRecord["activityRecord"].totalComments = result["totalComments"];
                                   });

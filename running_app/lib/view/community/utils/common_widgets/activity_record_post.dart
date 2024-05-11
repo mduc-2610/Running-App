@@ -365,10 +365,11 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                             }) as Map<String, dynamic>;
                             setState(() {
                               popArguments = x;
+                              widget.activityRecord.totalComments = popArguments["totalComments"];
                             });
                           },
                           child: Text(
-                            "${widget.totalComments ?? popArguments["totalComments"] ?? widget.activityRecord.totalComments} comment",
+                            "${widget.activityRecord.totalComments} comment",
                             style: TxtStyle.normalTextDesc,
                           ),
                         ),
@@ -413,6 +414,7 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                               }) as Map<String, dynamic>;
                               setState(() {
                                 popArguments = x;
+                                widget.activityRecord.totalComments = popArguments["totalComments"];
                               });
                             }
                           }

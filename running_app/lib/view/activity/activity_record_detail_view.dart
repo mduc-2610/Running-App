@@ -46,6 +46,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
   bool checkRequestUser = false;
   bool like = false, checkLikePressed = false;
   Map<String, dynamic> popArguments = {};
+  bool checkCommentPressed = false;
 
   void getSideData() {
     setState(() {
@@ -110,7 +111,8 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
               "id": activityRecord?.id,
               "checkLikePressed": checkLikePressed,
               "totalComments": popArguments["totalComments"],
-              "checkCommentPressed": popArguments["checkCommentPressed"] ?? false,
+              // "totalComments": activityRecord?.totalComments,
+              "checkCommentPressed": checkCommentPressed,
             },
         ),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
@@ -600,6 +602,8 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                     }) as Map<String, dynamic>;
                                     setState(() {
                                       popArguments = x;
+                                      checkCommentPressed = popArguments["checkCommentPressed"];
+                                      activityRecord?.totalComments = popArguments["totalComments"];
                                     });
                                   },
                                   child: Text(
@@ -684,6 +688,8 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                       }) as Map<String, dynamic>;
                                       setState(() {
                                         popArguments = x;
+                                        checkCommentPressed = popArguments["checkCommentPressed"];
+                                        activityRecord?.totalComments = popArguments["totalComments"];
                                       });
                                     }
                                   },
