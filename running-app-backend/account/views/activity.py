@@ -94,7 +94,6 @@ class ActivityViewSet(
             # print(club_params)
 
             context = {
-                "request": self.request,
                 "fields": fields,
                 "event_params": event_params, 
                 "club_params": club_params,
@@ -106,6 +105,7 @@ class ActivityViewSet(
             }
 
         context.update({
+            "request": self.request,
             "user": self.request.user.activity,
         })
 

@@ -384,10 +384,10 @@ class _FollowLayoutState extends State<FollowLayout> {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
-                                  child: Image.asset(
-                                    "assets/img/community/ptit_logo.png",
-                                    width: 35,
-                                    height: 35,
+                                  child: Image.network(
+                                    followList[i]["follow"].avatar,
+                                    width: 45,
+                                    height: 45,
                                   ),
                                 ),
                                 SizedBox(width: media.width * 0.02,),

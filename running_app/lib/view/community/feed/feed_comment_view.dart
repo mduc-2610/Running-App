@@ -271,6 +271,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
 
   @override
   Widget build(BuildContext context) {
+    print("COMMENTS: $comments");
     print("Check: ${activityRecord?.totalComments}");
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
@@ -347,8 +348,8 @@ class _FeedCommentViewState extends State<FeedCommentView> {
                                           },
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(50),
-                                            child: Image.asset(
-                                              "assets/img/community/ptit_logo.png",
+                                            child: Image.network(
+                                              comments[i]["comment"]?.user?.avatar,
                                               width: 50,
                                               height: 50,
                                             ),

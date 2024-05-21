@@ -2,9 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:running_app/models/account/activity.dart';
 import 'package:running_app/models/account/performance.dart';
-
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/models/product/product.dart';
 import 'package:running_app/models/social/follow.dart';
@@ -153,6 +154,7 @@ class _UserViewState extends State<UserView> {
   
   @override
   Widget build(BuildContext context) {
+    print("User: $user");
     var media = MediaQuery.of(context).size;
     List<Product>? productList = userActivity?.products;
     return Scaffold(
@@ -190,10 +192,10 @@ class _UserViewState extends State<UserView> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(50),
-                                child: Image.asset(
-                                  "assets/img/home/avatar.png",
-                                  width: 90,
+                                child: Image.network(
+                                  user?.avatar ?? "",
                                   height: 90,
+                                  width: 90,
                                   fit: BoxFit.contain,
                                 ),
                               ),

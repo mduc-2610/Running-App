@@ -3,6 +3,7 @@ class Leaderboard {
   String? userId;
   String? actId;
   String? name;
+  String? avatar;
   String? gender;
   String? totalDuration;
   double? totalDistance;
@@ -21,6 +22,7 @@ class Leaderboard {
       userId = json["user_id"],
       actId = json["act_id"],
       name = json["name"],
+      avatar = json["avatar"],
       gender = json["gender"],
       totalDuration = json["total_duration"],
       totalDistance = json["total_distance"],

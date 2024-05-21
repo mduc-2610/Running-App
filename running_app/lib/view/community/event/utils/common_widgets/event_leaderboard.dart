@@ -235,10 +235,11 @@ class _EventLeaderboardState extends State<EventLeaderboard> {
                                     children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(50),
-                                        child: Image.asset(
-                                          "assets/img/community/ptit_logo.png",
-                                          width: 35,
-                                          height: 35,
+                                        child: Image.network(
+                                          participant?.avatar ?? "",
+                                          height: 90,
+                                          width: 90,
+                                          fit: BoxFit.contain,
                                         ),
                                       ),
                                       SizedBox(width: media.width * 0.02,),

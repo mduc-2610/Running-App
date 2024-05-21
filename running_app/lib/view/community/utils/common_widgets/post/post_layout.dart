@@ -177,7 +177,7 @@ class _PostLayoutState extends State<PostLayout> {
                                         UserAbbr author = UserAbbr(
                                             id: user?.id,
                                             name: user?.name,
-                                            avatar: ""
+                                            avatar: user?.avatar,
                                         );
                                         widget.posts?[i]["post"].likes.insert(0, author);
                                       });

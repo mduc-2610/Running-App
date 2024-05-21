@@ -101,6 +101,7 @@ class DetailClubSerializer(serializers.ModelSerializer):
                 "sport_type": sport_type,
                 "check_follow": context.get("check_follow"),
                 "user": context.get("user"),
+                "request": context.get("request"),
             }).data
         return None
     

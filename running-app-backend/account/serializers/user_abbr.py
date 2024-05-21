@@ -19,6 +19,10 @@ class UserAbbrSerializer(serializers.ModelSerializer):
         return instance.user.name
     
     def get_avatar(self, instance):
+        request = self.context.get('request')
+        avatar = instance.user.profile.avatar
+        if request and avatar:
+            return request.build_absolute_uri(f"/static/images/avatars/{avatar}")
         return None
 
     def get_check_user_follow(self, instance):

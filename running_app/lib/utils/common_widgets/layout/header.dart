@@ -9,6 +9,7 @@ class Header extends StatelessWidget {
   final String? title;
   final double? fontSize;
   final String? username;
+  final String? avatar;
   final List? iconButtons;
   final bool backButton;
   final bool noIcon;
@@ -19,6 +20,7 @@ class Header extends StatelessWidget {
     this.title,
     this.fontSize,
     this.username,
+    this.avatar,
     this.iconButtons,
     this.backButton = true,
     this.noIcon = false,
@@ -101,11 +103,11 @@ class Header extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(50),
-                    child: Image.asset(
-                      "assets/img/home/avatar.png",
-                      width: 45,
+                    child: Image.network(
+                      avatar ?? "",
                       height: 45,
-                      fit: BoxFit.cover,
+                      width: 45,
+                      fit: BoxFit.contain,
                     ),
                   ),
                   SizedBox(width: media.width * 0.02),

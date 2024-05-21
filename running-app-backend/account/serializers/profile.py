@@ -4,12 +4,22 @@ from account.models import Profile
 from account.serializers import UserSerializer
 
 class ProfileSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
+
+    def get_avatar(self, instance):
+        request = self.context.get('request')
+        if instance.avatar:
+            return request.build_absolute_uri(f"/static/images/avatars/{instance.avatar}")
+        return None
+
+    
     class Meta:
         model = Profile
         fields = (
             "id",
             "user",
-            "name",            
+            "name",
+            "avatar",            
         )
         extra_kwargs = {
             "id" : {"read_only": True},
@@ -18,9 +28,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class DetailProfileSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
 
     def get_name(self, instance):
         return instance.name()
+    
+    def get_avatar(self, instance):
+        from core.settings import BASE_DIR
+        return f"{BASE_DIR}/static/images/avatars/{instance.avatar}"
     
     class Meta:
         model = Profile

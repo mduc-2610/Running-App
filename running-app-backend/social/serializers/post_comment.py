@@ -10,7 +10,7 @@ class ClubPostCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ClubPostComment
-        fields = '__all__'
+        fields = "__all__"
         extra_kwargs = {
             "id": {"read_only": True},
         }
@@ -20,11 +20,13 @@ class CreateClubPostCommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):
-        return UserAbbrSerializer(instance.user).data
+        return UserAbbrSerializer(instance.user, context={
+            "request": self.context.get("request")
+        }).data
     
     def create(self, validated_data):
-        user_id = validated_data.pop('user_id')
-        post_id = validated_data.pop('post_id')
+        user_id = validated_data.pop("user_id")
+        post_id = validated_data.pop("post_id")
         comment = ClubPostComment.objects.create(
             user_id=user_id, post_id=post_id, **validated_data)
         return comment
@@ -47,7 +49,7 @@ class EventPostCommentSerializer(serializers.ModelSerializer):
     user = UserAbbrSerializer()
     class Meta:
         model = EventPostComment
-        fields = '__all__'
+        fields = "__all__"
         extra_kwargs = {
             "id": {"read_only": True},
         }
@@ -58,11 +60,13 @@ class CreateEventPostCommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):
-        return UserAbbrSerializer(instance.user).data
+        return UserAbbrSerializer(instance.user, context={
+            "request": self.context.get("request")
+        }).data
     
     def create(self, validated_data):
-        user_id = validated_data.pop('user_id')
-        post_id = validated_data.pop('post_id')
+        user_id = validated_data.pop("user_id")
+        post_id = validated_data.pop("post_id")
         comment = EventPostComment.objects.create(
             user_id=user_id, post_id=post_id, **validated_data)
         return comment
@@ -83,10 +87,10 @@ class CreateEventPostCommentSerializer(serializers.ModelSerializer):
 
 class ActivityRecordPostCommentSerializer(serializers.ModelSerializer):
     user = UserAbbrSerializer()
-
+    
     class Meta:
         model = ActivityRecordPostComment
-        fields = '__all__'
+        fields = "__all__"
         extra_kwargs = {
             "id": {"read_only": True},
         }
@@ -98,11 +102,13 @@ class CreateActivityRecordPostCommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):
-        return UserAbbrSerializer(instance.user).data
+        return UserAbbrSerializer(instance.user, context={
+            "request": self.context.get("request")
+        }).data
     
     def create(self, validated_data):
-        user_id = validated_data.pop('user_id')
-        post_id = validated_data.pop('post_id')
+        user_id = validated_data.pop("user_id")
+        post_id = validated_data.pop("post_id")
         comment = ActivityRecordPostComment.objects.create(
             user_id=user_id, post_id=post_id, **validated_data)
         return comment

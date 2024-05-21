@@ -26,7 +26,6 @@ class ActivityRecordPost extends StatefulWidget {
   final bool like;
   final VoidCallback likeOnPressed;
   final VoidCallback? detailOnPressed;
-  final int? totalComments;
 
   ActivityRecordPost({
     required this.token,
@@ -37,7 +36,6 @@ class ActivityRecordPost extends StatefulWidget {
     this.checkRequestUser,
     this.socialSection = true,
     this.detail = false,
-    this.totalComments,
     super.key
   });
 
@@ -90,8 +88,8 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(50),
-                      child: Image.asset(
-                        "assets/img/community/ptit_logo.png",
+                      child: Image.network(
+                        widget.activityRecord.user?.avatar ?? "",
                         width: 45,
                         height: 45,
                       ),

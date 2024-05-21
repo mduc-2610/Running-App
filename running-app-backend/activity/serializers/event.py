@@ -65,6 +65,7 @@ class DetailEventSerializer(serializers.ModelSerializer):
             paginated_queryset = paginator.paginate_queryset(queryset, self.context['request'])
             return EventPostSerializer(paginated_queryset, many=True, read_only=True, context={
                 "user": context["user"],
+                "request": context["request"],
             }).data
         return None
     

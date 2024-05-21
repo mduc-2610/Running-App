@@ -208,12 +208,13 @@ class _ProfileSettingViewState extends State<ProfileSettingView> {
                         child: Stack(
                           children: [
                             ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.asset(
-                                  "assets/img/community/ptit_logo.png",
-                                  width: 100,
-                                  height: 100,
-                                )
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.network(
+                                user?.avatar ?? "",
+                                height: 90,
+                                width: 90,
+                                fit: BoxFit.contain,
+                              ),
                             ),
                             const SizedBox(
                               height: 120,

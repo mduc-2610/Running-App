@@ -57,6 +57,15 @@ class DetailUserSerializer(serializers.ModelSerializer):
         read_only=True,
     )
     
+    avatar = serializers.SerializerMethodField()
+    
+    def get_avatar(self, instance):
+        request = self.context.get('request')
+        avatar = instance.profile.avatar
+        if avatar:
+            return request.build_absolute_uri(f"/static/images/avatars/{avatar}")
+        return None
+    
     class Meta:
         model = User
         fields = (
@@ -72,6 +81,7 @@ class DetailUserSerializer(serializers.ModelSerializer):
             "activity",
             "privacy",
             "notification_setting",
+            "avatar",
         )
         extra_kwargs = {
             "id": {"read_only": True},

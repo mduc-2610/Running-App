@@ -28,8 +28,8 @@ class ClubPostViewSet(viewsets.ModelViewSet):
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context.update({
-            'request': self.request,
-            'user': self.request.user.activity
+            "request": self.request,
+            "user": self.request.user.activity
         })
         return context
 
@@ -61,8 +61,8 @@ class EventPostViewSet(viewsets.ModelViewSet):
         #         "page_size": query_params.get("pg_size", 1)
         #     })
         context.update({
-            'request': self.request,
-            'user': self.request.user.activity
+            "request": self.request,
+            "user": self.request.user.activity
         })
         return context
         

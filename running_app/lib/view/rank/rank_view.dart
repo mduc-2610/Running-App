@@ -580,11 +580,13 @@ class _RankViewState extends State<RankView> {
                                               )),
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(50),
-                                            child: Image.asset(
-                                              "assets/img/home/avatar.png",
-                                              width: 80,
+                                            child: Image.network(
+                                              (isLoading == false)
+                                                  ? userList[i]?.avatar
+                                                  : "https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg",
                                               height: 80,
-                                              fit: BoxFit.cover,
+                                              width: 80,
+                                              fit: BoxFit.contain,
                                             ),
                                           ),
                                         ),

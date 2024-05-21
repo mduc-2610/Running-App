@@ -68,7 +68,7 @@ class _PostDetailState extends State<PostDetail> {
         UserAbbr author = UserAbbr(
             id: user?.id,
             name: user?.name,
-            avatar: ""
+            avatar: user?.avatar,
         );
         setState(() {
           post?.likes?.insert(0, author);
@@ -340,8 +340,8 @@ class _PostDetailState extends State<PostDetail> {
                                         // },
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(50),
-                                          child: Image.asset(
-                                            "assets/img/community/ptit_logo.png",
+                                          child: Image.network(
+                                            comments[i]["comment"]?.user?.avatar ?? "",
                                             width: 50,
                                             height: 50,
                                           ),

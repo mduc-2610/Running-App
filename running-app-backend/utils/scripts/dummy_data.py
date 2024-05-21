@@ -114,7 +114,7 @@ def run():
     for i in range(MAX_NUMBER_USERS):
         data = {
             "user": user_list[i],
-            "avatar": "",
+            "avatar": f"avatar{random.randint(1, 8)}.jpg",
             "country": fake.country(),
             "city": fake.city(),
             "gender": random.choice(["MALE", "FEMALE"]),

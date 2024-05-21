@@ -19,6 +19,7 @@ from utils.function import get_start_of_day, \
 
 class LeaderboardSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
     user_id = serializers.SerializerMethodField()
     act_id = serializers.SerializerMethodField()
     gender = serializers.SerializerMethodField()
@@ -26,9 +27,16 @@ class LeaderboardSerializer(serializers.ModelSerializer):
     total_duration = serializers.SerializerMethodField()
     participated_at = serializers.SerializerMethodField()
     check_user_follow = serializers.SerializerMethodField()
-
+    
     def get_user_id(self, instance):
         return instance.user.id
+    
+    def get_avatar(self, instance):
+        request = self.context.get('request')
+        avatar = instance.user.profile.avatar
+        if request and avatar:
+            return request.build_absolute_uri(f"/static/images/avatars/{avatar}")
+        return None
 
     def get_act_id(self, instance):
         return instance.activity.id if self.check_follow() else None
@@ -90,6 +98,7 @@ class LeaderboardSerializer(serializers.ModelSerializer):
             "user_id",
             "act_id",
             "name",
+            "avatar",
             "gender",
             "total_duration",
             "total_distance",

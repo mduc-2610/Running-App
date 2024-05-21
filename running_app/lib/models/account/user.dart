@@ -44,6 +44,7 @@ class DetailUser extends User {
   final String profile;
   final String privacy;
   final String? notificationSetting;
+  final String? avatar;
 
   DetailUser({
     String? id,
@@ -57,7 +58,8 @@ class DetailUser extends User {
     required this.profile,
     required this.performance,
     required this.privacy,
-    required this.notificationSetting
+    required this.notificationSetting,
+    required this.avatar,
   }) : super(
     id: id,
     email: email,
@@ -74,6 +76,7 @@ class DetailUser extends User {
         privacy = json['privacy'] ?? "" ,
         isVerifiedPhone = json['is_verified_phone'],
         notificationSetting = json['notification_setting'],
+        avatar = json['avatar'],
         super.fromJson(json);
 
   @override
@@ -86,6 +89,7 @@ class DetailUser extends User {
     data['privacy'] = privacy;
     data['profile'] = profile;
     data['notification_setting'] = notificationSetting;
+    data['avatar'] = avatar;
     return data;
   }
 
@@ -103,6 +107,7 @@ class DetailUser extends User {
         'performance: $performance,\n\t'
         'privacy: $privacy,\n\t'
         'profile: $profile \n'
+        'avatar: $avatar \n'
         '},\n';
   }
 }

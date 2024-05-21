@@ -62,6 +62,7 @@ dev_dependencies:
   location: ^5.0.0
   loading_indicator: ^3.1.1
 
+  cached_network_image: ^3.2.0
   csc_picker: 0.2.7
 
   #  permission: ^0.1.7

@@ -248,10 +248,11 @@ class _AthleteTableState extends State<AthleteTable> {
                                     children: [
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(50),
-                                        child: Image.asset(
-                                          "assets/img/community/ptit_logo.png",
-                                          width: 30,
+                                        child: Image.network(
+                                          participants[i]?.avatar ?? "",
                                           height: 30,
+                                          width: 30,
+                                          fit: BoxFit.contain,
                                         ),
                                       ),
                                       SizedBox(width: media.width * 0.02,),

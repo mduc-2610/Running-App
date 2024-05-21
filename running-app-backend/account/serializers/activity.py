@@ -79,6 +79,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             #     queryset, page_size=15, page_query_param="follower_page")
             return UserAbbrSerializer(queryset, many=True, read_only=True, context={
                 "user": context["user"],
+                "request": context["request"]
             }).data
         return None
     
@@ -94,6 +95,7 @@ class ActivitySerializer(serializers.ModelSerializer):
             #     queryset, page_size=15, page_query_param="followee_page")
             return UserAbbrSerializer(queryset, many=True, read_only=True, context={
                 "user": context["user"],
+                "request": context["request"]
             }).data
         return None
     

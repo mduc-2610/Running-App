@@ -32,7 +32,8 @@ class ClubPostSerializer(serializers.ModelSerializer):
         # paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
         # return UserAbbrSerializer(paginated_queryset, many=True, read_only=True).data
         return UserAbbrSerializer(queryset, many=True, read_only=True, context={
-            "user": self.context["user"]
+            "user": self.context["user"],
+            "request": self.context["request"],
         }).data
     
     class Meta:
@@ -62,14 +63,18 @@ class DetailClubPostSerializer(serializers.ModelSerializer):
         paginator = CommonPagination(page_size=100)
         paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
         return UserAbbrSerializer(paginated_queryset, many=True, read_only=True, context={
-            "user": self.context["user"]
+            "user": self.context["user"],
+            "request": self.context["request"],
         }).data
     
     def get_comments(self, instance):
         queryset = instance.comments.all()
         paginator = CommonPagination(page_size=5, page_query_param="cmt_pg")
         paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
-        return ClubPostCommentSerializer(paginated_queryset, many=True, read_only=True).data
+        return ClubPostCommentSerializer(
+            paginated_queryset, many=True, read_only=True, context={
+                "request": self.context["request"]
+            }).data
         
     class Meta:
         model = ClubPost
@@ -85,7 +90,12 @@ class CreateClubPostSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     
     def get_user(self, instance):
-        return UserAbbrSerializer(instance.user).data
+        return UserAbbrSerializer(
+            instance.user,
+            context={
+                "request": self.context["request"],
+            }    
+        ).data
     
     def create(self, validated_data):
         user_id = validated_data.pop("user_id")
@@ -113,7 +123,12 @@ class UpdateClubPostSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):
-        return UserAbbrSerializer(instance.user).data
+        return UserAbbrSerializer(
+            instance.user,
+            context={
+                "request": self.context["request"],
+            }    
+        ).data
     
     class Meta:
         model = ClubPost
@@ -146,7 +161,8 @@ class EventPostSerializer(serializers.ModelSerializer):
         # paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
         # return UserAbbrSerializer(paginated_queryset, many=True, read_only=True).data
         return UserAbbrSerializer(queryset, many=True, read_only=True, context={
-            "user": self.context["user"]
+            "user": self.context["user"],
+            "request": self.context.get("request"),
         }).data
     class Meta:
         model = ClubPost
@@ -174,14 +190,18 @@ class DetailEventPostSerializer(serializers.ModelSerializer):
         paginator = CommonPagination(page_size=100)
         paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
         return UserAbbrSerializer(paginated_queryset, many=True, read_only=True, context={
-            "user": self.context["user"]
+            "user": self.context["user"],
+            "request": self.context["request"],
         }).data
     
     def get_comments(self, instance):
         queryset = instance.comments.all()
         paginator = CommonPagination(page_size=5, page_query_param="cmt_pg")
         paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
-        return EventPostCommentSerializer(paginated_queryset, many=True, read_only=True).data
+        return EventPostCommentSerializer(
+            paginated_queryset, many=True, read_only=True, context={
+                "request": self.context["request"]
+            }).data
     
     class Meta:
         model = EventPost
@@ -197,7 +217,12 @@ class CreateEventPostSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):
-        return UserAbbrSerializer(instance.user).data
+        return UserAbbrSerializer(
+            instance.user,
+            context={
+                "request": self.context["request"],
+            }    
+        ).data
     
     def create(self, validated_data):
         user_id = validated_data.pop("user_id")
@@ -225,7 +250,12 @@ class UpdateEventPostSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
 
     def get_user(self, instance):
-        return UserAbbrSerializer(instance.user).data
+        return UserAbbrSerializer(
+            instance.user,
+            context={
+                "request": self.context["request"],
+            }
+        ).data
     
     class Meta:
         model = EventPost

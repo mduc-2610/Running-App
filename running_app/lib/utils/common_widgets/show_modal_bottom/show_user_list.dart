@@ -38,6 +38,7 @@ void showUserList(
           "backgroundColor": (e.checkUserFollow == null) ? TColor.SECONDARY : Colors.transparent,
         }
       }));
+      print("USERLIST: $userList");
       return StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return Container(
@@ -92,8 +93,8 @@ void showUserList(
                                       children: [
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(50),
-                                          child: Image.asset(
-                                            "assets/img/community/ptit_logo.png",
+                                          child: Image.network(
+                                            userList[index]["follow"].avatar,
                                             width: 35,
                                             height: 35,
                                           ),

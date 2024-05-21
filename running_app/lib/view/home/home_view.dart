@@ -106,7 +106,10 @@ class _HomeViewState extends State<HomeView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: Header(username: '${user?.name}' ?? "",),
+        title: Header(
+          username: user?.name,
+          avatar: user?.avatar
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: handleRefresh,

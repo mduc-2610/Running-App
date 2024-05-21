@@ -95,8 +95,8 @@ class _PostWidgetState extends State<PostWidget> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(50),
-                      child: Image.asset(
-                        "assets/img/community/ptit_logo.png",
+                      child: Image.network(
+                        widget.post?.user?.avatar,
                         width: 45,
                         height: 45,
                       ),
@@ -291,9 +291,8 @@ class _PostWidgetState extends State<PostWidget> {
                                 Icons.thumb_up,
                                 color: TColor.THIRD,
                               ),
-                              SizedBox(width: media.width * 0.01,),
                               Text(
-                                "${widget.post.totalLikes}",
+                                " ${widget.post.totalLikes}",
                                 style: TxtStyle.normalTextDesc,
                               ),
                             ],

@@ -82,7 +82,8 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
             paginator = CommonPagination(page_size=100)
             paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
             return UserAbbrSerializer(paginated_queryset, many=True, read_only=True, context={
-                "user": context["user"]
+                "user": context["user"],
+                "request": context["request"],
             }).data
         return None
     
@@ -94,7 +95,10 @@ class DetailActivityRecordSerializer(serializers.ModelSerializer):
             queryset = instance.comments.all()
             paginator = CommonPagination(page_size=5, page_query_param="cmt_pg")
             paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
-            return ActivityRecordPostCommentSerializer(paginated_queryset, many=True, read_only=True).data
+            return ActivityRecordPostCommentSerializer(
+                paginated_queryset, many=True, read_only=True, context={
+                    "request": self.context["request"]
+                }).data
         return None
 
     def get_completed_at(self, instance):
