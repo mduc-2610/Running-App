@@ -53,7 +53,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
         null,
         DetailClub.fromJson,
         token,
-        queryParams: "?limit_user=21&"
+        queryParams: "?limit_user=20&"
             "exclude=posts, activity_records"
     );
     setState(() {
@@ -110,6 +110,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
 
   @override
   Widget build(BuildContext context) {
+    print(club?.participants);
     var media = MediaQuery.sizeOf(context);
     ScrollController childScrollController = ScrollController();
     ScrollController parentScrollController = ScrollController();
@@ -513,7 +514,7 @@ class _ClubDetailViewState extends State<ClubDetailView> {
                                             participants: club?.participants ?? [],
                                             tableHeight: media.height - media.height * 0.15,
                                             controller: childScrollController,
-                                            startIndex: 1,
+                                            startIndex: 0,
                                             isLoading: isLoading
                                           ),
                                         )

@@ -156,16 +156,16 @@ class _StoreViewState extends State<StoreView> {
                                   'assets/img/home/event_banner.svg',
                                   width: media.width * 0.95,
                                   fit: BoxFit.contain,
-                                ), // Replace 'my_image.png' with your image asset path
+                                ),
                               ),
                               SizedBox(height: media.height * 0.02,),
 
                               GridView.builder(
                                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 4, // Number of items in each row
+                                  crossAxisCount: 4,
                                   crossAxisSpacing: 10.0,
                                   mainAxisSpacing: 10.0,
-                                  childAspectRatio: (media.width * 0.22) / (media.height * 0.1), // Aspect ratio of each item
+                                  childAspectRatio: (media.width * 0.22) / (media.height * 0.1),
                                 ),
                                 shrinkWrap: true,
                                 itemCount: brandList?.length ?? 0,

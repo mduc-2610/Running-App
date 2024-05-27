@@ -78,7 +78,7 @@ class DetailClubSerializer(serializers.ModelSerializer):
 
             print({"start_date": start_date, "end_date": end_date, "sort_by": sort_by})
 
-            users = [instance.user.performance for instance in instance.clubs.all()]
+            users = [usr.user.performance for usr in instance.clubs.all()]
             
             if gender:
                 users = [user for user in users if user.user.profile.gender == gender]

@@ -30,7 +30,7 @@ class ActivityRecordListView extends StatefulWidget {
 }
 
 class _ActivityRecordListViewState extends State<ActivityRecordListView> {
-  bool isLoading = true;
+  bool isLoading = true, isLoading2 = false;
   String token = "";
   DetailUser? user;
   String? requestUserId;
@@ -41,6 +41,7 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
   double previousScrollOffset = 0;
   int page = 1;
   bool stopLoadingPage = false;
+  bool checkReload = false;
 
   void getProviderData() {
     setState(() {
@@ -95,12 +96,23 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
   }
 
 
-  Future<void> delayedInit({ bool reload = false, bool initSide = false }) async {
+  Future<void> delayedInit({ bool reload = false, reload2 = false, bool initSide = false }) async {
     if(reload) {
       setState(() {
+        activityRecords = [];
+        page = 1;
         isLoading = true;
       });
     }
+
+    if(reload2) {
+      setState(() {
+        activityRecords = [];
+        page = 1;
+        isLoading2 = true;
+      });
+    }
+
     if(initSide) {
       await initUser();
       await initUserPerformance();
@@ -109,6 +121,7 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
     // await Future.delayed(Duration(seconds: 1),);
     setState(() {
       isLoading = false;
+      isLoading2 = false;
     });
   }
 
@@ -185,18 +198,20 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
                 },
               }
             ],
+            argumentsOnPressed: {
+              "reload": checkReload,
+            },
           ),
           backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
         ),
       body: RefreshIndicator(
         onRefresh: handleRefresh,
-        child: SingleChildScrollView(
-          controller: scrollController,
-          child: DefaultBackgroundLayout(
-            child: Stack(
-              children: [
-                if(isLoading == false)...[
-                  MainWrapper(
+        child: DefaultBackgroundLayout(
+          child: Stack(
+            children: [
+              if(isLoading == false)...[
+                MainWrapper(
+                    child: SingleChildScrollView(
                       child: Column(
                           children: [
                             Container(
@@ -258,11 +273,17 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
                                 ],
                                 for(var activity in activityRecords ?? [])
                                   CustomTextButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, '/activity_record_detail', arguments: {
+                                    onPressed: () async {
+                                      Map<String, dynamic>? result = await Navigator.pushNamed(context, '/activity_record_detail', arguments: {
                                         "id": activity?.id,
                                         "checkRequestUser": true,
-                                      });
+                                      }) as Map<String, dynamic>?;
+                                      if(result != null) {
+                                        delayedInit(reload: result["reload"]);
+                                        setState(() {
+                                          checkReload = result["reload"];
+                                        });
+                                      }
                                     },
                                     child: Container(
                                       margin: EdgeInsets.fromLTRB(0, 0, 0, media.height * 0.01),
@@ -312,7 +333,7 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
                                                 )
                                               ],
                                             ),
-
+                              
                                             RichText(
                                               text: TextSpan(
                                                   style: TextStyle(
@@ -340,14 +361,17 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
                               ],
                             )
                           ]
-                      )
-                  ),
-                ]
-                else...[
-                  Loading()
-                ]
+                      ),
+                    )
+                ),
+              ]
+              else...[
+                Loading(marginTop: media.height * 0.05,)
               ],
-            ),
+              if(isLoading2)...[
+                Loading()
+              ]
+            ],
           ),
         ),
       ),

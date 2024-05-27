@@ -137,6 +137,24 @@ def delete_user_activitiy_record(sender, instance, **kwargs):
     user.total_activity_records -= 1
     user.save()
 
+@receiver(post_save, sender=ActivityRecord)
+def update_user_club_activitiy_record(sender, instance, created, **kwargs):
+    if created:
+        user = instance.user
+        clubs = user.clubs.all()
+        for club in clubs:
+            club.total_activity_records += 1
+            club.save()
+        user.save()
+
+@receiver(post_delete, sender=ActivityRecord)
+def delete_user_club_activitiy_record(sender, instance, **kwargs):
+    user = instance.user
+    clubs = user.clubs.all()
+    for club in clubs:
+        club.total_activity_records -= 1
+        club.save()
+
 class ActivityRecordImage(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     activity_record = models.ForeignKey('activity.ActivityRecord', related_name='activity_record_images', on_delete=models.CASCADE)

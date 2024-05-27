@@ -49,7 +49,7 @@ class AthleteTable extends StatefulWidget {
     this.controller,
     this.tableHeight,
     required this.participants,
-    this.startIndex = 1,
+    this.startIndex = 0,
     this.distanceOnPressed,
     this.timeOnPressed,
     this.isLoading,
@@ -237,7 +237,7 @@ class _AthleteTableState extends State<AthleteTable> {
                                 Container(
                                     alignment: Alignment.centerLeft,
                                     width: media.width * 0.08,
-                                    child: CustomText(text: " ${i}")
+                                    child: CustomText(text: " ${i + 1}")
                                 ),
                                 SizedBox(width: media.width * 0.02,),
                                 Container(

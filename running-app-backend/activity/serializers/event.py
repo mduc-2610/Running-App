@@ -120,6 +120,7 @@ class DetailEventSerializer(serializers.ModelSerializer):
                 'start_date': start_date,
                 'end_date': end_date,
                 'sport_type': sport_type,
+                "request": context.get("request"),
             }).data
         return None
     

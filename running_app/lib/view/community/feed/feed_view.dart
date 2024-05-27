@@ -98,7 +98,11 @@ class _FeedViewState extends State<FeedView> {
   }
 
   Future<void> handleRefresh() async {
-    delayedInit();
+    setState(() {
+      page = 1;
+      activityRecords = [];
+    });
+    delayedInit(reload: true);
   }
 
   void delayedInit({bool reload = false, reload2 = false, bool initSide = false}) async {
@@ -110,6 +114,7 @@ class _FeedViewState extends State<FeedView> {
 
     if(reload2) {
       setState(() {
+        page = 1;
         isLoading2 = true;
       });
     }
@@ -269,12 +274,26 @@ class _FeedViewState extends State<FeedView> {
                         else...[
                           for (var activityRecord in activityRecords ?? []) ...[
                             ActivityRecordPost(
+                              reload: () {
+                                setState(() {
+                                  page = 1;
+                                  activityRecords = [];
+                                });
+                                delayedInit(reload: true);
+                              },
                               token: token,
                               detailOnPressed: () async {
                                 Map<String, dynamic> result = await Navigator.pushNamed(context, '/activity_record_detail', arguments: {
                                   "id": activityRecord["activityRecord"].id,
                                   "checkRequestUser": user?.id == activityRecord["activityRecord"]?.user?.id,
                                 }) as Map<String, dynamic>;
+                                if(result["reload"] != null) {
+                                  setState(() {
+                                    page = 1;
+                                    activityRecords = [];
+                                  });
+                                  delayedInit(reload: true);
+                                }
                                 print("Check comment on pressed: ${result["checkCommentPressed"]}");
                                 print("Check like on on pressed ${result["checkLikePressed"]}");
                                 if(result["checkCommentPressed"]) {

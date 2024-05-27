@@ -563,7 +563,7 @@ class _RankViewState extends State<RankView> {
                                     children: [
                                       CustomTextButton(
                                         onPressed: () {
-                                          if(i < userList.length && userList[i] != null) {
+                                          if(i < userList.length) {
                                             Navigator.pushNamed(context, '/user', arguments: {
                                               "id": userList[i].userId,
                                             });
@@ -582,8 +582,8 @@ class _RankViewState extends State<RankView> {
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(50),
                                             child: Image.network(
-                                              (isLoading == false && i < userList.length)
-                                                  ? userList[i]?.avatar
+                                              (isLoading == false)
+                                                  ? (i < userList.length && userList[i] != null) ? userList[i]?.avatar : "https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg"
                                                   : "https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg",
                                               height: 80,
                                               width: 80,

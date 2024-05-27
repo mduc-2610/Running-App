@@ -377,8 +377,8 @@ class _ClubDetailInformationViewState extends State<ClubDetailInformationView> {
                                                   children: [
                                                     ClipRRect(
                                                       borderRadius: BorderRadius.circular(50),
-                                                      child: Image.asset(
-                                                        "assets/img/community/ptit_logo.png",
+                                                      child: Image.network(
+                                                        userList[i]["user"].avatar,
                                                         width: 35,
                                                         height: 35,
                                                       ),

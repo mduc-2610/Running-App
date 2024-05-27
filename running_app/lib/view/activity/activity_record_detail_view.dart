@@ -73,10 +73,15 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
   }
 
   Future<void> handleRefresh() async {
-    delayedInit();
+    delayedInit(reload: true);
   }
 
-  Future<void> delayedInit() async {
+  void delayedInit({bool reload = false}) async {
+    if(reload) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     await initActivityRecord();
     await Future.delayed(Duration(milliseconds: 500),);
 
@@ -143,8 +148,8 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(50),
-                                    child: Image.asset(
-                                      "assets/img/community/ptit_logo.png",
+                                    child: Image.network(
+                                      '${activityRecord?.user?.avatar ?? ""}',
                                       width: 45,
                                       height: 45,
                                     ),
@@ -193,11 +198,14 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                       [
                                         {
                                           "text": "Edit Activity",
-                                          "onPressed": () {
+                                          "onPressed": () async {
                                             Navigator.pop(context);
-                                            Navigator.pushNamed(context, '/activity_record_edit', arguments: {
+                                            Map<String, dynamic> result = await Navigator.pushNamed(context, '/activity_record_edit', arguments: {
                                               "id": activityRecordId
-                                            });
+                                            }) as Map<String, dynamic>;
+                                            if(result["reload"]) {
+                                              delayedInit(reload: true);
+                                            }
                                           }
                                         },
                                         {
@@ -211,8 +219,10 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                                   activityRecord?.id,
                                                   token
                                               );
-                                              Navigator.pop(context);
-                                              Navigator.pop(context);
+                                              Navigator.pop(context, {
+                                                "reload": true
+                                              });
+                                              // Navigator.pop(context);
                                             });
                                           }
                                         }

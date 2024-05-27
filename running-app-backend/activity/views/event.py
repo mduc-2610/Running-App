@@ -93,8 +93,10 @@ class EventViewSet(
         context = super().get_serializer_context()
         if self.action == "retrieve":
             query_params = self.request.query_params
-            start_date = query_params.get("start_date", get_start_date_of_month())
-            end_date = query_params.get("end_date", get_end_date_of_month())
+            # start_date = query_params.get("start_date", get_start_date_of_month())
+            # end_date = query_params.get("end_date", get_end_date_of_month())
+            start_date = query_params.get("start_date", get_start_date_of_week())
+            end_date = query_params.get("end_date", get_end_date_of_week())
             sort_by = query_params.get("sort_by", "Distance")
             gender = query_params.get("gender", None)
             limit_user = query_params.get("limit_user", None)

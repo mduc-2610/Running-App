@@ -80,7 +80,12 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  Future<void> delayedInit() async {
+  Future<void> delayedInit({ bool reload = false}) async {
+    if(reload) {
+      setState(() {
+        isLoading = true;
+      });
+    }
     await initUserPerformance();
     await initUserActivity();
     await Future.delayed(Duration(milliseconds: 500),);
@@ -370,8 +375,12 @@ class _HomeViewState extends State<HomeView> {
                                           style: TxtStyle.headSection
                                       ),
                                       CustomTextButton(
-                                        onPressed: () {
-                                          Navigator.pushNamed(context, '/activity_record_list');
+                                        onPressed: () async {
+                                          Map<String, dynamic> result = await Navigator.pushNamed(context, '/activity_record_list')
+                                          as Map<String, dynamic>;
+                                          if(result["reload"]) {
+                                            delayedInit(reload: result["reload"]);
+                                          }
                                         },
                                         child: Text(
                                             "See all",
@@ -393,10 +402,13 @@ class _HomeViewState extends State<HomeView> {
                                   children: [
                                     for(int i = 0; i < min(activityRecords?.length ?? 0, 5); i++)...[
                                       CustomTextButton(
-                                        onPressed: () {
-                                          Navigator.pushNamed(context, '/activity_record_detail', arguments: {
+                                        onPressed: () async {
+                                          Map<String, dynamic>? result = await Navigator.pushNamed(context, '/activity_record_detail', arguments: {
                                             "id": activityRecords?[i].id,
-                                          });
+                                          }) as Map<String, dynamic>?;
+                                          if(result != null) {
+                                            delayedInit(reload: result["reload"]);
+                                          }
                                         },
                                         child: Container(
                                           margin: EdgeInsets.fromLTRB(0, 0, 0, media.height * 0.01),

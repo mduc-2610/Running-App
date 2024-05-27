@@ -229,7 +229,7 @@ class _EventLeaderboardState extends State<EventLeaderboard> {
                                 SizedBox(width: media.width * 0.02,),
                                 Container(
                                   alignment: Alignment.centerLeft,
-                                  width: media.width * 0.4,
+                                  width: media.width * 0.43,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -237,8 +237,8 @@ class _EventLeaderboardState extends State<EventLeaderboard> {
                                         borderRadius: BorderRadius.circular(50),
                                         child: Image.network(
                                           participant?.avatar ?? "",
-                                          height: 90,
-                                          width: 90,
+                                          height: 40,
+                                          width: 40,
                                           fit: BoxFit.contain,
                                         ),
                                       ),

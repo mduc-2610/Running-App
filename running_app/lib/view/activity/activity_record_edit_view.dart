@@ -35,6 +35,7 @@ class _ActivityRecordEditViewState extends State<ActivityRecordEditView> {
   TextEditingController descriptionTextController = TextEditingController();
   String? activityPrivacy;
   String? sportType;
+  bool checkEdit = false;
 
   void getData() {
     setState(() {
@@ -80,7 +81,7 @@ class _ActivityRecordEditViewState extends State<ActivityRecordEditView> {
       privacy: convertChoice(activityPrivacy!)
     );
 
-    print(actRecord);
+    // print(actRecord);
 
     final data = await callUpdateAPI(
         'activity/activity-record',
@@ -93,9 +94,14 @@ class _ActivityRecordEditViewState extends State<ActivityRecordEditView> {
       showNotification(context, 'Error', "Title is required");
     }
     else {
+      setState(() {
+        checkEdit = true;
+      });
       showNotification(context, 'Notice', "Successfully updated activity",
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, {
+              "reload": checkEdit,
+            });
           }
       );
     }
@@ -122,11 +128,17 @@ class _ActivityRecordEditViewState extends State<ActivityRecordEditView> {
 
   @override
   Widget build(BuildContext context) {
-    print(activityRecord);
+    // print(activityRecord);
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Header(title: "Edit Activity", noIcon: true,),
+        title: Header(
+          title: "Edit Activity",
+          noIcon: true,
+          argumentsOnPressed: {
+            "reload": checkEdit,
+          },
+        ),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
@@ -329,7 +341,7 @@ class _ActivityRecordEditViewState extends State<ActivityRecordEditView> {
                                               onTap: () {
                                                 setState(() {
                                                   imageAssets.removeAt(index);
-                                                  print(imageAssets.length);
+                                                  // print(imageAssets.length);
                                                 });
                                               },
                                               child: Container(

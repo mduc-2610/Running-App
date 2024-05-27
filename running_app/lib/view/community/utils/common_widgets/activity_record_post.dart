@@ -26,6 +26,7 @@ class ActivityRecordPost extends StatefulWidget {
   final bool like;
   final VoidCallback likeOnPressed;
   final VoidCallback? detailOnPressed;
+  final VoidCallback? reload;
 
   ActivityRecordPost({
     required this.token,
@@ -36,6 +37,7 @@ class ActivityRecordPost extends StatefulWidget {
     this.checkRequestUser,
     this.socialSection = true,
     this.detail = false,
+    this.reload,
     super.key
   });
 
@@ -141,7 +143,8 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                             "onPressed": () {
                               Navigator.pop(context);
                               Navigator.pushNamed(context, '/activity_record_edit', arguments: {
-                                "id": widget.activityRecord.id                              });
+                                "id": widget.activityRecord.id
+                              });
                             }
                           },
                           {
@@ -154,6 +157,8 @@ class _ActivityRecordPostState extends State<ActivityRecordPost> {
                                     widget.activityRecord.id,
                                     widget.token
                                 );
+                                widget.reload?.call();
+                                Navigator.pop(context);
                               });
                             }
                           }
