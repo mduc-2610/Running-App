@@ -154,7 +154,6 @@ class _UserViewState extends State<UserView> {
   
   @override
   Widget build(BuildContext context) {
-    print("User: $user");
     var media = MediaQuery.of(context).size;
     List<Product>? productList = userActivity?.products;
     return Scaffold(

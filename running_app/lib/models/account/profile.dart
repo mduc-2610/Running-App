@@ -132,7 +132,7 @@ class CreateUpdateProfile {
     return {
       'user_id': user_id,
       'name': name,
-      'avatar': avatar,
+      // 'avatar': avatar,
       'country': country,
       'city': city,
       'gender': gender,

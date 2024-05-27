@@ -1,13 +1,14 @@
-import uuid
+import uuid, random
 
 from django.utils import timezone
 from django.db import models
+
 
 class Profile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, db_index=True)
     user = models.OneToOneField(
         "account.User", related_name="profile", on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to="images", default="", blank=True, null=True)
+    avatar = models.ImageField(upload_to="images", default=f"avatar{random.randint(1, 8)}.jpg", blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)
     country = models.CharField(max_length=150, null=True, blank=True, db_index=True)
     city = models.CharField(max_length=150, null=True, blank=True, db_index=True)

@@ -78,27 +78,13 @@ import 'package:running_app/view/wallet/wallet.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await findSystemLocale();
+  // await findSystemLocale();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? '';
   String userPref = prefs.getString('user') ?? '';
   bool logged = prefs.getBool('logged') ?? false;
   DetailUser? user = userPref != "" ? DetailUser.fromJson(json.decode(userPref) ?? "") : null ;
-  // String userPerformancePref = prefs.getString('userPerformance') ?? '';
-  // String userActivityPref = prefs.getString('userActivity') ?? '';
-  // String userProfilePref = prefs.getString('userProfile') ?? '';
-  // String userPrivacyPref = prefs.getString('userPrivacy') ?? '';
-  // Performance? userPerformance = userPerformancePref != "" ? Performance.fromJson(json.decode(userPerformancePref) ?? "") : null ;
-  // Profile? userProfile = userProfilePref != "" ? DetailProfile.fromJson(json.decode(userProfilePref) ?? "") : null ;
-  // Privacy? userPrivacy = userPrivacyPref != "" ? Privacy.fromJson(json.decode(userPrivacyPref) ?? "") : null ;
-  // Activity? userActivity = userActivityPref != "" ? Activity.fromJson(json.decode(userActivityPref) ?? "") : null ;
-
-  // Widget homeScreen = token != "" || logged == true
-  //     ? const HomeView()
-  //     : (logged == false)
-  //     ? const SignInView()
-  //     : const GetStartedView();
   late Widget homeScreen;
   if(token != "" || logged) {
     homeScreen = HomeView();

@@ -261,10 +261,13 @@ class _RankViewState extends State<RankView> {
   void delayedUser({ bool reload = false, int milliseconds = 500}) async {
     if(reload) {
       setState(() {
+        page = 1;
         userList = [];
         isLoading = true;
+        stopLoading = false;
       });
     }
+
     await initUser();
     await Future.delayed(Duration(milliseconds: milliseconds),);
 
@@ -349,10 +352,8 @@ class _RankViewState extends State<RankView> {
                                           period = time;
                                           initTime();
                                           page = 1;
-                                          userList = [];
-                                          stopLoading = false;
-                                          delayedUser(reload: true);
                                         });
+                                        delayedUser(reload: true);
                                       },
                                       style: ButtonStyle(
                                           padding:
@@ -390,24 +391,24 @@ class _RankViewState extends State<RankView> {
                                       startDateOfWeek = date["startDate"];
                                       endDateOfWeek = date["endDate"];
                                       setDateRepresent();
-                                      delayedUser(reload: true);
                                     });
+                                    delayedUser(reload: true);
                                   } else if(period == "Month") {
                                     dynamic date = await showDate(context, monthList!);
                                     setState(() {
                                       startDateOfMonth = date["startDate"];
                                       endDateOfMonth = date["endDate"];
                                       setDateRepresent();
-                                      delayedUser(reload: true);
                                     });
+                                    delayedUser(reload: true);
                                   } else if(period == "Year") {
                                     dynamic date = await showDate(context, yearList!);
                                     setState(() {
                                       startDateOfYear = date["startDate"];
                                       endDateOfYear = date["endDate"];
                                       setDateRepresent();
-                                      delayedUser(reload: true);
                                     });
+                                    delayedUser(reload: true);
                                   }
                                 },
                                 child: Container(
@@ -581,7 +582,7 @@ class _RankViewState extends State<RankView> {
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(50),
                                             child: Image.network(
-                                              (isLoading == false)
+                                              (isLoading == false && i < userList.length)
                                                   ? userList[i]?.avatar
                                                   : "https://static.vecteezy.com/system/resources/previews/009/734/564/original/default-avatar-profile-icon-of-social-media-user-vector.jpg",
                                               height: 80,
@@ -710,16 +711,14 @@ class _RankViewState extends State<RankView> {
                         distanceOnPressed: () {
                           setState(() {
                             sort_by = "Distance";
-                            delayedUser(reload: true);
-                            print(sort_by);
                           });
+                          delayedUser(reload: true);
                         },
                         timeOnPressed: () {
                           setState(() {
                             sort_by = "Time";
-                            delayedUser(reload: true);
-                            print(sort_by);
                           });
+                          delayedUser(reload: true);
                         },
                         isLoading: isLoading,
                         reachEnd: (reachEnd && !stopLoading) ? true : false,

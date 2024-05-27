@@ -11,8 +11,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         if instance.avatar:
             return request.build_absolute_uri(f"/static/images/avatars/{instance.avatar}")
         return None
-
-    
+        
     class Meta:
         model = Profile
         fields = (

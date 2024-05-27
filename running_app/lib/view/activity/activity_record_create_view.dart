@@ -37,7 +37,6 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
   late String pace;
   String token = "";
   DetailUser? user;
-  Activity? userActivity;
 
   String privacy = "Anyone";
   String sportChoice = "Running";
@@ -77,14 +76,6 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
     setState(() {
       token = Provider.of<TokenProvider>(context).token;
       user = Provider.of<UserProvider>(context).user;
-      // userActivity = Provider.of<UserProvider>(context).userActivity;
-    });
-  }
-
-  void initUserActivity() async {
-    final data = await callRetrieveAPI(null, null, user?.activity, Activity.fromJson, token);
-    setState(() {
-      userActivity = data;
     });
   }
 
@@ -106,7 +97,7 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
         sportType: convertChoice(sportChoice),
         title: titleTextController.text,
         description: descriptionTextController.text,
-        userId: userActivity?.id,
+        userId: getUrlId(user?.activity ?? ""),
         completedAt: DateTime.now().toString(),
     );
 
@@ -119,8 +110,6 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
     );
 
     Navigator.pushReplacementNamed(context, '/home');
-
-    print("Success: $data");
   }
 
   @override
@@ -135,7 +124,6 @@ class _ActivityRecordCreateViewState extends State<ActivityRecordCreateView> {
     super.didChangeDependencies();
     getArguments();
     getProviderData();
-    initUserActivity();
   }
 
   @override

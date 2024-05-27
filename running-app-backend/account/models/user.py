@@ -38,12 +38,12 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
     
-# @receiver(post_save, sender=User)
-# def create_related_models(sender, instance, created, **kwargs):
-#     if created:
-#         activity = Activity.objects.create(user=instance)
-#         notification_setting = NotificationSetting.objects.create(user=instance)
-#         privacy = Privacy.objects.create(user=instance)
-#         performance = Performance.objects.create(user=instance, activity=activity)
+@receiver(post_save, sender=User)
+def create_related_models(sender, instance, created, **kwargs):
+    if created:
+        activity = Activity.objects.create(user=instance)
+        notification_setting = NotificationSetting.objects.create(user=instance)
+        privacy = Privacy.objects.create(user=instance)
+        performance = Performance.objects.create(user=instance, activity=activity)
     
 

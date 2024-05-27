@@ -654,7 +654,7 @@ class _ActivityRecordDetailViewState extends State<ActivityRecordDetailView> {
                                           UserAbbr author = UserAbbr(
                                               id: user?.id,
                                               name: user?.name,
-                                              avatar: ""
+                                              avatar: user?.avatar,
                                           );
                                           activityRecord?.likes?.insert(0, author);
                                         });

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class APIEndpoints {
-  static const BASE_URL = 'http://10.0.2.2:8000/api';
+  // static const BASE_URL = 'http://10.0.2.2:8000/api';
+  static const BASE_URL = 'http://192.168.1.2:8000/api';
   static const ACCOUNT_URL = 'account';
   static const ACTIVITY_URL = 'activity';
   static const PRODUCT_URL = 'product';

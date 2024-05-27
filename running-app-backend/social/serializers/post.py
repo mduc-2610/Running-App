@@ -33,7 +33,7 @@ class ClubPostSerializer(serializers.ModelSerializer):
         # return UserAbbrSerializer(paginated_queryset, many=True, read_only=True).data
         return UserAbbrSerializer(queryset, many=True, read_only=True, context={
             "user": self.context["user"],
-            "request": self.context["request"],
+            "request": self.context.get("request"),
         }).data
     
     class Meta:

@@ -117,6 +117,7 @@ class CreateUser {
   final String? email;
   final String? password;
   final String? phoneNumber;
+
   CreateUser({
     required this.username,
     required this.email,

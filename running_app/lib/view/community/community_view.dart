@@ -48,11 +48,12 @@ class _CommunityViewState extends State<CommunityView> {
       userActivity = data;
     });
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     getData();
-    initUserActivity();
+    // initUserActivity();
   }
 
   @override

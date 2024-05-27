@@ -1,7 +1,13 @@
+import "dart:convert";
+import "dart:math";
+
 import "package:flutter/material.dart";
 import 'package:provider/provider.dart';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:intl/intl.dart';
+import "package:running_app/models/account/login.dart";
+import 'package:shared_preferences/shared_preferences.dart';
+
 import "package:running_app/models/account/user.dart";
 import "package:running_app/models/account/profile.dart";
 import "package:running_app/services/api_service.dart";
@@ -44,6 +50,8 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
   String? userId;
   String? email;
   String? phoneNumber;
+  String? username;
+  String? password;
 
   void getProviderData() {
     setState(() {
@@ -57,6 +65,8 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
       userId = arguments["id"];
       email = arguments["email"];
       phoneNumber = arguments["phoneNumber"];
+      username = arguments["username"];
+      password = arguments["password"];
     });
   }
 
@@ -68,14 +78,40 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
   }
 
   void delayedInit() async {
-    // getProviderData();
-    // await initUserProfile();
-    // initFields();
-    // Future.delayed(Duration(seconds: 3));
     getArguments();
     initFields();
     setState(() {
       // isLoading = false;
+    });
+  }
+
+  Future<void> signIn() async {
+    Login login = Login(
+      username: username,
+      password: password,
+    );
+    print(login);
+
+    final tokenResponse = await callCreateAPI(
+        'account/login',
+        login.toJson(), "");
+    var token = tokenResponse["token"];
+    Provider.of<TokenProvider>(context, listen: false).setToken(token);
+
+    List<dynamic> users = await callListAPI('account/user', User.fromJson, token);
+    final userId = users.firstWhere((element) => element.username == username).id;
+
+    DetailUser user = await callRetrieveAPI('account/user', userId, null, DetailUser.fromJson, token);
+
+    Provider.of<UserProvider>(context, listen: false).setUser(user,);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
+    await prefs.setString('user', jsonEncode(user.toJson()));
+    print("CHECK:");
+    print(user);
+    print(token);
+    Navigator.pushNamed(context, '/home', arguments: {
+      'token': token
     });
   }
 
@@ -200,6 +236,7 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
   }
 
   void createAccountInformation() async {
+    Random random = Random();
     final profile = CreateUpdateProfile(
       user_id: userId,
       name: fields[0]["controller"].text,
@@ -217,13 +254,12 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
 
     final data = await callCreateAPI('account/profile', profile.toJson(), "");
     print(data);
-    showNotification(context, 'Notice', "Successfully updated",
-        onPressed: () {
-          Navigator.pushReplacementNamed(context, '/sign_in');
-        }
-    );
-
-    // Navigator.pop(context);
+    // showNotification(context, 'Notice', "Successfully created",
+    //     onPressed: () async {
+    //       await signIn();
+    //     }
+    // );
+    await signIn();
   }
   @override
   Widget build(BuildContext context) {
@@ -231,7 +267,7 @@ class _ProfileCreateViewState extends State<ProfileCreateView> {
     var media = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Header(title: "Create Profile", noIcon: true,),
+        title: const Header(title: "Create Profile", noIcon: true, backButton: false,),
         backgroundImage: TImage.PRIMARY_BACKGROUND_IMAGE,
       ),
       body: SingleChildScrollView(
