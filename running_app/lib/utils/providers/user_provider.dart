@@ -40,6 +40,11 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  set userName(String name) {
+    _user?.name = name;
+    notifyListeners();
+  }
+
   void setUser(
       DetailUser? user,
       {

@@ -68,6 +68,16 @@ class ActivitySerializer(serializers.ModelSerializer):
         paginated_queryset = paginator.paginate_queryset(queryset, self.context["request"])
         return paginated_queryset
     
+    # def get_paginated_queryset(self, queryset, page_size=5, page_query_param="page", page_size_query_param="page_size", max_page_size_query_param="max_page_size"):
+    #     paginator = CommonPagination(
+    #         page_size=page_size, 
+    #         page_query_param=page_query_param, 
+    #         page_size_query_param=page_size_query_param,
+    #         max_page_size_query_param=max_page_size_query_param
+    #     )
+    #     page = paginator.paginate_queryset(queryset, self.context['request'])
+    #     return page, paginator
+    
     def get_followers(self, instance):
         context = self.context
         fields = context.get("fields")
@@ -198,6 +208,23 @@ class ActivitySerializer(serializers.ModelSerializer):
                 # "no_likes": False,
             }).data
         return None
+    
+    # def get_activity_records(self, instance):
+    #     context = self.context
+    #     fields = context.get("fields")
+
+    #     if not fields or "activity_records" in fields:
+    #         queryset = instance.activity_records.all()
+    #         page, paginator = self.get_paginated_queryset(
+    #             queryset, page_size=3, page_query_param="act_rec_page", page_size_query_param="act_rec_page_size")
+    #         serialized_data = DetailActivityRecordSerializer(page, many=True, read_only=True, context={
+    #             "request": context["request"],
+    #             "user": context["user"],
+    #             "exclude": context["act_rec_params"]["act_rec_exclude"],
+    #         }).data
+    #         paginated_response = paginator.get_paginated_response(serialized_data)
+    #         return paginated_response.data
+    #     return None
     
     def get_following_activity_records(self, instance):
         context = self.context

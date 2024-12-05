@@ -10,6 +10,7 @@ import 'package:running_app/models/account/profile.dart';
 import 'package:running_app/models/account/user.dart';
 import 'package:running_app/services/api_service.dart';
 import 'package:running_app/utils/common_widgets/layout/notification_box.dart';
+import 'package:running_app/utils/constants.dart';
 import 'package:running_app/utils/providers/delete_activity_state_provider.dart';
 import 'package:running_app/view/activity/activity_record_create_view.dart';
 import 'package:running_app/view/activity/activity_record_detail_view.dart';
@@ -80,11 +81,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await findSystemLocale();
 
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? '';
   String userPref = prefs.getString('user') ?? '';
   bool logged = prefs.getBool('logged') ?? false;
   DetailUser? user = userPref != "" ? DetailUser.fromJson(json.decode(userPref) ?? "") : null ;
+  print("CHECK BASE_URL: ${APIEndpoints.BASE_URL}");
+  // await prefs.setBool('logged', false);
+  // await prefs.remove('token');
+  // await prefs.remove('user');
   late Widget homeScreen;
   if(token != "" || logged) {
     homeScreen = HomeView();

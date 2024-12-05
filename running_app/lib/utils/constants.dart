@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
+const String IP = "192.168.0.107";
+// 10.0.2.2
+// 192.168.1.2
+// 192.168.2.243
+// 10.20.154.191
 class APIEndpoints {
-  // static const BASE_URL = 'http://10.0.2.2:8000/api';
-  static const BASE_URL = 'http://192.168.1.2:8000/api';
+  static const BASE_URL = 'http://${IP}:8000/api';
   static const ACCOUNT_URL = 'account';
   static const ACTIVITY_URL = 'activity';
   static const PRODUCT_URL = 'product';
@@ -10,8 +16,11 @@ class APIEndpoints {
   // static const products = '/products';
 }
 
+
+
 class TColor {
   static Color get PRIMARY => const Color(0xff7b61ff);
+  // static Color get PRIMARY => Colors.green;
   static Color get SECONDARY => const Color(0xff3362f5);
   static Color get THIRD => const Color(0xffb054c5);
   // static Color get PRIMARY => Colors.green;

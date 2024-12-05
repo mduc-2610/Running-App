@@ -65,6 +65,8 @@ dev_dependencies:
   cached_network_image: ^3.2.0
   csc_picker: 0.2.7
 
+  network_info_plus: ^5.0.3
+
   #  permission: ^0.1.7
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

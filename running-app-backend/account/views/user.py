@@ -11,7 +11,6 @@ from rest_framework.decorators import action
 from django.contrib.auth import authenticate
 from django.db.models import Q
 from django.contrib.auth import authenticate, update_session_auth_hash
-
 from account.models import User
 
 from account.serializers import UserSerializer, \

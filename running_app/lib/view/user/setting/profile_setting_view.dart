@@ -179,11 +179,13 @@ class _ProfileSettingViewState extends State<ProfileSettingView> {
 
     final data = await callUpdateAPI('account/profile', getUrlId(user?.profile ?? ""), profile.toJson(), token);
     print(data);
+    Provider.of<UserProvider>(context, listen: false).userName = fields[0]["controller"].text;
     showNotification(context, 'Notice', "Successfully updated account information",
       onPressed: () {
         Navigator.pop(context);
       }
     );
+
     // Navigator.pop(context);
   }
   @override
@@ -277,32 +279,42 @@ class _ProfileSettingViewState extends State<ProfileSettingView> {
                                 SizedBox(height: media.height * 0.015,)
                               ],
                             for(int i = 2; i < 4; i++)...[
-                              CustomMainButton(
-                                verticalPadding: 22,
-                                borderWidth: 2,
-                                borderWidthColor: TColor.BORDER_COLOR,
-                                background: Colors.transparent,
-                                horizontalPadding: 25,
-                                onPressed: () {
-                                  showChoiceList(context,provinces);
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "${fields[i]["value"]}",
-                                      style: TxtStyle.largeTextDesc,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${i == 2 ? "Nation" : "City"}",
+                                    style: TxtStyle.normalText,
+                                  ),
+                                  SizedBox(height: media.height * 0.01,),
+                                  CustomMainButton(
+                                    verticalPadding: 22,
+                                    borderWidth: 2,
+                                    borderWidthColor: TColor.BORDER_COLOR,
+                                    background: Colors.transparent,
+                                    horizontalPadding: 25,
+                                    onPressed: () {
+                                      showChoiceList(context,provinces);
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "${fields[i]["value"]}",
+                                          style: TxtStyle.largeTextDesc,
+                                        ),
+                                        Transform.rotate(
+                                          angle: -90 * 3.14 / 180,
+                                          child: Icon(
+                                            Icons.arrow_back_ios_rounded,
+                                            color: TColor.DESCRIPTION,
+                                            size: 15,
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                    Transform.rotate(
-                                      angle: -90 * 3.14 / 180,
-                                      child: Icon(
-                                        Icons.arrow_back_ios_rounded,
-                                        color: TColor.DESCRIPTION,
-                                        size: 15,
-                                      ),
-                                    )
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                               if(i == 2) SizedBox(height: media.height * 0.02,),
                             ],
@@ -481,37 +493,47 @@ class _ProfileSettingViewState extends State<ProfileSettingView> {
                             SizedBox(height: media.height * 0.015,),
                           ],
                           for(int i = 9; i < 11; i++)...[
-                            CustomMainButton(
-                              verticalPadding: 22,
-                              borderWidth: 2,
-                              borderWidthColor: TColor.BORDER_COLOR,
-                              background: Colors.transparent,
-                              horizontalPadding: 25,
-                              onPressed: () async {
-                                String result = await showChoiceList(context, [
-                                  "XS", "S", "M", "L", "XL", "XXL"
-                                ]);
-                                setState(() {
-                                  fields[i]["value"] = result;
-                                });
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "${fields[i]["value"]}",
-                                    style: TxtStyle.largeTextDesc,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${i == 9 ? "Shirt" : "Trouser"} size",
+                                  style: TxtStyle.normalText,
+                                ),
+                                SizedBox(height: media.height * 0.01,),
+                                CustomMainButton(
+                                  verticalPadding: 22,
+                                  borderWidth: 2,
+                                  borderWidthColor: TColor.BORDER_COLOR,
+                                  background: Colors.transparent,
+                                  horizontalPadding: 25,
+                                  onPressed: () async {
+                                    String result = await showChoiceList(context, [
+                                      "XS", "S", "M", "L", "XL", "XXL"
+                                    ]);
+                                    setState(() {
+                                      fields[i]["value"] = result;
+                                    });
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "${fields[i]["value"]}",
+                                        style: TxtStyle.largeTextDesc,
+                                      ),
+                                      Transform.rotate(
+                                        angle: -90 * 3.14 / 180,
+                                        child: Icon(
+                                          Icons.arrow_back_ios_rounded,
+                                          color: TColor.DESCRIPTION,
+                                          size: 15,
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  Transform.rotate(
-                                    angle: -90 * 3.14 / 180,
-                                    child: Icon(
-                                      Icons.arrow_back_ios_rounded,
-                                      color: TColor.DESCRIPTION,
-                                      size: 15,
-                                    ),
-                                  )
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                             SizedBox(height: media.height * 0.015,),
                           ]

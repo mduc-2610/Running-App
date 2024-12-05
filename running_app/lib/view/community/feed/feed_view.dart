@@ -318,7 +318,7 @@ class _FeedViewState extends State<FeedView> {
                                       UserAbbr author = UserAbbr(
                                           id: user?.id,
                                           name: user?.name,
-                                          avatar: ""
+                                          avatar: user?.avatar,
                                       );
                                       activityRecord["activityRecord"].likes.insert(0, author);
                                       activityRecord["like"] = true ;
@@ -348,7 +348,7 @@ class _FeedViewState extends State<FeedView> {
                                     UserAbbr author = UserAbbr(
                                         id: user?.id,
                                         name: user?.name,
-                                        avatar: ""
+                                        avatar: user?.avatar,
                                     );
                                     activityRecord["activityRecord"].likes.insert(0, author);
                                   });

@@ -7,7 +7,7 @@ from utils.decorators import action_form
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = (
-        "name", "gender", "country", 
+        "name", "gender", "avatar", "country", 
         "city", "date_of_birth", "height", 
         "weight", "shirt_size", "trouser_size", 
         "shoe_size", "updated_at"

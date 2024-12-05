@@ -126,8 +126,11 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
   }
 
   void scrollListenerOffSet() {
+    print("CHECKCHECK");
     double currentScrollOffset = scrollController.offset;
-    if ((currentScrollOffset - previousScrollOffset).abs() > 500) {
+    // if ((currentScrollOffset - previousScrollOffset).abs() > 0) {
+    if(scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
       print("Loading page $page");
       previousScrollOffset = currentScrollOffset;
       setState(() {
@@ -212,6 +215,7 @@ class _ActivityRecordListViewState extends State<ActivityRecordListView> {
               if(isLoading == false)...[
                 MainWrapper(
                     child: SingleChildScrollView(
+                      controller: scrollController,
                       child: Column(
                           children: [
                             Container(

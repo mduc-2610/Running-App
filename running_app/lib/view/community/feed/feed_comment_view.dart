@@ -207,7 +207,7 @@ class _FeedCommentViewState extends State<FeedCommentView> {
       UserAbbr author = UserAbbr(
           id: user?.id,
           name: user?.name,
-          avatar: ""
+          avatar: user?.avatar,
       );
       setState(() {
         activityRecord?.likes?.insert(0, author);

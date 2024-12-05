@@ -3,7 +3,7 @@ class User {
   final String? email;
   final String? username;
   final String? phoneNumber;
-  final String? name;
+  String? name;
 
   User({
     required this.id,

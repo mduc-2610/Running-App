@@ -286,7 +286,7 @@ class _FollowLayoutState extends State<FollowLayout> {
   // Map<String, dynamic> followButtonState = {};
   List<Map<String, dynamic>> followList = [];
   int totalFollow = 0;
-
+  int followListLength = 0;
 
   @override
   void initState() {
@@ -309,6 +309,7 @@ class _FollowLayoutState extends State<FollowLayout> {
         }
       }));
     }
+    followListLength = followList.length;
     super.initState();
   }
   @override
@@ -333,7 +334,7 @@ class _FollowLayoutState extends State<FollowLayout> {
                 ),
               ),
               Text(
-                "${followList.length}",
+                "${followListLength}",
                 style: TextStyle(
                     color: TColor.PRIMARY_TEXT,
                     fontSize: FontSize.LARGE,
@@ -443,6 +444,7 @@ class _FollowLayoutState extends State<FollowLayout> {
                                         if(widget.layout == "Following" && !widget.checkOtherUser) {
                                           setState(() {
                                             totalFollow -= 1;
+                                            followListLength -= 1;
                                           });
                                         }
                                       } else {
@@ -460,6 +462,7 @@ class _FollowLayoutState extends State<FollowLayout> {
                                         if(widget.layout == "Following" && !widget.checkOtherUser) {
                                           setState(() {
                                             totalFollow += 1;
+                                            followListLength += 1;
                                           });
                                         }
                                       }
